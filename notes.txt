@@ -1,6 +1,6 @@
 NOTES FOR TINKERS
 ================================================================================
-Last update: November 17th, 2012 w/ Bootstrap 2.2.1
+Last update: June 6th, 2013 w/ Bootstrap 2.3.2
 
 
 When importing a new Bootstrap release you have to:
@@ -9,6 +9,7 @@ When importing a new Bootstrap release you have to:
      .akeeba-bootstrap {
   and this at the bottom of the file:
      }
-  then compile it with a LESS compiler such as SimpLESS
+  then compile it with a LESS compiler.
+  Don't use SimpLESS since it's broken, use a CLI script or Crunch
 
 • Remove all .modal definitions; that conflict with Joomla!
