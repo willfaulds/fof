@@ -388,8 +388,6 @@ class FOFTemplateUtils
 			return '';
 		}
 
-		$document = JFactory::getDocument();
-
 		try
 		{
 			$renderer = $document->loadRenderer('module');
