@@ -46,7 +46,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 		$published = $this->element['published']? $this->element['published'] : array(0,1);
 		$name = (string) $this->element['name'];
 
-		$db		= JFactory::getDbo();
+		$db		= FOFPlatform::getInstance()->getDbo();
 		$query	= $db->getQuery(true)
 			->select('a.id AS value, a.path, a.title AS text, a.level, a.published')
 			->from('#__tags AS a')

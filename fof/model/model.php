@@ -635,7 +635,7 @@ class FOFModel extends FOFUtilsObject
 		}
 		else
 		{
-			$this->_db = JFactory::getDbo();
+			$this->_db = FOFPlatform::getInstance()->getDbo();
 		}
 
 		// Set the default view search path

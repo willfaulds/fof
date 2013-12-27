@@ -117,7 +117,7 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDbo();
+		$db = FOFPlatform::getInstance()->getDbo();
 
 		// Check for client_ids override
 		if ($this->client_ids !== null)

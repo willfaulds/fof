@@ -48,7 +48,7 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 		$user_id = FOFPlatform::getInstance()->getUser()->id;
 
 		// And filter the query output by the user id
-		$db = JFactory::getDbo();
+		$db    = FOFPlatform::getInstance()->getDbo();
 
 		$alias = $model->getTableAlias();
 		$alias = $alias ? $db->qn($alias) . '.' : '';

@@ -391,6 +391,11 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
         return JFactory::getLanguage();
     }
 
+    public function getDbo()
+    {
+        return JFactory::getDbo();
+    }
+
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *

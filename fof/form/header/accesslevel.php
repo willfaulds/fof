@@ -25,7 +25,7 @@ class FOFFormHeaderAccesslevel extends FOFFormHeaderFieldselectable
 	 */
 	protected function getOptions()
 	{
-		$db = JFactory::getDbo();
+		$db    = FOFPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select('a.id AS value, a.title AS text');

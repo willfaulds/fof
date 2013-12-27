@@ -30,7 +30,7 @@ abstract class FOFQueryAbstract
 
 		if (is_null($db))
 		{
-			$ret = JFactory::getDbo()->getQuery(true);
+			$ret = FOFPlatform::getInstance()->getDbo()->getQuery(true);
 		}
 		else
 		{

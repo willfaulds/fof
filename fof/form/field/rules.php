@@ -133,7 +133,7 @@ class FOFFormFieldRules extends JFormFieldRules implements FOFFormField
         if ($section == 'component')
         {
             // Need to find the asset id by the name of the component.
-            $db = JFactory::getDbo();
+            $db    = FOFPlatform::getInstance()->getDbo();
             $query = $db->getQuery(true);
             $query->select($db->quoteName('id'));
             $query->from($db->quoteName('#__assets'));
@@ -399,7 +399,7 @@ class FOFFormFieldRules extends JFormFieldRules implements FOFFormField
         if ($section == 'component')
         {
             // Need to find the asset id by the name of the component.
-            $db = JFactory::getDbo();
+            $db    = FOFPlatform::getInstance()->getDbo();
             $query = $db->getQuery(true)
                         ->select($db->quoteName('id'))
                         ->from($db->quoteName('#__assets'))

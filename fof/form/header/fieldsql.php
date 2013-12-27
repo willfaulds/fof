@@ -32,7 +32,7 @@ class FOFFormHeaderFieldsql extends FOFFormHeaderFieldselectable
 		$query     = (string) $this->element['query'];
 
 		// Get the database object.
-		$db = JFactory::getDBO();
+		$db = FOFPlatform::getInstance()->getDbo();
 
 		// Set the query and get the result list.
 		$db->setQuery($query);

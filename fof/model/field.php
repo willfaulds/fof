@@ -135,7 +135,7 @@ abstract class FOFModelField
 
 		if (is_array($value))
 		{
-			$db = JFactory::getDbo();
+			$db    = FOFPlatform::getInstance()->getDbo();
 			$value = array_map(array($db, 'quote'), $value);
 
 			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
@@ -256,7 +256,7 @@ abstract class FOFModelField
 			}
 			else
 			{
-				$db = JFactory::getDBO();
+				$db = FOFPlatform::getInstance()->getDbo();
 			}
 
 			if (isset($config['table_alias']))

@@ -45,7 +45,7 @@ class FOFModelBehaviorEnabled extends FOFModelBehavior
 		}
 
 		// Filter by enabled fields only
-		$db = JFactory::getDbo();
+		$db = FOFPlatform::getInstance()->getDbo();
 		$query->where($db->qn($enabledField) . ' = ' . $db->q(1));
 	}
 

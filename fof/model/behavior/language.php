@@ -78,7 +78,7 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 		$languages = array_unique($languages);
 
 		// And filter the query output by these languages
-		$db = JFactory::getDbo();
+		$db        = FOFPlatform::getInstance()->getDbo();
 		$languages = array_map(array($db, 'quote'), $languages);
 		$query->where($db->qn($languageField) . ' IN (' . implode(',', $languages) . ')');
 	}

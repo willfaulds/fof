@@ -380,7 +380,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 
 			if (!array_key_exists('db', $config))
 			{
-				$config['db'] = JFactory::getDBO();
+				$config['db'] = FOFPlatform::getInstance()->getDbo();
 			}
 
 			// Assign the correct table alias
@@ -2331,7 +2331,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	 */
 	protected function normalizeSelectFields($fields)
 	{
-		$db     = JFactory::getDbo();
+		$db     = FOFPlatform::getInstance()->getDbo();
 		$return = array();
 
 		foreach ($fields as $field)

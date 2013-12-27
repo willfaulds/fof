@@ -83,7 +83,7 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 
 		$params = $this->getOptions();
 
-		$db = JFactory::getDbo();
+		$db    = FOFPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select('a.id AS value, a.title AS text');
@@ -127,7 +127,7 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 
 		$params = $this->getOptions();
 
-		$db = JFactory::getDbo();
+		$db    = FOFPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select('a.id AS value, a.title AS text');
