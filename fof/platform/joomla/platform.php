@@ -374,7 +374,7 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 	}
 
     /**
-     * Return the {@link JDate} object
+     * Return the JDate object
      *
      * @param   mixed  $time      The initial time for the JDate object
      * @param   mixed  $tzOffset  The timezone offset.
@@ -384,6 +384,11 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
     public function getDate($time = 'now', $tzOffest = null)
     {
         return JFactory::getDate($time, $tzOffest);
+    }
+
+    public function getLanguage()
+    {
+        return JFactory::getLanguage();
     }
 
 	/**

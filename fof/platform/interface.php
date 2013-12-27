@@ -268,6 +268,8 @@ interface FOFPlatformInterface
 
     public function getDate($time = 'now', $tzOffest = null);
 
+    public function getLanguage();
+
 	/**
 	 * Is this the administrative section of the component?
 	 *

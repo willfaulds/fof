@@ -66,7 +66,7 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 		if ($lang_filter_params->get('remove_default_prefix'))
 		{
 			// Get default site language
-			$lg = JFactory::getLanguage();
+			$lg = FOFPlatform::getInstance()->getLanguage();
 			$languages[] = $lg->getTag();
 		}
 		else
@@ -126,7 +126,7 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 			if ($lang_filter_params->get('remove_default_prefix'))
 			{
 				// Get default site language
-				$lg = JFactory::getLanguage();
+				$lg = FOFPlatform::getInstance()->getLanguage();
 				$languages[] = $lg->getTag();
 			}
 			else

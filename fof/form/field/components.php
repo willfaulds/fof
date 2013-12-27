@@ -200,6 +200,8 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 	 */
 	public function translate($item, $type)
 	{
+        $platform = FOFPlatform::getInstance();
+
 		// Map the manifest cache to $item. This is needed to get the name from the
 		// manifest_cache and NOT from the name column, else some JText::_() translations fails.
 		$mData = json_decode($item->manifest_cache);
@@ -218,7 +220,7 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 			}
 		}
 
-		$lang = JFactory::getLanguage();
+		$lang = $platform->getLanguage();
 
 		switch ($type)
 		{
