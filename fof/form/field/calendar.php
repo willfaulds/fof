@@ -118,7 +118,7 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 		// Get some system objects.
 		$config = FOFPlatform::getInstance()->getConfig();
 		$user   = JFactory::getUser();
-		$date   = JFactory::getDate($this->value, 'UTC');
+		$date   = FOFPlatform::getInstance()->getDate($this->value, 'UTC');
 
 		// If a known filter is given use it.
 		switch (strtoupper((string) $this->element['filter']))

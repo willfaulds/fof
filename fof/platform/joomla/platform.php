@@ -373,6 +373,19 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		return $document;
 	}
 
+    /**
+     * Return the {@link JDate} object
+     *
+     * @param   mixed  $time      The initial time for the JDate object
+     * @param   mixed  $tzOffset  The timezone offset.
+     *
+     * @return  JDate object
+     */
+    public function getDate($time = 'now', $tzOffest = null)
+    {
+        return JFactory::getDate($time, $tzOffest);
+    }
+
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *

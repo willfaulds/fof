@@ -1474,7 +1474,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
             return false;
         }
 
-		$date = JFactory::getDate();
+		$date = FOFPlatform::getInstance()->getDate();
 		$time = $date->toSql();
 
 		$query = $this->_db->getQuery(true)

@@ -90,7 +90,7 @@ class FOFFormHeaderFielddate extends FOFFormHeaderField
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$date = JFactory::getDate($searchvalue, 'UTC');
+					$date = FOFPlatform::getInstance()->getDate($searchvalue, 'UTC');
 					$date->setTimezone(new DateTimeZone($config->get('offset')));
 
 					// Transform the date string.
@@ -103,7 +103,7 @@ class FOFFormHeaderFielddate extends FOFFormHeaderField
 				if ((int) $searchvalue)
 				{
 					// Get a date object based on the correct timezone.
-					$date = JFactory::getDate($this->value, 'UTC');
+					$date = FOFPlatform::getInstance()->getDate($this->value, 'UTC');
 					$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
 
 					// Transform the date string.

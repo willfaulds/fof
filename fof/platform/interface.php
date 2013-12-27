@@ -266,6 +266,8 @@ interface FOFPlatformInterface
 	 */
 	public function getDocument();
 
+    public function getDate($time = 'now', $tzOffest = null);
+
 	/**
 	 * Is this the administrative section of the component?
 	 *
