@@ -3035,7 +3035,7 @@ class FOFModel extends FOFUtilsObject
 	 */
 	protected function cleanCache($group = null, $client_id = 0)
 	{
-		$conf = JFactory::getConfig();
+		$conf = FOFPlatform::getInstance()->getConfig();
 
 		$options = array(
 			'defaultgroup' => ($group) ? $group : (isset($this->option) ? $this->option : JFactory::getApplication()->input->get('option')),

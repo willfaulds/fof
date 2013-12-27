@@ -342,6 +342,13 @@ interface FOFPlatformInterface
 	 */
 	public function clearCache();
 
+    /**
+     * Returns an object that holds the configuration of the current site.
+     *
+     * @return  mixed
+     */
+    public function getConfig();
+
 	/**
 	 * Is the global FOF cache enabled?
 	 *

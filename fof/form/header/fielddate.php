@@ -79,8 +79,8 @@ class FOFFormHeaderFielddate extends FOFFormHeaderField
 		}
 
 		// Get some system objects.
-		$config = JFactory::getConfig();
-		$user = JFactory::getUser();
+		$config = FOFPlatform::getInstance()->getConfig();
+		$user   = JFactory::getUser();
 
 		// If a known filter is given use it.
 		switch (strtoupper((string) $this->element['filter']))

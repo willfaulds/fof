@@ -1033,7 +1033,7 @@ class FOFController extends FOFUtilsObject
 		$view->setLayout(is_null($this->layout) ? 'default' : $this->layout);
 
 		// Display the view
-		$conf = JFactory::getConfig();
+		$conf = FOFPlatform::getInstance()->getConfig();
 
 		if (!FOFPlatform::getInstance()->isCli() && JFactory::getApplication()->isSite() && $cachable && ($viewType != 'feed') && $conf->get('caching') >= 1)
 		{

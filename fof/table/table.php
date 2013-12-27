@@ -596,7 +596,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		// If the acess property exists, set the default.
 		if (in_array($access_field, $this->getKnownFields()))
 		{
-			$this->$access_field = (int) JFactory::getConfig()->get('access');
+			$this->$access_field = (int) FOFPlatform::getInstance()->getConfig()->get('access');
 		}
 
 		$this->config = $config;
