@@ -1035,7 +1035,7 @@ class FOFController extends FOFUtilsObject
 		// Display the view
 		$conf = FOFPlatform::getInstance()->getConfig();
 
-		if (!FOFPlatform::getInstance()->isCli() && $cachable && ($viewType != 'feed') && $conf->get('caching') >= 1)
+		if (FOFPlatform::getInstance()->isSite() && $cachable && ($viewType != 'feed') && $conf->get('caching') >= 1)
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
