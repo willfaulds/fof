@@ -152,14 +152,7 @@ class AkeebaStrapper
             return;
 		}
 
-		// Load jQuery only once
-		if (self::$_includedJQuery)
-		{
-			return;
-		}
-
 		$jQueryLoad = self::getPreference('jquery_load', 'auto');
-
 		if (!in_array($jQueryLoad, array('auto', 'full', 'namespace', 'none')))
 		{
 			$jQueryLoad = 'auto';
@@ -221,18 +214,14 @@ class AkeebaStrapper
             return;
 		}
 
-		// Load only once
-		if (self::$_includedJQueryUI)
-		{
-			return;
-		}
-
-		self::jQuery();
+        if (!self::$_includedJQuery)
+        {
+            self::jQuery();
+        }
 
         self::$_includedJQueryUI = true;
 
 		$jQueryUILoad = self::getPreference('jqueryui_load', 1);
-
 		if (!$jQueryUILoad)
 		{
 			return;
@@ -241,7 +230,7 @@ class AkeebaStrapper
 		$theme = self::getPreference('jquery_theme', self::$jqUItheme);
 
 		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js', AKEEBASTRAPPER_MEDIATAG);
-		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css", AKEEBASTRAPPER_MEDIATAG);
+		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.min.css", AKEEBASTRAPPER_MEDIATAG);
     }
 
     /**
@@ -253,12 +242,6 @@ class AkeebaStrapper
         if (self::isCli())
 		{
             return;
-		}
-
-		// Load Bootstrap only once
-		if (self::$_includedBootstrap)
-		{
-			return;
 		}
 
 		if (version_compare(JVERSION, '3.2', 'ge'))
@@ -325,16 +308,27 @@ class AkeebaStrapper
 
 		self::$_includedBootstrap = true;
 
-        $altCss = array('media://akeeba_strapper/css/strapper.css');
+		$source = self::getPreference('bootstrap_source', 'css');
+		if (!in_array($source, array('css','less')))
+		{
+			$source = 'css';
+		}
+
+        $altCss = array('media://akeeba_strapper/css/strapper.min.css');
 
         if ($loadBootstrap == 'full')
         {
-            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.css');
+            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
 
-			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.js', true);
+			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
 			if (@filesize($filename) > 5)
 			{
-				self::addJSfile('media://akeeba_strapper/js/bootstrap.js', AKEEBASTRAPPER_MEDIATAG);
+				self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
+			}
+
+			if ($source == 'less')
+			{
+				self::addLESSfile('media://akeeba_strapper/less/bootstrap.j25.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
 			}
         }
         else
@@ -355,11 +349,18 @@ class AkeebaStrapper
 			}
 
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.min.css');
+			if ($source == 'less')
+			{
+				self::addLESSfile('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
+			}
         }
 
-		foreach($altCss as $css)
+		if ($source == 'css')
 		{
-			self::addCSSfile($css, AKEEBASTRAPPER_MEDIATAG);
+			foreach($altCss as $css)
+			{
+				self::addCSSfile($css, AKEEBASTRAPPER_MEDIATAG);
+			}
 		}
     }
 
@@ -377,12 +378,6 @@ class AkeebaStrapper
 		}
 
 		$tag = self::getTag($overrideTag);
-
-		$localFile = F0FTemplateUtils::parsePath($path, true);
-		if (!@file_exists($localFile) && (substr($path, -7) != '.min.js'))
-		{
-			$path = substr($path, 0, -3) . '.min.js';
-		}
 
         self::$scriptURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
     }
@@ -416,12 +411,6 @@ class AkeebaStrapper
 		}
 
 		$tag = self::getTag($overrideTag);
-
-		$localFile = F0FTemplateUtils::parsePath($path, true);
-		if (!@file_exists($localFile) && (substr($path, -8) != '.min.css'))
-		{
-			$path = substr($path, 0, -4) . '.min.js';
-		}
 
 		self::$cssURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
     }
@@ -515,32 +504,61 @@ function AkeebaStrapperLoader()
 
     $myscripts = '';
 
+	$preloadJ2 = (bool)AkeebaStrapper::getPreference('preload_joomla2', 1);
 	$preload = AkeebaStrapper::needPreload();
 
-	if (version_compare(JVERSION, '3.2', 'ge'))
-	{
-		$buffer = JFactory::getApplication()->getBody();
-	}
+	if ($preload)
+    {
+		if (version_compare(JVERSION, '3.2', 'ge'))
+		{
+			$buffer = JFactory::getApplication()->getBody();
+		}
+		else
+		{
+			$buffer = JResponse::getBody();
+		}
+    }
 	else
 	{
-		$buffer = JResponse::getBody();
+		$preloadJ2 = false;
+		$preload  = false;
 	}
 
     // Include Javascript files
     if (!empty(AkeebaStrapper::$scriptURLs))
         foreach (AkeebaStrapper::$scriptURLs as $entry)
-	{
-		list($url, $tag) = $entry;
+        {
+			list($url, $tag) = $entry;
 
-		if ($preload)
-		{
-			$myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
-		}
-		else
-		{
-			JFactory::getDocument()->addScript($url . $tag);
-		}
-	}
+			if ($preloadJ2 && (basename($url) == 'bootstrap.min.js'))
+            {
+                // Special case: check that nobody else is using bootstrap[.min].js on the page.
+                $scriptRegex = "/<script [^>]+(\/>|><\/script>)/i";
+                $jsRegex = "/([^\"\'=]+\.(js)(\?[^\"\']*){0,1})[\"\']/i";
+                preg_match_all($scriptRegex, $buffer, $matches);
+                $scripts = @implode('', $matches[0]);
+                preg_match_all($jsRegex, $scripts, $matches);
+                $skip = false;
+                foreach ($matches[1] as $scripturl)
+                {
+                    $scripturl = basename($scripturl);
+                    if (in_array($scripturl, array('bootstrap.min.js', 'bootstrap.js')))
+                    {
+                        $skip = true;
+                    }
+                }
+                if ($skip)
+                    continue;
+            }
+            if ($preload)
+            {
+                $myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
+            }
+            else
+            {
+                JFactory::getDocument()->addScript($url . $tag);
+            }
+        }
 
     // Include Javscript snippets
     if (!empty(AkeebaStrapper::$scriptDefs))
@@ -676,86 +694,16 @@ function AkeebaStrapperLoader()
     }
 }
 
-/**
- * Akeeba Strapper onAfterRender entry point.
- *
- * Makes sure Akeeba Strapper's bootstrap[.min].js is only loaded when
- * bootstrap[.min].js has not yet been loaded.
- */
-function AkeebaStrapperOnAfterRender()
-{
-	if (AkeebaStrapper::$_includedBootstrap)
-	{
-		if (version_compare(JVERSION, '3.2', 'ge'))
-		{
-			$buffer = JFactory::getApplication()->getBody();
-		}
-		else
-		{
-			$buffer = JResponse::getBody();
-		}
-
-		// Get all bootstrap[.min].js to remove
-		$count = 0;
-		$scriptsToRemove = array();
-		$scriptRegex = "/<script [^>]+(\/>|><\/script>)/i";
-		preg_match_all($scriptRegex, $buffer, $matches);
-		$scripts = $matches[0];
-
-		foreach ($scripts as $script)
-		{
-			$jsRegex = "/([^\"\'=]+\.js)(\?[^\"\']*){0,1}[\"\']/i";
-			preg_match_all($jsRegex, $script, $matches);
-
-			foreach ($matches[1] as $scriptUrl)
-			{
-				$scriptName = basename($scriptUrl);
-
-				if (in_array($scriptName, array('bootstrap.min.js', 'bootstrap.js')))
-				{
-					$count++;
-
-					if (
-						(strpos($script, 'media/akeeba_strapper/js/bootstrap.min.js') !== false)
-						|| strpos($script, 'media/akeeba_strapper/js/bootstrap.js') !== false
-					)
-					{
-						$scriptsToRemove[] = $script;
-					}
-				}
-			}
-		}
-
-		// Remove duplicated bootstrap scripts from the output
-		if ($count > 1 && !empty($scriptsToRemove))
-		{
-			$buffer = str_replace($scriptsToRemove, '', $buffer);
-
-			if (version_compare(JVERSION, '3.2', 'ge'))
-			{
-				JFactory::getApplication()->setBody($buffer);
-			}
-			else
-			{
-				JResponse::setBody($buffer);
-			}
-		}
-	}
-}
-
-// Add our pseudo-plugins to the application event queue
+// Add our pseudo-plugin to the application event queue
 if (!AkeebaStrapper::isCli())
 {
 	$app = JFactory::getApplication();
-
-	if (AkeebaStrapper::needPreload())
-	{
-		$app->registerEvent('onAfterRender', 'AkeebaStrapperLoader');
-	}
-	else
-	{
-		$app->registerEvent('onBeforeRender', 'AkeebaStrapperLoader');
-	}
-
-	$app->registerEvent('onAfterRender', 'AkeebaStrapperOnAfterRender');
+    if (AkeebaStrapper::needPreload())
+    {
+        $app->registerEvent('onAfterRender', 'AkeebaStrapperLoader');
+    }
+    else
+    {
+        $app->registerEvent('onBeforeRender', 'AkeebaStrapperLoader');
+    }
 }
