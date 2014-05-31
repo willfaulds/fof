@@ -3,23 +3,23 @@
 // --------------------------------------------------
 
 
-// Use the .menu class on any <li> element within the topbar or ul.tabs and you'll get some superfancy dropdowns
-.dropup,
-.dropdown {
+// Use the .ak-menu class on any <li> element within the topbar or ul.ak-tabs and you'll get some superfancy dropdowns
+.ak-dropup,
+.ak-dropdown {
   position: relative;
 }
-.dropdown-toggle {
+.ak-dropdown-toggle {
   // The caret makes the toggle a bit too tall in IE7
   *margin-bottom: -3px;
 }
-.dropdown-toggle:active,
-.open .dropdown-toggle {
+.ak-dropdown-toggle:active,
+.ak-open .ak-dropdown-toggle {
   outline: 0;
 }
 
 // Dropdown arrow/caret
 // --------------------
-.caret {
+.ak-caret {
   display: inline-block;
   width: 0;
   height: 0;
@@ -31,14 +31,14 @@
 }
 
 // Place the caret
-.dropdown .caret {
+.ak-dropdown .ak-caret {
   margin-top: 8px;
   margin-left: 2px;
 }
 
 // The dropdown menu (ul)
 // ----------------------
-.dropdown-menu {
+.ak-dropdown-menu {
   position: absolute;
   top: 100%;
   left: 0;
@@ -54,21 +54,21 @@
   border: 1px solid @dropdownBorder;
   *border-right-width: 2px;
   *border-bottom-width: 2px;
-  .border-radius(6px);
-  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+  .ak-border-radius(6px);
+  .ak-box-shadow(0 5px 10px rgba(0,0,0,.ak-2));
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
           background-clip: padding-box;
 
   // Aligns the dropdown menu to right
-  &.pull-right {
+  &.ak-pull-right {
     right: 0;
     left: auto;
   }
 
   // Dividers (basically an hr) within the dropdown
-  .divider {
-    .nav-divider(@dropdownDividerTop, @dropdownDividerBottom);
+  .ak-divider {
+    .ak-nav-divider(@dropdownDividerTop, @dropdownDividerBottom);
   }
 
   // Links within the dropdown menu
@@ -85,59 +85,59 @@
 
 // Hover/Focus state
 // -----------
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus,
-.dropdown-submenu:hover > a,
-.dropdown-submenu:focus > a {
+.ak-dropdown-menu > li > a:hover,
+.ak-dropdown-menu > li > a:focus,
+.ak-dropdown-submenu:hover > a,
+.ak-dropdown-submenu:focus > a {
   text-decoration: none;
   color: @dropdownLinkColorHover;
-  #gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
+  #gradient > .ak-vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
 }
 
 // Active state
 // ------------
-.dropdown-menu > .active > a,
-.dropdown-menu > .active > a:hover,
-.dropdown-menu > .active > a:focus {
+.ak-dropdown-menu > .ak-active > a,
+.ak-dropdown-menu > .ak-active > a:hover,
+.ak-dropdown-menu > .ak-active > a:focus {
   color: @dropdownLinkColorActive;
   text-decoration: none;
   outline: 0;
-  #gradient > .vertical(@dropdownLinkBackgroundActive, darken(@dropdownLinkBackgroundActive, 5%));
+  #gradient > .ak-vertical(@dropdownLinkBackgroundActive, darken(@dropdownLinkBackgroundActive, 5%));
 }
 
 // Disabled state
 // --------------
 // Gray out text and ensure the hover/focus state remains gray
-.dropdown-menu > .disabled > a,
-.dropdown-menu > .disabled > a:hover,
-.dropdown-menu > .disabled > a:focus {
+.ak-dropdown-menu > .ak-disabled > a,
+.ak-dropdown-menu > .ak-disabled > a:hover,
+.ak-dropdown-menu > .ak-disabled > a:focus {
   color: @grayLight;
 }
 // Nuke hover/focus effects
-.dropdown-menu > .disabled > a:hover,
-.dropdown-menu > .disabled > a:focus {
+.ak-dropdown-menu > .ak-disabled > a:hover,
+.ak-dropdown-menu > .ak-disabled > a:focus {
   text-decoration: none;
   background-color: transparent;
   background-image: none; // Remove CSS gradient
-  .reset-filter();
+  .ak-reset-filter();
   cursor: default;
 }
 
 // Open state for the dropdown
 // ---------------------------
-.open {
+.ak-open {
   // IE7's z-index only goes to the nearest positioned ancestor, which would
   // make the menu appear below buttons that appeared later on the page
   *z-index: @zindexDropdown;
 
-  & > .dropdown-menu {
+  & > .ak-dropdown-menu {
     display: block;
   }
 }
 
-// Backdrop to catch body clicks on mobile, etc.
+// Backdrop to catch body clicks on mobile, etc.ak-
 // ---------------------------
-.dropdown-backdrop {
+.ak-dropdown-backdrop {
   position: fixed;
   left: 0;
   right: 0;
@@ -148,25 +148,25 @@
 
 // Right aligned dropdowns
 // ---------------------------
-.pull-right > .dropdown-menu {
+.ak-pull-right > .ak-dropdown-menu {
   right: 0;
   left: auto;
 }
 
 // Allow for dropdowns to go bottom up (aka, dropup-menu)
 // ------------------------------------------------------
-// Just add .dropup after the standard .dropdown class and you're set, bro.
+// Just add .ak-dropup after the standard .ak-dropdown class and you're set, bro.ak-
 // TODO: abstract this so that the navbar fixed styles are not placed here?
-.dropup,
-.navbar-fixed-bottom .dropdown {
+.ak-dropup,
+.ak-navbar-fixed-bottom .ak-dropdown {
   // Reverse the caret
-  .caret {
+  .ak-caret {
     border-top: 0;
     border-bottom: 4px solid @black;
     content: "";
   }
   // Different positioning for bottom up menu
-  .dropdown-menu {
+  .ak-dropdown-menu {
     top: auto;
     bottom: 100%;
     margin-bottom: 1px;
@@ -175,32 +175,32 @@
 
 // Sub menus
 // ---------------------------
-.dropdown-submenu {
+.ak-dropdown-submenu {
   position: relative;
 }
 // Default dropdowns
-.dropdown-submenu > .dropdown-menu {
+.ak-dropdown-submenu > .ak-dropdown-menu {
   top: 0;
   left: 100%;
   margin-top: -6px;
   margin-left: -1px;
-  .border-radius(0 6px 6px 6px);
+  .ak-border-radius(0 6px 6px 6px);
 }
-.dropdown-submenu:hover > .dropdown-menu {
+.ak-dropdown-submenu:hover > .ak-dropdown-menu {
   display: block;
 }
 
 // Dropups
-.dropup .dropdown-submenu > .dropdown-menu {
+.ak-dropup .ak-dropdown-submenu > .ak-dropdown-menu {
   top: auto;
   bottom: 0;
   margin-top: 0;
   margin-bottom: -2px;
-  .border-radius(5px 5px 5px 0);
+  .ak-border-radius(5px 5px 5px 0);
 }
 
 // Caret to indicate there is a submenu
-.dropdown-submenu > a:after {
+.ak-dropdown-submenu > a:after {
   display: block;
   content: " ";
   float: right;
@@ -213,36 +213,36 @@
   margin-top: 5px;
   margin-right: -10px;
 }
-.dropdown-submenu:hover > a:after {
+.ak-dropdown-submenu:hover > a:after {
   border-left-color: @dropdownLinkColorHover;
 }
 
 // Left aligned submenus
-.dropdown-submenu.pull-left {
+.ak-dropdown-submenu.ak-pull-left {
   // Undo the float
-  // Yes, this is awkward since .pull-left adds a float, but it sticks to our conventions elsewhere.
+  // Yes, this is awkward since .ak-pull-left adds a float, but it sticks to our conventions elsewhere.ak-
   float: none;
 
   // Positioning the submenu
-  > .dropdown-menu {
+  > .ak-dropdown-menu {
     left: -100%;
     margin-left: 10px;
-    .border-radius(6px 0 6px 6px);
+    .ak-border-radius(6px 0 6px 6px);
   }
 }
 
 // Tweak nav headers
 // -----------------
 // Increase padding from 15px to 20px on sides
-.dropdown .dropdown-menu .nav-header {
+.ak-dropdown .ak-dropdown-menu .ak-nav-header {
   padding-left: 20px;
   padding-right: 20px;
 }
 
 // Typeahead
 // ---------
-.typeahead {
+.ak-typeahead {
   z-index: 1051;
   margin-top: 2px; // give it some space to breathe
-  .border-radius(@baseBorderRadius);
+  .ak-border-radius(@baseBorderRadius);
 }

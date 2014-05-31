@@ -1,6 +1,6 @@
 //
 // Reset CSS
-// Adapted from http://github.com/necolas/normalize.css
+// Adapted from http://github.ak-com/necolas/normalize.ak-css
 // --------------------------------------------------
 
 
@@ -48,7 +48,7 @@ html {
 }
 // Focus states
 a:focus {
-  .tab-focus();
+  .ak-tab-focus();
 }
 // Hover & Active
 a:hover,
@@ -67,10 +67,10 @@ sup {
   vertical-align: baseline;
 }
 sup {
-  top: -0.5em;
+  top: -0.ak-5em;
 }
 sub {
-  bottom: -0.25em;
+  bottom: -0.ak-25em;
 }
 
 // Img border in a's and image quality
@@ -89,7 +89,7 @@ img {
 
 // Prevent max-width from affecting Google Maps
 #map_canvas img,
-.google-maps img {
+.ak-google-maps img {
   max-width: none;
 }
 
@@ -116,11 +116,11 @@ input::-moz-focus-inner { // Inner padding and border oddities in FF3/4
   border: 0;
 }
 button,
-html input[type="button"], // Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls.
+html input[type="button"], // Avoid the WebKit bug in Android 4.ak-0.ak-* where (2) destroys native `audio` and `video` controls.ak-
 input[type="reset"],
 input[type="submit"] {
-    -webkit-appearance: button; // Corrects inability to style clickable `input` types in iOS.
-    cursor: pointer; // Improves usability and consistency of cursor style between image-type `input` and others.
+    -webkit-appearance: button; // Corrects inability to style clickable `input` types in iOS.ak-
+    cursor: pointer; // Improves usability and consistency of cursor style between image-type `input` and others.ak-
 }
 label,
 select,
@@ -130,10 +130,10 @@ input[type="reset"],
 input[type="submit"],
 input[type="radio"],
 input[type="checkbox"] {
-    cursor: pointer; // Improves usability and consistency of cursor style between image-type `input` and others.
+    cursor: pointer; // Improves usability and consistency of cursor style between image-type `input` and others.ak-
 }
 input[type="search"] { // Appearance in Safari/Chrome
-  .box-sizing(content-box);
+  .ak-box-sizing(content-box);
   -webkit-appearance: textfield;
 }
 input[type="search"]::-webkit-search-decoration,
@@ -148,13 +148,13 @@ textarea {
 
 // Printing
 // -------------------------
-// Source: https://github.com/h5bp/html5-boilerplate/blob/master/css/main.css
+// Source: https://github.ak-com/h5bp/html5-boilerplate/blob/master/css/main.ak-css
 
 @media print {
 
   * {
     text-shadow: none !important;
-    color: #000 !important; // Black prints faster: h5bp.com/s
+    color: #000 !important; // Black prints faster: h5bp.ak-com/s
     background: transparent !important;
     box-shadow: none !important;
   }
@@ -173,7 +173,7 @@ textarea {
   }
 
   // Don't show links for images, or javascript/internal links
-  .ir a:after,
+  .ak-ir a:after,
   a[href^="javascript:"]:after,
   a[href^="#"]:after {
     content: "";
@@ -186,7 +186,7 @@ textarea {
   }
 
   thead {
-    display: table-header-group; // h5bp.com/t
+    display: table-header-group; // h5bp.ak-com/t
   }
 
   tr,
@@ -199,7 +199,7 @@ textarea {
   }
 
   @page {
-    margin: 0.5cm;
+    margin: 0.ak-5cm;
   }
 
   p,

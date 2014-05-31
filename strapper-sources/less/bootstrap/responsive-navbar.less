@@ -14,26 +14,26 @@
     padding-top: 0;
   }
   // Unfix the navbars
-  .navbar-fixed-top,
-  .navbar-fixed-bottom {
+  .ak-navbar-fixed-top,
+  .ak-navbar-fixed-bottom {
     position: static;
   }
-  .navbar-fixed-top {
+  .ak-navbar-fixed-top {
     margin-bottom: @baseLineHeight;
   }
-  .navbar-fixed-bottom {
+  .ak-navbar-fixed-bottom {
     margin-top: @baseLineHeight;
   }
-  .navbar-fixed-top .navbar-inner,
-  .navbar-fixed-bottom .navbar-inner {
+  .ak-navbar-fixed-top .ak-navbar-inner,
+  .ak-navbar-fixed-bottom .ak-navbar-inner {
     padding: 5px;
   }
-  .navbar .container {
+  .ak-navbar .ak-container {
     width: auto;
     padding: 0;
   }
   // Account for brand name
-  .navbar .brand {
+  .ak-navbar .ak-brand {
     padding-left: 10px;
     padding-right: 10px;
     margin: 0 0 0 -5px;
@@ -42,67 +42,67 @@
   // COLLAPSIBLE NAVBAR
   // ------------------
   // Nav collapse clears brand
-  .nav-collapse {
+  .ak-nav-collapse {
     clear: both;
   }
   // Block-level the nav
-  .nav-collapse .nav {
+  .ak-nav-collapse .ak-nav {
     float: none;
     margin: 0 0 (@baseLineHeight / 2);
   }
-  .nav-collapse .nav > li {
+  .ak-nav-collapse .ak-nav > li {
     float: none;
   }
-  .nav-collapse .nav > li > a {
+  .ak-nav-collapse .ak-nav > li > a {
     margin-bottom: 2px;
   }
-  .nav-collapse .nav > .divider-vertical {
+  .ak-nav-collapse .ak-nav > .ak-divider-vertical {
     display: none;
   }
-  .nav-collapse .nav .nav-header {
+  .ak-nav-collapse .ak-nav .ak-nav-header {
     color: @navbarText;
     text-shadow: none;
   }
   // Nav and dropdown links in navbar
-  .nav-collapse .nav > li > a,
-  .nav-collapse .dropdown-menu a {
+  .ak-nav-collapse .ak-nav > li > a,
+  .ak-nav-collapse .ak-dropdown-menu a {
     padding: 9px 15px;
     font-weight: bold;
     color: @navbarLinkColor;
-    .border-radius(3px);
+    .ak-border-radius(3px);
   }
   // Buttons
-  .nav-collapse .btn {
+  .ak-nav-collapse .ak-btn {
     padding: 4px 10px 4px;
     font-weight: normal;
-    .border-radius(@baseBorderRadius);
+    .ak-border-radius(@baseBorderRadius);
   }
-  .nav-collapse .dropdown-menu li + li a {
+  .ak-nav-collapse .ak-dropdown-menu li + li a {
     margin-bottom: 2px;
   }
-  .nav-collapse .nav > li > a:hover,
-  .nav-collapse .nav > li > a:focus,
-  .nav-collapse .dropdown-menu a:hover,
-  .nav-collapse .dropdown-menu a:focus {
+  .ak-nav-collapse .ak-nav > li > a:hover,
+  .ak-nav-collapse .ak-nav > li > a:focus,
+  .ak-nav-collapse .ak-dropdown-menu a:hover,
+  .ak-nav-collapse .ak-dropdown-menu a:focus {
     background-color: @navbarBackground;
   }
-  .navbar-inverse .nav-collapse .nav > li > a,
-  .navbar-inverse .nav-collapse .dropdown-menu a {
+  .ak-navbar-inverse .ak-nav-collapse .ak-nav > li > a,
+  .ak-navbar-inverse .ak-nav-collapse .ak-dropdown-menu a {
     color: @navbarInverseLinkColor;
   }
-  .navbar-inverse .nav-collapse .nav > li > a:hover,
-  .navbar-inverse .nav-collapse .nav > li > a:focus,
-  .navbar-inverse .nav-collapse .dropdown-menu a:hover,
-  .navbar-inverse .nav-collapse .dropdown-menu a:focus {
+  .ak-navbar-inverse .ak-nav-collapse .ak-nav > li > a:hover,
+  .ak-navbar-inverse .ak-nav-collapse .ak-nav > li > a:focus,
+  .ak-navbar-inverse .ak-nav-collapse .ak-dropdown-menu a:hover,
+  .ak-navbar-inverse .ak-nav-collapse .ak-dropdown-menu a:focus {
     background-color: @navbarInverseBackground;
   }
   // Buttons in the navbar
-  .nav-collapse.in .btn-group {
+  .ak-nav-collapse.ak-in .ak-btn-group {
     margin-top: 5px;
     padding: 0;
   }
   // Dropdowns in the navbar
-  .nav-collapse .dropdown-menu {
+  .ak-nav-collapse .ak-dropdown-menu {
     position: static;
     top: auto;
     left: auto;
@@ -113,60 +113,60 @@
     padding: 0;
     background-color: transparent;
     border: none;
-    .border-radius(0);
-    .box-shadow(none);
+    .ak-border-radius(0);
+    .ak-box-shadow(none);
   }
-  .nav-collapse .open > .dropdown-menu { 
+  .ak-nav-collapse .ak-open > .ak-dropdown-menu {
     display: block; 
   }
 
-  .nav-collapse .dropdown-menu:before,
-  .nav-collapse .dropdown-menu:after {
+  .ak-nav-collapse .ak-dropdown-menu:before,
+  .ak-nav-collapse .ak-dropdown-menu:after {
     display: none;
   }
-  .nav-collapse .dropdown-menu .divider {
+  .ak-nav-collapse .ak-dropdown-menu .ak-divider {
     display: none;
   }
-  .nav-collapse .nav > li > .dropdown-menu {
+  .ak-nav-collapse .ak-nav > li > .ak-dropdown-menu {
     &:before,
     &:after {
       display: none;
     }
   }
   // Forms in navbar
-  .nav-collapse .navbar-form,
-  .nav-collapse .navbar-search {
+  .ak-nav-collapse .ak-navbar-form,
+  .ak-nav-collapse .ak-navbar-search {
     float: none;
     padding: (@baseLineHeight / 2) 15px;
     margin: (@baseLineHeight / 2) 0;
     border-top: 1px solid @navbarBackground;
     border-bottom: 1px solid @navbarBackground;
-    .box-shadow(~"inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1)");
+    .ak-box-shadow(~"inset 0 1px 0 rgba(255,255,255,.ak-1), 0 1px 0 rgba(255,255,255,.ak-1)");
   }
-  .navbar-inverse .nav-collapse .navbar-form,
-  .navbar-inverse .nav-collapse .navbar-search {
+  .ak-navbar-inverse .ak-nav-collapse .ak-navbar-form,
+  .ak-navbar-inverse .ak-nav-collapse .ak-navbar-search {
     border-top-color: @navbarInverseBackground;
     border-bottom-color: @navbarInverseBackground;
   }
   // Pull right (secondary) nav content
-  .navbar .nav-collapse .nav.pull-right {
+  .ak-navbar .ak-nav-collapse .ak-nav.ak-pull-right {
     float: none;
     margin-left: 0;
   }
-  // Hide everything in the navbar save .brand and toggle button */
-  .nav-collapse,
-  .nav-collapse.collapse {
+  // Hide everything in the navbar save .ak-brand and toggle button */
+  .ak-nav-collapse,
+  .ak-nav-collapse.ak-collapse {
     overflow: hidden;
     height: 0;
   }
   // Navbar button
-  .navbar .btn-navbar {
+  .ak-navbar .ak-btn-navbar {
     display: block;
   }
 
   // STATIC NAVBAR
   // -------------
-  .navbar-static .navbar-inner {
+  .ak-navbar-static .ak-navbar-inner {
     padding-left:  10px;
     padding-right: 10px;
   }
@@ -181,7 +181,7 @@
 @media (min-width: @navbarCollapseDesktopWidth) {
 
   // Required to make the collapsing navbar work on regular desktops
-  .nav-collapse.collapse {
+  .ak-nav-collapse.ak-collapse {
     height: auto !important;
     overflow: visible !important;
   }

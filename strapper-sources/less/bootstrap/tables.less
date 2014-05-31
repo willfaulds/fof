@@ -16,7 +16,7 @@ table {
 // BASELINE STYLES
 // ---------------
 
-.table {
+.ak-table {
   width: 100%;
   margin-bottom: @baseLineHeight;
   // Cells
@@ -50,7 +50,7 @@ table {
   }
 
   // Nesting
-  .table {
+  .ak-table {
     background-color: @bodyBackground;
   }
 }
@@ -60,7 +60,7 @@ table {
 // CONDENSED TABLE W/ HALF PADDING
 // -------------------------------
 
-.table-condensed {
+.ak-table-condensed {
   th,
   td {
     padding: 4px 5px;
@@ -71,12 +71,12 @@ table {
 // BORDERED VERSION
 // ----------------
 
-.table-bordered {
+.ak-table-bordered {
   border: 1px solid @tableBorder;
   border-collapse: separate; // Done so we can round those corners!
   *border-collapse: collapse; // IE7 can't round corners anyway
   border-left: 0;
-  .border-radius(@baseBorderRadius);
+  .ak-border-radius(@baseBorderRadius);
   th,
   td {
     border-left: 1px solid @tableBorder;
@@ -97,13 +97,13 @@ table {
   thead:first-child tr:first-child > th:first-child,
   tbody:first-child tr:first-child > td:first-child,
   tbody:first-child tr:first-child > th:first-child {
-    .border-top-left-radius(@baseBorderRadius);
+    .ak-border-top-left-radius(@baseBorderRadius);
   }
   // For last th/td in the first row in the first thead or tbody
   thead:first-child tr:first-child > th:last-child,
   tbody:first-child tr:first-child > td:last-child,
   tbody:first-child tr:first-child > th:last-child {
-    .border-top-right-radius(@baseBorderRadius);
+    .ak-border-top-right-radius(@baseBorderRadius);
   }
   // For first th/td (can be either) in the last row in the last thead, tbody, and tfoot
   thead:last-child tr:last-child > th:first-child,
@@ -111,7 +111,7 @@ table {
   tbody:last-child tr:last-child > th:first-child,
   tfoot:last-child tr:last-child > td:first-child,
   tfoot:last-child tr:last-child > th:first-child {
-    .border-bottom-left-radius(@baseBorderRadius);
+    .ak-border-bottom-left-radius(@baseBorderRadius);
   }
   // For last th/td (can be either) in the last row in the last thead, tbody, and tfoot
   thead:last-child tr:last-child > th:last-child,
@@ -119,15 +119,15 @@ table {
   tbody:last-child tr:last-child > th:last-child,
   tfoot:last-child tr:last-child > td:last-child,
   tfoot:last-child tr:last-child > th:last-child {
-    .border-bottom-right-radius(@baseBorderRadius);
+    .ak-border-bottom-right-radius(@baseBorderRadius);
   }
 
   // Clear border-radius for first and last td in the last row in the last tbody for table with tfoot
   tfoot + tbody:last-child tr:last-child td:first-child {
-    .border-bottom-left-radius(0);
+    .ak-border-bottom-left-radius(0);
   }
   tfoot + tbody:last-child tr:last-child td:last-child {
-    .border-bottom-right-radius(0);
+    .ak-border-bottom-right-radius(0);
   }
 
   // Special fixes to round the left border on the first td/th
@@ -135,13 +135,13 @@ table {
   caption + tbody tr:first-child td:first-child,
   colgroup + thead tr:first-child th:first-child,
   colgroup + tbody tr:first-child td:first-child {
-    .border-top-left-radius(@baseBorderRadius);
+    .ak-border-top-left-radius(@baseBorderRadius);
   }
   caption + thead tr:first-child th:last-child,
   caption + tbody tr:first-child td:last-child,
   colgroup + thead tr:first-child th:last-child,
   colgroup + tbody tr:first-child td:last-child {
-    .border-top-right-radius(@baseBorderRadius);
+    .ak-border-top-right-radius(@baseBorderRadius);
   }
 
 }
@@ -153,7 +153,7 @@ table {
 // --------------
 
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
-.table-striped {
+.ak-table-striped {
   tbody {
     > tr:nth-child(odd) > td,
     > tr:nth-child(odd) > th {
@@ -166,7 +166,7 @@ table {
 // HOVER EFFECT
 // ------------
 // Placed here since it has to come after the potential zebra striping
-.table-hover {
+.ak-table-hover {
   tbody {
     tr:hover > td,
     tr:hover > th {
@@ -182,63 +182,63 @@ table {
 // Reset default grid behavior
 table td[class*="span"],
 table th[class*="span"],
-.row-fluid table td[class*="span"],
-.row-fluid table th[class*="span"] {
+.ak-row-fluid table td[class*="span"],
+.ak-row-fluid table th[class*="span"] {
   display: table-cell;
   float: none; // undo default grid column styles
   margin-left: 0; // undo default grid column styles
 }
 
 // Change the column widths to account for td/th padding
-.table td,
-.table th {
-  &.span1     { .tableColumns(1); }
-  &.span2     { .tableColumns(2); }
-  &.span3     { .tableColumns(3); }
-  &.span4     { .tableColumns(4); }
-  &.span5     { .tableColumns(5); }
-  &.span6     { .tableColumns(6); }
-  &.span7     { .tableColumns(7); }
-  &.span8     { .tableColumns(8); }
-  &.span9     { .tableColumns(9); }
-  &.span10    { .tableColumns(10); }
-  &.span11    { .tableColumns(11); }
-  &.span12    { .tableColumns(12); }
+.ak-table td,
+.ak-table th {
+  &.ak-span1     { .ak-tableColumns(1); }
+  &.ak-span2     { .ak-tableColumns(2); }
+  &.ak-span3     { .ak-tableColumns(3); }
+  &.ak-span4     { .ak-tableColumns(4); }
+  &.ak-span5     { .ak-tableColumns(5); }
+  &.ak-span6     { .ak-tableColumns(6); }
+  &.ak-span7     { .ak-tableColumns(7); }
+  &.ak-span8     { .ak-tableColumns(8); }
+  &.ak-span9     { .ak-tableColumns(9); }
+  &.ak-span10    { .ak-tableColumns(10); }
+  &.ak-span11    { .ak-tableColumns(11); }
+  &.ak-span12    { .ak-tableColumns(12); }
 }
 
 
 
 // TABLE BACKGROUNDS
 // -----------------
-// Exact selectors below required to override .table-striped
+// Exact selectors below required to override .ak-table-striped
 
-.table tbody tr {
-  &.success > td {
+.ak-table tbody tr {
+  &.ak-success > td {
     background-color: @successBackground;
   }
-  &.error > td {
+  &.ak-error > td {
     background-color: @errorBackground;
   }
-  &.warning > td {
+  &.ak-warning > td {
     background-color: @warningBackground;
   }
-  &.info > td {
+  &.ak-info > td {
     background-color: @infoBackground;
   }
 }
 
-// Hover states for .table-hover
-.table-hover tbody tr {
-  &.success:hover > td {
+// Hover states for .ak-table-hover
+.ak-table-hover tbody tr {
+  &.ak-success:hover > td {
     background-color: darken(@successBackground, 5%);
   }
-  &.error:hover > td {
+  &.ak-error:hover > td {
     background-color: darken(@errorBackground, 5%);
   }
-  &.warning:hover > td {
+  &.ak-warning:hover > td {
     background-color: darken(@warningBackground, 5%);
   }
-  &.info:hover > td {
+  &.ak-info:hover > td {
     background-color: darken(@infoBackground, 5%);
   }
 }

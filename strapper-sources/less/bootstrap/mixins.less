@@ -9,14 +9,14 @@
 // Clearfix
 // --------
 // For clearing floats like a boss h5bp.com/q
-.clearfix {
+.ak-clearfix {
   *zoom: 1;
   &:before,
   &:after {
     display: table;
     content: "";
     // Fixes Opera/contenteditable bug:
-    // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+    // http://nicolasgallagher.ak-com/micro-clearfix-hack/#comment-36952
     line-height: 0;
   }
   &:after {
@@ -26,7 +26,7 @@
 
 // Webkit-style focus
 // ------------------
-.tab-focus() {
+.ak-tab-focus() {
   // Default
   outline: thin dotted #333;
   // Webkit
@@ -36,7 +36,7 @@
 
 // Center-align a block level element
 // ----------------------------------
-.center-block() {
+.ak-center-block() {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -44,18 +44,18 @@
 
 // IE7 inline-block
 // ----------------
-.ie7-inline-block() {
+.ak-ie7-inline-block() {
   *display: inline; /* IE7 inline-block hack */
   *zoom: 1;
 }
 
-// IE7 likes to collapse whitespace on either side of the inline-block elements.
-// Ems because we're attempting to match the width of a space character. Left
+// IE7 likes to collapse whitespace on either side of the inline-block elements.ak-
+// Ems because we're attempting to match the width of a space character.ak- Left
 // version is for form buttons, which typically come after other elements, and
-// right version is for icons, which come before. Applying both is ok, but it will
-// mean that space between those elements will be .6em (~2 space characters) in IE7,
-// instead of the 1 space in other browsers.
-.ie7-restore-left-whitespace() {
+// right version is for icons, which come before.ak- Applying both is ok, but it will
+// mean that space between those elements will be .ak-6em (~2 space characters) in IE7,
+// instead of the 1 space in other browsers.ak-
+.ak-ie7-restore-left-whitespace() {
   *margin-left: .3em;
 
   &:first-child {
@@ -63,23 +63,23 @@
   }
 }
 
-.ie7-restore-right-whitespace() {
+.ak-ie7-restore-right-whitespace() {
   *margin-right: .3em;
 }
 
 // Sizing shortcuts
 // -------------------------
-.size(@height, @width) {
+.ak-size(@height, @width) {
   width: @width;
   height: @height;
 }
-.square(@size) {
-  .size(@size, @size);
+.ak-square(@size) {
+  .ak-size(@size, @size);
 }
 
 // Placeholder text
 // -------------------------
-.placeholder(@color: @placeholderText) {
+.ak-placeholder(@color: @placeholderText) {
   &:-moz-placeholder {
     color: @color;
   }
@@ -94,7 +94,7 @@
 // Text overflow
 // -------------------------
 // Requires inline-block or block for proper styling
-.text-overflow() {
+.ak-text-overflow() {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -102,8 +102,8 @@
 
 // CSS image replacement
 // -------------------------
-// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
-.hide-text {
+// Source: https://github.ak-com/h5bp/html5-boilerplate/commit/aa0396eae757
+.ak-hide-text {
   font: 0/0 a;
   color: transparent;
   text-shadow: none;
@@ -117,32 +117,32 @@
 
 #font {
   #family {
-    .serif() {
+    .ak-serif() {
       font-family: @serifFontFamily;
     }
-    .sans-serif() {
+    .ak-sans-serif() {
       font-family: @sansFontFamily;
     }
-    .monospace() {
+    .ak-monospace() {
       font-family: @monoFontFamily;
     }
   }
-  .shorthand(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+  .ak-shorthand(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
     font-size: @size;
     font-weight: @weight;
     line-height: @lineHeight;
   }
-  .serif(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
-    #font > #family > .serif;
-    #font > .shorthand(@size, @weight, @lineHeight);
+  .ak-serif(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .ak-serif;
+    #font > .ak-shorthand(@size, @weight, @lineHeight);
   }
-  .sans-serif(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
-    #font > #family > .sans-serif;
-    #font > .shorthand(@size, @weight, @lineHeight);
+  .ak-sans-serif(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .ak-sans-serif;
+    #font > .ak-shorthand(@size, @weight, @lineHeight);
   }
-  .monospace(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
-    #font > #family > .monospace;
-    #font > .shorthand(@size, @weight, @lineHeight);
+  .ak-monospace(@size: @baseFontSize, @weight: normal, @lineHeight: @baseLineHeight) {
+    #font > #family > .ak-monospace;
+    #font > .ak-shorthand(@size, @weight, @lineHeight);
   }
 }
 
@@ -151,26 +151,26 @@
 // --------------------------------------------------
 
 // Block level inputs
-.input-block-level {
+.ak-input-block-level {
   display: block;
   width: 100%;
   min-height: @inputHeight; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
-  .box-sizing(border-box); // Makes inputs behave like true block-level elements
+  .ak-box-sizing(border-box); // Makes inputs behave like true block-level elements
 }
 
 
 
 // Mixin for form field states
-.formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
+.ak-formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
   // Set the text color
-  .control-label,
-  .help-block,
-  .help-inline {
+  .ak-control-label,
+  .ak-help-block,
+  .ak-help-inline {
     color: @textColor;
   }
   // Style inputs accordingly
-  .checkbox,
-  .radio,
+  .ak-checkbox,
+  .ak-radio,
   input,
   select,
   textarea {
@@ -180,16 +180,16 @@
   select,
   textarea {
     border-color: @borderColor;
-    .box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
+    .ak-box-shadow(inset 0 1px 1px rgba(0,0,0,.ak-075)); // Redeclare so transitions work
     &:focus {
       border-color: darken(@borderColor, 10%);
-      @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten(@borderColor, 20%);
-      .box-shadow(@shadow);
+      @shadow: inset 0 1px 1px rgba(0,0,0,.ak-075), 0 0 6px lighten(@borderColor, 20%);
+      .ak-box-shadow(@shadow);
     }
   }
   // Give a small background color for input-prepend/-append
-  .input-prepend .add-on,
-  .input-append .add-on {
+  .ak-input-prepend .ak-add-on,
+  .ak-input-append .ak-add-on {
     color: @textColor;
     background-color: @backgroundColor;
     border-color: @textColor;
@@ -202,73 +202,73 @@
 // --------------------------------------------------
 
 // Border Radius
-.border-radius(@radius) {
+.ak-border-radius(@radius) {
   -webkit-border-radius: @radius;
      -moz-border-radius: @radius;
           border-radius: @radius;
 }
 
 // Single Corner Border Radius
-.border-top-left-radius(@radius) {
+.ak-border-top-left-radius(@radius) {
   -webkit-border-top-left-radius: @radius;
       -moz-border-radius-topleft: @radius;
           border-top-left-radius: @radius;
 }
-.border-top-right-radius(@radius) {
+.ak-border-top-right-radius(@radius) {
   -webkit-border-top-right-radius: @radius;
       -moz-border-radius-topright: @radius;
           border-top-right-radius: @radius;
 }
-.border-bottom-right-radius(@radius) {
+.ak-border-bottom-right-radius(@radius) {
   -webkit-border-bottom-right-radius: @radius;
       -moz-border-radius-bottomright: @radius;
           border-bottom-right-radius: @radius;
 }
-.border-bottom-left-radius(@radius) {
+.ak-border-bottom-left-radius(@radius) {
   -webkit-border-bottom-left-radius: @radius;
       -moz-border-radius-bottomleft: @radius;
           border-bottom-left-radius: @radius;
 }
 
 // Single Side Border Radius
-.border-top-radius(@radius) {
-  .border-top-right-radius(@radius);
-  .border-top-left-radius(@radius);
+.ak-border-top-radius(@radius) {
+  .ak-border-top-right-radius(@radius);
+  .ak-border-top-left-radius(@radius);
 }
-.border-right-radius(@radius) {
-  .border-top-right-radius(@radius);
-  .border-bottom-right-radius(@radius);
+.ak-border-right-radius(@radius) {
+  .ak-border-top-right-radius(@radius);
+  .ak-border-bottom-right-radius(@radius);
 }
-.border-bottom-radius(@radius) {
-  .border-bottom-right-radius(@radius);
-  .border-bottom-left-radius(@radius);
+.ak-border-bottom-radius(@radius) {
+  .ak-border-bottom-right-radius(@radius);
+  .ak-border-bottom-left-radius(@radius);
 }
-.border-left-radius(@radius) {
-  .border-top-left-radius(@radius);
-  .border-bottom-left-radius(@radius);
+.ak-border-left-radius(@radius) {
+  .ak-border-top-left-radius(@radius);
+  .ak-border-bottom-left-radius(@radius);
 }
 
 // Drop shadows
-.box-shadow(@shadow) {
+.ak-box-shadow(@shadow) {
   -webkit-box-shadow: @shadow;
      -moz-box-shadow: @shadow;
           box-shadow: @shadow;
 }
 
 // Transitions
-.transition(@transition) {
+.ak-transition(@transition) {
   -webkit-transition: @transition;
      -moz-transition: @transition;
        -o-transition: @transition;
           transition: @transition;
 }
-.transition-delay(@transition-delay) {
+.ak-transition-delay(@transition-delay) {
   -webkit-transition-delay: @transition-delay;
      -moz-transition-delay: @transition-delay;
        -o-transition-delay: @transition-delay;
           transition-delay: @transition-delay;
 }
-.transition-duration(@transition-duration) {
+.ak-transition-duration(@transition-duration) {
   -webkit-transition-duration: @transition-duration;
      -moz-transition-duration: @transition-duration;
        -o-transition-duration: @transition-duration;
@@ -276,36 +276,36 @@
 }
 
 // Transformations
-.rotate(@degrees) {
+.ak-rotate(@degrees) {
   -webkit-transform: rotate(@degrees);
      -moz-transform: rotate(@degrees);
       -ms-transform: rotate(@degrees);
        -o-transform: rotate(@degrees);
           transform: rotate(@degrees);
 }
-.scale(@ratio) {
+.ak-scale(@ratio) {
   -webkit-transform: scale(@ratio);
      -moz-transform: scale(@ratio);
       -ms-transform: scale(@ratio);
        -o-transform: scale(@ratio);
           transform: scale(@ratio);
 }
-.translate(@x, @y) {
+.ak-translate(@x, @y) {
   -webkit-transform: translate(@x, @y);
      -moz-transform: translate(@x, @y);
       -ms-transform: translate(@x, @y);
        -o-transform: translate(@x, @y);
           transform: translate(@x, @y);
 }
-.skew(@x, @y) {
+.ak-skew(@x, @y) {
   -webkit-transform: skew(@x, @y);
      -moz-transform: skew(@x, @y);
-      -ms-transform: skewX(@x) skewY(@y); // See https://github.com/twbs/bootstrap/issues/4885
+      -ms-transform: skewX(@x) skewY(@y); // See https://github.ak-com/twbs/bootstrap/issues/4885
        -o-transform: skew(@x, @y);
           transform: skew(@x, @y);
-  -webkit-backface-visibility: hidden; // See https://github.com/twbs/bootstrap/issues/5319
+  -webkit-backface-visibility: hidden; // See https://github.ak-com/twbs/bootstrap/issues/5319
 }
-.translate3d(@x, @y, @z) {
+.ak-translate3d(@x, @y, @z) {
   -webkit-transform: translate3d(@x, @y, @z);
      -moz-transform: translate3d(@x, @y, @z);
        -o-transform: translate3d(@x, @y, @z);
@@ -313,25 +313,25 @@
 }
 
 // Backface visibility
-// Prevent browsers from flickering when using CSS 3D transforms.
+// Prevent browsers from flickering when using CSS 3D transforms.ak-
 // Default value is `visible`, but can be changed to `hidden
-// See git pull https://github.com/dannykeane/bootstrap.git backface-visibility for examples
-.backface-visibility(@visibility){
+// See git pull https://github.ak-com/dannykeane/bootstrap.ak-git backface-visibility for examples
+.ak-backface-visibility(@visibility){
 	-webkit-backface-visibility: @visibility;
 	   -moz-backface-visibility: @visibility;
 	        backface-visibility: @visibility;
 }
 
 // Background clipping
-// Heads up: FF 3.6 and under need "padding" instead of "padding-box"
-.background-clip(@clip) {
+// Heads up: FF 3.ak-6 and under need "padding" instead of "padding-box"
+.ak-background-clip(@clip) {
   -webkit-background-clip: @clip;
      -moz-background-clip: @clip;
           background-clip: @clip;
 }
 
 // Background sizing
-.background-size(@size) {
+.ak-background-size(@size) {
   -webkit-background-size: @size;
      -moz-background-size: @size;
        -o-background-size: @size;
@@ -340,7 +340,7 @@
 
 
 // Box sizing
-.box-sizing(@boxmodel) {
+.ak-box-sizing(@boxmodel) {
   -webkit-box-sizing: @boxmodel;
      -moz-box-sizing: @boxmodel;
           box-sizing: @boxmodel;
@@ -348,7 +348,7 @@
 
 // User select
 // For selecting text on the page
-.user-select(@select) {
+.ak-user-select(@select) {
   -webkit-user-select: @select;
      -moz-user-select: @select;
       -ms-user-select: @select;
@@ -357,13 +357,13 @@
 }
 
 // Resize anything
-.resizable(@direction) {
+.ak-resizable(@direction) {
   resize: @direction; // Options: horizontal, vertical, both
   overflow: auto; // Safari fix
 }
 
 // CSS3 Content Columns
-.content-columns(@columnCount, @columnGap: @gridGutterWidth) {
+.ak-content-columns(@columnCount, @columnGap: @gridGutterWidth) {
   -webkit-column-count: @columnCount;
      -moz-column-count: @columnCount;
           column-count: @columnCount;
@@ -373,7 +373,7 @@
 }
 
 // Optional hyphenation
-.hyphens(@mode: auto) {
+.ak-hyphens(@mode: auto) {
   word-wrap: break-word;
   -webkit-hyphens: @mode;
      -moz-hyphens: @mode;
@@ -383,7 +383,7 @@
 }
 
 // Opacity
-.opacity(@opacity) {
+.ak-opacity(@opacity) {
   opacity: @opacity / 100;
   filter: ~"alpha(opacity=@{opacity})";
 }
@@ -395,55 +395,55 @@
 
 // Add an alphatransparency value to any background or border color (via Elyse Holladay)
 #translucent {
-  .background(@color: @white, @alpha: 1) {
+  .ak-background(@color: @white, @alpha: 1) {
     background-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
   }
-  .border(@color: @white, @alpha: 1) {
+  .ak-border(@color: @white, @alpha: 1) {
     border-color: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
-    .background-clip(padding-box);
+    .ak-background-clip(padding-box);
   }
 }
 
 // Gradient Bar Colors for buttons and alerts
-.gradientBar(@primaryColor, @secondaryColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
+.ak-gradientBar(@primaryColor, @secondaryColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.ak-25)) {
   color: @textColor;
   text-shadow: @textShadow;
-  #gradient > .vertical(@primaryColor, @secondaryColor);
+  #gradient > .ak-vertical(@primaryColor, @secondaryColor);
   border-color: @secondaryColor @secondaryColor darken(@secondaryColor, 15%);
-  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) fadein(rgba(0,0,0,.1), 15%);
+  border-color: rgba(0,0,0,.ak-1) rgba(0,0,0,.ak-1) fadein(rgba(0,0,0,.ak-1), 15%);
 }
 
 // Gradients
 #gradient {
-  .horizontal(@startColor: #555, @endColor: #333) {
+  .ak-horizontal(@startColor: #555, @endColor: #333) {
     background-color: @endColor;
-    background-image: -moz-linear-gradient(left, @startColor, @endColor); // FF 3.6+
+    background-image: -moz-linear-gradient(left, @startColor, @endColor); // FF 3.ak-6+
     background-image: -webkit-gradient(linear, 0 0, 100% 0, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
-    background-image: -webkit-linear-gradient(left, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -webkit-linear-gradient(left, @startColor, @endColor); // Safari 5.ak-1+, Chrome 10+
     background-image: -o-linear-gradient(left, @startColor, @endColor); // Opera 11.10
     background-image: linear-gradient(to right, @startColor, @endColor); // Standard, IE10
     background-repeat: repeat-x;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",argb(@startColor),argb(@endColor))); // IE9 and down
+    filter: e(%("progid:DXImageTransform.ak-Microsoft.ak-gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",argb(@startColor),argb(@endColor))); // IE9 and down
   }
-  .vertical(@startColor: #555, @endColor: #333) {
+  .ak-vertical(@startColor: #555, @endColor: #333) {
     background-color: mix(@startColor, @endColor, 60%);
-    background-image: -moz-linear-gradient(top, @startColor, @endColor); // FF 3.6+
+    background-image: -moz-linear-gradient(top, @startColor, @endColor); // FF 3.ak-6+
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
-    background-image: -webkit-linear-gradient(top, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -webkit-linear-gradient(top, @startColor, @endColor); // Safari 5.ak-1+, Chrome 10+
     background-image: -o-linear-gradient(top, @startColor, @endColor); // Opera 11.10
     background-image: linear-gradient(to bottom, @startColor, @endColor); // Standard, IE10
     background-repeat: repeat-x;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down
+    filter: e(%("progid:DXImageTransform.ak-Microsoft.ak-gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down
   }
-  .directional(@startColor: #555, @endColor: #333, @deg: 45deg) {
+  .ak-directional(@startColor: #555, @endColor: #333, @deg: 45deg) {
     background-color: @endColor;
     background-repeat: repeat-x;
-    background-image: -moz-linear-gradient(@deg, @startColor, @endColor); // FF 3.6+
-    background-image: -webkit-linear-gradient(@deg, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -moz-linear-gradient(@deg, @startColor, @endColor); // FF 3.ak-6+
+    background-image: -webkit-linear-gradient(@deg, @startColor, @endColor); // Safari 5.ak-1+, Chrome 10+
     background-image: -o-linear-gradient(@deg, @startColor, @endColor); // Opera 11.10
     background-image: linear-gradient(@deg, @startColor, @endColor); // Standard, IE10
   }
-  .horizontal-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
+  .ak-horizontal-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
     background-color: mix(@midColor, @endColor, 80%);
     background-image: -webkit-gradient(left, linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
     background-image: -webkit-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
@@ -451,10 +451,10 @@
     background-image: -o-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
     background-image: linear-gradient(to right, @startColor, @midColor @colorStop, @endColor);
     background-repeat: no-repeat;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
+    filter: e(%("progid:DXImageTransform.ak-Microsoft.ak-gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
   }
 
-  .vertical-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
+  .ak-vertical-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
     background-color: mix(@midColor, @endColor, 80%);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
     background-image: -webkit-linear-gradient(@startColor, @midColor @colorStop, @endColor);
@@ -462,9 +462,9 @@
     background-image: -o-linear-gradient(@startColor, @midColor @colorStop, @endColor);
     background-image: linear-gradient(@startColor, @midColor @colorStop, @endColor);
     background-repeat: no-repeat;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
+    filter: e(%("progid:DXImageTransform.ak-Microsoft.ak-gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
   }
-  .radial(@innerColor: #555, @outerColor: #333) {
+  .ak-radial(@innerColor: #555, @outerColor: #333) {
     background-color: @outerColor;
     background-image: -webkit-gradient(radial, center center, 0, center center, 460, from(@innerColor), to(@outerColor));
     background-image: -webkit-radial-gradient(circle, @innerColor, @outerColor);
@@ -472,18 +472,18 @@
     background-image: -o-radial-gradient(circle, @innerColor, @outerColor);
     background-repeat: no-repeat;
   }
-  .striped(@color: #555, @angle: 45deg) {
+  .ak-striped(@color: #555, @angle: 45deg) {
     background-color: @color;
-    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, rgba(255,255,255,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, rgba(255,255,255,.15)), color-stop(.75, rgba(255,255,255,.15)), color-stop(.75, transparent), to(transparent));
-    background-image: -webkit-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: -moz-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.ak-25, rgba(255,255,255,.ak-15)), color-stop(.ak-25, transparent), color-stop(.ak-5, transparent), color-stop(.ak-5, rgba(255,255,255,.ak-15)), color-stop(.ak-75, rgba(255,255,255,.ak-15)), color-stop(.ak-75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(@angle, rgba(255,255,255,.ak-15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.ak-15) 50%, rgba(255,255,255,.ak-15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(@angle, rgba(255,255,255,.ak-15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.ak-15) 50%, rgba(255,255,255,.ak-15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(@angle, rgba(255,255,255,.ak-15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.ak-15) 50%, rgba(255,255,255,.ak-15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(@angle, rgba(255,255,255,.ak-15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.ak-15) 50%, rgba(255,255,255,.ak-15) 75%, transparent 75%, transparent);
   }
 }
 // Reset filters for IE
-.reset-filter() {
-  filter: e(%("progid:DXImageTransform.Microsoft.gradient(enabled = false)"));
+.ak-reset-filter() {
+  filter: e(%("progid:DXImageTransform.ak-Microsoft.ak-gradient(enabled = false)"));
 }
 
 
@@ -494,11 +494,11 @@
 // Horizontal dividers
 // -------------------------
 // Dividers (basically an hr) within dropdowns and nav lists
-.nav-divider(@top: #e5e5e5, @bottom: @white) {
-  // IE7 needs a set width since we gave a height. Restricting just
-  // to IE7 to keep the 1px left/right space in other browsers.
+.ak-nav-divider(@top: #e5e5e5, @bottom: @white) {
+  // IE7 needs a set width since we gave a height.ak- Restricting just
+  // to IE7 to keep the 1px left/right space in other browsers.ak-
   // It is unclear where IE is getting the extra space that we need
-  // to negative-margin away, but so it goes.
+  // to negative-margin away, but so it goes.ak-
   *width: 100%;
   height: 1px;
   margin: ((@baseLineHeight / 2) - 1) 1px; // 8px 1px
@@ -510,14 +510,14 @@
 
 // Button backgrounds
 // ------------------
-.buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
+.ak-buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.ak-25)) {
   // gradientBar will set the background to a pleasing blend of these, to support IE<=9
-  .gradientBar(@startColor, @endColor, @textColor, @textShadow);
+  .ak-gradientBar(@startColor, @endColor, @textColor, @textShadow);
   *background-color: @endColor; /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-  .reset-filter();
+  .ak-reset-filter();
 
   // in these cases the gradient won't cover the background, so we override
-  &:hover, &:focus, &:active, &.active, &.disabled, &[disabled] {
+  &:hover, &:focus, &:active, &.ak-active, &.ak-disabled, &[disabled] {
     color: @textColor;
     background-color: @endColor;
     *background-color: darken(@endColor, 5%);
@@ -525,16 +525,16 @@
 
   // IE 7 + 8 can't handle box-shadow to show active, so we darken a bit ourselves
   &:active,
-  &.active {
+  &.ak-active {
     background-color: darken(@endColor, 10%) e("\9");
   }
 }
 
 // Navbar vertical align
 // -------------------------
-// Vertically center elements in the navbar.
-// Example: an element has a height of 30px, so write out `.navbarVerticalAlign(30px);` to calculate the appropriate top margin.
-.navbarVerticalAlign(@elementHeight) {
+// Vertically center elements in the navbar.ak-
+// Example: an element has a height of 30px, so write out `.ak-navbarVerticalAlign(30px);` to calculate the appropriate top margin.ak-
+.ak-navbarVerticalAlign(@elementHeight) {
   margin-top: (@navbarHeight - @elementHeight) / 2;
 }
 
@@ -544,26 +544,26 @@
 // -----------
 
 // Centered container element
-.container-fixed() {
+.ak-container-fixed() {
   margin-right: auto;
   margin-left: auto;
-  .clearfix();
+  .ak-clearfix();
 }
 
 // Table columns
-.tableColumns(@columnSpan: 1) {
+.ak-tableColumns(@columnSpan: 1) {
   float: none; // undo default grid column styles
   width: ((@gridColumnWidth) * @columnSpan) + (@gridGutterWidth * (@columnSpan - 1)) - 16; // 16 is total padding on left and right of table cells
   margin-left: 0; // undo default grid column styles
 }
 
 // Make a Grid
-// Use .makeRow and .makeColumn to assign semantic layouts grid system behavior
-.makeRow() {
+// Use .ak-makeRow and .ak-makeColumn to assign semantic layouts grid system behavior
+.ak-makeRow() {
   margin-left: @gridGutterWidth * -1;
-  .clearfix();
+  .ak-clearfix();
 }
-.makeColumn(@columns: 1, @offset: 0) {
+.ak-makeColumn(@columns: 1, @offset: 0) {
   float: left;
   margin-left: (@gridColumnWidth * @offset) + (@gridGutterWidth * (@offset - 1)) + (@gridGutterWidth * 2);
   width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
@@ -572,31 +572,31 @@
 // The Grid
 #grid {
 
-  .core (@gridColumnWidth, @gridGutterWidth) {
+  .ak-core (@gridColumnWidth, @gridGutterWidth) {
 
-    .spanX (@index) when (@index > 0) {
-      .span@{index} { .span(@index); }
-      .spanX(@index - 1);
+    .ak-spanX (@index) when (@index > 0) {
+      .ak-span@{index} { .ak-span(@index); }
+      .ak-spanX(@index - 1);
     }
-    .spanX (0) {}
+    .ak-spanX (0) {}
 
-    .offsetX (@index) when (@index > 0) {
-      .offset@{index} { .offset(@index); }
-      .offsetX(@index - 1);
+    .ak-offsetX (@index) when (@index > 0) {
+      .ak-offset@{index} { .ak-offset(@index); }
+      .ak-offsetX(@index - 1);
     }
-    .offsetX (0) {}
+    .ak-offsetX (0) {}
 
-    .offset (@columns) {
+    .ak-offset (@columns) {
       margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns + 1));
     }
 
-    .span (@columns) {
+    .ak-span (@columns) {
       width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
     }
 
-    .row {
+    .ak-row {
       margin-left: @gridGutterWidth * -1;
-      .clearfix();
+      .ak-clearfix();
     }
 
     [class*="span"] {
@@ -606,52 +606,52 @@
     }
 
     // Set the container width, and override it for fixed navbars in media queries
-    .container,
-    .navbar-static-top .container,
-    .navbar-fixed-top .container,
-    .navbar-fixed-bottom .container { .span(@gridColumns); }
+    .ak-container,
+    .ak-navbar-static-top .ak-container,
+    .ak-navbar-fixed-top .ak-container,
+    .ak-navbar-fixed-bottom .ak-container { .ak-span(@gridColumns); }
 
-    // generate .spanX and .offsetX
-    .spanX (@gridColumns);
-    .offsetX (@gridColumns);
+    // generate .ak-spanX and .ak-offsetX
+    .ak-spanX (@gridColumns);
+    .ak-offsetX (@gridColumns);
 
   }
 
-  .fluid (@fluidGridColumnWidth, @fluidGridGutterWidth) {
+  .ak-fluid (@fluidGridColumnWidth, @fluidGridGutterWidth) {
 
-    .spanX (@index) when (@index > 0) {
-      .span@{index} { .span(@index); }
-      .spanX(@index - 1);
+    .ak-spanX (@index) when (@index > 0) {
+      .ak-span@{index} { .ak-span(@index); }
+      .ak-spanX(@index - 1);
     }
-    .spanX (0) {}
+    .ak-spanX (0) {}
 
-    .offsetX (@index) when (@index > 0) {
-      .offset@{index} { .offset(@index); }
-      .offset@{index}:first-child { .offsetFirstChild(@index); }
-      .offsetX(@index - 1);
+    .ak-offsetX (@index) when (@index > 0) {
+      .ak-offset@{index} { .ak-offset(@index); }
+      .ak-offset@{index}:first-child { .ak-offsetFirstChild(@index); }
+      .ak-offsetX(@index - 1);
     }
-    .offsetX (0) {}
+    .ak-offsetX (0) {}
 
-    .offset (@columns) {
+    .ak-offset (@columns) {
       margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) + (@fluidGridGutterWidth*2);
   	  *margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) - (.5 / @gridRowWidth * 100 * 1%) + (@fluidGridGutterWidth*2) - (.5 / @gridRowWidth * 100 * 1%);
     }
 
-    .offsetFirstChild (@columns) {
+    .ak-offsetFirstChild (@columns) {
       margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) + (@fluidGridGutterWidth);
       *margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) - (.5 / @gridRowWidth * 100 * 1%) + @fluidGridGutterWidth - (.5 / @gridRowWidth * 100 * 1%);
     }
 
-    .span (@columns) {
+    .ak-span (@columns) {
       width: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1));
       *width: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) - (.5 / @gridRowWidth * 100 * 1%);
     }
 
-    .row-fluid {
+    .ak-row-fluid {
       width: 100%;
-      .clearfix();
+      .ak-clearfix();
       [class*="span"] {
-        .input-block-level();
+        .ak-input-block-level();
         float: left;
         margin-left: @fluidGridGutterWidth;
         *margin-left: @fluidGridGutterWidth - (.5 / @gridRowWidth * 100 * 1%);
@@ -661,42 +661,42 @@
       }
 
       // Space grid-sized controls properly if multiple per line
-      .controls-row [class*="span"] + [class*="span"] {
+      .ak-controls-row [class*="span"] + [class*="span"] {
         margin-left: @fluidGridGutterWidth;
       }
 
-      // generate .spanX and .offsetX
-      .spanX (@gridColumns);
-      .offsetX (@gridColumns);
+      // generate .ak-spanX and .ak-offsetX
+      .ak-spanX (@gridColumns);
+      .ak-offsetX (@gridColumns);
     }
 
   }
 
-  .input(@gridColumnWidth, @gridGutterWidth) {
+  .ak-input(@gridColumnWidth, @gridGutterWidth) {
 
-    .spanX (@index) when (@index > 0) {
-      input.span@{index}, textarea.span@{index}, .uneditable-input.span@{index} { .span(@index); }
-      .spanX(@index - 1);
+    .ak-spanX (@index) when (@index > 0) {
+      input.ak-span@{index}, textarea.ak-span@{index}, .ak-uneditable-input.ak-span@{index} { .ak-span(@index); }
+      .ak-spanX(@index - 1);
     }
-    .spanX (0) {}
+    .ak-spanX (0) {}
 
-    .span(@columns) {
+    .ak-span(@columns) {
       width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 14;
     }
 
     input,
     textarea,
-    .uneditable-input {
+    .ak-uneditable-input {
       margin-left: 0; // override margin-left from core grid system
     }
 
     // Space grid-sized controls properly if multiple per line
-    .controls-row [class*="span"] + [class*="span"] {
+    .ak-controls-row [class*="span"] + [class*="span"] {
       margin-left: @gridGutterWidth;
     }
 
-    // generate .spanX
-    .spanX (@gridColumns);
+    // generate .ak-spanX
+    .ak-spanX (@gridColumns);
 
   }
 }

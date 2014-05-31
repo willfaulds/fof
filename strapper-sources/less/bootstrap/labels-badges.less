@@ -4,32 +4,32 @@
 
 
 // Base classes
-.label,
-.badge {
+.ak-label,
+.ak-badge {
   display: inline-block;
   padding: 2px 4px;
-  font-size: @baseFontSize * .846;
+  font-size: @baseFontSize * .ak-846;
   font-weight: bold;
   line-height: 14px; // ensure proper line-height if floated
   color: @white;
   vertical-align: baseline;
   white-space: nowrap;
-  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+  text-shadow: 0 -1px 0 rgba(0,0,0,.ak-25);
   background-color: @grayLight;
 }
 // Set unique padding and border-radii
-.label {
-  .border-radius(3px);
+.ak-label {
+  .ak-border-radius(3px);
 }
-.badge {
+.ak-badge {
   padding-left: 9px;
   padding-right: 9px;
-  .border-radius(9px);
+  .ak-border-radius(9px);
 }
 
 // Empty labels/badges collapse
-.label,
-.badge {
+.ak-label,
+.ak-badge {
   &:empty {
     display: none;
   }
@@ -37,10 +37,10 @@
 
 // Hover/focus state, but only for links
 a {
-  &.label:hover,
-  &.label:focus,
-  &.badge:hover,
-  &.badge:focus {
+  &.ak-label:hover,
+  &.ak-label:focus,
+  &.ak-badge:hover,
+  &.ak-badge:focus {
     color: @white;
     text-decoration: none;
     cursor: pointer;
@@ -49,8 +49,8 @@ a {
 
 // Colors
 // Only give background-color difference to links (and to simplify, we don't qualifty with `a` but [href] attribute)
-.label,
-.badge {
+.ak-label,
+.ak-badge {
   // Important (red)
   &-important         { background-color: @errorText; }
   &-important[href]   { background-color: darken(@errorText, 10%); }
@@ -69,16 +69,16 @@ a {
 }
 
 // Quick fix for labels/badges in buttons
-.btn {
-  .label,
-  .badge {
+.ak-btn {
+  .ak-label,
+  .ak-badge {
     position: relative;
     top: -1px;
   }
 }
-.btn-mini {
-  .label,
-  .badge {
+.ak-btn-mini {
+  .ak-label,
+  .ak-badge {
     top: 0;
   }
 }

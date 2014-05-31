@@ -6,25 +6,25 @@
 // Base styles
 // -------------------------
 
-.alert {
+.ak-alert {
   padding: 8px 35px 8px 14px;
   margin-bottom: @baseLineHeight;
-  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  text-shadow: 0 1px 0 rgba(255,255,255,.ak-5);
   background-color: @warningBackground;
   border: 1px solid @warningBorder;
-  .border-radius(@baseBorderRadius);
+  .ak-border-radius(@baseBorderRadius);
 }
-.alert,
-.alert h4 {
+.ak-alert,
+.ak-alert h4 {
   // Specified for the h4 to prevent conflicts of changing @headingsColor
   color: @warningText;
 }
-.alert h4 {
+.ak-alert h4 {
   margin: 0;
 }
 
 // Adjust close link position
-.alert .close {
+.ak-alert .ak-close {
   position: relative;
   top: -2px;
   right: -21px;
@@ -35,30 +35,30 @@
 // Alternate styles
 // -------------------------
 
-.alert-success {
+.ak-alert-success {
   background-color: @successBackground;
   border-color: @successBorder;
   color: @successText;
 }
-.alert-success h4 {
+.ak-alert-success h4 {
   color: @successText;
 }
-.alert-danger,
-.alert-error {
+.ak-alert-danger,
+.ak-alert-error {
   background-color: @errorBackground;
   border-color: @errorBorder;
   color: @errorText;
 }
-.alert-danger h4,
-.alert-error h4 {
+.ak-alert-danger h4,
+.ak-alert-error h4 {
   color: @errorText;
 }
-.alert-info {
+.ak-alert-info {
   background-color: @infoBackground;
   border-color: @infoBorder;
   color: @infoText;
 }
-.alert-info h4 {
+.ak-alert-info h4 {
   color: @infoText;
 }
 
@@ -66,14 +66,14 @@
 // Block alerts
 // -------------------------
 
-.alert-block {
+.ak-alert-block {
   padding-top: 14px;
   padding-bottom: 14px;
 }
-.alert-block > p,
-.alert-block > ul {
+.ak-alert-block > p,
+.ak-alert-block > ul {
   margin-bottom: 0;
 }
-.alert-block p + p {
+.ak-alert-block p + p {
   margin-top: 5px;
 }

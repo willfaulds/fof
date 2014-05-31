@@ -6,22 +6,22 @@
 @media (min-width: 1200px) {
 
   // Fixed grid
-  #grid > .core(@gridColumnWidth1200, @gridGutterWidth1200);
+  #grid > .ak-core(@gridColumnWidth1200, @gridGutterWidth1200);
 
   // Fluid grid
-  #grid > .fluid(@fluidGridColumnWidth1200, @fluidGridGutterWidth1200);
+  #grid > .ak-fluid(@fluidGridColumnWidth1200, @fluidGridGutterWidth1200);
 
   // Input grid
-  #grid > .input(@gridColumnWidth1200, @gridGutterWidth1200);
+  #grid > .ak-input(@gridColumnWidth1200, @gridGutterWidth1200);
 
   // Thumbnails
-  .thumbnails {
+  .ak-thumbnails {
     margin-left: -@gridGutterWidth1200;
   }
-  .thumbnails > li {
+  .ak-thumbnails > li {
     margin-left: @gridGutterWidth1200;
   }
-  .row-fluid .thumbnails {
+  .ak-row-fluid .ak-thumbnails {
     margin-left: 0;
   }
 

@@ -3,24 +3,24 @@
 // --------------------------------------------------
 
 
-.carousel {
+.ak-carousel {
   position: relative;
   margin-bottom: @baseLineHeight;
   line-height: 1;
 }
 
-.carousel-inner {
+.ak-carousel-inner {
   overflow: hidden;
   width: 100%;
   position: relative;
 }
 
-.carousel-inner {
+.ak-carousel-inner {
 
-  > .item {
+  > .ak-item {
     display: none;
     position: relative;
-    .transition(.6s ease-in-out left);
+    .ak-transition(.ak-6s ease-in-out left);
 
     // Account for jankitude on images
     > img,
@@ -30,36 +30,36 @@
     }
   }
 
-  > .active,
-  > .next,
-  > .prev { display: block; }
+  > .ak-active,
+  > .ak-next,
+  > .ak-prev { display: block; }
 
-  > .active {
+  > .ak-active {
     left: 0;
   }
 
-  > .next,
-  > .prev {
+  > .ak-next,
+  > .ak-prev {
     position: absolute;
     top: 0;
     width: 100%;
   }
 
-  > .next {
+  > .ak-next {
     left: 100%;
   }
-  > .prev {
+  > .ak-prev {
     left: -100%;
   }
-  > .next.left,
-  > .prev.right {
+  > .ak-next.ak-left,
+  > .ak-prev.ak-right {
     left: 0;
   }
 
-  > .active.left {
+  > .ak-active.ak-left {
     left: -100%;
   }
-  > .active.right {
+  > .ak-active.ak-right {
     left: 100%;
   }
 
@@ -68,7 +68,7 @@
 // Left/right controls for nav
 // ---------------------------
 
-.carousel-control {
+.ak-carousel-control {
   position: absolute;
   top: 40%;
   left: 15px;
@@ -82,18 +82,18 @@
   text-align: center;
   background: @grayDarker;
   border: 3px solid @white;
-  .border-radius(23px);
-  .opacity(50);
+  .ak-border-radius(23px);
+  .ak-opacity(50);
 
   // we can't have this transition here
   // because webkit cancels the carousel
   // animation if you trip this while
   // in the middle of another animation
   // ;_;
-  // .transition(opacity .2s linear);
+  // .ak-transition(opacity .ak-2s linear);
 
   // Reposition the right one
-  &.right {
+  &.ak-right {
     left: auto;
     right: 15px;
   }
@@ -103,13 +103,13 @@
   &:focus {
     color: @white;
     text-decoration: none;
-    .opacity(90);
+    .ak-opacity(90);
   }
 }
 
 // Carousel indicator pips
 // -----------------------------
-.carousel-indicators {
+.ak-carousel-indicators {
   position: absolute;
   top: 15px;
   right: 15px;
@@ -125,10 +125,10 @@
     margin-left: 5px;
     text-indent: -999px;
     background-color: #ccc;
-    background-color: rgba(255,255,255,.25);
+    background-color: rgba(255,255,255,.ak-25);
     border-radius: 5px;
   }
-  .active {
+  .ak-active {
     background-color: #fff;
   }
 }
@@ -136,23 +136,23 @@
 // Caption for text below images
 // -----------------------------
 
-.carousel-caption {
+.ak-carousel-caption {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   padding: 15px;
   background: @grayDark;
-  background: rgba(0,0,0,.75);
+  background: rgba(0,0,0,.ak-75);
 }
-.carousel-caption h4,
-.carousel-caption p {
+.ak-carousel-caption h4,
+.ak-carousel-caption p {
   color: @white;
   line-height: @baseLineHeight;
 }
-.carousel-caption h4 {
+.ak-carousel-caption h4 {
   margin: 0 0 5px;
 }
-.carousel-caption p {
+.ak-carousel-caption p {
   margin-bottom: 0;
 }

@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // Background
-.modal-backdrop {
+.ak-modal-backdrop {
   position: fixed;
   top: 0;
   right: 0;
@@ -12,16 +12,16 @@
   z-index: @zindexModalBackdrop;
   background-color: @black;
   // Fade for backdrop
-  &.fade { opacity: 0; }
+  &.ak-fade { opacity: 0; }
 }
 
-.modal-backdrop,
-.modal-backdrop.fade.in {
-  .opacity(80);
+.ak-modal-backdrop,
+.ak-modal-backdrop.ak-fade.ak-in {
+  .ak-opacity(80);
 }
 
 // Base modal
-.modal {
+.ak-modal {
   position: fixed;
   top: 10%;
   left: 50%;
@@ -30,25 +30,25 @@
   margin-left: -280px;
   background-color: @white;
   border: 1px solid #999;
-  border: 1px solid rgba(0,0,0,.3);
+  border: 1px solid rgba(0,0,0,.ak-3);
   *border: 1px solid #999; /* IE6-7 */
-  .border-radius(6px);
-  .box-shadow(0 3px 7px rgba(0,0,0,0.3));
-  .background-clip(padding-box);
+  .ak-border-radius(6px);
+  .ak-box-shadow(0 3px 7px rgba(0,0,0,0.ak-3));
+  .ak-background-clip(padding-box);
   // Remove focus outline from opened modal
   outline: none;
 
-  &.fade {
-    .transition(e('opacity .3s linear, top .3s ease-out'));
+  &.ak-fade {
+    .ak-transition(e('opacity .ak-3s linear, top .ak-3s ease-out'));
     top: -25%;
   }
-  &.fade.in { top: 10%; }
+  &.ak-fade.ak-in { top: 10%; }
 }
-.modal-header {
+.ak-modal-header {
   padding: 9px 15px;
   border-bottom: 1px solid #eee;
   // Close icon
-  .close { margin-top: 2px; }
+  .ak-close { margin-top: 2px; }
   // Heading
   h3 {
     margin: 0;
@@ -57,39 +57,39 @@
 }
 
 // Body (where all modal content resides)
-.modal-body {
+.ak-modal-body {
   position: relative;
   overflow-y: auto;
   max-height: 400px;
   padding: 15px;
 }
 // Remove bottom margin if need be
-.modal-form {
+.ak-modal-form {
   margin-bottom: 0;
 }
 
 // Footer (for actions)
-.modal-footer {
+.ak-modal-footer {
   padding: 14px 15px 15px;
   margin-bottom: 0;
   text-align: right; // right align buttons
   background-color: #f5f5f5;
   border-top: 1px solid #ddd;
-  .border-radius(0 0 6px 6px);
-  .box-shadow(inset 0 1px 0 @white);
-  .clearfix(); // clear it in case folks use .pull-* classes on buttons
+  .ak-border-radius(0 0 6px 6px);
+  .ak-box-shadow(inset 0 1px 0 @white);
+  .ak-clearfix(); // clear it in case folks use .ak-pull-* classes on buttons
 
   // Properly space out buttons
-  .btn + .btn {
+  .ak-btn + .ak-btn {
     margin-left: 5px;
     margin-bottom: 0; // account for input[type="submit"] which gets the bottom margin like all other inputs
   }
   // but override that for button groups
-  .btn-group .btn + .btn {
+  .ak-btn-group .ak-btn + .ak-btn {
     margin-left: -1px;
   }
   // and override it for block buttons as well
-  .btn-block + .btn-block {
+  .ak-btn-block + .ak-btn-block {
     margin-left: 0;
   }
 }

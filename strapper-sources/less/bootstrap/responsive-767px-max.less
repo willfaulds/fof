@@ -11,21 +11,21 @@
     padding-right: 20px;
   }
   // Negative indent the now static "fixed" navbar
-  .navbar-fixed-top,
-  .navbar-fixed-bottom,
-  .navbar-static-top {
+  .ak-navbar-fixed-top,
+  .ak-navbar-fixed-bottom,
+  .ak-navbar-static-top {
     margin-left: -20px;
     margin-right: -20px;
   }
   // Remove padding on container given explicit padding set on body
-  .container-fluid {
+  .ak-container-fluid {
     padding: 0;
   }
 
   // TYPOGRAPHY
   // ----------
   // Reset horizontal dl
-  .dl-horizontal {
+  .ak-dl-horizontal {
     dt {
       float: none;
       clear: none;
@@ -40,75 +40,75 @@
   // GRID & CONTAINERS
   // -----------------
   // Remove width from containers
-  .container {
+  .ak-container {
     width: auto;
   }
   // Fluid rows
-  .row-fluid {
+  .ak-row-fluid {
     width: 100%;
   }
   // Undo negative margin on rows and thumbnails
-  .row,
-  .thumbnails {
+  .ak-row,
+  .ak-thumbnails {
     margin-left: 0;
   }
-  .thumbnails > li {
+  .ak-thumbnails > li {
     float: none;
-    margin-left: 0; // Reset the default margin for all li elements when no .span* classes are present
+    margin-left: 0; // Reset the default margin for all li elements when no .ak-span* classes are present
   }
   // Make all grid-sized elements block level again
   [class*="span"],
-  .uneditable-input[class*="span"], // Makes uneditable inputs full-width when using grid sizing
-  .row-fluid [class*="span"] {
+  .ak-uneditable-input[class*="span"], // Makes uneditable inputs full-width when using grid sizing
+  .ak-row-fluid [class*="span"] {
     float: none;
     display: block;
     width: 100%;
     margin-left: 0;
-    .box-sizing(border-box);
+    .ak-box-sizing(border-box);
   }
-  .span12,
-  .row-fluid .span12 {
+  .ak-span12,
+  .ak-row-fluid .ak-span12 {
     width: 100%;
-    .box-sizing(border-box);
+    .ak-box-sizing(border-box);
   }
-  .row-fluid [class*="offset"]:first-child {
+  .ak-row-fluid [class*="offset"]:first-child {
     margin-left: 0;
   }
 
   // FORM FIELDS
   // -----------
   // Make span* classes full width
-  .input-large,
-  .input-xlarge,
-  .input-xxlarge,
+  .ak-input-large,
+  .ak-input-xlarge,
+  .ak-input-xxlarge,
   input[class*="span"],
   select[class*="span"],
   textarea[class*="span"],
-  .uneditable-input {
-    .input-block-level();
+  .ak-uneditable-input {
+    .ak-input-block-level();
   }
   // But don't let it screw up prepend/append inputs
-  .input-prepend input,
-  .input-append input,
-  .input-prepend input[class*="span"],
-  .input-append input[class*="span"] {
+  .ak-input-prepend input,
+  .ak-input-append input,
+  .ak-input-prepend input[class*="span"],
+  .ak-input-append input[class*="span"] {
     display: inline-block; // redeclare so they don't wrap to new lines
     width: auto;
   }
-  .controls-row [class*="span"] + [class*="span"] {
+  .ak-controls-row [class*="span"] + [class*="span"] {
     margin-left: 0;
   }
 
   // Modals
-  .modal {
+  .ak-modal {
     position: fixed;
     top:   20px;
     left:  20px;
     right: 20px;
     width: auto;
     margin: 0;
-    &.fade  { top: -100px; }
-    &.fade.in { top: 20px; }
+    &.ak-fade  { top: -100px; }
+    &.ak-fade.ak-in { top: 20px; }
   }
 
 }
@@ -121,12 +121,12 @@
 @media (max-width: 480px) {
 
   // Smooth out the collapsing/expanding nav
-  .nav-collapse {
+  .ak-nav-collapse {
     -webkit-transform: translate3d(0, 0, 0); // activate the GPU
   }
 
   // Block level the page header small tag for readability
-  .page-header h1 small {
+  .ak-page-header h1 small {
     display: block;
     line-height: @baseLineHeight;
   }
@@ -138,23 +138,23 @@
   }
 
   // Remove the horizontal form styles
-  .form-horizontal {
-    .control-label {
+  .ak-form-horizontal {
+    .ak-control-label {
       float: none;
       width: auto;
       padding-top: 0;
       text-align: left;
     }
     // Move over all input controls and content
-    .controls {
+    .ak-controls {
       margin-left: 0;
     }
     // Move the options list down to align with labels
-    .control-list {
+    .ak-control-list {
       padding-top: 0; // has to be padding because margin collaspes
     }
-    // Move over buttons in .form-actions to align with .controls
-    .form-actions {
+    // Move over buttons in .ak-form-actions to align with .ak-controls
+    .ak-form-actions {
       padding-left: 10px;
       padding-right: 10px;
     }
@@ -162,31 +162,31 @@
 
   // Medias
   // Reset float and spacing to stack
-  .media .pull-left,
-  .media .pull-right  {
+  .ak-media .ak-pull-left,
+  .ak-media .ak-pull-right  {
     float: none;
     display: block;
     margin-bottom: 10px;
   }
   // Remove side margins since we stack instead of indent
-  .media-object {
+  .ak-media-object {
     margin-right: 0;
     margin-left: 0;
   }
 
   // Modals
-  .modal {
+  .ak-modal {
     top:   10px;
     left:  10px;
     right: 10px;
   }
-  .modal-header .close {
+  .ak-modal-header .ak-close {
     padding: 10px;
     margin: -10px;
   }
 
   // Carousel
-  .carousel-caption {
+  .ak-carousel-caption {
     position: static;
   }
 
