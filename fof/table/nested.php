@@ -1135,23 +1135,7 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isDescendantOf(F0FTableNested $otherNode)
 	{
-		$children = $otherNode->getClone()->resetTreeCache()->getDescendants();
-
-		if (empty($children))
-		{
-			return false;
-		}
-
-		/** @var F0FTableNested $child */
-		foreach ($children as $child)
-		{
-			if ($child->equals($this))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return ($otherNode->lft > $this->lft) && ($otherNode->rgt < $this->rgt);
 	}
 
 	/**
@@ -1163,7 +1147,7 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isSelfOrDescendantOf(F0FTableNested $otherNode)
 	{
-		return $otherNode->equals($this) || $this->isDescendantOf($otherNode);
+		return ($otherNode->lft >= $this->lft) && ($otherNode->rgt <= $this->rgt);
 	}
 
 	/**
@@ -1175,23 +1159,7 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isAncestorOf(F0FTableNested $otherNode)
 	{
-		$parents = $otherNode->getClone()->resetTreeCache()->getAncestors();
-
-		if (empty($parents))
-		{
-			return false;
-		}
-
-		/** @var F0FTableNested $parent */
-		foreach ($parents as $parent)
-		{
-			if ($parent->equals($this))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return $otherNode->isDescendantOf($this);
 	}
 
 	/**
@@ -1203,7 +1171,7 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isSelfOrAncestorOf(F0FTableNested $otherNode)
 	{
-		return $otherNode->equals($this) || $this->isAncestorOf($otherNode);
+		return $otherNode->isSelfOrDescendantOf($this);
 	}
 
 	/**
