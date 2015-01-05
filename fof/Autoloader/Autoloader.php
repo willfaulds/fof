@@ -251,5 +251,5 @@ class Autoloader
 }
 
 // Register the current namespace with the autoloader
-Autoloader::getInstance()->addMap(__NAMESPACE__ . '\\', array(realpath(__DIR__ . '/..')));
+Autoloader::getInstance()->addMap(substr(__NAMESPACE__, 0, -10) . '\\', array(realpath(__DIR__ . '/..')));
 Autoloader::getInstance()->register();
