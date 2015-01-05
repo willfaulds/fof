@@ -36,6 +36,8 @@
 
 namespace FOF30\Pimple;
 
+defined('_JEXEC') or die;
+
 /**
  * Pimple service provider interface.
  *

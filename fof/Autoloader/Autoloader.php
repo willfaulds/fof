@@ -7,6 +7,8 @@
 
 namespace FOF30\Autoloader;
 
+defined('_JEXEC') or die;
+
 /**
  * A PSR-4 class autoloader. This is a modified version of Composer's ClassLoader class
  *
