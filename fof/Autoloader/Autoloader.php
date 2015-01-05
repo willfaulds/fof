@@ -123,6 +123,18 @@ class Autoloader
 	}
 
 	/**
+	 * Does the autoloader have a map for the specified prefix?
+	 *
+	 * @param   string  $prefix
+	 *
+	 * @return  bool
+	 */
+	public function hasMap($prefix)
+	{
+		return isset($this->prefixDirs[$prefix]);
+	}
+
+	/**
 	 * Registers a set of PSR-4 directories for a given namespace,
 	 * replacing any others previously set for this namespace.
 	 *
