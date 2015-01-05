@@ -8,9 +8,11 @@
 namespace FOF30\Container;
 
 use FOF30\Autoloader\Autoloader;
-use \JDatabaseDriver;
+use JDatabaseDriver;
 use FOF30\Pimple\Pimple;
-use \JSession;
+use JSession;
+
+defined('_JEXEC') or die;
 
 /**
  * Dependency injection container for FOF-powered components
@@ -23,10 +25,10 @@ use \JSession;
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
- * @property-read  \JDatabaseDriver                    $db                 The global database connection object
+ * @property-read  JDatabaseDriver                     $db                 The global database connection object
  * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The application dispatcher
  * @property-read  \FOF30\Input\Input                  $input              The input object
- * @property-read  \JSession                           $session            The session manager
+ * @property-read  JSession                            $session            The session manager
  */
 class Container extends Pimple
 {

@@ -7,6 +7,8 @@
 
 namespace FOF30\Inflector;
 
+defined('_JEXEC') or die;
+
 /**
  * An Inflector to pluralize and singularize English nouns.
  */
