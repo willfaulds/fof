@@ -10,17 +10,16 @@
 
 defined('_JEXEC') or die();
 
-if (!defined('F0F_INCLUDED'))
+if (!defined('FOF30_INCLUDED'))
 {
-    define('F0F_INCLUDED', '##VERSION##');
+    define('FOF30_INCLUDED', '##VERSION##');
 
 	// Register the F0F autoloader
-    require_once __DIR__ . '/autoloader/fof.php';
-	F0FAutoloaderFof::init();
+    require_once __DIR__ . '/Autoloader/Autoloader.php';
 
-	// Register a debug log
+	// TODO Register a debug log
 	if (defined('JDEBUG') && JDEBUG)
 	{
-		F0FPlatform::getInstance()->logAddLogger('fof.log.php');
+		// F0FPlatform::getInstance()->logAddLogger('fof.log.php');
 	}
 }
