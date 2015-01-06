@@ -1,19 +1,28 @@
 <?php
 /**
- * @package		fof
- * @copyright	2014 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @license		GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-class F0FDatabaseInstaller
+namespace FOF30\Database;
+
+use FOF30\Input\Input;
+use JDatabaseDriver;
+use SimpleXMLElement;
+use Exception;
+
+defined('_JEXEC') or die;
+
+class Installer
 {
-	/** @var  JDatabase  The database connector object */
+	/** @var  JDatabaseDriver  The database connector object */
 	private $db = null;
 
 	/**
-	 * @var   F0FInput  Input variables
+	 * @var   Input  Input variables
 	 */
-	protected $input = array();
+	protected $input = null;
 
 	/** @var  string  The directory where the XML schema files are stored */
 	private $xmlDirectory = null;
@@ -41,18 +50,18 @@ class F0FDatabaseInstaller
 		// Get the input
 		if (array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof F0FInput)
+			if ($config['input'] instanceof Input)
 			{
 				$this->input = $config['input'];
 			}
 			else
 			{
-				$this->input = new F0FInput($config['input']);
+				$this->input = new Input($config['input']);
 			}
 		}
 		else
 		{
-			$this->input = new F0FInput;
+			$this->input = new Input;
 		}
 
 		// Set the database object
@@ -62,7 +71,7 @@ class F0FDatabaseInstaller
 		}
 		else
 		{
-			$this->db = F0FPlatform::getInstance()->getDbo();
+			$this->db = \JFactory::getDbo();
 		}
 
 		// Set the $name/$_name variable
@@ -81,8 +90,8 @@ class F0FDatabaseInstaller
 		else
 		{
 			// Nothing is defined, assume the files are stored in the sql/xml directory inside the component's administrator section
-			$directories = F0FPlatform::getInstance()->getComponentBaseDirs($component);
-			$this->setXmlDirectory($directories['admin'] . '/sql/xml');
+			$sqlPath = JPATH_ADMINISTRATOR . '/components/' . $component . '/sql/xml';
+			$this->setXmlDirectory($sqlPath);
 		}
 
 		// Do we have a set of XML files to look for?
@@ -230,38 +239,7 @@ class F0FDatabaseInstaller
 
 					try
 					{
-						if (version_compare(JVERSION, '3.1', 'lt'))
-						{
-							$handlers = array(
-								E_NOTICE 	=> JError::getErrorHandling(E_NOTICE),
-								E_WARNING	=> JError::getErrorHandling(E_WARNING),
-								E_ERROR		=> JError::getErrorHandling(E_ERROR),
-							);
-							$handlers[E_NOTICE]['options'] = isset($handlers[E_NOTICE]['options']) ? $handlers[E_NOTICE]['options'] : null;
-							$handlers[E_WARNING]['options'] = isset($handlers[E_WARNING]['options']) ? $handlers[E_WARNING]['options'] : null;
-							$handlers[E_ERROR]['options'] = isset($handlers[E_ERROR]['options']) ? $handlers[E_ERROR]['options'] : null;
-							JError::setErrorHandling(E_NOTICE, 'ignore');
-							JError::setErrorHandling(E_WARNING, 'ignore');
-							JError::setErrorHandling(E_ERROR, 'ignore');
-						}
-
 						$this->db->execute();
-
-						if (version_compare(JVERSION, '3.1', 'lt'))
-						{
-							JError::setErrorHandling(E_NOTICE, $handlers[E_NOTICE]['mode'], $handlers[E_NOTICE]['options']);
-							JError::setErrorHandling(E_WARNING, $handlers[E_WARNING]['mode'], $handlers[E_WARNING]['options']);
-							JError::setErrorHandling(E_ERROR, $handlers[E_ERROR]['mode'], $handlers[E_ERROR]['options']);
-						}
-
-						if (version_compare(JVERSION, '3.1', 'lt') && $this->db->getErrorNum())
-						{
-							if (!$canFail)
-							{
-								JError::raise(E_WARNING, $this->db->getErrorNum(), $this->db->getErrorMsg());
-							}
-						}
-						/**/
 					}
 					catch (Exception $e)
 					{
@@ -432,7 +410,6 @@ class F0FDatabaseInstaller
 		{
 			// Check if a table or column is missing
 			case 'missing':
-				$tableName = (string)$table;
 				$fieldName = (string)$value;
 
 				if (empty($fieldName))
