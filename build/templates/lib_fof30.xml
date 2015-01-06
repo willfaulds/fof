@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="library" version="2.5" method="upgrade">
+    <name>FOF30</name>
+	<libraryname>fof30</libraryname>
+	<description>Framework-on-Framework (FOF) 3.0 - The rapid component development framework for Joomla!. This package is the next generation version of FOF. Joomla! includes an old version of FOF (2.x) as the official Joomla! RAD Layer. DO NOT UNINSTALL THIS PACKAGE, IT IS *** N O T *** A DUPLICATE OF THE 'FOF' PACKAGE. REMOVING EITHER THE fof OR THE fof30 PACKAGE WILL BREAK YOUR SITE.</description>
+	<creationDate>##DATE##</creationDate>
+	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
+	<authorEmail>nicholas@akeebabackup.com</authorEmail>
+	<authorUrl>https://www.akeebabackup.com</authorUrl>
+	<copyright>(C)2011-2014 Nicholas K. Dionysopoulos</copyright>
+	<license>GNU GPLv2 or later</license>
+	<version>##VERSION##</version>
+	<packager>Akeeba Ltd</packager>
+	<packagerurl>https://www.AkeebaBackup.com/download.html</packagerurl>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.lib_fof30.ini</language>
+    </languages>
+
+    <files folder="fof">
+		<folder>Autoloader</folder>
+		<folder>Configuration</folder>
+		<folder>Container</folder>
+		<folder>Database</folder>
+		<folder>Download</folder>
+		<folder>Encrypt</folder>
+		<folder>Hal</folder>
+		<folder>Inflector</folder>
+		<folder>Input</folder>
+		<folder>Layout</folder>
+		<folder>Less</folder>
+		<folder>Pimple</folder>
+		<folder>Platform</folder>
+		<folder>Template</folder>
+		<folder>Timer</folder>
+		<folder>Utils</folder>
+
+		<file>LICENSE.txt</file>
+		<file>include.php</file>
+		<file>version.txt</file>
+	</files>
+</extension>
