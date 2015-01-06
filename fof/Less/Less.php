@@ -2936,8 +2936,8 @@ class Less
 	/**
 	 * Compile only if changed input has changed or output doesn't exist
 	 *
-	 * @param   type  $in   X
-	 * @param   type  $out  X
+	 * @param   string  $in   X
+	 * @param   string  $out  X
 	 *
 	 * @return  boolean
 	 */
