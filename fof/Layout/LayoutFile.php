@@ -1,12 +1,16 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  layout
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Layout;
+
+use FOF30\Container\Container;
+use JLayoutFile;
+
+defined('_JEXEC') or die;
 
 /**
  * Base class for rendering a display layout
@@ -19,10 +23,12 @@ defined('F0F_INCLUDED') or die;
  * order.
  *
  * @package  FrameworkOnFramework
- * @since    1.0
  */
-class F0FLayoutFile extends JLayoutFile
+class LayoutFile extends JLayoutFile
 {
+	/** @var  Container  The component container */
+	public $container = null;
+
 	/**
 	 * Method to finds the full real file path, checking possible overrides
 	 *
@@ -30,7 +36,7 @@ class F0FLayoutFile extends JLayoutFile
 	 */
 	protected function getPath()
 	{
-		$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$filesystem = $this->container->filesystem;
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{
@@ -38,7 +44,7 @@ class F0FLayoutFile extends JLayoutFile
 			$file  = array_pop($parts);
 
 			$filePath = implode('/', $parts);
-			$suffixes = F0FPlatform::getInstance()->getTemplateSuffixes();
+			$suffixes = $this->container->platform->getTemplateSuffixes();
 
 			foreach ($suffixes as $suffix)
 			{
@@ -47,11 +53,11 @@ class F0FLayoutFile extends JLayoutFile
 
 			$files[] = $file . '.php';
 
-            $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
-            $prefix       = F0FPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
+			$platformDirs = $this->container->platform->getPlatformBaseDirs();
+			$prefix       = $this->container->platform->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
 
 			$possiblePaths = array(
-				$prefix . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
+				$prefix . '/templates/' . \JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
 				$this->basePath . '/' . $filePath
 			);
 
