@@ -1,17 +1,18 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  utils
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-defined('F0F_INCLUDED') or die;
+namespace FOF30\Utils;
+
+defined('_JEXEC') or die;
 
 /**
  * A utility class to help you quickly clean the Joomla! cache
  */
-class F0FUtilsCacheCleaner
+class CacheCleaner
 {
 	/**
 	 * Clears the com_modules and com_plugins cache. You need to call this whenever you alter the publish state or
@@ -59,7 +60,7 @@ class F0FUtilsCacheCleaner
 	 */
 	public static function clearCacheGroups(array $clearGroups, array $cacheClients = array(0, 1))
 	{
-		$conf = JFactory::getConfig();
+		$conf = \JFactory::getConfig();
 
 		foreach ($clearGroups as $group)
 		{
@@ -72,14 +73,14 @@ class F0FUtilsCacheCleaner
 						'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache')
 					);
 
-					$cache = JCache::getInstance('callback', $options);
+					$cache = \JCache::getInstance('callback', $options);
 					$cache->clean();
 				}
-				catch (Exception $e)
+				catch (\Exception $e)
 				{
 					// suck it up
 				}
 			}
 		}
 	}
-} 
+}
