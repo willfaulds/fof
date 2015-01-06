@@ -1,12 +1,15 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  less
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Less\Parser;
+
+use FOF30\Less\Less;
+
+defined('_JEXEC') or die;
 
 /**
  * This class is taken verbatim from:
@@ -23,7 +26,7 @@ defined('F0F_INCLUDED') or die;
  *
  * @since  2.0
  */
-class F0FLessParser
+class Parser
 {
 	// Used to uniquely identify blocks
 	protected static $nextBlockId = 0;
@@ -95,11 +98,11 @@ class F0FLessParser
 
 		if (!self::$operatorString)
 		{
-			self::$operatorString = '(' . implode('|', array_map(array('F0FLess', 'preg_quote'), array_keys(self::$precedence))) . ')';
+			self::$operatorString = '(' . implode('|', array_map(array('\\FOF30\\Less\\Less', 'preg_quote'), array_keys(self::$precedence))) . ')';
 
-			$commentSingle = F0FLess::preg_quote(self::$commentSingle);
-			$commentMultiLeft = F0FLess::preg_quote(self::$commentMultiLeft);
-			$commentMultiRight = F0FLess::preg_quote(self::$commentMultiRight);
+			$commentSingle = Less::preg_quote(self::$commentSingle);
+			$commentMultiLeft = Less::preg_quote(self::$commentMultiLeft);
+			$commentMultiRight = Less::preg_quote(self::$commentMultiRight);
 
 			self::$commentMulti = $commentMultiLeft . '.*?' . $commentMultiRight;
 			self::$whitePattern = '/' . $commentSingle . '[^\n]*\s*|(' . self::$commentMulti . ')\s*|\s+/Ais';
@@ -410,7 +413,7 @@ class F0FLessParser
 	protected function isDirective($dirname, $directives)
 	{
 		// TODO: cache pattern in parser
-		$pattern = implode("|", array_map(array("F0FLess", "preg_quote"), $directives));
+		$pattern = implode("|", array_map(array("\\FOF30\\Less\\Less", "preg_quote"), $directives));
 		$pattern = '/^(-[a-z-]+-)?(' . $pattern . ')$/i';
 
 		return preg_match($pattern, $dirname);
@@ -458,7 +461,7 @@ class F0FLessParser
 			return false;
 		}
 
-		$exps = F0FLess::compressList($values, ' ');
+		$exps = Less::compressList($values, ' ');
 
 		return true;
 	}
@@ -487,7 +490,7 @@ class F0FLessParser
 				if ($this->literal("/") && $this->value($rhs))
 				{
 					$out = array("list", "",
-						array($out, array("keyword", "/"), $rhs));
+								 array($out, array("keyword", "/"), $rhs));
 				}
 				else
 				{
@@ -608,7 +611,7 @@ class F0FLessParser
 			return false;
 		}
 
-		$value = F0FLess::compressList($values, ', ');
+		$value = Less::compressList($values, ', ');
 
 		return true;
 	}
@@ -664,7 +667,7 @@ class F0FLessParser
 		{
 			// Negation
 			if ($this->literal("-", false) &&(($this->variable($inner) && $inner = array("variable", $inner))
-				|| $this->unit($inner) || $this->parenValue($inner)))
+					|| $this->unit($inner) || $this->parenValue($inner)))
 			{
 				$value = array("unary", "-", $inner);
 
@@ -867,7 +870,7 @@ class F0FLessParser
 		$value = null;
 
 		if ($this->literal("(") && $this->keyword($feature) && ($this->literal(":")
-			&& $this->expression($value) || true) && $this->literal(")"))
+				&& $this->expression($value) || true) && $this->literal(")"))
 		{
 			$out = array("mediaExp", $feature);
 
@@ -905,7 +908,7 @@ class F0FLessParser
 		$this->eatWhiteDefault = false;
 
 		$stop = array("'", '"', "@{", $end);
-		$stop = array_map(array("F0FLess", "preg_quote"), $stop);
+		$stop = array_map(array("\\FOF30\\Less\\Less", "preg_quote"), $stop);
 
 		// $stop[] = self::$commentMulti;
 
@@ -1013,7 +1016,7 @@ class F0FLessParser
 		$content = array();
 
 		// Look for either ending delim , escape, or string interpolation
-		$patt = '([^\n]*?)(@\{|\\\\|' . F0FLess::preg_quote($delim) . ')';
+		$patt = '([^\n]*?)(@\{|\\\\|' . Less::preg_quote($delim) . ')';
 
 		$oldWhite = $this->eatWhiteDefault;
 		$this->eatWhiteDefault = false;
@@ -1827,7 +1830,7 @@ class F0FLessParser
 
 		if (!isset(self::$literalCache[$what]))
 		{
-			self::$literalCache[$what] = F0FLess::preg_quote($what);
+			self::$literalCache[$what] = Less::preg_quote($what);
 		}
 
 		return $this->match(self::$literalCache[$what], $m, $eatWhitespace);
@@ -1903,7 +1906,7 @@ class F0FLessParser
 			$validChars = $allowNewline ? "." : "[^\n]";
 		}
 
-		if (!$this->match('(' . $validChars . '*?)' . F0FLess::preg_quote($what), $m, !$until))
+		if (!$this->match('(' . $validChars . '*?)' . Less::preg_quote($what), $m, !$until))
 		{
 			return false;
 		}
@@ -2070,7 +2073,7 @@ class F0FLessParser
 	 * @param   [type]  $selectors  [description]
 	 * @param   [type]  $type       [description]
 	 *
-	 * @return  stdClass
+	 * @return  \stdClass
 	 */
 	protected function pushBlock($selectors = null, $type = null)
 	{
@@ -2097,7 +2100,7 @@ class F0FLessParser
 	 *
 	 * @param   [type]  $type  [description]
 	 *
-	 * @return  stdClass
+	 * @return  \stdClass
 	 */
 	protected function pushSpecialBlock($type)
 	{

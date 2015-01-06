@@ -1,12 +1,13 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  less
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Less\Formatter;
+
+defined('_JEXEC') or die;
 
 /**
  * This class is taken verbatim from:
@@ -19,10 +20,9 @@ defined('F0F_INCLUDED') or die;
  * Copyright 2012, Leaf Corcoran <leafot@gmail.com>
  * Licensed under MIT or GPLv3, see LICENSE
  *
- * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FLessFormatterCompressed extends F0FLessFormatterClassic
+class Compressed extends Classic
 {
 	public $disableSingle = true;
 

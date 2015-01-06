@@ -1,15 +1,20 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  less
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Less;
+
+use \FOF30\Less\Parser\Parser;
+
+defined('_JEXEC') or die;
+
+\JLoader::import('joomla.filesystem.file');
 
 /**
- * This class is taken near verbatim (changes marked with **F0F** comment markers) from:
+ * This class is taken near verbatim (changes marked with **FOF** comment markers) from:
  *
  * lessphp v0.3.9
  * http://leafo.net/lessphp
@@ -22,10 +27,9 @@ defined('F0F_INCLUDED') or die;
  * THIS IS THIRD PARTY CODE. Code comments are mostly useless placeholders to
  * stop phpcs from complaining...
  *
- * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FLess
+class Less
 {
 	public static $VERSION = "v0.3.9";
 
@@ -65,7 +69,7 @@ class F0FLess
 	 * Set to the parser that generated the current line when compiling
 	 * so we know how to create error messages
 	 *
-	 * @var  F0FLessParser
+	 * @var  FOF30\Less\Parser\Parser
 	 */
 	protected $sourceParser = null;
 
@@ -111,9 +115,9 @@ class F0FLess
 	 */
 	protected function fileExists($name)
 	{
-		/** F0F - BEGIN CHANGE * */
-		return F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($name);
-		/** F0F - END CHANGE * */
+		/** FOF - BEGIN CHANGE * */
+		return \JFile::exists($name);
+		/** FOF - END CHANGE * */
 	}
 
 	/**
@@ -236,9 +240,9 @@ class F0FLess
 	 * Compile Imported Props
 	 *
 	 * @param   array          $props         Props
-	 * @param   stdClass       $block         Block
+	 * @param   \stdClass       $block         Block
 	 * @param   string         $out           Out
-	 * @param   F0FLessParser  $sourceParser  Source parser
+	 * @param   Parser         $sourceParser  Source parser
 	 * @param   string         $importDir     Import dir
 	 *
 	 * @return  void
@@ -280,9 +284,9 @@ class F0FLess
 	 * Compiling the block involves pushing a fresh environment on the stack,
 	 * and iterating through the props, compiling each one.
 	 *
-	 * @param   stdClass  $block  Block
+	 * @param   \stdClass  $block  Block
 	 *
-	 * @see  F0FLess::compileProp()
+	 * @see  Less::compileProp()
 	 *
 	 * @return  void
 	 */
@@ -317,7 +321,7 @@ class F0FLess
 	/**
 	 * Compile CSS block
 	 *
-	 * @param   stdClass  $block  Block to compile
+	 * @param   \stdClass  $block  Block to compile
 	 *
 	 * @return  void
 	 */
@@ -340,7 +344,7 @@ class F0FLess
 	/**
 	 * Compile media
 	 *
-	 * @param   stdClass  $media  Media
+	 * @param   \stdClass  $media  Media
 	 *
 	 * @return  void
 	 */
@@ -376,9 +380,9 @@ class F0FLess
 	/**
 	 * Media parent
 	 *
-	 * @param   stdClass  $scope  Scope
+	 * @param   \stdClass  $scope  Scope
 	 *
-	 * @return  stdClass
+	 * @return  \stdClass
 	 */
 	protected function mediaParent($scope)
 	{
@@ -398,7 +402,7 @@ class F0FLess
 	/**
 	 * Compile nested block
 	 *
-	 * @param   stdClass  $block      Block
+	 * @param   \stdClass  $block      Block
 	 * @param   array     $selectors  Selectors
 	 *
 	 * @return  void
@@ -418,7 +422,7 @@ class F0FLess
 	/**
 	 * Compile root
 	 *
-	 * @param   stdClass  $root  Root
+	 * @param   \stdClass  $root  Root
 	 *
 	 * @return  void
 	 */
@@ -992,7 +996,7 @@ class F0FLess
 	 * Compile a prop and update $lines or $blocks appropriately
 	 *
 	 * @param   array     $prop   Prop
-	 * @param   stdClass  $block  Block
+	 * @param   \stdClass  $block  Block
 	 * @param   string    $out    Out
 	 *
 	 * @return  void
@@ -1763,9 +1767,9 @@ class F0FLess
 		$w2 = 1.0 - $w1;
 
 		$new = array('color',
-			$w1 * $first[1] + $w2 * $second[1],
-			$w1 * $first[2] + $w2 * $second[2],
-			$w1 * $first[3] + $w2 * $second[3],
+					 $w1 * $first[1] + $w2 * $second[1],
+					 $w1 * $first[2] + $w2 * $second[2],
+					 $w1 * $first[3] + $w2 * $second[3],
 		);
 
 		if ($first_a != 1.0 || $second_a != 1.0)
@@ -1896,9 +1900,9 @@ class F0FLess
 		}
 
 		$out = array('hsl',
-			($H < 0 ? $H + 6 : $H) * 60,
-			$S * 100,
-			$L * 100,
+					 ($H < 0 ? $H + 6 : $H) * 60,
+					 $S * 100,
+					 $L * 100,
 		);
 
 		if (count($color) > 4)
@@ -2218,8 +2222,8 @@ class F0FLess
 					if (is_null($ret))
 					{
 						return array("string", "", array(
-								$name, "(", $args, ")"
-							));
+							$name, "(", $args, ")"
+						));
 					}
 
 					// Convert to a typed value if the result is a php primitive
@@ -2809,14 +2813,14 @@ class F0FLess
 	 *
 	 * @return  void
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function injectVariables($args)
 	{
 		$this->pushEnv();
-		/** F0F -- BEGIN CHANGE * */
-		$parser = new F0FLessParser($this, __METHOD__);
-		/** F0F -- END CHANGE * */
+		/** FOF -- BEGIN CHANGE * */
+		$parser = new Parser($this, __METHOD__);
+		/** FIF -- END CHANGE * */
 		foreach ($args as $name => $strValue)
 		{
 			if ($name{0} != '@')
@@ -2829,7 +2833,7 @@ class F0FLess
 
 			if (!$parser->propertyValue($value))
 			{
-				throw new Exception("failed to parse passed in variable $name: $strValue");
+				throw new \Exception("failed to parse passed in variable $name: $strValue");
 			}
 
 			$this->set($name, $value);
@@ -2896,13 +2900,13 @@ class F0FLess
 	 *
 	 * @return  type
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function compileFile($fname, $outFname = null)
 	{
 		if (!is_readable($fname))
 		{
-			throw new Exception('load error: failed to find ' . $fname);
+			throw new \Exception('load error: failed to find ' . $fname);
 		}
 
 		$pi = pathinfo($fname);
@@ -2921,9 +2925,9 @@ class F0FLess
 
 		if ($outFname !== null)
 		{
-			/** F0F - BEGIN CHANGE * */
-			return F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileWrite($outFname, $out);
-			/** F0F - END CHANGE * */
+			/** FOF - BEGIN CHANGE * */
+			return \JFile::write($outFname, $out);
+			/** FOF - END CHANGE * */
 		}
 
 		return $out;
@@ -3044,7 +3048,7 @@ class F0FLess
 	 *
 	 * @return  type
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 *
 	 * @deprecated  2.0
 	 */
@@ -3087,13 +3091,13 @@ class F0FLess
 	 *
 	 * @param   type  $name  X
 	 *
-	 * @return  F0FLessParser
+	 * @return  Parser
 	 */
 	protected function makeParser($name)
 	{
-		/** F0F -- BEGIN CHANGE * */
-		$parser = new F0FLessParser($this, $name);
-		/** F0F -- END CHANGE * */
+		/** FOF -- BEGIN CHANGE * */
+		$parser = new Parser($this, $name);
+		/** FOF -- END CHANGE * */
 		$parser->writeComments = $this->preserveComments;
 
 		return $parser;
@@ -3114,20 +3118,20 @@ class F0FLess
 	/**
 	 * New formatter
 	 *
-	 * @return  F0FLessFormatterLessjs
+	 * @return  Formatter\Lessjs
 	 */
 	protected function newFormatter()
 	{
-		/** F0F -- BEGIN CHANGE * */
-		$className = "F0FLessFormatterLessjs";
-		/** F0F -- END CHANGE * */
+		/** FOF -- BEGIN CHANGE * */
+		$className = "\\FOF30\\Less\\Formatter\\Lessjs";
+		/** FOF -- END CHANGE * */
 		if (!empty($this->formatterName))
 		{
 			if (!is_string($this->formatterName))
 				return $this->formatterName;
-			/** F0F -- BEGIN CHANGE * */
-			$className = "F0FLessFormatter" . ucfirst($this->formatterName);
-			/** F0F -- END CHANGE * */
+			/** FOF -- BEGIN CHANGE * */
+			$className = "\\FOF30\\Less\\Formatter\\" . ucfirst($this->formatterName);
+			/** FOF -- END CHANGE * */
 		}
 
 		return new $className;

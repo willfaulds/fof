@@ -1,12 +1,13 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  less
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Less\Formatter;
+
+defined('_JEXEC') or die;
 
 /**
  * This class is taken verbatim from:
@@ -19,10 +20,9 @@ defined('F0F_INCLUDED') or die;
  * Copyright 2012, Leaf Corcoran <leafot@gmail.com>
  * Licensed under MIT or GPLv3, see LICENSE
  *
- * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FLessFormatterClassic
+class Classic
 {
 	public $indentChar			 = "  ";
 
@@ -82,7 +82,7 @@ class F0FLessFormatterClassic
 	/**
 	 * Is a block empty?
 	 *
-	 * @param   stdClass  $block  The block to check
+	 * @param   \stdClass  $block  The block to check
 	 *
 	 * @return  boolean  True if the block has no lines or children
 	 */
@@ -107,7 +107,7 @@ class F0FLessFormatterClassic
 	/**
 	 * Output a CSS block
 	 *
-	 * @param   stdClass  $block  The block definition to output
+	 * @param   \stdClass  $block  The block definition to output
 	 *
 	 * @return  void
 	 */
@@ -137,7 +137,7 @@ class F0FLessFormatterClassic
 			}
 
 			echo $pre .
-			implode($selectorSeparator, $block->selectors);
+				implode($selectorSeparator, $block->selectors);
 
 			if ($isSingle)
 			{
