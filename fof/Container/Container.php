@@ -8,6 +8,7 @@
 namespace FOF30\Container;
 
 use FOF30\Autoloader\Autoloader;
+use FOF30\Template\Template;
 use JDatabaseDriver;
 use FOF30\Pimple\Pimple;
 use JSession;
@@ -29,6 +30,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The application dispatcher
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  JSession                            $session            The session manager
+ * @property-read  Template                            $template           The template helper
  */
 class Container extends Pimple
 {
@@ -170,6 +172,15 @@ class Container extends Pimple
 			$this['session'] = function ()
 			{
 				return \JFactory::getSession();
+			};
+		}
+
+		// Template service
+		if (!isset($this['template']))
+		{
+			$this['template'] = function (Container $c)
+			{
+				return new Template($c);
 			};
 		}
 	}
