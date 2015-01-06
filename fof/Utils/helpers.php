@@ -9,6 +9,8 @@
  * Laravel 4 is distributed under the MIT license, see https://github.com/laravel/framework/blob/master/LICENSE.txt
  */
 
+defined('_JEXEC') or die;
+
 if ( ! function_exists('array_add'))
 {
 	/**

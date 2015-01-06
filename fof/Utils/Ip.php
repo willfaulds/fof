@@ -7,6 +7,8 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') or die;
+
 /**
  * IP address helper
  *
