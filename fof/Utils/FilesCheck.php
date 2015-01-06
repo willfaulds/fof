@@ -1,12 +1,15 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  utils
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-defined('F0F_INCLUDED') or die;
+namespace FOF30\Utils;
+
+use FOF30\Timer\Timer;
+
+defined('_JEXEC') or die;
 
 /**
  * A utility class to check that your extension's files are not missing and have not been tampered with.
@@ -28,9 +31,11 @@ defined('F0F_INCLUDED') or die;
  *
  * All directory and file paths are relative to the site's root
  *
- * The directories array is a list of
+ * The directories array is a list of directories which must exist. The files array has the file paths as keys. The
+ * value is a simple array containing the following elements in this order: file size in bytes, MD5 checksum, SHA1
+ * checksum.
  */
-class F0FUtilsFilescheck
+class FilesCheck
 {
 	/** @var string The name of the component */
 	protected $option = '';
@@ -70,8 +75,8 @@ class F0FUtilsFilescheck
 		// Retrieve the date and version from the #__extensions table
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true)->select('*')->from($db->qn('#__extensions'))
-					->where($db->qn('element') . ' = ' . $db->q($this->option))
-					->where($db->qn('type') . ' = ' . $db->q('component'));
+			->where($db->qn('element') . ' = ' . $db->q($this->option))
+			->where($db->qn('type') . ' = ' . $db->q('component'));
 		$extension = $db->setQuery($query)->loadObject();
 
 		// Check the version and date against those from #__extensions. I hate heavily nested IFs as much as the next
@@ -108,7 +113,13 @@ class F0FUtilsFilescheck
 			return;
 		}
 
-		include $filePath;
+		$couldInclude = @include($filePath);
+
+		// If we couldn't include the file with the array OR if it didn't define the array we have to quit.
+		if (!$couldInclude || !isset($phpFileChecker))
+		{
+			return;
+		}
 
 		// Make sure the fileslist.php version and date match the component's version
 		if ($this->version != $phpFileChecker['version'])
@@ -206,7 +217,7 @@ class F0FUtilsFilescheck
 		$totalFolders = count($this->dirList);
 		$fileKeys = array_keys($this->fileList);
 
-		$timer = new F0FUtilsTimer(3.0, 75.0);
+		$timer = new Timer(3.0, 75.0);
 
 		while ($timer->getTimeLeft() && (($idx < $totalFiles) || ($idx < $totalFolders)))
 		{
