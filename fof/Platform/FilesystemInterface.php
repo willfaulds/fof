@@ -140,4 +140,22 @@ interface FilesystemInterface
 	 * @return  boolean  True if successful.
 	 */
 	public function folderCreate($path = '', $mode = 0755);
+
+	/**
+	 * Gets the extension of a file name
+	 *
+	 * @param   string  $file  The file name
+	 *
+	 * @return  string  The file extension
+	 */
+	public function getExt($file);
+
+	/**
+	 * Strips the last extension off of a file name
+	 *
+	 * @param   string  $file  The file name
+	 *
+	 * @return  string  The file name without the extension
+	 */
+	public function stripExt($file);
 }
