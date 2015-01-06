@@ -1,30 +1,30 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @subpackage encrypt
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Encrypt;
+
+use FOF30\Utils\Phpfunc;
+
+defined('_JEXEC') or die;
 
 /**
  * A simple implementation of AES-128, AES-192 and AES-256 encryption using the
  * high performance mcrypt library.
- *
- * @package  FrameworkOnFramework
- * @since    1.0
  */
-class F0FEncryptAes
+class Aes
 {
-	/** @var string The AES cipher to use (this is an mcrypt identifier, not the bit strength) */
-	private $_cipherType = 0;
+	/** @var   string  The AES cipher to use (this is an mcrypt identifier, not the bit strength) */
+	private $cipherType = 0;
 
-	/** @var string Cipher mode. Can be CBC or ECB. We recommend using CBC */
-	private $_cipherMode = 0;
+	/** @var   string  Cipher mode. Can be CBC or ECB. We recommend using CBC */
+	private $cipherMode = 0;
 
-	/** @var string The cipher key (password) */
-	private $_keyString = '';
+	/** @var   string  The cipher key (password) */
+	private $keyString = '';
 
 	/**
 	 * Initialise the AES encryption object
@@ -35,32 +35,32 @@ class F0FEncryptAes
 	 */
 	public function __construct($key, $strength = 256, $mode = 'cbc')
 	{
-		$this->_keyString = $key;
+		$this->keyString = $key;
 
 		switch ($strength)
 		{
 			case 256:
 			default:
-				$this->_cipherType = MCRYPT_RIJNDAEL_256;
+				$this->cipherType = MCRYPT_RIJNDAEL_256;
 				break;
 
 			case 192:
-				$this->_cipherType = MCRYPT_RIJNDAEL_192;
+				$this->cipherType = MCRYPT_RIJNDAEL_192;
 				break;
 
 			case 128:
-				$this->_cipherType = MCRYPT_RIJNDAEL_128;
+				$this->cipherType = MCRYPT_RIJNDAEL_128;
 				break;
 		}
 
 		switch (strtoupper($mode))
 		{
 			case 'ECB':
-				$this->_cipherMode = MCRYPT_MODE_ECB;
+				$this->cipherMode = MCRYPT_MODE_ECB;
 				break;
 
 			case 'CBC':
-				$this->_cipherMode = MCRYPT_MODE_CBC;
+				$this->cipherMode = MCRYPT_MODE_CBC;
 				break;
 		}
 	}
@@ -77,17 +77,17 @@ class F0FEncryptAes
 	 */
 	public function encryptString($stringToEncrypt, $base64encoded = true)
 	{
-		if (strlen($this->_keyString) != 32)
+		if (strlen($this->keyString) != 32)
 		{
-			$key = hash('sha256', $this->_keyString, true);
+			$key = hash('sha256', $this->keyString, true);
 		}
 		else
 		{
-			$key = $this->_keyString;
+			$key = $this->keyString;
 		}
 
 		// Set up the IV (Initialization Vector)
-		$iv_size = mcrypt_get_iv_size($this->_cipherType, $this->_cipherMode);
+		$iv_size = mcrypt_get_iv_size($this->cipherType, $this->cipherMode);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
 
 		if (empty($iv))
@@ -101,7 +101,7 @@ class F0FEncryptAes
 		}
 
 		// Encrypt the data
-		$cipherText = mcrypt_encrypt($this->_cipherType, $key, $stringToEncrypt, $this->_cipherMode, $iv);
+		$cipherText = mcrypt_encrypt($this->cipherType, $key, $stringToEncrypt, $this->cipherMode, $iv);
 
 		// Prepend the IV to the ciphertext
 		$cipherText = $iv . $cipherText;
@@ -126,13 +126,13 @@ class F0FEncryptAes
 	 */
 	public function decryptString($stringToDecrypt, $base64encoded = true)
 	{
-		if (strlen($this->_keyString) != 32)
+		if (strlen($this->keyString) != 32)
 		{
-			$key = hash('sha256', $this->_keyString, true);
+			$key = hash('sha256', $this->keyString, true);
 		}
 		else
 		{
-			$key = $this->_keyString;
+			$key = $this->keyString;
 		}
 
 		if ($base64encoded)
@@ -141,14 +141,14 @@ class F0FEncryptAes
 		}
 
 		// Calculate the IV size
-		$iv_size = mcrypt_get_iv_size($this->_cipherType, $this->_cipherMode);
+		$iv_size = mcrypt_get_iv_size($this->cipherType, $this->cipherMode);
 
 		// Extract IV
 		$iv = substr($stringToDecrypt, 0, $iv_size);
 		$stringToDecrypt = substr($stringToDecrypt, $iv_size);
 
 		// Decrypt the data
-		$plainText = mcrypt_decrypt($this->_cipherType, $key, $stringToDecrypt, $this->_cipherMode, $iv);
+		$plainText = mcrypt_decrypt($this->cipherType, $key, $stringToDecrypt, $this->cipherMode, $iv);
 
 		return $plainText;
 	}
@@ -158,59 +158,64 @@ class F0FEncryptAes
 	 *
 	 * @return boolean
 	 */
-	public static function isSupported()
+	public static function isSupported(Phpfunc $phpfunc = null)
 	{
-		if (!function_exists('mcrypt_get_key_size'))
+		if (!is_object($phpfunc) || !($phpfunc instanceof $phpfunc))
+		{
+			$phpfunc = new Phpfunc();
+		}
+
+		if (!$phpfunc->function_exists('mcrypt_get_key_size'))
 		{
 			return false;
 		}
 
-		if (!function_exists('mcrypt_get_iv_size'))
+		if (!$phpfunc->function_exists('mcrypt_get_iv_size'))
 		{
 			return false;
 		}
 
-		if (!function_exists('mcrypt_create_iv'))
+		if (!$phpfunc->function_exists('mcrypt_create_iv'))
 		{
 			return false;
 		}
 
-		if (!function_exists('mcrypt_encrypt'))
+		if (!$phpfunc->function_exists('mcrypt_encrypt'))
 		{
 			return false;
 		}
 
-		if (!function_exists('mcrypt_decrypt'))
+		if (!$phpfunc->function_exists('mcrypt_decrypt'))
 		{
 			return false;
 		}
 
-		if (!function_exists('mcrypt_list_algorithms'))
+		if (!$phpfunc->function_exists('mcrypt_list_algorithms'))
 		{
 			return false;
 		}
 
-		if (!function_exists('hash'))
+		if (!$phpfunc->function_exists('hash'))
 		{
 			return false;
 		}
 
-		if (!function_exists('hash_algos'))
+		if (!$phpfunc->function_exists('hash_algos'))
 		{
 			return false;
 		}
 
-		if (!function_exists('base64_encode'))
+		if (!$phpfunc->function_exists('base64_encode'))
 		{
 			return false;
 		}
 
-		if (!function_exists('base64_decode'))
+		if (!$phpfunc->function_exists('base64_decode'))
 		{
 			return false;
 		}
 
-		$algorightms = mcrypt_list_algorithms();
+		$algorightms = $phpfunc->mcrypt_list_algorithms();
 
 		if (!in_array('rijndael-128', $algorightms))
 		{
@@ -227,7 +232,7 @@ class F0FEncryptAes
 			return false;
 		}
 
-		$algorightms = hash_algos();
+		$algorightms = $phpfunc->hash_algos();
 
 		if (!in_array('sha256', $algorightms))
 		{

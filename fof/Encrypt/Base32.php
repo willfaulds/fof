@@ -1,19 +1,19 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @subpackage encrypt
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Encrypt;
+
+defined('_JEXEC') or die;
 
 /**
- * F0FEncryptBase32
- *
- * @package  FrameworkOnFramework
- * @since    1.0
+ * Base32 encoding class, used by the TOTP
+ * @package Awf\Encrypt
  */
-class F0FEncryptBase32
+class Base32
 {
 	/**
 	 * CSRFC3548
@@ -24,8 +24,6 @@ class F0FEncryptBase32
 	const CSRFC3548 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
 	/**
-	 * str2bin
-	 *
 	 * Converts any ascii string to a binary string
 	 *
 	 * @param   string  $str  The string you want to convert
@@ -40,26 +38,24 @@ class F0FEncryptBase32
 	}
 
 	/**
-	 * bin2str
-	 *
 	 * Converts a binary string to an ascii string
 	 *
 	 * @param   string  $str  The string of 0's and 1's you want to convert
 	 *
 	 * @return  string  The ascii output
 	 *
-	 * @throws Exception
+	 * @throws  \Exception
 	 */
 	private function bin2str($str)
 	{
 		if (strlen($str) % 8 > 0)
 		{
-			throw new Exception('Length must be divisible by 8');
+			throw new \Exception('Length must be divisible by 8');
 		}
 
 		if (!preg_match('/^[01]+$/', $str))
 		{
-			throw new Exception('Only 0\'s and 1\'s are permitted');
+			throw new \Exception('Only 0\'s and 1\'s are permitted');
 		}
 
 		preg_match_all('/.{8}/', $str, $chrs);
@@ -72,26 +68,24 @@ class F0FEncryptBase32
 	}
 
 	/**
-	 * fromBin
-	 *
 	 * Converts a correct binary string to base32
 	 *
 	 * @param   string  $str  The string of 0's and 1's you want to convert
 	 *
 	 * @return  string  String encoded as base32
 	 *
-	 * @throws exception
+	 * @throws  \Exception
 	 */
 	private function fromBin($str)
 	{
 		if (strlen($str) % 8 > 0)
 		{
-			throw new Exception('Length must be divisible by 8');
+			throw new \Exception('Length must be divisible by 8');
 		}
 
 		if (!preg_match('/^[01]+$/', $str))
 		{
-			throw new Exception('Only 0\'s and 1\'s are permitted');
+			throw new \Exception('Only 0\'s and 1\'s are permitted');
 		}
 
 		// Base32 works on the first 5 bits of a byte, so we insert blanks to pad it out
@@ -110,31 +104,29 @@ class F0FEncryptBase32
 		}
 
 		preg_match_all('/.{8}/', $str, $chrs);
-		$chrs = array_map(array($this, '_mapcharset'), $chrs[0]);
+		$chrs = array_map(array($this, 'mapCharset'), $chrs[0]);
 
 		return join('', $chrs);
 	}
 
 	/**
-	 * toBin
-	 *
 	 * Accepts a base32 string and returns an ascii binary string
 	 *
 	 * @param   string  $str  The base32 string to convert
 	 *
 	 * @return  string  Ascii binary string
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	private function toBin($str)
 	{
 		if (!preg_match('/^[' . self::CSRFC3548 . ']+$/', $str))
 		{
-			throw new Exception('Must match character set');
+			throw new \Exception('Base64 string must match character set');
 		}
 
 		// Convert the base32 string back to a binary string
-		$str = join('', array_map(array($this, '_mapbin'), str_split($str)));
+		$str = join('', array_map(array($this, 'mapBin'), str_split($str)));
 
 		// Remove the extra 0's we added
 		$str = preg_replace('/000(.{5})/', '$1', $str);
@@ -152,8 +144,6 @@ class F0FEncryptBase32
 	}
 
 	/**
-	 * fromString
-	 *
 	 * Convert any string to a base32 string
 	 * This should be binary safe...
 	 *
@@ -167,8 +157,6 @@ class F0FEncryptBase32
 	}
 
 	/**
-	 * toString
-	 *
 	 * Convert any base32 string to a normal sctring
 	 * This should be binary safe...
 	 *
@@ -184,8 +172,6 @@ class F0FEncryptBase32
 	}
 
 	/**
-	 * _mapcharset
-	 *
 	 * Used with array_map to map the bits from a binary string
 	 * directly into a base32 character set
 	 *
@@ -195,7 +181,7 @@ class F0FEncryptBase32
 	 *
 	 * @access private
 	 */
-	private function _mapcharset($str)
+	private function mapCharset($str)
 	{
 		// Huh!
 		$x = self::CSRFC3548;
@@ -204,8 +190,6 @@ class F0FEncryptBase32
 	}
 
 	/**
-	 * _mapbin
-	 *
 	 * Used with array_map to map the characters from a base32
 	 * character set directly into a binary string
 	 *
@@ -215,8 +199,9 @@ class F0FEncryptBase32
 	 *
 	 * @access private
 	 */
-	private function _mapbin($chr)
+	private function mapBin($chr)
 	{
 		return sprintf('%08b', strpos(self::CSRFC3548, $chr));
 	}
-}
+
+} 
