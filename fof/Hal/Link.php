@@ -1,25 +1,31 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  hal
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Hal;
+
+defined('_JEXEC') or die;
 
 /**
  * Implementation of the Hypertext Application Language link in PHP.
  *
- * @package  FrameworkOnFramework
- * @since    2.1
+ * @see http://stateless.co/hal_specification.html
+ *
+ * @property  $href       string
+ * @property  $templated  bool
+ * @property  $name       string
+ * @property  $hreflang   string
  */
-class F0FHalLink
+class Link
 {
 	/**
 	 * For indicating the target URI. Corresponds with the ’Target IRI’ as
 	 * defined in Web Linking (RFC 5988). This attribute MAY contain a URI
 	 * Template (RFC6570) and in which case, SHOULD be complemented by an
-	 * additional templated attribtue on the link with a boolean value true.
+	 * additional templated attribute on the link with a boolean value true.
 	 *
 	 * @var string
 	 */
@@ -56,7 +62,7 @@ class F0FHalLink
 	protected $_title = null;
 
 	/**
-	 * Public constructor of a F0FHalLink object
+	 * Public constructor of a FOFHalLink object
 	 *
 	 * @param   string   $href       See $this->_href
 	 * @param   boolean  $templated  See $this->_templated
@@ -64,13 +70,13 @@ class F0FHalLink
 	 * @param   string   $hreflang   See $this->_hreflang
 	 * @param   string   $title      See $this->_title
 	 *
-	 * @throws  RuntimeException  If $href is empty
+	 * @throws  \RuntimeException  If $href is empty
 	 */
 	public function __construct($href, $templated = false, $name = null, $hreflang = null, $title = null)
 	{
 		if (empty($href))
 		{
-			throw new RuntimeException('A HAL link must always have a non-empty href');
+			throw new \RuntimeException('A HAL link must always have a non-empty href');
 		}
 
 		$this->_href = $href;

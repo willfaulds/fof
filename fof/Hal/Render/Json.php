@@ -1,19 +1,24 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  hal
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Hal\Render;
+
+use FOF30\Hal\Document;
+use FOF30\Hal\Link;
+use FOF30\Mvc\DataModel;
+
+defined('_JEXEC') or die;
 
 /**
  * Implements the HAL over JSON renderer
  *
- * @package  FrameworkOnFramework
- * @since    2.1
+ * @see http://stateless.co/hal_specification.html
  */
-class F0FHalRenderJson implements F0FHalRenderInterface
+class Json implements RenderInterface
 {
 	/**
 	 * When data is an array we'll output the list of data under this key
@@ -25,16 +30,16 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 	/**
 	 * The document to render
 	 *
-	 * @var   F0FHalDocument
+	 * @var   Document
 	 */
 	protected $_document;
 
 	/**
 	 * Public constructor
 	 *
-	 * @param   F0FHalDocument  &$document  The document to render
+	 * @param   Document  &$document  The document to render
 	 */
-	public function __construct(&$document)
+	public function __construct(Document &$document)
 	{
 		$this->_document = $document;
 	}
@@ -62,11 +67,11 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 			$jsonOptions = 0;
 		}
 
-		$serialiseThis = new stdClass;
+		$serialiseThis = new \stdClass;
 
 		// Add links
 		$collection = $this->_document->getLinks();
-		$serialiseThis->_links = new stdClass;
+		$serialiseThis->_links = new \stdClass;
 
 		foreach ($collection as $rel => $links)
 		{
@@ -91,10 +96,12 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 
 		if (!empty($collection))
 		{
-			$serialiseThis->_embedded->$rel = new stdClass;
+			$serialiseThis->_embedded = new \stdClass;
 
 			foreach ($collection as $rel => $embeddeddocs)
 			{
+				$serialiseThis->_embedded->$rel = array();
+
 				if (!is_array($embeddeddocs))
 				{
 					$embeddeddocs = array($embeddeddocs);
@@ -102,7 +109,7 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 
 				foreach ($embeddeddocs as $embedded)
 				{
-					$renderer = new F0FHalRenderJson($embedded);
+					$renderer = new static($embedded);
 					array_push($serialiseThis->_embedded->$rel, $renderer->render($options));
 				}
 			}
@@ -113,9 +120,9 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 
 		if (is_object($data))
 		{
-			if ($data instanceof F0FTable)
+			if ($data instanceof DataModel)
 			{
-				$data = $data->getData();
+				$data = $data->toArray();
 			}
 			else
 			{
@@ -139,14 +146,14 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 	}
 
 	/**
-	 * Converts a F0FHalLink object into a stdClass object which will be used
+	 * Converts a FOFHalLink object into a stdClass object which will be used
 	 * for JSON serialisation
 	 *
-	 * @param   F0FHalLink  $link  The link you want converted
+	 * @param   Link  $link  The link you want converted
 	 *
-	 * @return  stdClass  The converted link object
+	 * @return  \stdClass  The converted link object
 	 */
-	protected function _getLink(F0FHalLink $link)
+	protected function _getLink(Link $link)
 	{
 		$ret = array(
 			'href'	=> $link->href
@@ -157,17 +164,17 @@ class F0FHalRenderJson implements F0FHalRenderInterface
 			$ret['templated'] = 'true';
 		}
 
-		if (!empty($link->name))
+		if ($link->name)
 		{
 			$ret['name'] = $link->name;
 		}
 
-		if (!empty($link->hreflang))
+		if ($link->hreflang)
 		{
 			$ret['hreflang'] = $link->hreflang;
 		}
 
-		if (!empty($link->title))
+		if ($link->title)
 		{
 			$ret['title'] = $link->title;
 		}

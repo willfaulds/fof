@@ -1,25 +1,28 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  hal
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Hal;
+
+use FOF30\Hal\Render\RenderInterface;
+
+defined('_JEXEC') or die;
 
 /**
  * Implementation of the Hypertext Application Language document in PHP. It can
  * be used to provide hypermedia in a web service context.
  *
- * @package  FrameworkOnFramework
- * @since    2.1
+ * @see http://stateless.co/hal_specification.html
  */
-class F0FHalDocument
+class Document
 {
 	/**
 	 * The collection of links of this document
 	 *
-	 * @var   F0FHalLinks
+	 * @var   \FOF30\Hal\Links
 	 */
 	private $_links = null;
 
@@ -32,7 +35,7 @@ class F0FHalDocument
 	private $_data = null;
 
 	/**
-	 * Embedded documents. This is an array of F0FHalDocument instances.
+	 * Embedded documents. This is an array of FOFHalDocument instances.
 	 *
 	 * @var   array
 	 */
@@ -54,24 +57,24 @@ class F0FHalDocument
 	public function __construct($data = null)
 	{
 		$this->_data = $data;
-		$this->_links = new F0FHalLinks;
+		$this->_links = new Links;
 	}
 
 	/**
 	 * Add a link to the document
 	 *
-	 * @param   string      $rel        The relation of the link to the document.
-	 *                                  See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST always have
-	 *                                  a "self" link.
-	 * @param   F0FHalLink  $link       The actual link object
-	 * @param   boolean     $overwrite  When false and a link of $rel relation exists, an array of links is created. Otherwise the
-	 *                                  existing link is overwriten with the new one
+	 * @param   string   $rel        The relation of the link to the document.
+	 *                               See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST always have
+	 *                               a "self" link.
+	 * @param   Link     $link       The actual link object
+	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of links is created. Otherwise the
+	 *                              existing link is overwriten with the new one
 	 *
-	 * @see F0FHalLinks::addLink
+	 * @see Links::addLink
 	 *
 	 * @return  boolean  True if the link was added to the collection
 	 */
-	public function addLink($rel, F0FHalLink $link, $overwrite = true)
+	public function addLink($rel, Link $link, $overwrite = true)
 	{
 		return $this->_links->addLink($rel, $link, $overwrite);
 	}
@@ -80,12 +83,12 @@ class F0FHalDocument
 	 * Add links to the document
 	 *
 	 * @param   string   $rel        The relation of the link to the document. See RFC 5988
-	 * @param   array    $links      An array of F0FHalLink objects
+	 * @param   array    $links      An array of FOFHalLink objects
 	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of
 	 *                               links is created. Otherwise the existing link is overwriten
 	 *                               with the new one
 	 *
-	 * @see F0FHalLinks::addLinks
+	 * @see Links::addLinks
 	 *
 	 * @return  boolean
 	 */
@@ -97,7 +100,7 @@ class F0FHalDocument
 	/**
 	 * Add data to the document
 	 *
-	 * @param   stdClass  $data       The data to add
+	 * @param   \stdClass  $data       The data to add
 	 * @param   boolean   $overwrite  Should I overwrite existing data?
 	 *
 	 * @return  void
@@ -127,17 +130,19 @@ class F0FHalDocument
 	/**
 	 * Add an embedded document
 	 *
-	 * @param   string          $rel        The relation of the embedded document to its container document
-	 * @param   F0FHalDocument  $document   The document to add
-	 * @param   boolean         $overwrite  Should I overwrite existing data with the same relation?
+	 * @param   string    $rel        The relation of the embedded document to its container document
+	 * @param   Document  $document   The document to add
+	 * @param   boolean   $overwrite  Should I overwrite existing data with the same relation?
 	 *
 	 * @return  boolean
 	 */
-	public function addEmbedded($rel, F0FHalDocument $document, $overwrite = true)
+	public function addEmbedded($rel, Document $document, $overwrite = true)
 	{
-		if (!array_key_exists($rel, $this->_embedded) || !$overwrite)
+		if (!array_key_exists($rel, $this->_embedded) || $overwrite)
 		{
 			$this->_embedded[$rel] = $document;
+
+			return true;
 		}
 		elseif (array_key_exists($rel, $this->_embedded) && !$overwrite)
 		{
@@ -147,6 +152,8 @@ class F0FHalDocument
 			}
 
 			$this->_embedded[$rel][] = $document;
+
+			return true;
 		}
 		else
 		{
@@ -171,7 +178,7 @@ class F0FHalDocument
 	 *
 	 * @param   string  $rel  Optional; the relation to return the embedded documents for
 	 *
-	 * @return  array|F0FHalDocument
+	 * @return  array|Document
 	 */
 	public function getEmbedded($rel = null)
 	{
@@ -192,7 +199,7 @@ class F0FHalDocument
 	/**
 	 * Return the data attached to this document
 	 *
-	 * @return   array|stdClass
+	 * @return   array|\stdClass
 	 */
 	public function getData()
 	{
@@ -207,17 +214,18 @@ class F0FHalDocument
 	 *
 	 * @return  string  The rendered document
 	 *
-	 * @throws  RuntimeException  If the format is unknown, i.e. there is no suitable renderer
+	 * @throws  \RuntimeException  If the format is unknown, i.e. there is no suitable renderer
 	 */
 	public function render($format = 'json')
 	{
-		$class_name = 'F0FHalRender' . ucfirst($format);
+		$class_name = '\\FOF30\\Hal\\Render\\' . ucfirst($format);
 
 		if (!class_exists($class_name, true))
 		{
-			throw new RuntimeException("Unsupported HAL Document format '$format'. Render aborted.");
+			throw new \RuntimeException("Unsupported HAL Document format '$format'. Render aborted.");
 		}
 
+		/** @var RenderInterface $renderer */
 		$renderer = new $class_name($this);
 
 		return $renderer->render(
