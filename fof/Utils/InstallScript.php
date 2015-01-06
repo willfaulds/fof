@@ -1,12 +1,25 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  utils
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-defined('F0F_INCLUDED') or die;
+namespace FOF30\Utils;
+
+use FOF30\Database\Installer;
+use FOF30\Template\Template;
+use Exception;
+use JDate;
+use JFactory;
+use JFile;
+use JFolder;
+use JInstaller;
+use JLoader;
+use JLog;
+use JText;
+
+defined('_JEXEC') or die;
 
 JLoader::import('joomla.filesystem.folder');
 JLoader::import('joomla.filesystem.file');
@@ -16,7 +29,7 @@ JLoader::import('joomla.utilities.date');
 /**
  * A helper class which you can use to create component installation scripts
  */
-abstract class F0FUtilsInstallscript
+class InstallScript
 {
 	/**
 	 * The component's name
@@ -197,7 +210,7 @@ abstract class F0FUtilsInstallscript
 	 *
 	 * This array contains the message definitions for the Post-installation Messages component added in Joomla! 3.2 and
 	 * later versions. Each element is also a hashed array. For the keys used in these message definitions please
-	 * @see F0FUtilsInstallscript::addPostInstallationMessage
+	 * @see InstallScript::addPostInstallationMessage
 	 *
 	 * @var array
 	 */
@@ -207,8 +220,8 @@ abstract class F0FUtilsInstallscript
 	 * Joomla! pre-flight event. This runs before Joomla! installs or updates the component. This is our last chance to
 	 * tell Joomla! if it should abort the installation.
 	 *
-	 * @param   string     $type   Installation type (install, update, discover_install)
-	 * @param   JInstaller $parent Parent object
+	 * @param   string                       $type    Installation type (install, update, discover_install)
+	 * @param   \JInstallerAdapterComponent  $parent  Parent object
 	 *
 	 * @return  boolean  True to let the installation proceed, false to halt the installation
 	 */
@@ -234,14 +247,7 @@ abstract class F0FUtilsInstallscript
 			{
 				$msg = "<p>You need PHP $this->minimumPHPVersion or later to install this component</p>";
 
-				if (version_compare(JVERSION, '3.0', 'gt'))
-				{
-					JLog::add($msg, JLog::WARNING, 'jerror');
-				}
-				else
-				{
-					JError::raiseWarning(100, $msg);
-				}
+				JLog::add($msg, JLog::WARNING, 'jerror');
 
 				return false;
 			}
@@ -252,14 +258,7 @@ abstract class F0FUtilsInstallscript
 		{
 			$msg = "<p>You need Joomla! $this->minimumJoomlaVersion or later to install this component</p>";
 
-			if (version_compare(JVERSION, '3.0', 'gt'))
-			{
-				JLog::add($msg, JLog::WARNING, 'jerror');
-			}
-			else
-			{
-				JError::raiseWarning(100, $msg);
-			}
+			JLog::add($msg, JLog::WARNING, 'jerror');
 
 			return false;
 		}
@@ -269,14 +268,7 @@ abstract class F0FUtilsInstallscript
 		{
 			$msg = "<p>You need Joomla! $this->maximumJoomlaVersion or earlier to install this component</p>";
 
-			if (version_compare(JVERSION, '3.0', 'gt'))
-			{
-				JLog::add($msg, JLog::WARNING, 'jerror');
-			}
-			else
-			{
-				JError::raiseWarning(100, $msg);
-			}
+			JLog::add($msg, JLog::WARNING, 'jerror');
 
 			return false;
 		}
@@ -302,13 +294,13 @@ abstract class F0FUtilsInstallscript
 	 * or updating your component. This is the last chance you've got to perform any additional installations, clean-up,
 	 * database updates and similar housekeeping functions.
 	 *
-	 * @param   string     $type   install, update or discover_update
-	 * @param   JInstaller $parent Parent object
+	 * @param   string                       $type   install, update or discover_update
+	 * @param   \JInstallerAdapterComponent  $parent Parent object
 	 */
 	public function postflight($type, $parent)
 	{
 		// Install or update database
-		$dbInstaller = new F0FDatabaseInstaller(array(
+		$dbInstaller = new Installer(array(
 			'dbinstaller_directory' =>
 				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
 				$this->schemaXmlPath
@@ -388,12 +380,9 @@ abstract class F0FUtilsInstallscript
 		$uninstall_status = $this->uninstallObsoleteSubextensions($parent);
 
 		// Clear the FOF cache
-		$platform = F0FPlatform::getInstance();
-
-		if (method_exists($platform, 'clearCache'))
-		{
-			F0FPlatform::getInstance()->clearCache();
-		}
+		$false = false;
+		$cache = \JFactory::getCache('fof', '');
+		$cache->store($false, 'cache', 'fof');
 
 		// Make sure the Joomla! menu structure is correct
 		$this->_rebuildMenu();
@@ -405,12 +394,12 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param   JInstaller $parent The parent object
+	 * @param   \JInstallerAdapterComponent  $parent  The parent object
 	 */
 	public function uninstall($parent)
 	{
 		// Uninstall database
-		$dbInstaller = new F0FDatabaseInstaller(array(
+		$dbInstaller = new Installer(array(
 			'dbinstaller_directory' =>
 				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
 				$this->schemaXmlPath
@@ -430,7 +419,7 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Copies the CLI scripts into Joomla!'s cli directory
 	 *
-	 * @param JInstaller $parent
+	 * @param   \JInstallerAdapterComponent  $parent
 	 */
 	protected function copyCliFiles($parent)
 	{
@@ -452,6 +441,11 @@ abstract class F0FUtilsInstallscript
 
 	/**
 	 * Renders the message after installing or upgrading the component
+	 *
+	 * @param   \stdClass                    $status                      Component installation status
+	 * @param   array                        $fofInstallationStatus       FOF installation status
+	 * @param   array                        $strapperInstallationStatus  Akeeba Strapper installation status
+	 * @param   \JInstallerAdapterComponent  $parent                      Parent class calling us
 	 */
 	protected function renderPostInstallation($status, $fofInstallationStatus, $strapperInstallationStatus, $parent)
 	{
@@ -541,6 +535,9 @@ abstract class F0FUtilsInstallscript
 
 	/**
 	 * Renders the message after uninstalling the component
+	 *
+	 * @param  \stdClass                    $status  Uninstallation status
+	 * @param  \JInstallerAdapterComponent  $parent  Parent class calling us
 	 */
 	protected function renderPostUninstallation($status, $parent)
 	{
@@ -779,84 +776,14 @@ abstract class F0FUtilsInstallscript
 				}
 			}
 		}
-
-		// Remove #__menu records for good measure! –– I think this is not necessary and causes the menu item to
-		// disappear on extension update.
-		/**
-		$query = $db->getQuery(true);
-		$query->select('id')
-			->from('#__menu')
-			->where($db->qn('type') . ' = ' . $db->q('component'))
-			->where($db->qn('menutype') . ' = ' . $db->q('main'))
-			->where($db->qn('link') . ' LIKE ' . $db->q('index.php?option=' . $this->componentName));
-		$db->setQuery($query);
-
-		try
-		{
-			$ids1 = $db->loadColumn();
-		}
-		catch (Exception $exc)
-		{
-			$ids1 = array();
-		}
-
-		if (empty($ids1))
-		{
-			$ids1 = array();
-		}
-
-		$query = $db->getQuery(true);
-		$query->select('id')
-			->from('#__menu')
-			->where($db->qn('type') . ' = ' . $db->q('component'))
-			->where($db->qn('menutype') . ' = ' . $db->q('main'))
-			->where($db->qn('link') . ' LIKE ' . $db->q('index.php?option=' . $this->componentName . '&%'));
-		$db->setQuery($query);
-
-		try
-		{
-			$ids2 = $db->loadColumn();
-		}
-		catch (Exception $exc)
-		{
-			$ids2 = array();
-		}
-
-		if (empty($ids2))
-		{
-			$ids2 = array();
-		}
-
-		$ids = array_merge($ids1, $ids2);
-
-		if (!empty($ids))
-		{
-			foreach ($ids as $id)
-			{
-				$query = $db->getQuery(true);
-				$query->delete('#__menu')
-					->where($db->qn('id') . ' = ' . $db->q($id));
-				$db->setQuery($query);
-
-				try
-				{
-					$db->execute();
-				}
-				catch (Exception $exc)
-				{
-					// Nothing
-				}
-			}
-		}
-		/**/
 	}
 
 	/**
 	 * Installs subextensions (modules, plugins) bundled with the main extension
 	 *
-	 * @param JInstaller $parent
+	 * @param   \JInstallerAdapterComponent  $parent
 	 *
-	 * @return JObject The subextension installation status
+	 * @return  \stdClass  The subextension installation status
 	 */
 	protected function installSubextensions($parent)
 	{
@@ -864,7 +791,7 @@ abstract class F0FUtilsInstallscript
 
 		$db = JFactory::getDbo();
 
-		$status = new JObject();
+		$status = new \JObject();
 		$status->modules = array();
 		$status->plugins = array();
 
@@ -1094,7 +1021,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Clear com_modules and com_plugins cache (needed when we alter module/plugin state)
-		F0FUtilsCacheCleaner::clearPluginsAndModulesCache();
+		CacheCleaner::clearPluginsAndModulesCache();
 
 		return $status;
 	}
@@ -1102,15 +1029,15 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Uninstalls subextensions (modules, plugins) bundled with the main extension
 	 *
-	 * @param   JInstaller $parent The parent object
+	 * @param   \JInstallerAdapterComponent  $parent  The parent object
 	 *
-	 * @return  stdClass  The subextension uninstallation status
+	 * @return  \stdClass  The subextension uninstallation status
 	 */
 	protected function uninstallSubextensions($parent)
 	{
 		$db = JFactory::getDBO();
 
-		$status = new stdClass();
+		$status = new \stdClass();
 		$status->modules = array();
 		$status->plugins = array();
 
@@ -1200,7 +1127,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Clear com_modules and com_plugins cache (needed when we alter module/plugin state)
-		F0FUtilsCacheCleaner::clearPluginsAndModulesCache();
+		CacheCleaner::clearPluginsAndModulesCache();
 
 		return $status;
 	}
@@ -1248,7 +1175,7 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Installs FOF if necessary
 	 *
-	 * @param   JInstaller $parent The parent object
+	 * @param   \JInstallerAdapterComponent  $parent  The parent object
 	 *
 	 * @return  array  The installation status
 	 */
@@ -1271,11 +1198,11 @@ abstract class F0FUtilsInstallscript
 		// Get the target path
 		if (!defined('JPATH_LIBRARIES'))
 		{
-			$target = JPATH_ROOT . '/libraries/f0f';
+			$target = JPATH_ROOT . '/libraries/fof30';
 		}
 		else
 		{
-			$target = JPATH_LIBRARIES . '/f0f';
+			$target = JPATH_LIBRARIES . '/fof30';
 		}
 
 		// Do I have to install FOF?
@@ -1293,7 +1220,7 @@ abstract class F0FUtilsInstallscript
 
 			if (JFile::exists($target . '/version.txt'))
 			{
-				$rawData = JFile::read($target . '/version.txt');
+				$rawData = @file_get_contents($target . '/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$fofVersion['installed'] = array(
@@ -1384,7 +1311,7 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Installs Akeeba Strapper if necessary
 	 *
-	 * @param   JInstaller $parent The parent object
+	 * @param   \JInstallerAdapterComponent  $parent  The parent object
 	 *
 	 * @return  array  The installation status
 	 */
@@ -1417,7 +1344,7 @@ abstract class F0FUtilsInstallscript
 
 			if (JFile::exists($target . '/version.txt'))
 			{
-				$rawData = JFile::read($target . '/version.txt');
+				$rawData = @file_get_contents($target . '/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$strapperVersion['installed'] = array(
@@ -1433,7 +1360,7 @@ abstract class F0FUtilsInstallscript
 				);
 			}
 
-			$rawData = JFile::read($source . '/version.txt');
+			$rawData = @file_get_contents($source . '/version.txt');
 			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info = explode("\n", $rawData);
 			$strapperVersion['package'] = array(
@@ -1463,7 +1390,7 @@ abstract class F0FUtilsInstallscript
 
 			if (JFile::exists($target . '/version.txt'))
 			{
-				$rawData = JFile::read($target . '/version.txt');
+				$rawData = @file_get_contents($target . '/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$strapperVersion['installed'] = array(
@@ -1479,7 +1406,7 @@ abstract class F0FUtilsInstallscript
 				);
 			}
 
-			$rawData = JFile::read($source . '/version.txt');
+			$rawData = @file_get_contents($source . '/version.txt');
 			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info = explode("\n", $rawData);
 
@@ -1507,9 +1434,9 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Uninstalls obsolete subextensions (modules, plugins) bundled with the main extension
 	 *
-	 * @param   JInstaller $parent The parent object
+	 * @param   \JInstallerAdapterComponent  $parent  The parent object
 	 *
-	 * @return  stdClass The subextension uninstallation status
+	 * @return  \stdClass The subextension uninstallation status
 	 */
 	protected function uninstallObsoleteSubextensions($parent)
 	{
@@ -1517,7 +1444,7 @@ abstract class F0FUtilsInstallscript
 
 		$db = JFactory::getDBO();
 
-		$status = new stdClass();
+		$status = new \stdClass();
 		$status->modules = array();
 		$status->plugins = array();
 
@@ -1593,17 +1520,17 @@ abstract class F0FUtilsInstallscript
 	}
 
 	/**
-	 * @param JInstallerAdapterComponent $parent
+	 * @param   \JInstallerAdapterComponent  $parent
 	 *
-	 * @return bool
+	 * @return  bool
 	 *
-	 * @throws Exception When the Joomla! menu is FUBAR
+	 * @throws  Exception  When the Joomla! menu is FUBAR
 	 */
 	private function _createAdminMenus($parent)
 	{
 		$db = $parent->getParent()->getDbo();
-		/** @var JTableMenu $table */
-		$table = JTable::getInstance('menu');
+		/** @var \JTableMenu $table */
+		$table = \JTable::getInstance('menu');
 		$option = $parent->get('element');
 
 		// If a component exists with this option in the table then we don't need to add menus
@@ -1732,7 +1659,7 @@ abstract class F0FUtilsInstallscript
 		{
 			$table->setLocation($rootItemId, 'last-child');
 		}
-		catch (InvalidArgumentException $e)
+		catch (\InvalidArgumentException $e)
 		{
 			JLog::add($e->getMessage(), JLog::WARNING, 'jerror');
 
@@ -1758,7 +1685,7 @@ abstract class F0FUtilsInstallscript
 			if (empty($menu_ids_level1))
 			{
 				// Oops! Could not get the menu ID. Go back and rollback changes.
-				JError::raiseWarning(1, $table->getError());
+				\JError::raiseWarning(1, $table->getError());
 
 				return false;
 			}
@@ -1787,7 +1714,7 @@ abstract class F0FUtilsInstallscript
 					->where('id in (' . $ids . ')');
 
 				$db->setQuery($query);
-				$db->query();
+				$db->execute();
 
 				// Retry creating the menu item
 				$table->setLocation($rootItemId, 'last-child');
@@ -1795,7 +1722,7 @@ abstract class F0FUtilsInstallscript
 				if (!$table->bind($data) || !$table->check() || !$table->store())
 				{
 					// Install failed, warn user and rollback changes
-					JError::raiseWarning(1, $table->getError());
+					\JError::raiseWarning(1, $table->getError());
 
 					return false;
 				}
@@ -1876,13 +1803,13 @@ abstract class F0FUtilsInstallscript
 				$data['link'] = 'index.php?option=' . $option . $qstring;
 			}
 
-			$table = JTable::getInstance('menu');
+			$table = \JTable::getInstance('menu');
 
 			try
 			{
 				$table->setLocation($parent_id, 'last-child');
 			}
-			catch (InvalidArgumentException $e)
+			catch (\InvalidArgumentException $e)
 			{
 				return false;
 			}
@@ -1906,9 +1833,9 @@ abstract class F0FUtilsInstallscript
 	/**
 	 * Make sure the Component menu items are really published!
 	 *
-	 * @param JInstallerAdapterComponent $parent
+	 * @param   \JInstallerAdapterComponent  $parent
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 	private function _reallyPublishAdminMenuItems($parent)
 	{
@@ -1941,8 +1868,8 @@ abstract class F0FUtilsInstallscript
 	 */
 	private function _rebuildMenu()
 	{
-		/** @var JTableMenu $table */
-		$table = JTable::getInstance('menu');
+		/** @var \JTableMenu $table */
+		$table = \JTable::getInstance('menu');
 		$db = $table->getDbo();
 
 		// We need to rebuild the menu based on its root item. By default this is the menu item with ID=1. However, some
@@ -2041,7 +1968,7 @@ abstract class F0FUtilsInstallscript
 	 * enabled              Must be 1 for this message to be enabled. If you omit it, it defaults to 1.
 	 *
 	 * condition_file        The RAD path to a PHP file containing a PHP function which determines whether this message
-	 *                        should be shown to the user. @see F0FTemplateUtils::parsePath() for RAD path format. Joomla!
+	 *                        should be shown to the user. @see Template::parsePath() for RAD path format. Joomla!
 	 *                        will include this file before calling the condition_method.
 	 *                      Example:   admin://components/com_foobar/helpers/postinstall.php
 	 *
@@ -2062,7 +1989,7 @@ abstract class F0FUtilsInstallscript
 	 *
 	 * action_file            The RAD path to a PHP file containing a PHP function which performs the action of this PIM.
 	 *
-	 * @see                   F0FTemplateUtils::parsePath() for RAD path format. Joomla! will include this file
+	 * @see                   Template::parsePath() for RAD path format. Joomla! will include this file
 	 *                        before calling the function defined in the action key below.
 	 *                        Example:   admin://components/com_foobar/helpers/postinstall.php
 	 *
@@ -2171,7 +2098,7 @@ abstract class F0FUtilsInstallscript
 				throw new Exception('Post-installation message definitions need an action file when they are of type "action"', 500);
 			}
 
-			$file_path = F0FTemplateUtils::parsePath($options['action_file'], true);
+			$file_path = \FOFTemplateUtils::parsePath($options['action_file'], true);
 
 			if (!@is_file($file_path))
 			{
@@ -2200,7 +2127,7 @@ abstract class F0FUtilsInstallscript
 				throw new Exception('Post-installation message definitions need a condition file when they are of type "' . $options['type'] . '"', 500);
 			}
 
-			$file_path = F0FTemplateUtils::parsePath($options['condition_file'], true);
+			$file_path = \FOFTemplateUtils::parsePath($options['condition_file'], true);
 
 			if (!@is_file($file_path))
 			{
