@@ -1,22 +1,24 @@
 <?php
 /**
- *  @package     FrameworkOnFramework
- *  @subpackage  config
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- *  @license     GNU General Public License version 2, or later
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-defined('F0F_INCLUDED') or die();
+namespace FOF30\Configuration\Domain;
+
+use SimpleXMLElement;
+
+defined('_JEXEC') or die;
 
 /**
- * The Interface of an F0FConfigDomain class. The methods are used to parse and
- * privision sensible information to consumers. F0FConfigProvider acts as an
- * adapter to the F0FConfigDomain classes.
+ * The Interface of a FOF configuration domain class. The methods are used to parse and
+ * provision sensible information to consumers. The Configuration class acts as an
+ * adapter to the domain classes.
  *
- * @package  FrameworkOnFramework
  * @since    2.1
  */
-interface F0FConfigDomainInterface
+interface DomainInterface
 {
 	/**
 	 * Parse the XML data, adding them to the $ret array

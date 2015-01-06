@@ -1,20 +1,22 @@
 <?php
 /**
- *  @package     FrameworkOnFramework
- *  @subpackage  config
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- *  @license     GNU General Public License version 2, or later
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-defined('F0F_INCLUDED') or die();
+namespace FOF30\Configuration\Domain;
+
+use SimpleXMLElement;
+
+defined('_JEXEC') or die;
 
 /**
  * Configuration parser for the view-specific settings
  *
- * @package  FrameworkOnFramework
  * @since    2.1
  */
-class F0FConfigDomainViews implements F0FConfigDomainInterface
+class Views implements DomainInterface
 {
 	/**
 	 * Parse the XML data, adding them to the $ret array

@@ -1,67 +1,43 @@
 <?php
 /**
- *  @package     FrameworkOnFramework
- *  @subpackage  config
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- *  @license     GNU General Public License version 2, or later
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
-defined('F0F_INCLUDED') or die();
+namespace FOF30\Configuration;
+
+use FOF30\Container\Container;
+
+defined('_JEXEC') or die;
 
 /**
- * Reads and parses the fof.xml file in the back-end of a F0F-powered component,
- * provisioning the data to the rest of the F0F framework
+ * Reads and parses the fof.xml file in the back-end of a FOF-powered component,
+ * provisioning the data to the rest of the FOF framework
  *
- * @package  FrameworkOnFramework
  * @since    2.1
  */
-class F0FConfigProvider
+class Configuration
 {
 	/**
-	 * Cache of F0F components' configuration variables
+	 * The component's container
+	 *
+	 * @var  Container
+	 */
+	protected $container = null;
+
+	/**
+	 * Cache of FOF components' configuration variables
 	 *
 	 * @var array
 	 */
 	public static $configurations = array();
 
-	/**
-	 * Parses the configuration of the specified component
-	 *
-	 * @param   string   $component  The name of the component, e.g. com_foobar
-	 * @param   boolean  $force      Force reload even if it's already parsed?
-	 *
-	 * @return  void
-	 */
-	public function parseComponent($component, $force = false)
+	function __construct(Container $c)
 	{
-		if (!$force && isset(self::$configurations[$component]))
-		{
-			return;
-		}
+		$this->container = $c;
 
-		if (F0FPlatform::getInstance()->isCli())
-		{
-			$order = array('cli', 'backend');
-		}
-		elseif (F0FPlatform::getInstance()->isBackend())
-		{
-			$order = array('backend');
-		}
-		else
-		{
-			$order = array('frontend');
-		}
-
-		$order[] = 'common';
-
-		$order = array_reverse($order);
-		self::$configurations[$component] = array();
-
-		foreach ($order as $area)
-		{
-			$config = $this->parseComponentArea($component, $area);
-			self::$configurations[$component] = array_merge_recursive(self::$configurations[$component], $config);
-		}
+		$this->parseComponent($c->componentName);
 	}
 
 	/**
@@ -95,10 +71,51 @@ class F0FConfigProvider
 			return $default;
 		}
 
-		$class = 'F0FConfigDomain' . ucfirst($domain);
+		$class = '\\FOF30\\Configuration\\Domain\\' . ucfirst($domain);
+		/** @var   \FOF30\Configuration\Domain\DomainInterface  $o */
 		$o = new $class;
 
 		return $o->get(self::$configurations[$component], $var, $default);
+	}
+
+	/**
+	 * Parses the configuration of the specified component
+	 *
+	 * @param   string   $component  The name of the component, e.g. com_foobar
+	 * @param   boolean  $force      Force reload even if it's already parsed?
+	 *
+	 * @return  void
+	 */
+	protected function parseComponent($component, $force = false)
+	{
+		if (!$force && isset(self::$configurations[$component]))
+		{
+			return;
+		}
+
+		if ($this->container->platform->isCli())
+		{
+			$order = array('cli', 'backend');
+		}
+		elseif ($this->container->platform->isBackend())
+		{
+			$order = array('backend');
+		}
+		else
+		{
+			$order = array('frontend');
+		}
+
+		$order[] = 'common';
+
+		$order = array_reverse($order);
+		self::$configurations[$component] = array();
+
+		foreach ($order as $area)
+		{
+			$config = $this->parseComponentArea($component, $area);
+			self::$configurations[$component] = array_merge_recursive(self::$configurations[$component], $config);
+		}
 	}
 
 	/**
@@ -115,8 +132,8 @@ class F0FConfigProvider
 		$ret = array();
 
 		// Get the folders of the component
-		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
-        $filesystem     = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$componentPaths = $this->container->platform->getComponentBaseDirs($component);
+		$filesystem     = $this->container->filesystem;
 
 		// Check that the path exists
 		$path = $componentPaths['admin'];
@@ -140,7 +157,7 @@ class F0FConfigProvider
 		// Load the XML data in a SimpleXMLElement object
 		$xml = simplexml_load_string($data);
 
-		if (!($xml instanceof SimpleXMLElement))
+		if (!($xml instanceof \SimpleXMLElement))
 		{
 			return $ret;
 		}
@@ -160,10 +177,11 @@ class F0FConfigProvider
 
 		foreach ($domains as $dom)
 		{
-			$class = 'F0FConfigDomain' . ucfirst($dom);
+			$class = '\\FOF30\\Configuration\\Domain\\' . ucfirst($dom);
 
 			if (class_exists($class, true))
 			{
+				/** @var   \FOF30\Configuration\Domain\DomainInterface  $o */
 				$o = new $class;
 				$o->parseDomain($xml, $ret);
 			}
@@ -184,7 +202,7 @@ class F0FConfigProvider
 
 		if (empty($domains))
 		{
-			$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+			$filesystem = $this->container->filesystem;
 
 			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
 
@@ -194,7 +212,7 @@ class F0FConfigProvider
 				{
 					$domain = basename($file, '.php');
 
-					if ($domain == 'interface')
+					if ($domain == 'DomainInterface')
 					{
 						continue;
 					}
@@ -209,4 +227,5 @@ class F0FConfigProvider
 
 		return $domains;
 	}
+
 }
