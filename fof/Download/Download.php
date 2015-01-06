@@ -9,7 +9,7 @@ namespace FOF30\Download;
 
 use FOF30\Container\Container;
 use JText;
-use FOF30\Utils\Timer\Timer;
+use FOF30\Timer\Timer;
 
 defined('_JEXEC') or die;
 

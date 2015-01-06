@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Utils\Timer;
+namespace FOF30\Timer;
 
 /**
  * Timeout prevention timer
