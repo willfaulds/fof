@@ -1,24 +1,17 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  utils
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
 
-/**
- * Helper class with utilitarian functions concerning strings
- *
- * @package  FrameworkOnFramework
- * @since    2.0
- */
-abstract class F0FStringUtils
+namespace FOF30\Utils;
+
+abstract class String
 {
 	/**
 	 * Convert a string into a slug (alias), suitable for use in URLs. Please
-	 * note that transliteration suupport is rudimentary at this stage.
+	 * note that transliteration support is rudimentary at this stage.
 	 *
 	 * @param   string  $value  A string to convert to slug
 	 *
@@ -26,7 +19,7 @@ abstract class F0FStringUtils
 	 */
 	public static function toSlug($value)
 	{
-		// Remove any '-' from the string they will be used as concatonater
+		// Remove any '-' from the string they will be used as concatenator
 		$value = str_replace('-', ' ', $value);
 
 		// Convert to ascii characters
@@ -48,7 +41,7 @@ abstract class F0FStringUtils
 	}
 
 	/**
-	 * Convert common norhern European languages' letters into plain ASCII. This
+	 * Convert common northern European languages' letters into plain ASCII. This
 	 * is a rudimentary transliteration.
 	 *
 	 * @param   string  $value  The value to convert to ASCII
@@ -74,18 +67,19 @@ abstract class F0FStringUtils
 	 */
 	public static function toBool($string)
 	{
-		$string = trim((string) $string);
+		$string = trim((string)$string);
+		$string = strtolower($string);
 
-		if ($string == 'true')
+		if (in_array($string, array(1, 'true', 'yes', 'on', 'enabled')))
 		{
 			return true;
 		}
 
-		if ($string == 'false')
+		if (in_array($string, array(1, 'false', 'no', 'off', 'disabled')))
 		{
 			return false;
 		}
 
-		return (bool) $string;
+		return (bool)$string;
 	}
-}
+} 
