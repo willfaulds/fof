@@ -32,19 +32,20 @@ class Models implements DomainInterface
 		$ret['models'] = array();
 
 		// Parse model configuration
-		$modelData = $xml->xpath('model');
+		$behaviorsData = $xml->xpath('model');
 
 		// Sanity check
-		if (empty($modelData))
+		if (empty($behaviorsData))
 		{
 			return;
 		}
 
-		foreach ($modelData as $aModel)
+		foreach ($behaviorsData as $aModel)
 		{
 			$key = (string) $aModel['name'];
 
-			$ret['models'][$key]['behaviors'] = (string) $aModel->behaviors;
+			$ret['models'][$key]['behaviors'] = array();
+			$ret['models'][$key]['behaviorsMerge'] = false;
 			$ret['models'][$key]['tablealias'] = $aModel->xpath('tablealias');
 			$ret['models'][$key]['fields'] = array();
 			$ret['models'][$key]['relations'] = array();
@@ -57,6 +58,37 @@ class Models implements DomainInterface
 				{
 					$k = (string) $field['name'];
 					$ret['models'][$key]['fields'][$k] = (string) $field;
+				}
+			}
+
+			$behaviorsData = (string) $aModel->behaviors;
+			$behaviorsMerge = (string) $aModel->behaviors['merge'];
+
+			if (!empty($behaviorsMerge))
+			{
+				$behaviorsMerge = trim($behaviorsMerge);
+				$behaviorsMerge = strtoupper($behaviorsMerge);
+
+				if (in_array($behaviorsMerge, array('1', 'YES', 'ON', 'TRUE')))
+				{
+					$ret['models'][$key]['behaviorsMerge'] = true;
+				}
+			}
+
+			if (!empty($behaviorsData))
+			{
+				$behaviorsData = explode(',', $behaviorsData);
+
+				foreach ($behaviorsData as $behavior)
+				{
+					$behavior = trim($behavior);
+
+					if (empty($behavior))
+					{
+						continue;
+					}
+
+					$ret['models'][$key]['behaviors'][] = $behavior;
 				}
 			}
 
@@ -140,7 +172,7 @@ class Models implements DomainInterface
 	 *
 	 * @param   string  $model           The model for which we will be fetching a field map
 	 * @param   array   &$configuration  The configuration parameters hash array
-	 * @param   array   $params          Extra options; key 0 defines the model we want to fetch
+	 * @param   array   $params          Extra options
 	 * @param   string  $default         Default magic field mapping; empty if not defined
 	 *
 	 * @return  array   Field map
@@ -221,13 +253,28 @@ class Models implements DomainInterface
 		if (isset($configuration['models']['*'])
 			&& isset($configuration['models']['*']['behaviors']))
 		{
-			$behaviors = (string) $configuration['models']['*']['behaviors'];
+			$behaviors = $configuration['models']['*']['behaviors'];
 		}
 
 		if (isset($configuration['models'][$model])
 			&& isset($configuration['models'][$model]['behaviors']))
 		{
-			$behaviors = (string) $configuration['models'][$model]['behaviors'];
+			$merge = false;
+
+			if (isset($configuration['models'][$model])
+				&& isset($configuration['models'][$model]['behaviorsMerge']))
+			{
+				$merge = boolval($configuration['models'][$model]['behaviorsMerge']);
+			}
+
+			if ($merge)
+			{
+				$behaviors = array_merge($behaviors, $configuration['models'][$model]['behaviors']);
+			}
+			else
+			{
+				$behaviors = $configuration['models'][$model]['behaviors'];
+			}
 		}
 
 		return $behaviors;

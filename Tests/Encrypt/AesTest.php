@@ -35,7 +35,7 @@ class AesTest extends FOFTestCase
 	}
 
 	/**
-	 * @cover FOF30\Encrypt\Aes::IsSupported
+	 * @covers FOF30\Encrypt\Aes::IsSupported
 	 *
 	 * @return  void
 	 */
@@ -115,7 +115,7 @@ class AesTest extends FOFTestCase
 	}
 
 	/**
-	 * @cover FOF30\Encrypt\Aes
+	 * @covers FOF30\Encrypt\Aes
 	 *
 	 * @return  void
 	 */
@@ -157,7 +157,7 @@ class AesTest extends FOFTestCase
 	}
 
 	/**
-	 * @cover FOF30\Encrypt\Aes
+	 * @covers FOF30\Encrypt\Aes
 	 *
 	 * @return  void
 	 */
@@ -201,7 +201,7 @@ class AesTest extends FOFTestCase
 	}
 
 	/**
-	 * @cover FOF30\Encrypt\Aes
+	 * @covers FOF30\Encrypt\Aes
 	 *
 	 * @return  void
 	 */
@@ -245,7 +245,7 @@ class AesTest extends FOFTestCase
 	}
 
 	/**
-	 * @cover FOF30\Encrypt\Aes
+	 * @covers FOF30\Encrypt\Aes
 	 *
 	 * @return  void
 	 */
