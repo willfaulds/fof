@@ -11,12 +11,12 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-if (!defined('F0F_INCLUDED'))
+if (!defined('FOF30_INCLUDED'))
 {
-    include_once JPATH_LIBRARIES . '/f0f/include.php';
+    JLoader::import('fof30.import');
 }
 
-if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
+if (!@include_once(__DIR__ . '/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
 {
 	define('AKEEBASTRAPPER_VERSION', 'dev');
 	define('AKEEBASTRAPPER_DATE', gmdate('Y-m-d'));
@@ -25,7 +25,6 @@ if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !define
 
 class AkeebaStrapper
 {
-
     /** @var bool True when jQuery is already included */
     public static $_includedJQuery = false;
 
@@ -55,6 +54,20 @@ class AkeebaStrapper
 
     /** @var string A query tag to append to CSS and JS files for versioning purposes */
     public static $tag = null;
+
+	public static function getFakeContainer()
+	{
+		static $fakeContainer = null;
+
+		if (is_null($fakeContainer))
+		{
+			$fakeContainer = new FOF30\Container\Container(array(
+				'componentName' => 'com_FOOBAR'
+			));
+		}
+
+		return $fakeContainer;
+	}
 
 	/**
 	 * Gets the query tag.
@@ -110,7 +123,7 @@ class AkeebaStrapper
                 }
                 else
                 {
-                    $isCli = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+                    $isCli = JFactory::getApplication() instanceof \Exception;
                 }
             }
             catch (Exception $e)
@@ -129,7 +142,7 @@ class AkeebaStrapper
 		if(is_null($config))
 		{
 			// Load a configuration INI file which controls which files should be skipped
-			$iniFile = F0FTemplateUtils::parsePath('media://akeeba_strapper/strapper.ini', true);
+			$iniFile = self::getFakeContainer()->template->parsePath('media://akeeba_strapper/strapper.ini', true);
 
 			$config = parse_ini_file($iniFile);
 		}
@@ -282,7 +295,7 @@ class AkeebaStrapper
 		{
 			if (in_array($key, array('joomla3', 'joomla32')))
 			{
-				$isFrontend = F0FPlatform::getInstance()->isFrontend();
+				$isFrontend = self::getFakeContainer()->platform->isFrontend();
 
 				$loadBootstrap = $isFrontend ? 'full' : 'lite';
 			}
@@ -337,7 +350,7 @@ class AkeebaStrapper
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
 
-			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
+			$filename = self::getFakeContainer()->template->parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
 			if (@filesize($filename) > 5)
 			{
 				self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
@@ -396,7 +409,7 @@ class AkeebaStrapper
 
 		$tag = self::getTag($overrideTag);
 
-        self::$scriptURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
+        self::$scriptURLs[] = array(self::getFakeContainer()->template->parsePath($path), $tag);
     }
 
     /**
@@ -429,7 +442,7 @@ class AkeebaStrapper
 
 		$tag = self::getTag($overrideTag);
 
-		self::$cssURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
+		self::$cssURLs[] = array(self::getFakeContainer()->template->parsePath($path), $tag);
     }
 
     /**
@@ -523,14 +536,7 @@ function AkeebaStrapperLoader()
 
 	$preload = AkeebaStrapper::needPreload();
 
-	if (version_compare(JVERSION, '3.2', 'ge'))
-	{
-		$buffer = JFactory::getApplication()->getBody();
-	}
-	else
-	{
-		$buffer = JResponse::getBody();
-	}
+	$buffer = JFactory::getApplication()->getBody();
 
     // Include Javascript files
     if (!empty(AkeebaStrapper::$scriptURLs))
@@ -580,7 +586,7 @@ function AkeebaStrapperLoader()
         {
             list($lessFile, $altFiles, $tag) = $entry;
 
-            $url = F0FTemplateUtils::addLESS($lessFile, $altFiles, true);
+            $url = AkeebaStrapper::getFakeContainer()->template->addLESS($lessFile, $altFiles, true);
 
 			if ($preload)
             {
@@ -594,7 +600,7 @@ function AkeebaStrapperLoader()
                     {
                         foreach ($altFiles as $altFile)
                         {
-                            $url = F0FTemplateUtils::parsePath($altFile);
+                            $url = AkeebaStrapper::getFakeContainer()->template->parsePath($altFile);
                             $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
                         }
                     }
@@ -616,7 +622,7 @@ function AkeebaStrapperLoader()
                     {
                         foreach ($altFiles as $altFile)
                         {
-                            $url = F0FTemplateUtils::parsePath($altFile);
+                            $url = AkeebaStrapper::getFakeContainer()->template->parsePath($altFile);
                             JFactory::getDocument()->addStyleSheet($url . $tag);
                         }
                     }
@@ -670,14 +676,7 @@ function AkeebaStrapperLoader()
         {
             $buffer = substr($buffer, 0, $pos + 6) . $myscripts . substr($buffer, $pos + 6);
 
-			if (version_compare(JVERSION, '3.2', 'ge'))
-			{
-				JFactory::getApplication()->setBody($buffer);
-			}
-			else
-			{
-				JResponse::setBody($buffer);
-			}
+			JFactory::getApplication()->setBody($buffer);
         }
     }
 }
@@ -692,14 +691,7 @@ function AkeebaStrapperOnAfterRender()
 {
 	if (AkeebaStrapper::$_includedBootstrap)
 	{
-		if (version_compare(JVERSION, '3.2', 'ge'))
-		{
-			$buffer = JFactory::getApplication()->getBody();
-		}
-		else
-		{
-			$buffer = JResponse::getBody();
-		}
+		$buffer = JFactory::getApplication()->getBody();
 
 		// Get all bootstrap[.min].js to remove
 		$count = 0;
@@ -734,14 +726,7 @@ function AkeebaStrapperOnAfterRender()
 		{
 			$buffer = str_replace($scriptsToRemove, '', $buffer);
 
-			if (version_compare(JVERSION, '3.2', 'ge'))
-			{
-				JFactory::getApplication()->setBody($buffer);
-			}
-			else
-			{
-				JResponse::setBody($buffer);
-			}
+			JFactory::getApplication()->setBody($buffer);
 		}
 	}
 }
