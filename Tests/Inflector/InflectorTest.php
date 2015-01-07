@@ -8,6 +8,7 @@
 namespace FOF30\Tests\Inflector;
 
 use FOF30\Inflector\Inflector;
+use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
 /**
@@ -15,7 +16,7 @@ use FOF30\Tests\Helpers\ReflectionHelper;
  *
  * @since  1.0
  */
-class InflectorTest extends \PHPUnit_Framework_TestCase
+class InflectorTest extends FOFTestCase
 {
 	/**
 	 * Returns test data for pluralize()

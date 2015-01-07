@@ -227,7 +227,5 @@ class DispatcherTest extends ApplicationTestCase
 	{
 		ReflectionHelper::setValue($this->object, 'instances', array());
 	}
-
-
 }
  

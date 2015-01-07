@@ -71,6 +71,8 @@ class TemplateTest extends FOFTestCase
 	 */
 	public static function setUpBeforeClass()
 	{
+		parent::setUpBeforeClass();
+
 		// Create our fake template and template overrides
 		JFolder::copy(JPATH_TESTS . '/_data/fake_test_template', JPATH_THEMES . '/fake_test_template', '', true);
 	}
@@ -81,6 +83,8 @@ class TemplateTest extends FOFTestCase
 	 */
 	public static function tearDownAfterClass()
 	{
+		parent::tearDownAfterClass();
+
 		// Remove the fake template
 		JFolder::delete(JPATH_THEMES . '/fake_test_template');
 	}

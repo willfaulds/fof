@@ -27,11 +27,12 @@
 namespace FOF30\Tests\Pimple;
 
 use FOF30\Pimple\Pimple;
+use FOF30\Tests\Helpers\FOFTestCase;
 
 /**
  * @author  Dominik Zogg <dominik.zogg@gmail.com>
  */
-class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
+class PimpleServiceProviderInterfaceTest extends FOFTestCase
 {
     public function testProvider()
     {

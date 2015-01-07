@@ -10,10 +10,11 @@ namespace FOF30\Tests\Event;
 
 use FOF30\Event\Observable;
 use FOF30\Tests\Helpers\ApplicationTestCase;
+use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Stubs\Event\FirstObserver;
 
-class ObserverTest extends ApplicationTestCase
+class ObserverTest extends FOFTestCase
 {
 	/** @var Observable */
 	private $dispatcher;

@@ -8,13 +8,14 @@
 namespace FOF30\Tests\Encrypt;
 
 use FOF30\Encrypt\Totp;
+use FOF30\Tests\Helpers\FOFTestCase;
 
 /**
  * @coversDefaultClass FOF30\Encrypt\Totp
  *
  * @package FOF30\Tests\Encrypt
  */
-class TotpTest extends \PHPUnit_Framework_TestCase
+class TotpTest extends FOFTestCase
 {
 	/** @var  Totp */
 	protected $totp;

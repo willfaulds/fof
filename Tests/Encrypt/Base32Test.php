@@ -9,6 +9,7 @@ namespace FOF30\Tests\Encrypt;
 
 
 use FOF30\Encrypt\Base32;
+use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
 /**
@@ -16,7 +17,7 @@ use FOF30\Tests\Helpers\ReflectionHelper;
  *
  * @package FOF30\Tests\Encrypt
  */
-class Base32Test extends \PHPUnit_Framework_TestCase
+class Base32Test extends FOFTestCase
 {
 	/** @var  Base32 */
 	protected $base32;

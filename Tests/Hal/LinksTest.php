@@ -9,8 +9,9 @@ namespace FOF30\Tests\Hal;
 
 use FOF30\Hal\Links;
 use FOF30\Hal\Link;
+use FOF30\Tests\Helpers\FOFTestCase;
 
-class LinksTest extends \PHPUnit_Framework_TestCase
+class LinksTest extends FOFTestCase
 {
 	/**
 	 * @covers FOF30\Hal\Links::addLink

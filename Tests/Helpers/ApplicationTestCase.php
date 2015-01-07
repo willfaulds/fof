@@ -19,10 +19,19 @@ abstract class ApplicationTestCase extends \PHPUnit_Framework_TestCase
 	/** @var Container A container suitable for unit testing */
 	public static $container = null;
 
-	public function __construct($name = null, array $data = array(), $dataName = '')
+	public static function setUpBeforeClass()
 	{
-		parent::__construct($name, $data, $dataName);
+		self::rebuildContainer();
+	}
 
+	public static function tearDownAfterClass()
+	{
+		static::$container = null;
+	}
+
+	public static function rebuildContainer()
+	{
+		static::$container = null;
 		static::$container = new TestContainer(array(
 			'componentName'	=> 'com_fakeapp',
 		));

@@ -9,6 +9,7 @@ namespace FOF30\Tests\Encrypt;
 
 
 use FOF30\Encrypt\Aes;
+use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Stubs\Encrypt\MockPhpfunc;
 
 /**
@@ -16,7 +17,7 @@ use FOF30\Tests\Stubs\Encrypt\MockPhpfunc;
  *
  * @package FOF30\Tests\Encrypt
  */
-class AesTest extends \PHPUnit_Framework_TestCase
+class AesTest extends FOFTestCase
 {
 	/** @var  Aes */
 	protected $aes;

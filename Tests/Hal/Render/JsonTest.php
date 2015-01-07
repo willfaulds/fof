@@ -10,9 +10,10 @@ namespace FOF30\Tests\Hal\Render;
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
 use FOF30\Hal\Render\Json;
+use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-class JsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends FOFTestCase
 {
 	/** @var  Document  The document used in the renderer tests */
 	protected $document;

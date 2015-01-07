@@ -10,9 +10,10 @@ namespace FOF30\Tests\Hal;
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
 use FOF30\Hal\Links;
+use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-class DocumentTest extends \PHPUnit_Framework_TestCase
+class DocumentTest extends FOFTestCase
 {
 	/** @var Document */
 	protected $document = null;

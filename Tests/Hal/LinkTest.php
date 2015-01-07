@@ -9,8 +9,9 @@ namespace FOF30\Tests\Hal;
 
 
 use FOF30\Hal\Link;
+use FOF30\Tests\Helpers\FOFTestCase;
 
-class LinkTest extends \PHPUnit_Framework_TestCase
+class LinkTest extends FOFTestCase
 {
 	/**
 	 * Provides the data for testCreateNoException
