@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace FOF\Tests\Stubs\Pimple;
+namespace FOF30\Tests\Stubs\Pimple;
 
 use \FOF30\Pimple\Pimple;
 use \FOF30\Pimple\ServiceProviderInterface;

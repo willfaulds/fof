@@ -5,10 +5,10 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF\Tests\Helpers;
+namespace FOF30\Tests\Helpers;
 
-use FOF\Tests\Helpers\TestHelper;
-use FOF\Tests\Stubs\Fakeapp\Container as FakeContainer;
+use FOF30\Tests\Helpers\TestHelper;
+use FOF30\Tests\Stubs\Fakeapp\Container as FakeContainer;
 use JDatabaseDriver;
 
 abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase

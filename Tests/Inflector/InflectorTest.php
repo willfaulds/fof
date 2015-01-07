@@ -5,10 +5,10 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF\Tests\Inflector;
+namespace FOF30\Tests\Inflector;
 
 use FOF30\Inflector\Inflector;
-use FOF\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\ReflectionHelper;
 
 /**
  * Test class for FOF30\Inflector\Inflector.

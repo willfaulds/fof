@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF\Tests\Helpers;
+namespace FOF30\Tests\Helpers;
 
 /**
  * A helper class to interact with the objects of the system under test using Reflection

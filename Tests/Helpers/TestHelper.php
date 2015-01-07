@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF\Tests\Helpers;
+namespace FOF30\Tests\Helpers;
 
 /**
  * Static helper methods to assist unit testing PHP code.

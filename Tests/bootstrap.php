@@ -17,7 +17,7 @@ if (false == include __DIR__ . '/../fof/Autoloader/Autoloader.php')
 }
 
 // Tell the FOF autoloader where to load test classes from (very useful for stubs!)
-\FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF\\Tests\\', __DIR__);
+\FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Tests\\', __DIR__);
 // \FOF30\Autoloader\Autoloader::getInstance()->addMap('Fakeapp\\', __DIR__ . '/Stubs/Fakeapp');
 
 // Include the Composer autoloader.

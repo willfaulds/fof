@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace FOF\Tests\Pimple;
+namespace FOF30\Tests\Pimple;
 
 use FOF30\Pimple\Pimple;
 
@@ -45,24 +45,24 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple['service'] = function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         };
 
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $pimple['service']);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $pimple['service']);
     }
 
     public function testServicesShouldBeDifferent()
     {
         $pimple = new Pimple();
         $pimple['service'] = $pimple->factory(function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         });
 
         $serviceOne = $pimple['service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceOne);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceOne);
 
         $serviceTwo = $pimple['service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceTwo);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceTwo);
 
         $this->assertNotSame($serviceOne, $serviceTwo);
     }
@@ -71,7 +71,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple['service'] = function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         };
         $pimple['container'] = function ($container) {
             return $container;
@@ -86,7 +86,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple = new Pimple();
         $pimple['param'] = 'value';
         $pimple['service'] = function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         };
 
         $pimple['null'] = null;
@@ -127,7 +127,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple = new Pimple();
         $pimple['param'] = 'value';
         $pimple['service'] = function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         };
 
         unset($pimple['param'], $pimple['service']);
@@ -144,10 +144,10 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
         $pimple['shared_service'] = $service;
 
         $serviceOne = $pimple['shared_service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceOne);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceOne);
 
         $serviceTwo = $pimple['shared_service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceTwo);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceTwo);
 
         $this->assertSame($serviceOne, $serviceTwo);
     }
@@ -201,25 +201,25 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
         $pimple['shared_service'] = function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         };
         $pimple['factory_service'] = $pimple->factory(function () {
-            return new \FOF\Tests\Stubs\Pimple\Service();
+            return new \FOF30\Tests\Stubs\Pimple\Service();
         });
 
         $pimple->extend('shared_service', $service);
         $serviceOne = $pimple['shared_service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceOne);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceOne);
         $serviceTwo = $pimple['shared_service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceTwo);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceTwo);
         $this->assertSame($serviceOne, $serviceTwo);
         $this->assertSame($serviceOne->value, $serviceTwo->value);
 
         $pimple->extend('factory_service', $service);
         $serviceOne = $pimple['factory_service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceOne);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceOne);
         $serviceTwo = $pimple['factory_service'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceTwo);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceTwo);
         $this->assertNotSame($serviceOne, $serviceTwo);
         $this->assertNotSame($serviceOne->value, $serviceTwo->value);
     }
@@ -267,18 +267,18 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     public function settingAnInvokableObjectShouldTreatItAsFactory()
     {
         $pimple = new Pimple();
-        $pimple['invokable'] = new \FOF\Tests\Stubs\Pimple\Invokable();
+        $pimple['invokable'] = new \FOF30\Tests\Stubs\Pimple\Invokable();
 
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $pimple['invokable']);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $pimple['invokable']);
     }
 
     /** @test */
     public function settingNonInvokableObjectShouldTreatItAsParameter()
     {
         $pimple = new Pimple();
-        $pimple['non_invokable'] = new \FOF\Tests\Stubs\Pimple\NonInvokable();
+        $pimple['non_invokable'] = new \FOF30\Tests\Stubs\Pimple\NonInvokable();
 
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\NonInvokable', $pimple['non_invokable']);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\NonInvokable', $pimple['non_invokable']);
     }
 
     /**
@@ -334,7 +334,7 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         return array(
           array(123),
-          array(new \FOF\Tests\Stubs\Pimple\NonInvokable())
+          array(new \FOF30\Tests\Stubs\Pimple\NonInvokable())
         );
     }
 
@@ -345,12 +345,12 @@ class PimpleTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(function ($value) {
-                $service = new \FOF\Tests\Stubs\Pimple\Service();
+                $service = new \FOF30\Tests\Stubs\Pimple\Service();
                 $service->value = $value;
 
                 return $service;
             }),
-            array(new \FOF\Tests\Stubs\Pimple\Invokable())
+            array(new \FOF30\Tests\Stubs\Pimple\Invokable())
         );
     }
 

@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace FOF\Tests\Pimple;
+namespace FOF30\Tests\Pimple;
 
 use FOF30\Pimple\Pimple;
 
@@ -37,17 +37,17 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new \FOF30\Pimple\Pimple();
 
-        $pimpleServiceProvider = new \FOF\Tests\Stubs\Pimple\PimpleServiceProvider();
+        $pimpleServiceProvider = new \FOF30\Tests\Stubs\Pimple\PimpleServiceProvider();
         $pimpleServiceProvider->register($pimple);
 
         $this->assertEquals('value', $pimple['param']);
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $pimple['service']);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $pimple['service']);
 
         $serviceOne = $pimple['factory'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceOne);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceOne);
 
         $serviceTwo = $pimple['factory'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceTwo);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceTwo);
 
         $this->assertNotSame($serviceOne, $serviceTwo);
     }
@@ -56,20 +56,20 @@ class PimpleServiceProviderInterfaceTest extends \PHPUnit_Framework_TestCase
     {
         $pimple = new Pimple();
 
-        $pimple->register(new \FOF\Tests\Stubs\Pimple\PimpleServiceProvider(), array(
+        $pimple->register(new \FOF30\Tests\Stubs\Pimple\PimpleServiceProvider(), array(
             'anotherParameter' => 'anotherValue'
         ));
 
         $this->assertEquals('value', $pimple['param']);
         $this->assertEquals('anotherValue', $pimple['anotherParameter']);
 
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $pimple['service']);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $pimple['service']);
 
         $serviceOne = $pimple['factory'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceOne);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceOne);
 
         $serviceTwo = $pimple['factory'];
-        $this->assertInstanceOf('\FOF\Tests\Stubs\Pimple\Service', $serviceTwo);
+        $this->assertInstanceOf('\FOF30\Tests\Stubs\Pimple\Service', $serviceTwo);
 
         $this->assertNotSame($serviceOne, $serviceTwo);
     }
