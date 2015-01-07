@@ -98,6 +98,9 @@ if (!defined('JPATH_TESTS'))
 require_once JPATH_LIBRARIES . '/import.legacy.php';
 require_once JPATH_LIBRARIES . '/cms.php';
 
+// This is required to force Joomla! to read the correct configuration.php file...
+$config = JFactory::getConfig(JPATH_SITE . '/configuration.php');
+
 /**
 // Apply the SQL
 require_once __DIR__ . '/stubs/dbimport.php';

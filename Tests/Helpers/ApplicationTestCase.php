@@ -23,7 +23,7 @@ abstract class ApplicationTestCase extends \PHPUnit_Framework_TestCase
 	{
 		parent::__construct($name, $data, $dataName);
 
-		static::$container = new Container(array(
+		static::$container = new TestContainer(array(
 			'componentName'	=> 'com_fakeapp',
 		));
 	}
