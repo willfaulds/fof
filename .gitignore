@@ -29,12 +29,9 @@
 /strapper/files_strapper.xml
 /strapper/akeeba_strapper/version.php
 
-/tests/environments/3.x/cache/
-/tests/environments/3.x/templates/fake_test_template
-/tests/environments/2.5/cache/
-/tests/environments/2.5/templates/fake_test_template
-/tests/config.php
-/tests/unit/config.php
+/Tests/environments/3.3/cache/
+/Tests/environments/3.3/templates/fake_test_template
+/Tests/config.php
 
 /vendor/*
 

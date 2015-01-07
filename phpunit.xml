@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="Tests/bootstrap.php"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    checkForUnintentionallyCoveredCode="false"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestSize="true"
+    colors="true"
+>
+	<testsuites>
+		<testsuite name="FOF Unit Tests">
+			<directory>Tests</directory>
+		</testsuite>
+	</testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">fof</directory>
+            <exclude>
+                <directory suffix=".php">fof/Autoloader</directory>
+                <file>fof/Download/DownloadInterface.php</file>
+                <file>fof/Event/Observable.php</file>
+                <directory suffix=".php">fof/Container/Exception</directory>
+                <directory suffix=".php">Tests</directory>
+
+                <directory suffix=".php">fof2</directory>
+                <directory suffix=".php">tests-old</directory>
+                <directory suffix=".php">vendor</directory>
+                <directory suffix=".php">strapper</directory>
+                <directory suffix=".php">strapper-sources</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
