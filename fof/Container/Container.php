@@ -29,6 +29,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
  * @property-read  \JDatabaseDriver                    $db                 The database connection object
  * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The component's dispatcher
+ * @property-read  \FOF30\Event\Dispatcher             $eventDispatcher    The component's event dispatcher
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
@@ -50,13 +51,13 @@ class Container extends Pimple
 		parent::__construct($values);
 
 		// Make sure we have a component name
-		if (empty($this->componentName))
+		if (empty($this['componentName']))
 		{
 			throw new Exception\NoComponent;
 		}
 
 		// Try to guess the component's namespace
-		if (empty($this->componentNamespace))
+		if (empty($this['componentNamespace']))
 		{
 			$bareComponent = substr($this->componentName, 3);
 			$this->componentNamespace = ucfirst($bareComponent);
@@ -67,12 +68,12 @@ class Container extends Pimple
 		}
 
 		// Make sure we have front-end and back-end paths
-		if (empty($this->frontEndPath))
+		if (empty($this['frontEndPath']))
 		{
 			$this->frontEndPath = JPATH_SITE . '/components/' . $this->componentName;
 		}
 
-		if (empty($this->backEndPath))
+		if (empty($this['backEndPath']))
 		{
 			$this->backEndPath = JPATH_ADMINISTRATOR . '/components/' . $this->componentName;
 		}
@@ -145,16 +146,32 @@ class Container extends Pimple
 			};
 		}
 
-		// Component Dispatcher service
+		// Request Dispatcher service
 		if (!isset($this['dispatcher']))
 		{
 			$this['dispatcher'] = function (Container $c)
 			{
-				$className = $c->getNamespacePrefix() . '\Dispatcher';
+				$className = $c->getNamespacePrefix() . '\\Dispatcher';
 
 				if (!class_exists($className))
 				{
-					$className = '\FOF30\Dispatcher\Dispatcher';
+					$className = '\\FOF30\\Dispatcher\\Dispatcher';
+				}
+
+				return new $className($c);
+			};
+		}
+
+		// Event Dispatcher service
+		if (!isset($this['eventDispatcher']))
+		{
+			$this['eventDispatcher'] = function (Container $c)
+			{
+				$className = $c->getNamespacePrefix() . '\\Event\\Dispatcher';
+
+				if (!class_exists($className))
+				{
+					$className = '\\FOF30\\Event\\Dispatcher';
 				}
 
 				return new $className($c);

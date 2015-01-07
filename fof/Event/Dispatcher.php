@@ -22,13 +22,10 @@ class Dispatcher implements Observable
 	/** @var   array  Maps events to observers */
 	protected $events = array();
 
-	/** @var   array  Static instances of the event dispatchers */
-	protected static $instances = array();
-
 	/**
 	 * Public constructor
 	 *
-	 * @param   Container  $container  The application this event dispatcher is attached to
+	 * @param   Container  $container  The container this event dispatcher is attached to
 	 */
 	public function __construct(Container $container)
 	{
@@ -36,26 +33,7 @@ class Dispatcher implements Observable
 	}
 
 	/**
-	 * Returns the static instance of an application's event dispatcher
-	 *
-	 * @param   Container  $container  The application to return the dispatcher for
-	 *
-	 * @return  Dispatcher
-	 */
-	public static function getInstance(Container $container)
-	{
-		$appName = $container->application_name;
-
-		if (!isset(static::$instances[$appName]))
-		{
-			static::$instances[$appName] = new Dispatcher($container);
-		}
-
-		return static::$instances[$appName];
-	}
-
-	/**
-	 * Returns the application this event dispatcher is attached to
+	 * Returns the container this event dispatcher is attached to
 	 *
 	 * @return  Container
 	 */
