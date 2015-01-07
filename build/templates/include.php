@@ -1,11 +1,8 @@
 <?php
 /**
- *  @package     FrameworkOnFramework
- *  @subpackage  include
- *  @copyright   Copyright (C) 2010-2015 Nicholas K. Dionysopoulos
- *  @license     GNU General Public License version 2, or later
- *
- *  Initializes F0F
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 defined('_JEXEC') or die();

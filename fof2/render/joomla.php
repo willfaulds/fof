@@ -55,16 +55,6 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			return;
 		}
 
-		if (version_compare(JVERSION, '3.0.0', 'lt'))
-		{
-			JHtml::_('behavior.framework');
-		}
-		else
-		{
-			JHtml::_('behavior.core');
-			JHtml::_('jquery.framework');
-		}
-
 		// Wrap output in various classes
 		$version = new JVersion;
 		$versionParts = explode('.', $version->RELEASE);
@@ -400,7 +390,8 @@ class F0FRenderJoomla extends F0FRenderAbstract
 
 		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
-			JHtml::_('behavior.formvalidation');
+			JHTML::_('jquery.framework', true);
+			JHTML::_('behavior.formvalidation');
 			$class = 'form-validate ';
 			$this->loadValidationScript($form);
 		}

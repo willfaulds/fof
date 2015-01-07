@@ -1,179 +1,71 @@
 <?php
 /**
- * @package     FrameworkOnFramework
- * @subpackage  toolbar
- * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
-// Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+
+namespace FOF30\Toolbar;
+
+use FOF30\Container\Container;
+use FOF30\Inflector\Inflector;
+use FOF30\Utils\String;
+use JToolBarHelper;
+use JText;
+
+defined('_JEXEC') or die;
 
 /**
  * The Toolbar class renders the back-end component title area and the back-
  * and front-end toolbars.
  *
- * @package  FrameworkOnFramework
  * @since    1.0
  */
-class F0FToolbar
+class Toolbar
 {
-	/** @var array Configuration parameters */
-	protected $config = array();
+	/** @var   Container   Component container */
+	protected $container = null;
 
-	/** @var array Input (e.g. request) variables */
-	protected $input = array();
-
-	/** @var array Permissions map, see the __construct method for more information */
+	/** @var   array   Permissions map, see the __construct method for more information */
 	public $perms = array();
 
-	/** @var array The links to be rendered in the toolbar */
+	/** @var   array   The links to be rendered in the toolbar */
 	protected $linkbar = array();
 
-	/** @var bool Should I render the submenu in the front-end? */
+	/** @var   bool   Should I render the submenu in the front-end? */
 	protected $renderFrontendSubmenu = false;
 
-	/** @var bool Should I render buttons in the front-end? */
+	/** @var   bool   Should I render buttons in the front-end? */
 	protected $renderFrontendButtons = false;
 
 	/**
-	 * Gets an instance of a component's toolbar
+	 * Public constructor. The Container can include a key 'mvc_config' holding an array with MVC configuration
+	 * overrides. The values taken into account by the Toolbar are:
 	 *
-	 * @param   string  $option  The name of the component
-	 * @param   array   $config  The configuration array for the component
+	 * renderFrontendButtons		bool	Should I render buttons in the front-end of the component?
+	 * renderFrontendSubmenu		bool	Should I render the submenu in the front-end of the component?
 	 *
-	 * @return  F0FToolbar  The toolbar instance for the component
+	 * @param   Container  $c  The container for the component
 	 */
-	public static function &getAnInstance($option = null, $config = array())
+	public function __construct(Container $c)
 	{
-		static $instances = array();
+		// Store the container reference in this object
+		$this->container = $c;
 
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
+		// Extract the MVC configuration
+		$config = isset($container['mvc_config']) ? $container['mvc_config'] : array();
 
-		$hash = $option;
-
-		if (!array_key_exists($hash, $instances))
-		{
-			if (array_key_exists('input', $config))
-			{
-				if ($config['input'] instanceof F0FInput)
-				{
-					$input = $config['input'];
-				}
-				else
-				{
-					$input = new F0FInput($config['input']);
-				}
-			}
-			else
-			{
-				$input = new F0FInput;
-			}
-
-			$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
-			$input->set('option', $config['option']);
-			$config['input'] = $input;
-
-			$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Toolbar';
-
-			if (!class_exists($className))
-			{
-				$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($config['option']);
-
-				$searchPaths = array(
-					$componentPaths['main'],
-					$componentPaths['main'] . '/toolbars',
-					$componentPaths['alt'],
-					$componentPaths['alt'] . '/toolbars'
-				);
-
-				if (array_key_exists('searchpath', $config))
-				{
-					array_unshift($searchPaths, $config['searchpath']);
-				}
-
-                $filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
-
-				$path = $filesystem->pathFind(
-						$searchPaths, 'toolbar.php'
-				);
-
-				if ($path)
-				{
-					require_once $path;
-				}
-			}
-
-			if (!class_exists($className))
-			{
-				$className = 'F0FToolbar';
-			}
-
-			$instance = new $className($config);
-
-			$instances[$hash] = $instance;
-		}
-
-		return $instances[$hash];
-	}
-
-	/**
-	 * Public constructor
-	 *
-	 * @param   array  $config  The configuration array of the component
-	 */
-	public function __construct($config = array())
-	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
-
-		// Cache the config
-		$this->config = $config;
-
-		// Get the input for this MVC triad
-		if (array_key_exists('input', $config))
-		{
-			$this->input = $config['input'];
-		}
-		else
-		{
-			$this->input = new F0FInput;
-		}
-
-		// Get the default values for the component and view names
-		$this->component = $this->input->getCmd('option', 'com_foobar');
-
-		// Overrides from the config
-
-		if (array_key_exists('option', $config))
-		{
-			$this->component = $config['option'];
-		}
-
-		$this->input->set('option', $this->component);
+		// Get a reference to some useful objects
+		$input = $this->container->input;
+		$platform = $this->container->platform;
 
 		// Get default permissions (can be overriden by the view)
-		$platform = F0FPlatform::getInstance();
-		$perms = (object) array(
-				'manage'	 => $platform->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
-				'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-				'edit'		 => $platform->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-				'editstate'	 => $platform->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-				'delete'	 => $platform->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+		$perms = (object)array(
+			'manage'    => $this->container->platform->authorise('core.manage', $input->getCmd('option', 'com_foobar')),
+			'create'    => $this->container->platform->authorise('core.create', $input->getCmd('option', 'com_foobar')),
+			'edit'      => $this->container->platform->authorise('core.edit', $input->getCmd('option', 'com_foobar')),
+			'editstate' => $this->container->platform->authorise('core.edit.state', $input->getCmd('option', 'com_foobar')),
+			'delete'    => $this->container->platform->authorise('core.delete', $input->getCmd('option', 'com_foobar')),
 		);
 
 		// Save front-end toolbar and submenu rendering flags if present in the config
@@ -188,35 +80,27 @@ class F0FToolbar
 		}
 
 		// If not in the administrative area, load the JToolbarHelper
-		if (!F0FPlatform::getInstance()->isBackend())
+		if (!$platform->isBackend())
 		{
-            // Needed for tests, so we can inject our "special" helper class
-            if(!class_exists('JToolbarHelper'))
-            {
-                $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
-                require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
-            }
+			// Needed for tests, so we can inject our "special" helper class
+			if (!class_exists('\\JToolbarHelper'))
+			{
+				$platformDirs = $platform->getPlatformBaseDirs();
+				require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
+			}
 
 			// Things to do if we have to render a front-end toolbar
 			if ($this->renderFrontendButtons)
 			{
 				// Load back-end toolbar language files in front-end
-				F0FPlatform::getInstance()->loadTranslations('');
+				$platform->loadTranslations('');
 
-                // Needed for tests (we can fake we're not in the backend, but we are still in CLI!)
-                if(!F0FPlatform::getInstance()->isCli())
-                {
-                    // Load the core Javascript
-	                if (version_compare(JVERSION, '3.0', 'ge'))
-	                {
-		                JHtml::_('jquery.framework');
-		                JHtml::_('behavior.core');
-	                }
-	                else
-	                {
-		                JHtml::_('behavior.framework');
-	                }
-                }
+				// Needed for tests (we can fake we're not in the backend, but we are still in CLI!)
+				if (!$platform->isCli())
+				{
+					// Load the core Javascript
+					\JHtml::_('jquery.framework', true);
+				}
 			}
 		}
 
@@ -227,22 +111,17 @@ class F0FToolbar
 	/**
 	 * Renders the toolbar for the current view and task
 	 *
-	 * @param   string    $view   The view of the component
-	 * @param   string    $task   The exact task of the view
-	 * @param   F0FInput  $input  An optional input object used to determine the defaults
+	 * @param   string   $view  The view of the component
+	 * @param   string   $task  The exact task of the view
 	 *
 	 * @return  void
 	 */
-	public function renderToolbar($view = null, $task = null, $input = null)
+	public function renderToolbar($view = null, $task = null)
 	{
-		if (!empty($input))
-		{
-			$saveInput = $this->input;
-			$this->input = $input;
-		}
+		$input = $this->container->input;
 
 		// If tmpl=component the default behaviour is to not render the toolbar
-		if ($this->input->getCmd('tmpl', '') == 'component')
+		if ($input->getCmd('tmpl', '') == 'component')
 		{
 			$render_toolbar = false;
 		}
@@ -252,8 +131,7 @@ class F0FToolbar
 		}
 
 		// If there is a render_toolbar=0 in the URL, do not render a toolbar
-
-		$render_toolbar = $this->input->getBool('render_toolbar', $render_toolbar);
+		$render_toolbar = $input->getBool('render_toolbar', $render_toolbar);
 
 		if (!$render_toolbar)
 		{
@@ -261,23 +139,22 @@ class F0FToolbar
 		}
 
 		// Get the view and task
-
 		if (empty($view))
 		{
-			$view = $this->input->getCmd('view', 'cpanel');
+			$view = $input->getCmd('view', 'cpanel');
 		}
 
 		if (empty($task))
 		{
-			$task = $this->input->getCmd('task', 'default');
+			$task = $input->getCmd('task', 'default');
 		}
 
 		$this->view = $view;
 		$this->task = $task;
-		$view = F0FInflector::pluralize($view);
-		$component = $this->input->get('option', 'com_foobar', 'cmd');
+		$view = Inflector::pluralize($view);
+		$component = $input->get('option', 'com_foobar', 'cmd');
 
-		$configProvider = new F0FConfigProvider;
+		$configProvider = $this->container->appConfig;
 		$toolbar = $configProvider->get(
 			$component . '.views.' . $view . '.toolbar.' . $task
 		);
@@ -285,7 +162,9 @@ class F0FToolbar
 		// If we have a toolbar config specified
 		if (!empty($toolbar))
 		{
-			return $this->renderFromConfig($toolbar);
+			$this->renderFromConfig($toolbar);
+
+			return;
 		}
 
 		// Check for an onViewTask method
@@ -293,7 +172,9 @@ class F0FToolbar
 
 		if (method_exists($this, $methodName))
 		{
-			return $this->$methodName();
+			$this->$methodName();
+
+			return;
 		}
 
 		// Check for an onView method
@@ -301,7 +182,9 @@ class F0FToolbar
 
 		if (method_exists($this, $methodName))
 		{
-			return $this->$methodName();
+			$this->$methodName();
+
+			return;
 		}
 
 		// Check for an onTask method
@@ -309,12 +192,9 @@ class F0FToolbar
 
 		if (method_exists($this, $methodName))
 		{
-			return $this->$methodName();
-		}
+			$this->$methodName();
 
-		if (!empty($input))
-		{
-			$this->input = $saveInput;
+			return;
 		}
 	}
 
@@ -325,17 +205,17 @@ class F0FToolbar
 	 */
 	public function onCpanelsBrowse()
 	{
-		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
 
-		$option = $this->input->getCmd('option', 'com_foobar');
+		$option = $this->container->componentName;
 
 		JToolBarHelper::title(JText::_(strtoupper($option)), str_replace('com_', '', $option));
 		JToolBarHelper::preferences($option, 550, 875);
@@ -349,44 +229,33 @@ class F0FToolbar
 	public function onBrowse()
 	{
 		// On frontend, buttons must be added specifically
-		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
 
+		// Setup
+		$option = $this->container->componentName;
+		$view = $this->container->input->getCmd('view', 'cpanel');
+
 		// Set toolbar title
-		$option = $this->input->getCmd('option', 'com_foobar');
-		$subtitle_key = strtoupper($option . '_TITLE_' . $this->input->getCmd('view', 'cpanel'));
+		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
 
 		// Add toolbar buttons
 		if ($this->perms->create)
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				JToolBarHelper::addNew();
-			}
-			else
-			{
-				JToolBarHelper::addNewX();
-			}
+			JToolBarHelper::addNew();
 		}
 
 		if ($this->perms->edit)
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				JToolBarHelper::editList();
-			}
-			else
-			{
-				JToolBarHelper::editListX();
-			}
+			JToolBarHelper::editList();
 		}
 
 		if ($this->perms->create || $this->perms->edit)
@@ -403,7 +272,7 @@ class F0FToolbar
 
 		if ($this->perms->delete)
 		{
-			$msg = JText::_($this->input->getCmd('option', 'com_foobar') . '_CONFIRM_DELETE');
+			$msg = JText::_($option . '_CONFIRM_DELETE');
 			JToolBarHelper::deleteList(strtoupper($msg));
 		}
 	}
@@ -416,21 +285,22 @@ class F0FToolbar
 	public function onRead()
 	{
 		// On frontend, buttons must be added specifically
-		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
 
-		$option = $this->input->getCmd('option', 'com_foobar');
+		$option = $this->container->componentName;
 		$componentName = str_replace('com_', '', $option);
+		$view = $this->container->input->getCmd('view', 'cpanel');
 
 		// Set toolbar title
-		$subtitle_key = strtoupper($option . '_TITLE_' . $this->input->getCmd('view', 'cpanel') . '_READ');
+		$subtitle_key = strtoupper($option . '_TITLE_' . $view . '_READ');
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
@@ -445,25 +315,26 @@ class F0FToolbar
 	public function onAdd()
 	{
 		// On frontend, buttons must be added specifically
-		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
 
-		$option = $this->input->getCmd('option', 'com_foobar');
+		$option = $this->container->componentName;
 		$componentName = str_replace('com_', '', $option);
+		$view = $this->container->input->getCmd('view', 'cpanel');
 
 		// Set toolbar title
-		$subtitle_key = strtoupper($option . '_TITLE_' . F0FInflector::pluralize($this->input->getCmd('view', 'cpanel'))) . '_EDIT';
+		$subtitle_key = strtoupper($option . '_TITLE_' . Inflector::pluralize($view)) . '_EDIT';
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
-        if ($this->perms->edit || $this->perms->editown)
-        {
-            // Show the apply button only if I can edit the record, otherwise I'll return to the edit form and get a
-            // 403 error since I can't do that
-            JToolBarHelper::apply();
-        }
+		if ($this->perms->edit || $this->perms->editown)
+		{
+			// Show the apply button only if I can edit the record, otherwise I'll return to the edit form and get a
+			// 403 error since I can't do that
+			JToolBarHelper::apply();
+		}
 
 		JToolBarHelper::save();
 
@@ -483,7 +354,7 @@ class F0FToolbar
 	public function onEdit()
 	{
 		// On frontend, buttons must be added specifically
-		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -514,46 +385,46 @@ class F0FToolbar
 	/**
 	 * Append a link to the link bar
 	 *
-	 * @param   string       $name    The text of the link
-	 * @param   string|null  $link    The link to render; set to null to render a separator
-	 * @param   boolean      $active  True if it's an active link
-	 * @param   string|null  $icon    Icon class (used by some renderers, like the Bootstrap renderer)
-	 * @param   string|null  $parent  The parent element (referenced by name)) Thsi will create a dropdown list
+	 * @param   string      $name   The text of the link
+	 * @param   string|null $link   The link to render; set to null to render a separator
+	 * @param   boolean     $active True if it's an active link
+	 * @param   string|null $icon   Icon class (used by some renderers, like the Bootstrap renderer)
+	 * @param   string|null $parent The parent element (referenced by name)) Thsi will create a dropdown list
 	 *
 	 * @return  void
 	 */
 	public function appendLink($name, $link = null, $active = false, $icon = null, $parent = '')
 	{
 		$linkDefinition = array(
-			'name'	 => $name,
-			'link'	 => $link,
+			'name'   => $name,
+			'link'   => $link,
 			'active' => $active,
-			'icon'	 => $icon
+			'icon'   => $icon
 		);
 
 		if (empty($parent))
 		{
-            if(array_key_exists($name, $this->linkbar))
-            {
-                $this->linkbar[$name] = array_merge($this->linkbar[$name], $linkDefinition);
+			if (array_key_exists($name, $this->linkbar))
+			{
+				$this->linkbar[$name] = array_merge($this->linkbar[$name], $linkDefinition);
 
-                // If there already are some children, I have to put this view link in the "items" array in the first place
-                if(array_key_exists('items', $this->linkbar[$name]))
-                {
-                    array_unshift($this->linkbar[$name]['items'], $linkDefinition);
-                }
-            }
-            else
-            {
-                $this->linkbar[$name] = $linkDefinition;
-            }
+				// If there already are some children, I have to put this view link in the "items" array in the first place
+				if (array_key_exists('items', $this->linkbar[$name]))
+				{
+					array_unshift($this->linkbar[$name]['items'], $linkDefinition);
+				}
+			}
+			else
+			{
+				$this->linkbar[$name] = $linkDefinition;
+			}
 		}
 		else
 		{
 			if (!array_key_exists($parent, $this->linkbar))
 			{
 				$parentElement = $linkDefinition;
-                $parentElement['name'] = $parent;
+				$parentElement['name'] = $parent;
 				$parentElement['link'] = null;
 				$this->linkbar[$parent] = $parentElement;
 				$parentElement['items'] = array();
@@ -572,7 +443,7 @@ class F0FToolbar
 			$parentElement['items'][] = $linkDefinition;
 			$parentElement['dropdown'] = true;
 
-			if($active)
+			if ($active)
 			{
 				$parentElement['active'] = true;
 			}
@@ -584,20 +455,20 @@ class F0FToolbar
 	/**
 	 * Prefixes (some people erroneously call this "prepend" – there is no such word) a link to the link bar
 	 *
-	 * @param   string       $name    The text of the link
-	 * @param   string|null  $link    The link to render; set to null to render a separator
-	 * @param   boolean      $active  True if it's an active link
-	 * @param   string|null  $icon    Icon class (used by some renderers, like the Bootstrap renderer)
+	 * @param   string      $name   The text of the link
+	 * @param   string|null $link   The link to render; set to null to render a separator
+	 * @param   boolean     $active True if it's an active link
+	 * @param   string|null $icon   Icon class (used by some renderers, like the Bootstrap renderer)
 	 *
 	 * @return  void
 	 */
 	public function prefixLink($name, $link = null, $active = false, $icon = null)
 	{
 		$linkDefinition = array(
-			'name'	 => $name,
-			'link'	 => $link,
+			'name'   => $name,
+			'link'   => $link,
 			'active' => $active,
-			'icon'	 => $icon
+			'icon'   => $icon
 		);
 		array_unshift($this->linkbar, $linkDefinition);
 	}
@@ -616,23 +487,23 @@ class F0FToolbar
 			return;
 		}
 
-		$activeView = $this->input->getCmd('view', 'cpanel');
+		$activeView = $this->container->input->getCmd('view', 'cpanel');
 
 		foreach ($views as $view)
 		{
 			// Get the view name
-			$key = strtoupper($this->component) . '_TITLE_' . strtoupper($view);
+			$key = strtoupper($this->container->componentName) . '_TITLE_' . strtoupper($view);
 
-            //Do we have a translation for this key?
+			//Do we have a translation for this key?
 			if (strtoupper(JText::_($key)) == $key)
 			{
-				$altview = F0FInflector::isPlural($view) ? F0FInflector::singularize($view) : F0FInflector::pluralize($view);
-				$key2 = strtoupper($this->component) . '_TITLE_' . strtoupper($altview);
+				$altview = Inflector::isPlural($view) ? Inflector::singularize($view) : Inflector::pluralize($view);
+				$key2 = strtoupper($this->container->componentName) . '_TITLE_' . strtoupper($altview);
 
-                // Maybe we have for the alternative view?
+				// Maybe we have for the alternative view?
 				if (strtoupper(JText::_($key2)) == $key2)
 				{
-                    // Nope, let's use the raw name
+					// Nope, let's use the raw name
 					$name = ucfirst($view);
 				}
 				else
@@ -645,7 +516,7 @@ class F0FToolbar
 				$name = JText::_($key);
 			}
 
-			$link = 'index.php?option=' . $this->component . '&view=' . $view;
+			$link = 'index.php?option=' . $this->container->componentName . '&view=' . $view;
 
 			$active = $view == $activeView;
 
@@ -660,13 +531,13 @@ class F0FToolbar
 	 */
 	protected function getMyViews()
 	{
-		$views      = array();
-		$t_views    = array();
+		$views = array();
+		$t_views = array();
 		$using_meta = false;
 
-		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($this->component);
-		$searchPath     = $componentPaths['main'] . '/views';
-        $filesystem     = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$componentPaths = $this->container->platform->getComponentBaseDirs($this->container->componentName);
+		$searchPath = $componentPaths['main'] . '/views';
+		$filesystem = $this->container->filesystem;
 
 		$allFolders = $filesystem->folderFolders($searchPath);
 
@@ -677,7 +548,7 @@ class F0FToolbar
 				$view = $folder;
 
 				// View already added
-				if (in_array(F0FInflector::pluralize($view), $t_views))
+				if (in_array(Inflector::pluralize($view), $t_views))
 				{
 					continue;
 				}
@@ -696,7 +567,7 @@ class F0FToolbar
 				// Not found, do we have it inside the plural one?
 				if (!$meta)
 				{
-					$plural = F0FInflector::pluralize($view);
+					$plural = Inflector::pluralize($view);
 
 					if (in_array($plural, $allFolders))
 					{
@@ -709,7 +580,7 @@ class F0FToolbar
 				{
 					$using_meta = true;
 					$xml = simplexml_load_file($searchPath . '/' . $view . '/' . $meta[0]);
-					$order = (int) $xml->foflib->ordering;
+					$order = (int)$xml->foflib->ordering;
 				}
 				else
 				{
@@ -723,9 +594,9 @@ class F0FToolbar
 					$order = count($to_order);
 				}
 
-				$view = F0FInflector::pluralize($view);
+				$view = Inflector::pluralize($view);
 
-				$t_view = new stdClass;
+				$t_view = new \stdClass;
 				$t_view->ordering = $order;
 				$t_view->view = $view;
 
@@ -734,8 +605,8 @@ class F0FToolbar
 			}
 		}
 
-        F0FUtilsArray::sortObjects($to_order, 'ordering');
-		$views = F0FUtilsArray::getColumn($to_order, 'view');
+		\JArrayHelper::sortObjects($to_order, 'ordering');
+		$views = \JArrayHelper::getColumn($to_order, 'view');
 
 		// If not using the metadata file, let's put the cpanel view on top
 		if (!$using_meta)
@@ -775,18 +646,18 @@ class F0FToolbar
 	/**
 	 * Render the toolbar from the configuration.
 	 *
-	 * @param   array  $toolbar  The toolbar definition
+	 * @param   array $toolbar The toolbar definition
 	 *
 	 * @return  void
 	 */
 	private function renderFromConfig(array $toolbar)
 	{
-		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if ($this->container->platform->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!$this->container->platform->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -804,14 +675,15 @@ class F0FToolbar
 	/**
 	 * Render a toolbar element.
 	 *
-	 * @param   string  $type        The element type.
-	 * @param   mixed   $value       The element value.
-	 * @param   array   $attributes  The element attributes.
+	 * @param   string $type       The element type.
+	 * @param   mixed  $value      The element value.
+	 * @param   array  $attributes The element attributes.
 	 *
 	 * @return  void
 	 *
-     * @codeCoverageIgnore
-	 * @throws  InvalidArgumentException
+	 * @codeCoverageIgnore
+	 *
+	 * @throws  \InvalidArgumentException
 	 */
 	private function renderToolbarElement($type, $value = null, array $attributes = array())
 	{
@@ -832,7 +704,7 @@ class F0FToolbar
 				$iconOver = isset($attributes['icon_over']) ? $attributes['icon_over'] : '';
 				$alt = isset($attributes['alt']) ? $attributes['alt'] : '';
 				$listSelect = isset($attributes['list_select']) ?
-					F0FStringUtils::toBool($attributes['list_select']) : true;
+					String::toBool($attributes['list_select']) : true;
 
 				JToolbarHelper::custom($task, $icon, $iconOver, $alt, $listSelect);
 				break;
@@ -840,7 +712,7 @@ class F0FToolbar
 			case 'preview':
 				$url = isset($attributes['url']) ? $attributes['url'] : '';
 				$update_editors = isset($attributes['update_editors']) ?
-					F0FStringUtils::toBool($attributes['update_editors']) : false;
+					String::toBool($attributes['update_editors']) : false;
 
 				JToolbarHelper::preview($url, $update_editors);
 				break;
@@ -848,13 +720,13 @@ class F0FToolbar
 			case 'help':
 				if (!isset($attributes['help']))
 				{
-					throw new InvalidArgumentException(
+					throw new \InvalidArgumentException(
 						'The help attribute is missing in the help button type.'
 					);
 				}
 
 				$ref = $attributes['help'];
-				$com = isset($attributes['com']) ? F0FStringUtils::toBool($attributes['com']) : false;
+				$com = isset($attributes['com']) ? String::toBool($attributes['com']) : false;
 				$override = isset($attributes['override']) ? $attributes['override'] : null;
 				$component = isset($attributes['component']) ? $attributes['component'] : null;
 
@@ -888,7 +760,7 @@ class F0FToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'add';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
 					$check = isset($attributes['check']) ?
-						F0FStringUtils::toBool($attributes['check']) : false;
+						String::toBool($attributes['check']) : false;
 
 					JToolbarHelper::addNew($task, $alt, $check);
 				}
@@ -901,7 +773,7 @@ class F0FToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
 					$check = isset($attributes['check']) ?
-						F0FStringUtils::toBool($attributes['check']) : false;
+						String::toBool($attributes['check']) : false;
 
 					JToolbarHelper::publish($task, $alt, $check);
 				}
@@ -925,7 +797,7 @@ class F0FToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
 					$check = isset($attributes['check']) ?
-						F0FStringUtils::toBool($attributes['check']) : false;
+						String::toBool($attributes['check']) : false;
 
 					JToolbarHelper::unpublish($task, $alt, $check);
 				}
@@ -1008,7 +880,7 @@ class F0FToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
 					$check = isset($attributes['check']) ?
-						F0FStringUtils::toBool($attributes['check']) : true;
+						String::toBool($attributes['check']) : true;
 
 					JToolbarHelper::trash($task, $alt, $check);
 				}
@@ -1044,9 +916,9 @@ class F0FToolbar
 
 			case 'checkin':
 				$task = isset($attributes['task']) ? $attributes['task'] : 'checkin';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] :'JTOOLBAR_CHECKIN';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_CHECKIN';
 				$check = isset($attributes['check']) ?
-					F0FStringUtils::toBool($attributes['check']) : true;
+					String::toBool($attributes['check']) : true;
 
 				JToolbarHelper::checkin($task, $alt, $check);
 				break;
@@ -1061,7 +933,7 @@ class F0FToolbar
 			case 'preferences':
 				if (!isset($attributes['component']))
 				{
-					throw new InvalidArgumentException(
+					throw new \InvalidArgumentException(
 						'The component attribute is missing in the preferences button type.'
 					);
 				}
@@ -1076,7 +948,7 @@ class F0FToolbar
 				break;
 
 			default:
-				throw new InvalidArgumentException(sprintf('Unknown button type %s', $type));
+				throw new \InvalidArgumentException(sprintf('Unknown button type %s', $type));
 		}
 	}
 }

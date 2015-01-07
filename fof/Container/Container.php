@@ -24,14 +24,17 @@ defined('_JEXEC') or die;
  * @property  string                                   $componentNamespace The namespace of the component's classes (\Foobar)
  * @property  string                                   $frontEndPath       The absolute path to the front-end files
  * @property  string                                   $backEndPath        The absolute path to the front-end files
+ * @property  array                                    $mvc_config         Configuration overrides for MVC, Dispatcher, Toolbar
  *
- * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
- * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
- * @property-read  JDatabaseDriver                     $db                 The global database connection object
+ * @property-read  \JDatabaseDriver                    $db                 The database connection object
+ * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The component's dispatcher
+ * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Input\Input                  $input              The input object
- * @property-read  JSession                            $session            The session manager
- * @property-read  Template                            $template           The template helper
+ * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
+ * @property-read  \JSession                           $session            Joomla! session storage
+ * @property-read  \FOF30\Template\Template            $template           The template helper
+ * @property-read  \FOF30\Toolbar\Toolbar              $toolbar            The component's toolbar
  */
 class Container extends Pimple
 {
@@ -155,6 +158,22 @@ class Container extends Pimple
 				}
 
 				return new $className($c);
+			};
+		}
+
+		// Component toolbar provider
+		if (!isset($this['toolbar']))
+		{
+			$this['toolbar'] = function (Container $c)
+			{
+				$className = $c->componentNamespace . '\\Toolbar';
+
+				if (!class_exists($className, true))
+				{
+					$className = '\\FOF30\\Toolbar\\Toolbar';
+				}
+
+				return $className($c);
 			};
 		}
 

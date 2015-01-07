@@ -9,7 +9,7 @@ namespace FOF30\Hal\Render;
 
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
-use FOF30\Mvc\DataModel;
+use FOF30\Model\DataModel;
 
 defined('_JEXEC') or die;
 
