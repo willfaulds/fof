@@ -8,9 +8,11 @@
 namespace FOF30\Container;
 
 use FOF30\Autoloader\Autoloader;
+use FOF30\Pimple\Pimple;
+use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
+use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
 use FOF30\Template\Template;
 use JDatabaseDriver;
-use FOF30\Pimple\Pimple;
 use JSession;
 
 defined('_JEXEC') or die;
@@ -27,7 +29,6 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
  * @property-read  JDatabaseDriver                     $db                 The global database connection object
- * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The application dispatcher
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  JSession                            $session            The session manager
  * @property-read  Template                            $template           The template helper
@@ -103,7 +104,7 @@ class Container extends Pimple
 		{
 			$this['filesystem'] = function (Container $c)
 			{
-				return new \FOF30\Platform\Joomla\Filesystem($c);
+				return new JoomlaFilesystem($c);
 			};
 		}
 
@@ -112,7 +113,7 @@ class Container extends Pimple
 		{
 			$this['platform'] = function (Container $c)
 			{
-				return new \FOF30\Platform\Joomla\Platform($c);
+				return new JoomlaPlatform($c);
 			};
 		}
 
@@ -135,7 +136,7 @@ class Container extends Pimple
 		// Database Driver service
 		if (!isset($this['db']))
 		{
-			$this['db'] = function (Container $c)
+			$this['db'] = function ()
 			{
 				return $this->platform->getDbo();
 			};
@@ -160,7 +161,7 @@ class Container extends Pimple
 		// Input Access service
 		if (!isset($this['input']))
 		{
-			$this['input'] = function (Container $c)
+			$this['input'] = function ()
 			{
 				return new \FOF30\Input\Input();
 			};

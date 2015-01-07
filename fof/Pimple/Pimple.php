@@ -4,7 +4,7 @@
  * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  *
- * This file contains a namespaced but otherwise unmodified copy of Pimple, the DI
+ * This file contains a namespaced and modified copy of Pimple, the DI
  * container by Fabien Potencier. The following notice accompanies the original
  * file:
  *
