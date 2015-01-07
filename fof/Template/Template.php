@@ -54,7 +54,7 @@ class Template
 		{
 			if (method_exists($document, 'addStyleSheet'))
 			{
-				$url = self::parsePath($path);
+				$url = $this->parsePath($path);
 				$document->addStyleSheet($url);
 			}
 		}
@@ -92,7 +92,7 @@ class Template
 		{
 			if (method_exists($document, 'addScript'))
 			{
-				$url = self::parsePath($path);
+				$url = $this->parsePath($path);
 				$document->addScript($url, "text/javascript", $defer, $async);
 			}
 		}
@@ -122,7 +122,7 @@ class Template
 		static $sanityCheck = null;
 
 		// Get the local LESS file
-		$localFile = self::parsePath($path, true);
+		$localFile = $this->parsePath($path, true);
 
 		$filesystem   = $this->container->filesystem;
 		$platformDirs = $this->container->platform->getPlatformBaseDirs();
@@ -148,13 +148,13 @@ class Template
 			{
 				if (is_string($altPath))
 				{
-					self::addCSS($altPath);
+					$this->addCSS($altPath);
 				}
 				elseif (is_array($altPath))
 				{
 					foreach ($altPath as $anAltPath)
 					{
-						self::addCSS($anAltPath);
+						$this->addCSS($anAltPath);
 					}
 				}
 			}
@@ -173,7 +173,7 @@ class Template
 		$lessCompiler->formatterName = 'compressed';
 
 		// Should I add an alternative import path?
-		$altFiles = self::getAltPaths($path);
+		$altFiles = $this->getAltPaths($path);
 
 		if (isset($altFiles['alternate']))
 		{
@@ -272,7 +272,7 @@ class Template
 			$url = $this->container->platform->URIroot();
 		}
 
-		$altPaths = self::getAltPaths($path);
+		$altPaths = $this->getAltPaths($path);
 		$filePath = $altPaths['normal'];
 
 		// If JDEBUG is enabled, prefer that path, else prefer an alternate path if present
