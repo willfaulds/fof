@@ -37,7 +37,7 @@ class Configuration
 	{
 		$this->container = $c;
 
-		$this->parseComponent($c->componentName);
+		$this->parseComponent();
 	}
 
 	/**
@@ -59,14 +59,9 @@ class Configuration
 			$domains = $this->getDomains();
 		}
 
-		list($component, $domain, $var) = explode('.', $variable, 3);
+		list($domain, $var) = explode('.', $variable, 2);
 
-		if (!isset(self::$configurations[$component]))
-		{
-			$this->parseComponent($component);
-		}
-
-		if (!in_array($domain, $domains))
+		if (!in_array(ucfirst($domain), $domains))
 		{
 			return $default;
 		}
@@ -75,24 +70,16 @@ class Configuration
 		/** @var   \FOF30\Configuration\Domain\DomainInterface  $o */
 		$o = new $class;
 
-		return $o->get(self::$configurations[$component], $var, $default);
+		return $o->get(self::$configurations[$this->container->componentName], $var, $default);
 	}
 
 	/**
 	 * Parses the configuration of the specified component
 	 *
-	 * @param   string   $component  The name of the component, e.g. com_foobar
-	 * @param   boolean  $force      Force reload even if it's already parsed?
-	 *
 	 * @return  void
 	 */
-	protected function parseComponent($component, $force = false)
+	protected function parseComponent()
 	{
-		if (!$force && isset(self::$configurations[$component]))
-		{
-			return;
-		}
-
 		if ($this->container->platform->isCli())
 		{
 			$order = array('cli', 'backend');
@@ -109,25 +96,26 @@ class Configuration
 		$order[] = 'common';
 
 		$order = array_reverse($order);
-		self::$configurations[$component] = array();
+		self::$configurations[$this->container->componentName] = array();
 
 		foreach ($order as $area)
 		{
-			$config = $this->parseComponentArea($component, $area);
-			self::$configurations[$component] = array_merge_recursive(self::$configurations[$component], $config);
+			$config = $this->parseComponentArea($area);
+			self::$configurations[$this->container->componentName] = array_merge_recursive(self::$configurations[$this->container->componentName], $config);
 		}
 	}
 
 	/**
 	 * Parses the configuration options of a specific component area
 	 *
-	 * @param   string  $component  Which component's cionfiguration to parse
 	 * @param   string  $area       Which area to parse (frontend, backend, cli)
 	 *
 	 * @return  array  A hash array with the configuration data
 	 */
-	protected function parseComponentArea($component, $area)
+	protected function parseComponentArea($area)
 	{
+		$component = $this->container->componentName;
+
 		// Initialise the return array
 		$ret = array();
 
@@ -141,13 +129,18 @@ class Configuration
 
 		if (!$filesystem->folderExists($path))
 		{
-			return $ret;
+			$path = $this->container->backEndPath;
+
+			if (!is_dir($path))
+			{
+				return $ret;
+			}
 		}
 
 		// Read the filename if it exists
 		$filename = $path . '/fof.xml';
 
-		if (!$filesystem->fileExists($filename))
+		if (!$filesystem->fileExists($filename) && !file_exists($filename))
 		{
 			return $ret;
 		}
