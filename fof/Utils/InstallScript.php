@@ -300,11 +300,11 @@ class InstallScript
 	public function postflight($type, $parent)
 	{
 		// Install or update database
-		$dbInstaller = new Installer(array(
-			'dbinstaller_directory' =>
-				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
-				$this->schemaXmlPath
-		));
+		// Uninstall database
+		$dbInstaller = new Installer(JFactory::getDbo(),
+			($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
+			$this->schemaXmlPath
+		);
 		$dbInstaller->updateSchema();
 
 		// Install subextensions
@@ -399,11 +399,11 @@ class InstallScript
 	public function uninstall($parent)
 	{
 		// Uninstall database
-		$dbInstaller = new Installer(array(
-			'dbinstaller_directory' =>
-				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
-				$this->schemaXmlPath
-		));
+		$dbInstaller = new Installer(JFactory::getDbo(),
+			($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
+			$this->schemaXmlPath
+		);
+
 		$dbInstaller->removeSchema();
 
 		// Uninstall modules and plugins

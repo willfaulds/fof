@@ -7,7 +7,6 @@
 
 namespace FOF30\Database;
 
-use FOF30\Input\Input;
 use JDatabaseDriver;
 use SimpleXMLElement;
 use Exception;
@@ -19,94 +18,22 @@ class Installer
 	/** @var  JDatabaseDriver  The database connector object */
 	private $db = null;
 
-	/**
-	 * @var   Input  Input variables
-	 */
-	protected $input = null;
-
 	/** @var  string  The directory where the XML schema files are stored */
 	private $xmlDirectory = null;
-
-	/** @var  array  A list of the base names of the XML schema files */
-	public $xmlFiles = array('mysql', 'mysqli', 'pdomysql', 'postgresql', 'sqlsrv', 'mssql');
 
 	/**
 	 * Public constructor
 	 *
+	 * @param   JDatabaseDriver  $db         The database driver we're going to use to install the tables
+	 * @param   string           $directory  The directory holding the XML schema update files
+	 *
 	 * @param   array  $config  The configuration array
 	 */
-	public function __construct($config = array())
+	public function __construct(JDatabaseDriver $db, $directory)
 	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
+		$this->db = $db;
 
-		// Get the input
-		if (array_key_exists('input', $config))
-		{
-			if ($config['input'] instanceof Input)
-			{
-				$this->input = $config['input'];
-			}
-			else
-			{
-				$this->input = new Input($config['input']);
-			}
-		}
-		else
-		{
-			$this->input = new Input;
-		}
-
-		// Set the database object
-		if (array_key_exists('dbo', $config))
-		{
-			$this->db = $config['dbo'];
-		}
-		else
-		{
-			$this->db = \JFactory::getDbo();
-		}
-
-		// Set the $name/$_name variable
-		$component = $this->input->getCmd('option', 'com_foobar');
-
-		if (array_key_exists('option', $config))
-		{
-			$component = $config['option'];
-		}
-
-		// Figure out where the XML schema files are stored
-		if (array_key_exists('dbinstaller_directory', $config))
-		{
-			$this->xmlDirectory = $config['dbinstaller_directory'];
-		}
-		else
-		{
-			// Nothing is defined, assume the files are stored in the sql/xml directory inside the component's administrator section
-			$sqlPath = JPATH_ADMINISTRATOR . '/components/' . $component . '/sql/xml';
-			$this->setXmlDirectory($sqlPath);
-		}
-
-		// Do we have a set of XML files to look for?
-		if (array_key_exists('dbinstaller_files', $config))
-		{
-			$files = $config['dbinstaller_files'];
-
-			if (!is_array($files))
-			{
-				$files = explode(',', $files);
-			}
-
-			$this->xmlFiles = $files;
-		}
-
+		$this->xmlDirectory = $directory;
 	}
 
 	/**
@@ -314,7 +241,14 @@ class Installer
 		$driverType = $this->db->name;
 		$xml = null;
 
-		foreach ($this->xmlFiles as $baseName)
+		$xmlFiles = \JFolder::files($this->xmlDirectory, '\.xml$');
+
+		if (empty($xmlFiles))
+		{
+			return $xml;
+		}
+
+		foreach ($xmlFiles as $baseName)
 		{
 			// Remove any accidental whitespace
 			$baseName = trim($baseName);
