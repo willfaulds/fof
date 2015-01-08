@@ -7,9 +7,12 @@
 
 namespace FOF30\Tests\Configuration\Domain;
 
-use FOF30\Configuration\Configuration;
 use FOF30\Tests\Helpers\FOFTestCase;
 
+/**
+ * @covers  FOF30\Configuration\Configuration::<protected>
+ * @covers  FOF30\Configuration\Configuration::<private>
+ */
 class ConfigurationTest extends FOFTestCase
 {
 	/** @var   array  The data returned from parsing the XML file, used to test fetching data */

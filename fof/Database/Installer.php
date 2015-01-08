@@ -158,7 +158,7 @@ class Installer
 							break;
 
 						case 'nor':
-							$shouldExecute = $shouldExecute || !$condition;
+							$shouldExecute = !$shouldExecute && !$condition;
 							break;
 
 						case 'xor':
@@ -175,10 +175,8 @@ class Installer
 					}
 				}
 
-				if (!$shouldExecute)
-				{
-					break;
-				}
+				// DO NOT USE BOOLEAN SHORT CIRCUIT EVALUATION!
+				// if (!$shouldExecute) break;
 			}
 
 			// Make sure all conditions are met
@@ -192,7 +190,14 @@ class Installer
 			{
 				if ($node->getName() == 'query')
 				{
-					$canFail = $node->attributes->canfail ? $node->attributes->canfail : $canFailAction;
+					$canFail = $node->attributes->canfail ? (string)$node->attributes->canfail : $canFailAction;
+
+					if (is_string($canFail))
+					{
+						$canFail = strtoupper($canFail);
+					}
+
+					$canFail = (in_array($canFail, array(true, 1, 'YES', 'TRUE')));
 
 					$this->db->setQuery((string) $node);
 
@@ -283,6 +288,8 @@ class Installer
 			}
 		}
 
+		class_exists('\\JFolder') || \JLoader::import('joomla.filesystem.folder');
+
 		// Get all XML files in the schema directory
 		$xmlFiles = \JFolder::files($this->xmlDirectory, '\.xml$');
 
@@ -297,9 +304,9 @@ class Installer
 			$baseName = trim($baseName);
 
 			// Get the full path to the file
-			$fileName = $this->xmlDirectory . '/' . $baseName . '.xml';
+			$fileName = $this->xmlDirectory . '/' . $baseName;
 
-			$xml = $this->openAndVerify($this->forcedFile);
+			$xml = $this->openAndVerify($fileName);
 
 			if ($xml !== false)
 			{

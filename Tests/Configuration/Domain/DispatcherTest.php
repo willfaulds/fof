@@ -10,6 +10,10 @@ namespace FOF30\Tests\Configuration\Domain;
 use FOF30\Configuration\Domain\Dispatcher;
 use FOF30\Tests\Helpers\FOFTestCase;
 
+/**
+ * @covers  FOF30\Configuration\Domain\Dispatcher::<protected>
+ * @covers  FOF30\Configuration\Domain\Dispatcher::<private>
+ */
 class DispatcherTest extends FOFTestCase
 {
 	/** @var   Dispatcher  The object to test */
