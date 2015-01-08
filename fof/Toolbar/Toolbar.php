@@ -152,11 +152,10 @@ class Toolbar
 		$this->view = $view;
 		$this->task = $task;
 		$view = Inflector::pluralize($view);
-		$component = $input->get('option', 'com_foobar', 'cmd');
 
 		$configProvider = $this->container->appConfig;
 		$toolbar = $configProvider->get(
-			$component . '.views.' . $view . '.toolbar.' . $task
+			'views.' . $view . '.toolbar.' . $task
 		);
 
 		// If we have a toolbar config specified
