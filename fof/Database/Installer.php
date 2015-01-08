@@ -21,6 +21,9 @@ class Installer
 	/** @var  string  The directory where the XML schema files are stored */
 	private $xmlDirectory = null;
 
+	/** @var  string  Force a specific **absolute** file path for the XML schema file */
+	private $forcedFile = null;
+
 	/**
 	 * Public constructor
 	 *
@@ -40,6 +43,8 @@ class Installer
 	 * Sets the directory where XML schema files are stored
 	 *
 	 * @param   string  $xmlDirectory
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function setXmlDirectory($xmlDirectory)
 	{
@@ -50,10 +55,37 @@ class Installer
 	 * Returns the directory where XML schema files are stored
 	 *
 	 * @return  string
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function getXmlDirectory()
 	{
 		return $this->xmlDirectory;
+	}
+
+	/**
+	 * Returns the absolute path to the forced XML schema file
+	 *
+	 * @return  string
+	 *
+	 * @codeCoverageIgnore
+	 */
+	public function getForcedFile()
+	{
+		return $this->forcedFile;
+	}
+
+	/**
+	 * Sets the absolute path to an XML schema file which will be read no matter what. Set to a blank string to let the
+	 * Installer class auto-detect your schema file based on your database type.
+	 *
+	 * @param  string  $forcedFile
+	 *
+	 * @codeCoverageIgnore
+	 */
+	public function setForcedFile($forcedFile)
+	{
+		$this->forcedFile = $forcedFile;
 	}
 
 	/**
@@ -238,9 +270,20 @@ class Installer
 	 */
 	protected function findSchemaXml()
 	{
-		$driverType = $this->db->name;
 		$xml = null;
 
+		// Do we have a forced file?
+		if ($this->forcedFile)
+		{
+			$xml = $this->openAndVerify($this->forcedFile);
+
+			if ($xml !== false)
+			{
+				return $xml;
+			}
+		}
+
+		// Get all XML files in the schema directory
 		$xmlFiles = \JFolder::files($this->xmlDirectory, '\.xml$');
 
 		if (empty($xmlFiles))
@@ -256,59 +299,81 @@ class Installer
 			// Get the full path to the file
 			$fileName = $this->xmlDirectory . '/' . $baseName . '.xml';
 
-			// Make sure the file exists
-			if (!@file_exists($fileName))
+			$xml = $this->openAndVerify($this->forcedFile);
+
+			if ($xml !== false)
 			{
-				continue;
+				return $xml;
 			}
-
-			// Make sure the file is a valid XML document
-			try
-			{
-				$xml = new SimpleXMLElement($fileName, LIBXML_NONET, true);
-			}
-			catch (Exception $e)
-			{
-				$xml = null;
-				continue;
-			}
-
-			// Make sure the file is an XML schema file
-			if ($xml->getName() != 'schema')
-			{
-				$xml = null;
-				continue;
-			}
-
-			if (!$xml->meta)
-			{
-				$xml = null;
-				continue;
-			}
-
-			if (!$xml->meta->drivers)
-			{
-				$xml = null;
-				continue;
-			}
-
-			/** @var SimpleXMLElement $drivers */
-			$drivers = $xml->meta->drivers;
-
-			foreach ($drivers->children() as $driverTypeTag)
-			{
-				$thisDriverType = (string)$driverTypeTag;
-
-				if ($thisDriverType == $driverType)
-				{
-					return $xml;
-				}
-			}
-
-			$xml = null;
 		}
 
-		return $xml;
+		return null;
+	}
+
+	/**
+	 * Opens the schema XML file and return the SimpleXMLElement holding its information. If the file doesn't exist, it
+	 * is not a schema file or it doesn't match our database driver we return boolean false.
+	 *
+	 * @return  false|SimpleXMLElement  False if it's not a suitable XML schema file
+	 */
+	protected function openAndVerify($fileName)
+	{
+		$driverType = $this->db->name;
+
+		// Make sure the file exists
+		if (!@file_exists($fileName))
+		{
+			return false;
+		}
+
+		// Make sure the file is a valid XML document
+		try
+		{
+			$xml = new SimpleXMLElement($fileName, LIBXML_NONET, true);
+		}
+		catch (Exception $e)
+		{
+			$xml = null;
+
+			return false;
+		}
+
+		// Make sure the file is an XML schema file
+		if ($xml->getName() != 'schema')
+		{
+			$xml = null;
+
+			return false;
+		}
+
+		if (!$xml->meta)
+		{
+			$xml = null;
+
+			return false;
+		}
+
+		if (!$xml->meta->drivers)
+		{
+			$xml = null;
+
+			return false;
+		}
+
+		/** @var SimpleXMLElement $drivers */
+		$drivers = $xml->meta->drivers;
+
+		foreach ($drivers->children() as $driverTypeTag)
+		{
+			$thisDriverType = (string)$driverTypeTag;
+
+			if ($thisDriverType == $driverType)
+			{
+				return $xml;
+			}
+		}
+
+		return false;
 	}
 
 	/**
