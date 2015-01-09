@@ -11,7 +11,7 @@ namespace FOF30\Tests\Helpers\Download;
  * A helper class to simulate downloads through cURL. This solution includes tow parts. Part one is this class, part two
  * is the FakeCurlImporter.php file. You need to include the FakeCurlImporter.php file.
  */
-class FakeCurl
+class FakeCurl extends FakeBase
 {
 	/** @var int How many bytes we'll return for the entire download */
 	public static $returnSize = 1048576;
@@ -153,7 +153,7 @@ HTTPRESPONSE;
 
 		if (empty($this->from) && empty($this->to))
 		{
-			return $this->returnBytes(self::$returnSize);
+			return self::returnBytes(self::$returnSize);
 		}
 
 		$from = $this->from;
@@ -186,39 +186,7 @@ HTTPRESPONSE;
 
 		$bytes = 1 + $to - $from;
 
-		return $this->returnBytes($bytes);
-	}
-
-	/**
-	 * Return data which is $size bytes long.
-	 *
-	 * @param   int  $size  The number of bytes you want
-	 *
-	 * @return  string
-	 */
-	private function returnBytes($size)
-	{
-		$dummyData = file_get_contents(__DIR__ . '/data.dat');
-		$dummySize = strlen($dummyData);
-
-		$wholes = ($size - ($size % $dummySize)) / $dummySize;
-		$remainder = $size % $dummySize;
-		$buffer = '';
-
-		if ($wholes)
-		{
-			for ($i = 0; $i < $wholes; $i++)
-			{
-				$buffer .= $dummyData;
-			}
-		}
-
-		if ($remainder)
-		{
-			$buffer .= substr($dummyData, 0, $remainder);
-		}
-
-		return $buffer;
+		return self::returnBytes($bytes);
 	}
 
 	/**

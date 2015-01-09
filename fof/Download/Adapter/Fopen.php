@@ -113,13 +113,21 @@ class Fopen extends AbstractAdapter implements DownloadInterface
 			$result = @file_get_contents($url, false, $context);
 		}
 
-		if (!isset($http_response_header))
+		global $http_response_header_test;
+
+		if (!isset($http_response_header) && empty($http_response_header_test))
 		{
 			$error = JText::_('LIB_FOF_DOWNLOAD_ERR_FOPEN_ERROR');
 			throw new \Exception($error, 404);
 		}
 		else
 		{
+			// Used for testing
+			if (!isset($http_response_header) && !empty($http_response_header_test))
+			{
+				$http_response_header = $http_response_header_test;
+			}
+
 			$http_code = 200;
 			$nLines = count($http_response_header);
 
@@ -137,7 +145,7 @@ class Fopen extends AbstractAdapter implements DownloadInterface
 			if ($http_code >= 299)
 			{
 				$error = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_HTTPERROR', $http_code);
-				throw new \Exception($error, 404);
+				throw new \Exception($error, $http_code);
 			}
 		}
 
