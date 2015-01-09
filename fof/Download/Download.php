@@ -37,6 +37,13 @@ class Download
 	private $adapter = null;
 
 	/**
+	 * Additional params that will be passed to the adapter while performing the download
+	 *
+	 * @var  array
+	 */
+	private $adapterOptions = array();
+
+	/**
 	 * Public constructor
 	 *
 	 * @param   \FOF30\Container\Container   $c  The component container
@@ -65,6 +72,9 @@ class Download
 				$priority = $adapter->priority;
 			}
 		}
+
+		// Load the language strings
+		$c->platform->loadTranslations('lib_fof30');
 	}
 
 	/**
@@ -90,6 +100,43 @@ class Download
 		{
 			$this->adapter = $adapter;
 		}
+	}
+
+	/**
+	 * Returns the name of the current adapter
+	 *
+	 * @return string
+	 */
+	public function getAdapterName()
+	{
+		if(is_object($this->adapter))
+		{
+			$class = get_class($this->adapter);
+
+			return strtolower(str_ireplace('FOF30\\Download\\Adapter\\', '', $class));
+		}
+
+		return '';
+	}
+
+	/**
+	 * Sets the additional options for the adapter
+	 *
+	 * @param array $options
+	 */
+	public function setAdapterOptions(array $options)
+	{
+		$this->adapterOptions = $options;
+	}
+
+	/**
+	 * Returns the additional options for the adapter
+	 *
+	 * @return array
+	 */
+	public function getAdapterOptions()
+	{
+		return $this->adapterOptions;
 	}
 
 	/**
@@ -123,7 +170,7 @@ class Download
 	{
 		try
 		{
-			return $this->adapter->downloadAndReturn($url);
+			return $this->adapter->downloadAndReturn($url, null, null, $this->adapterOptions);
 		}
 		catch (\Exception $e)
 		{
@@ -143,20 +190,29 @@ class Download
 		$this->params = $params;
 
 		// Fetch data
-		$filename = $this->getParam('file');
-		$frag = $this->getParam('frag', -1);
-		$totalSize = $this->getParam('totalSize', -1);
-		$doneSize = $this->getParam('doneSize', -1);
-		//$maxExecTime = $this->getParam('maxExecTime', 5);
-		$runTimeBias = $this->getParam('runTimeBias', 75);
-		$minExecTime = $this->getParam('minExecTime', 1);
+		$url         	= $this->getParam('url');
+		$localFilename	= $this->getParam('localFilename');
+		$frag        	= $this->getParam('frag', -1);
+		$totalSize   	= $this->getParam('totalSize', -1);
+		$doneSize    	= $this->getParam('doneSize', -1);
+		$maxExecTime 	= $this->getParam('maxExecTime', 5);
+		$runTimeBias 	= $this->getParam('runTimeBias', 75);
+		$length      	= $this->getParam('length', 1048576);
 
-		$localFilename = 'download.zip';
+		if (empty($localFilename))
+		{
+			$localFilename = basename($url);
+
+			if (strpos($localFilename, '?') !== false)
+			{
+				$paramsPos = strpos($localFilename, '?');
+				$localFilename = substr($localFilename, 0, $paramsPos - 1);
+			}
+		}
+
 		$platformBaseDirectories = $this->container->platform->getPlatformBaseDirs();
 		$tmpDir =  $platformBaseDirectories['tmp'];
 		$tmpDir = rtrim($tmpDir, '/\\');
-
-		$localFilename = $this->getParam('localFilename', $localFilename);
 
 		// Init retArray
 		$retArray = array(
@@ -166,18 +222,17 @@ class Download
 			"totalSize" => $totalSize,
 			"doneSize"  => $doneSize,
 			"percent"   => 0,
+			"localfile"	=> $localFilename
 		);
 
 		try
 		{
-			$timer = new Timer($minExecTime, $runTimeBias);
+			$timer = new Timer($maxExecTime, $runTimeBias);
 			$start = $timer->getRunningTime(); // Mark the start of this download
 			$break = false; // Don't break the step
 
 			// Figure out where on Earth to put that file
 			$local_file = $tmpDir . '/' . $localFilename;
-
-			//debugMsg("- Importing from $filename");
 
 			while (($timer->getTimeLeft() > 0) && !$break)
 			{
@@ -204,15 +259,13 @@ class Download
 					// Init
 					$frag = 0;
 
-					//debugMsg("-- First frag, getting the file size");
-					$retArray['totalSize'] = $this->adapter->getFileSize($filename);
+					$retArray['totalSize'] = $this->adapter->getFileSize($url);
 					$totalSize = $retArray['totalSize'];
 				}
 
 				// Calculate from and length
-				$length = 1048576;
 				$from = $frag * $length;
-				$to = $length + $from - 1;
+				$to   = $length + $from - 1;
 
 				// Try to download the first frag
 				$required_time = 1.0;
@@ -222,11 +275,11 @@ class Download
 
 				try
 				{
-					$result = $this->adapter->downloadAndReturn($filename, $from, $to);
+					$result = $this->adapter->downloadAndReturn($url, $from, $to, $this->adapterOptions);
 
 					if ($result === false)
 					{
-						throw new \Exception(JText::sprintf('LIB_FOF_DOWNLOAD_ERR_COULDNOTDOWNLOADFROMURL', $filename), 500);
+						throw new \Exception(JText::sprintf('LIB_FOF_DOWNLOAD_ERR_COULDNOTDOWNLOADFROMURL', $url), 500);
 					}
 				}
 				catch (\Exception $e)
@@ -244,15 +297,12 @@ class Download
 						$retArray['status'] = false;
 						$retArray['error'] = $error;
 
-						//debugMsg("-- Download FAILED");
-
 						return $retArray;
 					}
 					else
 					{
 						// Since this is a staggered download, consider this normal and finish
 						$frag = -1;
-						//debugMsg("-- Import complete");
 						$totalSize = $doneSize;
 						$break = true;
 					}
@@ -262,7 +312,6 @@ class Download
 				if ($result)
 				{
 					$fileSize = strlen($result);
-					//debugMsg("-- Successful download of $filesize bytes");
 					$doneSize += $fileSize;
 
 					// Append the file
@@ -270,7 +319,6 @@ class Download
 
 					if ($fp === false)
 					{
-						//debugMsg("-- Can't open local file $local_file for writing");
 						// Can't open the file for writing
 						$retArray['status'] = false;
 						$retArray['error'] = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_COULDNOTWRITELOCALFILE', $local_file);
@@ -281,11 +329,7 @@ class Download
 					fwrite($fp, $result);
 					fclose($fp);
 
-					//debugMsg("-- Appended data to local file $local_file");
-
 					$frag++;
-
-					//debugMsg("-- Proceeding to next fragment, frag $frag");
 
 					if (($fileSize < $length) || ($fileSize > $length))
 					{
@@ -343,8 +387,6 @@ class Download
 		}
 		catch (\Exception $e)
 		{
-			//debugMsg("EXCEPTION RAISED:");
-			//debugMsg($e->getMessage());
 			$retArray['status'] = false;
 			$retArray['error'] = $e->getMessage();
 		}

@@ -10,7 +10,6 @@ env:
 branches:
   only:
     - development
-    - fof3-wip
 
 install:
   - composer update
