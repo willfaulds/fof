@@ -53,7 +53,7 @@ class Download
 		$this->container = $c;
 
 		// Find the best fitting adapter
-		$allAdapters = self::getFiles(__DIR__ . '/Adapter', array(), array('AbstractAdapter.php'));
+		$allAdapters = self::getFiles(__DIR__ . '/Adapter', array(), array('AbstractAdapter.php', 'cacert.pem'));
 		$priority = 0;
 
 		foreach ($allAdapters as $adapterInfo)
@@ -123,6 +123,8 @@ class Download
 	 * Sets the additional options for the adapter
 	 *
 	 * @param array $options
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function setAdapterOptions(array $options)
 	{
@@ -133,6 +135,8 @@ class Download
 	 * Returns the additional options for the adapter
 	 *
 	 * @return array
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function getAdapterOptions()
 	{
@@ -207,12 +211,14 @@ class Download
 			{
 				$paramsPos = strpos($localFilename, '?');
 				$localFilename = substr($localFilename, 0, $paramsPos - 1);
+
+				$platformBaseDirectories = $this->container->platform->getPlatformBaseDirs();
+				$tmpDir =  $platformBaseDirectories['tmp'];
+				$tmpDir = rtrim($tmpDir, '/\\');
+
+				$localFilename = $tmpDir . '/' . $localFilename;
 			}
 		}
-
-		$platformBaseDirectories = $this->container->platform->getPlatformBaseDirs();
-		$tmpDir =  $platformBaseDirectories['tmp'];
-		$tmpDir = rtrim($tmpDir, '/\\');
 
 		// Init retArray
 		$retArray = array(
@@ -231,25 +237,21 @@ class Download
 			$start = $timer->getRunningTime(); // Mark the start of this download
 			$break = false; // Don't break the step
 
-			// Figure out where on Earth to put that file
-			$local_file = $tmpDir . '/' . $localFilename;
-
-			while (($timer->getTimeLeft() > 0) && !$break)
+			do
 			{
 				// Do we have to initialize the file?
 				if ($frag == -1)
 				{
-					//debugMsg("-- First frag, killing local file");
 					// Currently downloaded size
 					$doneSize = 0;
 
-					if (@file_exists($local_file))
+					if (@file_exists($localFilename))
 					{
-						@unlink($local_file);
+						@unlink($localFilename);
 					}
 
 					// Delete and touch the output file
-					$fp = @fopen($local_file, 'wb');
+					$fp = @fopen($localFilename, 'wb');
 
 					if ($fp !== false)
 					{
@@ -260,6 +262,12 @@ class Download
 					$frag = 0;
 
 					$retArray['totalSize'] = $this->adapter->getFileSize($url);
+
+					if ($retArray['totalSize'] <= 0)
+					{
+						$retArray['totalSize'] = 0;
+					}
+
 					$totalSize = $retArray['totalSize'];
 				}
 
@@ -269,18 +277,12 @@ class Download
 
 				// Try to download the first frag
 				$required_time = 1.0;
-				//debugMsg("-- Importing frag $frag, byte position from/to: $from / $to");
 
 				$error = '';
 
 				try
 				{
 					$result = $this->adapter->downloadAndReturn($url, $from, $to, $this->adapterOptions);
-
-					if ($result === false)
-					{
-						throw new \Exception(JText::sprintf('LIB_FOF_DOWNLOAD_ERR_COULDNOTDOWNLOADFROMURL', $url), 500);
-					}
 				}
 				catch (\Exception $e)
 				{
@@ -309,19 +311,19 @@ class Download
 				}
 
 				// Add the currently downloaded frag to the total size of downloaded files
-				if ($result)
+				if ($result !== false)
 				{
 					$fileSize = strlen($result);
 					$doneSize += $fileSize;
 
 					// Append the file
-					$fp = @fopen($local_file, 'ab');
+					$fp = @fopen($localFilename, 'ab');
 
 					if ($fp === false)
 					{
 						// Can't open the file for writing
 						$retArray['status'] = false;
-						$retArray['error'] = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_COULDNOTWRITELOCALFILE', $local_file);
+						$retArray['error'] = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_COULDNOTWRITELOCALFILE', $localFilename);
 
 						return $retArray;
 					}
@@ -331,7 +333,9 @@ class Download
 
 					$frag++;
 
-					if (($fileSize < $length) || ($fileSize > $length))
+					if (($fileSize < $length) || ($fileSize > $length)
+						|| (($totalSize == $doneSize) && ($totalSize > 0))
+					)
 					{
 						// A partial download or a download larger than the frag size means we are done
 						$frag = -1;
@@ -353,7 +357,8 @@ class Download
 				}
 
 				$start = $end;
-			}
+
+			} while (($timer->getTimeLeft() > 0) && !$break);
 
 			if ($frag == -1)
 			{
@@ -422,7 +427,7 @@ class Download
 
 			$return[] = array(
 				'fullpath'  => $file,
-				'classname' => '\\Awf\\Download\\Adapter\\' . ucfirst(basename($parts[0], '.php'))
+				'classname' => '\\FOF30\\Download\\Adapter\\' . ucfirst(basename($parts[0], '.php'))
 			);
 		}
 

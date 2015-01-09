@@ -161,27 +161,27 @@ HTTPRESPONSE;
 
 		if (empty($from))
 		{
-			$from = 1;
+			$from = 0;
 		}
 
-		if ($from > (self::$returnSize + 1))
+		if ($from > (self::$returnSize - 1))
 		{
 			return '';
 		}
 
-		if ($from < 1)
+		if ($from < 0)
 		{
-			$from = 1;
+			$from = 0;
 		}
 
 		if (empty($to))
 		{
-			$to = self::$returnSize + 1;
+			$to = self::$returnSize - 1;
 		}
 
-		if ($to > (self::$returnSize + 1))
+		if ($to > (self::$returnSize - 1))
 		{
-			$to = self::$returnSize + 1;
+			$to = self::$returnSize - 1;
 		}
 
 		$bytes = 1 + $to - $from;

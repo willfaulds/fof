@@ -111,8 +111,8 @@ class Platform extends BasePlatform
 			'root'   => JPATH_ROOT,
 			'public' => JPATH_SITE,
 			'admin'  => JPATH_ADMINISTRATOR,
-			'tmp'    => \JFactory::getConfig()->get('tmp_dir'),
-			'log'    => \JFactory::getConfig()->get('log_dir')
+			'tmp'    => \JFactory::getConfig()->get('tmp_path'),
+			'log'    => \JFactory::getConfig()->get('tmp_path')
 		);
 	}
 

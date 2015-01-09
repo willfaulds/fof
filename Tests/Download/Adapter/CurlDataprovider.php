@@ -87,8 +87,8 @@ class CurlDataprovider
 				),
 				'test' => array(
 					'url'		=> 'http://www.example.com/donwload.dat',
-					'from'		=> 1,
-					'to'		=> 1048576,
+					'from'		=> 0,
+					'to'		=> 1048575,
 					'retSize' 	=> 1048576,
 					'exception'	=> false,
 					'message' 	=> 'First 1M chunk of a 2M file'
@@ -102,8 +102,8 @@ class CurlDataprovider
 				),
 				'test' => array(
 					'url'		=> 'http://www.example.com/donwload.dat',
-					'from'		=> 1048577,
-					'to'		=> 2 * 1048576,
+					'from'		=> 1048576,
+					'to'		=> 2 * 1048576 - 1,
 					'retSize' 	=> 1048576,
 					'exception'	=> false,
 					'message' 	=> 'Last 1M chunk of a 2M file'
@@ -117,8 +117,8 @@ class CurlDataprovider
 				),
 				'test' => array(
 					'url'		=> 'http://www.example.com/donwload.dat',
-					'from'		=> 2 * 1048576,
-					'to'		=> 1048577,
+					'from'		=> 2 * 1048576 - 1,
+					'to'		=> 1048576,
 					'retSize' 	=> 1048576,
 					'exception'	=> false,
 					'message' 	=> 'Last 1M chunk of a 2M file, accidentally inverted to/from'
