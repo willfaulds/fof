@@ -17,17 +17,27 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">fof</directory>
             <exclude>
+                <file>fof/include.php</file>
                 <directory suffix=".php">fof/Autoloader</directory>
+                <file>fof/Configuration/Domain/DomainInterface.php</file>
+                <directory suffix=".php">fof/Container/Exception</directory>
+                <file>fof/Download/Adapter/AbstractAdapter.php</file>
                 <file>fof/Download/DownloadInterface.php</file>
                 <file>fof/Event/Observable.php</file>
-                <directory suffix=".php">fof/Container/Exception</directory>
-                <directory suffix=".php">Tests</directory>
+                <file>fof/Hal/Render/RenderInterface.php</file>
+                <directory suffix=".php">fof/Less</directory>
+                <file>fof/Platform/FilesystemInterface.php</file>
+                <file>fof/Platform/PlatformInterface.php</file>
+                <file>fof/Utils/helpers.php</file>
+                <file>fof/Utils/Phpfunc.php</file>
 
-                <directory suffix=".php">fof2</directory>
-                <directory suffix=".php">tests-old</directory>
+                <directory suffix=".php">Tests</directory>
                 <directory suffix=".php">vendor</directory>
                 <directory suffix=".php">strapper</directory>
                 <directory suffix=".php">strapper-sources</directory>
+
+                <directory suffix=".php">fof2</directory>
+                <directory suffix=".php">tests-old</directory>
             </exclude>
         </whitelist>
     </filter>
