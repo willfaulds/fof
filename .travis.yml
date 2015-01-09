@@ -10,13 +10,12 @@ env:
 branches:
   only:
     - development
+    - fof3-wip
 
 install:
   - composer update
 
 before_script:
-  - pear channel-discover pear.phpunit.de
-  - pear install phpunit/DbUnit
   - mysql -e 'create database fof_test;'
   - if [[ "$JVERSION_TEST" == "3.3" ]]; then cp tests/environments/3.3/joomla.sql joomla.sql; fi
   - mysql fof_test < joomla.sql
@@ -28,4 +27,4 @@ after_script:
 notifications:
   email: false
 
-script: phpunit --bootstrap=Tests/bootstrap.php Tests
+script: php vendor/phpunit/phpunit/phpunit --bootstrap=Tests/bootstrap.php Tests
