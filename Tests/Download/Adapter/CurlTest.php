@@ -21,6 +21,22 @@ require_once __DIR__ . '/CurlDataprovider.php';
  */
 class CurlTest extends FOFTestCase
 {
+	public static function setUpBeforeClass()
+	{
+		global $fofTest_FakeCurl_Active;
+		$fofTest_FakeCurl_Active = true;
+
+		parent::setUpBeforeClass();
+	}
+
+	public static function tearDownAfterClass()
+	{
+		global $fofTest_FakeCurl_Active;
+		$fofTest_FakeCurl_Active = false;
+
+		parent::tearDownAfterClass();
+	}
+
 	/**
 	 * @covers  FOF30\Download\Adapter\Curl::__construct
 	 */

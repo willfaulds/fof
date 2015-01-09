@@ -15,37 +15,89 @@ namespace FOF30\Download\Adapter;
 
 use FOF30\Tests\Helpers\Download\FakeCurl;
 
+global $fofTest_FakeCurl_Active;
+$fofTest_FakeCurl_Active = false;
+
 function curl_init()
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_init();
+	}
+
 	return new FakeCurl();
 }
 
-function curl_setopt(FakeCurl $ch, $optname, $value)
+function curl_setopt($ch, $optname, $value)
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_setopt($ch, $optname, $value);
+	}
+
 	$ch->setopt($optname, $value);
 }
 
-function curl_exec(FakeCurl $ch)
+function curl_exec($ch)
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_exec($ch);
+	}
+
 	return $ch->exec();
 }
 
-function curl_errno(FakeCurl $ch)
+function curl_errno($ch)
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_errno($ch);
+	}
+
 	return $ch->errno();
 }
 
-function curl_error(FakeCurl $ch)
+function curl_error($ch)
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_error($ch);
+	}
+
 	return $ch->error();
 }
 
-function curl_getinfo(FakeCurl $ch, $opt)
+function curl_getinfo($ch, $opt)
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_getinfo($ch, $opt);
+	}
+
 	return $ch->getinfo($opt);
 }
 
-function curl_close(FakeCurl &$ch)
+function curl_close(&$ch)
 {
+	global $fofTest_FakeCurl_Active;
+
+	if (!$fofTest_FakeCurl_Active)
+	{
+		return \curl_close($ch);
+	}
+
 	$ch = null;
 }

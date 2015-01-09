@@ -15,7 +15,17 @@ namespace FOF30\Download\Adapter;
 
 use FOF30\Tests\Helpers\Download\FakeFopen;
 
+global $fofTest_FakeFopen_Active;
+$fofTest_FakeFopen_Active = false;
+
 function file_get_contents($url, $flags = null, $context = null, $offset = null, $maxlen = null)
 {
+	global $fofTest_FakeFopen_Active;
+
+	if (!$fofTest_FakeFopen_Active)
+	{
+		return \file_get_contents($url, $flags, $context, $offset, $maxlen);
+	}
+
 	return FakeFopen::file_get_contents($url, $flags, $context, $offset, $maxlen);
 }
