@@ -57,18 +57,21 @@ abstract class InputProvider
 	{
 		// source, globals initialisation, match, message
 
+		$sampleInputData = self::getSampleInputData();
+
 		return array(
-			array(self::getSampleInputData(), array(), self::getSampleInputData(), 'Initialising with an array'),
-			array(new \JInput(self::getSampleInputData()), array(), self::getSampleInputData(), 'Initialising with a JInput object'),
-			array(new FOFInput(self::getSampleInputData()), array(), self::getSampleInputData(), 'Initialising with a FOF Input object'),
-			array('get', array('get' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_GET'),
-			array('post', array('post' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_POST'),
-			array('files', array('files' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_FILES'),
-			array('cookie', array('cookie' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_COOKIE'),
-			array('env', array('env' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_ENV'),
-			array('server', array('server' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_SERVER'),
-			array('request', array('request' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with $_REQUEST'),
-			array(null, array('request' => self::getSampleInputData()), self::getSampleInputData(), 'Initialising with implicit request'),
+			array($sampleInputData, array(), $sampleInputData, 'Initialising with an array'),
+			array((object)$sampleInputData, array(), $sampleInputData, 'Initialising with an array'),
+			array(new \JInput($sampleInputData), array(), $sampleInputData, 'Initialising with a JInput object'),
+			array(new FOFInput($sampleInputData), array(), $sampleInputData, 'Initialising with a FOF Input object'),
+			array('get', array('get' => $sampleInputData), $sampleInputData, 'Initialising with $_GET'),
+			array('post', array('post' => $sampleInputData), $sampleInputData, 'Initialising with $_POST'),
+			array('files', array('files' => $sampleInputData), $sampleInputData, 'Initialising with $_FILES'),
+			array('cookie', array('cookie' => $sampleInputData), $sampleInputData, 'Initialising with $_COOKIE'),
+			array('env', array('env' => $sampleInputData), $sampleInputData, 'Initialising with $_ENV'),
+			array('server', array('server' => $sampleInputData), $sampleInputData, 'Initialising with $_SERVER'),
+			array('request', array('request' => $sampleInputData), $sampleInputData, 'Initialising with $_REQUEST'),
+			array(null, array('request' => $sampleInputData), $sampleInputData, 'Initialising with implicit request'),
 		);
 	}
 
@@ -110,6 +113,7 @@ abstract class InputProvider
 			//array('path', 'path', JPATH_SITE . '/administrator', 'Get PATH data'),
 			//array('pathNotOK', 'path', JPATH_SITE . '//administrator', 'Get PATH data, filtered'),
 			array('raw', 'raw', "Αποτέλεσμα με UTF8 χαρακτήρες\nκαι\tειδικούς χαρακτήρες\rελέγχου", 'Get RAW data'),
+			array('IDoNotExist', 'raw', null, 'Not existing key returns default value'),
 		);
 	}
 
