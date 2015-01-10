@@ -52,6 +52,20 @@ class Input extends \JInput
 					break;
 			}
 		}
+		elseif (is_object($source) && ($source instanceof Input))
+		{
+			$source = $source->getData();
+		}
+		elseif (is_object($source) && ($source instanceof \JInput))
+		{
+			$serialised = $source->serialize();
+			list ($xOptions, $xData, $xInput) = unserialize($serialised);
+			unset ($xOptions);
+			unset ($xInput);
+			unset ($source);
+			$source = $xData;
+			unset ($xData);
+		}
 		elseif (is_object($source))
 		{
 			try
@@ -70,15 +84,23 @@ class Input extends \JInput
 		else
 		{
 			// Any other case
+			$source = null;
+		}
+
+		// If we are not sure use the REQUEST array
+		if (empty($source))
+		{
 			$source = $_REQUEST;
 			$hash = 'REQUEST';
 		}
 
 		// Magic quotes GPC handling (something JInput simply can't handle at all)
+		// @codeCoverageIgnoreStart
 		if (($hash == 'REQUEST') && get_magic_quotes_gpc() && class_exists('\\JRequest', true))
 		{
 			$source = \JRequest::get('REQUEST', 2);
 		}
+		// @codeCoverageIgnoreEnd
 
 		parent::__construct($source, $options);
 	}
