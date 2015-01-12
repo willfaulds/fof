@@ -239,7 +239,7 @@ class Platform extends BasePlatform
 	/**
 	 * Return the absolute path to the application's template overrides
 	 * directory for a specific component. We will use it to look for template
-	 * files instead of the regular component directorues. If the application
+	 * files instead of the regular component directories. If the application
 	 * does not have such a thing as template overrides return an empty string.
 	 *
 	 * @param   string  $component The name of the component for which to fetch the overrides

@@ -296,8 +296,6 @@ class PlatformJoomlaTest extends FOFTestCase
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getLanguage
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetLanguage
-	 *
 	 */
 	public function testGetLanguage()
 	{
@@ -310,8 +308,6 @@ class PlatformJoomlaTest extends FOFTestCase
 
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getDbo
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetDbo
 	 *
 	 */
 	public function testGetDbo()
@@ -331,20 +327,45 @@ class PlatformJoomlaTest extends FOFTestCase
 	 */
 	public function testGetTemplateSuffixes()
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		$jversion = new \JVersion;
+
+		if (substr($jversion->RELEASE, 0, 2) != '3.')
+		{
+			$this->markTestIncomplete('testGetTemplateSuffixes will only run on Joomla! 3');
+		}
+
+		$expected = array(
+			'.j3' . substr($jversion->RELEASE, 2),
+			'.j3'
+		);
+
+		$actual = $this->platform->getTemplateSuffixes();
+
+		$this->assertEquals($expected, $actual, "getTemplateSuffixes must return two suffixes, for the minor and major Joomla! CMS release");
 	}
 
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getTemplateOverridePath
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetTemplateOverridePath
+	 * @dataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetTemplateOverridePath
 	 *
 	 */
-	public function testGetTemplateOverridePath()
+	public function testGetTemplateOverridePath($applicationType, $component, $absolute, $expected, $message)
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		$this->forceApplicationTypeAndResetPlatformCliAdminCache($applicationType);
+
+		if ($applicationType != 'cli')
+		{
+			$app = \JFactory::getApplication();
+			$fakeTemplate = (object)array(
+				'template' => 'system'
+			);
+			ReflectionHelper::setValue($app, 'template', $fakeTemplate);
+		}
+
+		$actual = $this->platform->getTemplateOverridePath($component, $absolute);
+
+		$this->assertEquals($expected, $actual, $message);
 	}
 
 	/**
@@ -355,7 +376,7 @@ class PlatformJoomlaTest extends FOFTestCase
 	 */
 	public function testLoadTranslations()
 	{
-		// TODO
+		// TODO Have getLanguage return a mock object
 		$this->markTestIncomplete('Not yet implemented');
 	}
 

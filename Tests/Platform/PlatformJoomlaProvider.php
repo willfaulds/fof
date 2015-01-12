@@ -369,4 +369,21 @@ class PlatformJoomlaProvider
 			), 'CLI app, plural view, no layout, tpl bar, strict'),
 		);
 	}
+
+	public static function getTestGetTemplateOverridePath()
+	{
+		// $applicationType, $component, $absolute, $expected, $message
+		return array(
+			array('site', 'com_foobar', false, 'templates/system/html/com_foobar', 'site, com_foobar, relative path'),
+			array('site', 'com_foobar', true, JPATH_THEMES . '/system/html/com_foobar', 'site, com_foobar, absolute path'),
+			array('site', 'media:/com_foobar', false, 'templates/system/media/com_foobar', 'site, media:/com_foobar, relative path'),
+			array('site', 'media:/com_foobar', true, JPATH_THEMES . '/system/media/com_foobar', 'site, media:/com_foobar, absolute path'),
+			array('admin', 'com_foobar', false, 'administrator/templates/system/html/com_foobar', 'admin, com_foobar, relative path'),
+			array('admin', 'media:/com_foobar', false, 'administrator/templates/system/media/com_foobar', 'admin, media:/com_foobar, relative path'),
+			array('cli', 'com_foobar', false, '', 'cli, com_foobar, relative path'),
+			array('cli', 'com_foobar', true, '', 'cli, com_foobar, absolute path'),
+			array('cli', 'media:/com_foobar', false, '', 'cli, media:/com_foobar, relative path'),
+			array('cli', 'media:/com_foobar', true, '', 'cli, media:/com_foobar, absolute path'),
+		);
+	}
 }
