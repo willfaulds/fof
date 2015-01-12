@@ -36,6 +36,9 @@ class TimerTest extends FOFTestCase
 		parent::tearDownAfterClass();
 	}
 
+	/**
+	 * @covers  FOF30\Timer\Timer::__construct
+	 */
 	public function testConstructor()
 	{
 		FakeTimer::$microtime = 123456;
@@ -47,6 +50,9 @@ class TimerTest extends FOFTestCase
 		$this->assertEquals(2.64, ReflectionHelper::getValue($timer, 'max_exec_time'), 'The max exec time must use the provided max exec time and bias', 0.001);
 	}
 
+	/**
+	 * @covers  FOF30\Timer\Timer::__wakeup
+	 */
 	public function testWakeup()
 	{
 		FakeTimer::$microtime = 123456;
@@ -59,6 +65,9 @@ class TimerTest extends FOFTestCase
 		$this->assertEquals(876543.21, ReflectionHelper::getValue($timer, 'start_time'), 'The start time must be fetched from scratch after waking up', 0.0000000001);
 	}
 
+	/**
+	 * @covers  FOF30\Timer\Timer::resetTime
+	 */
 	public function testResetTime()
 	{
 		FakeTimer::$microtime = 123456;
@@ -70,6 +79,9 @@ class TimerTest extends FOFTestCase
 
 	}
 
+	/**
+	 * @covers  FOF30\Timer\Timer::getRunningTime
+	 */
 	public function testGetRunningTime()
 	{
 		FakeTimer::$microtime = 123456;
@@ -92,6 +104,9 @@ class TimerTest extends FOFTestCase
 		$this->assertEquals(3.64, $runningTime, 'Running time must depend on current microtime (3)', 0.0000000001);
 	}
 
+	/**
+	 * @covers  FOF30\Timer\Timer::getTimeLeft
+	 */
 	public function testGetTimeLeft()
 	{
 		FakeTimer::$microtime = 123456;
