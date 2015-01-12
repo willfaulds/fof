@@ -22,6 +22,12 @@ defined('_JEXEC') or die;
  */
 class Platform extends BasePlatform
 {
+	/** @var null|bool Is this a CLI application? */
+	protected static $isCLI = null;
+
+	/** @var null|bool Is this an administrator application? */
+	protected static $isAdmin = null;
+
 	/**
 	 * The table and table field cache object, used to speed up database access
 	 *
@@ -59,43 +65,40 @@ class Platform extends BasePlatform
 	/**
 	 * Main function to detect if we're running in a CLI environment and we're admin
 	 *
-	 * @return  array  isCLI and isAdmin. It's not an associtive array, so we can use list.
+	 * @return  array  isCLI and isAdmin. It's not an associative array, so we can use list.
 	 */
 	protected function isCliAdmin()
 	{
-		static $isCLI = null;
-		static $isAdmin = null;
-
-		if (is_null($isCLI) && is_null($isAdmin))
+		if (is_null(static::$isCLI) && is_null(static::$isAdmin))
 		{
 			try
 			{
 				if (is_null(\JFactory::$application))
 				{
-					$isCLI = true;
+					static::$isCLI = true;
 				}
 				else
 				{
 					$app = \JFactory::getApplication();
-					$isCLI = $app instanceof \Exception || $app instanceof \JApplicationCli;
+					static::$isCLI = $app instanceof \Exception || $app instanceof \JApplicationCli;
 				}
 			}
 			catch (\Exception $e)
 			{
-				$isCLI = true;
+				static::$isCLI = true;
 			}
 
-			if ($isCLI)
+			if (static::$isCLI)
 			{
-				$isAdmin = false;
+				static::$isAdmin = false;
 			}
 			else
 			{
-				$isAdmin = !\JFactory::$application ? false : \JFactory::getApplication()->isAdmin();
+				static::$isAdmin = !\JFactory::$application ? false : \JFactory::getApplication()->isAdmin();
 			}
 		}
 
-		return array($isCLI, $isAdmin);
+		return array(static::$isCLI, static::$isAdmin);
 	}
 
 	/**
@@ -112,7 +115,7 @@ class Platform extends BasePlatform
 			'public' => JPATH_SITE,
 			'admin'  => JPATH_ADMINISTRATOR,
 			'tmp'    => \JFactory::getConfig()->get('tmp_path'),
-			'log'    => \JFactory::getConfig()->get('tmp_path')
+			'log'    => \JFactory::getConfig()->get('log_path')
 		);
 	}
 
@@ -128,7 +131,7 @@ class Platform extends BasePlatform
 	 */
 	public function getComponentBaseDirs($component)
 	{
-		if ($this->isFrontend())
+		if (!$this->isBackend())
 		{
 			$mainPath = JPATH_SITE . '/components/' . $component;
 			$altPath = JPATH_ADMINISTRATOR . '/components/' . $component;
@@ -173,6 +176,8 @@ class Platform extends BasePlatform
 		$altBasePath = $basePath;
 		$basePath .= $view . '/';
 		$altBasePath .= (Inflector::isSingular($view) ? Inflector::pluralize($view) : Inflector::singularize($view)) . '/';
+
+		$layout = empty($layout) ? 'default' : $layout;
 
 		if ($strict)
 		{
@@ -584,10 +589,12 @@ class Platform extends BasePlatform
 	 * @see PlatformInterface::supportsAjaxOrdering()
 	 *
 	 * @return  boolean
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function supportsAjaxOrdering()
 	{
-		return version_compare(JVERSION, '3.0', 'ge');
+		return true;
 	}
 
 	/**

@@ -69,7 +69,23 @@ class FOFTestCase extends ApplicationTestCase
 	public function getMockCmsApp($options = array(), $constructor = array())
 	{
 		// Attempt to load the real class first.
-		class_exists('JApplicationCms');
+		class_exists('\JApplicationCms');
+
+		return MockApplicationCms::create($this, $options, $constructor);
+	}
+
+	/**
+	 * Gets a mock CLI application object.
+	 *
+	 * @param   array  $options      A set of options to configure the mock.
+	 * @param   array  $constructor  An array containing constructor arguments to inject into the mock.
+	 *
+	 * @return  \JApplicationCli
+	 */
+	public function getMockCliApp($options = array(), $constructor = array())
+	{
+		// Attempt to load the real class first.
+		class_exists('\JApplicationCli');
 
 		return MockApplicationCms::create($this, $options, $constructor);
 	}

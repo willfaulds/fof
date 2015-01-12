@@ -26,6 +26,7 @@
                 <file>fof/Event/Observable.php</file>
                 <file>fof/Hal/Render/RenderInterface.php</file>
                 <directory suffix=".php">fof/Less</directory>
+                <directory suffix=".php">fof/Platform/Base</directory>
                 <file>fof/Platform/FilesystemInterface.php</file>
                 <file>fof/Platform/PlatformInterface.php</file>
                 <file>fof/Utils/helpers.php</file>
