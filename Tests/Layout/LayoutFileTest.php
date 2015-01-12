@@ -100,9 +100,6 @@ class LayoutFileTest extends FOFTestCase
 
 		$fakeBase = realpath(__DIR__ . '/../_data/layout/base');
 
-		// Convince the application to report the template we want
-		$app = \JFactory::getApplication();
-
 		// Create the layout file object
 		$layoutFile = new LayoutFile($layoutId, $fakeBase, $fakeOptions);
 		$layoutFile->container = static::$container;
