@@ -12,6 +12,7 @@ use FOF30\Platform\Joomla\Platform;
 use FOF30\Tests\Helpers\Application\MockApplicationBase;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\TestJoomlaPlatform;
 
 /**
  * @covers FOF30\Platform\Joomla\Platform::<protected>
@@ -222,14 +223,104 @@ class PlatformJoomlaTest extends FOFTestCase
 
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getTemplate
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetTemplate
-	 *
 	 */
 	public function testGetTemplate()
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		$_SERVER['HTTP_HOST'] = 'www.example.com';
+
+		\JFactory::$session = $this->getMockSession();
+
+		$expected = \JFactory::getApplication('site')->getTemplate();
+		$actual = $this->platform->getTemplate();
+
+		$this->assertEquals($expected, $actual, "getTemplate() must return the application's template");
+	}
+
+
+	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getUser
+	 */
+	public function testGetUser()
+	{
+		$_SERVER['HTTP_HOST'] = 'www.example.com';
+
+		$fakeSession = $this->getMockSession();
+		\JFactory::$session = $fakeSession;
+
+		// Required to let JFactory know which application to load
+		\JFactory::getApplication('site');
+
+		$actual = $this->platform->getUser();
+
+		$user = \JFactory::$session->get('user');
+
+		$this->assertInstanceOf('\JUser', $actual, "getUser() must return a JUser object");
+		$this->assertEquals($user, $actual, "getUser() must return the requested user object");
+	}
+
+	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getDocument
+	 */
+	public function testGetDocument()
+	{
+		$_SERVER['HTTP_HOST'] = 'www.example.com';
+
+		$fakeSession = $this->getMockSession();
+		\JFactory::$session = $fakeSession;
+
+		// Required to let JFactory know which application to load
+		\JFactory::getApplication('site');
+
+		$expected = \JFactory::getDocument();
+
+		$reflector = new \ReflectionClass('FOF30\\Platform\\Joomla\\Platform');
+		$propIsCli = $reflector->getProperty('isCLI');
+		$propIsCli->setAccessible(true);
+		$propIsCli->setValue(true);
+		$propIsAdmin = $reflector->getProperty('isAdmin');
+		$propIsAdmin->setAccessible(true);
+		$propIsAdmin->setValue(false);
+
+		// CLI app: null document
+		$actual = $this->platform->getDocument();
+		$this->assertNull($actual, "CLI app must return a null document");
+
+		$propIsCli->setValue(false);
+		$actual = $this->platform->getDocument();
+
+		$this->assertInstanceOf('\JDocument', $actual, "getDocument() must return a JDocument object");
+		$this->assertEquals($expected, $actual, "getDocument() must return the document from JFactory");
+	}
+
+
+	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getLanguage
+	 *
+	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetLanguage
+	 *
+	 */
+	public function testGetLanguage()
+	{
+		$expected = \JFactory::getLanguage();
+		$actual = $this->platform->getLanguage();
+
+		$this->assertInstanceOf('\JLanguage', $actual, "getLanguage() must return a JLanguage object");
+		$this->assertEquals($expected, $actual, "getLanguage() must return the language object from JFactory");
+	}
+
+	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getDbo
+	 *
+	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetDbo
+	 *
+	 */
+	public function testGetDbo()
+	{
+		$expected = \JFactory::getDbo();
+		$actual = $this->platform->getDbo();
+
+		$this->assertInstanceOf('\JDatabaseDriver', $actual, "getDbo() must return a JDatabaseDriver object");
+		$this->assertEquals($expected, $actual, "getDbo() must return the database object from JFactory");
 	}
 
 	/**
@@ -281,60 +372,12 @@ class PlatformJoomlaTest extends FOFTestCase
 	}
 
 	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getUser
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetUser
-	 *
-	 */
-	public function testGetUser()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getDocument
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetDocument
-	 *
-	 */
-	public function testGetDocument()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getDate
 	 *
 	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetDate
 	 *
 	 */
 	public function testGetDate()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getLanguage
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetLanguage
-	 *
-	 */
-	public function testGetLanguage()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getDbo
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetDbo
-	 *
-	 */
-	public function testGetDbo()
 	{
 		// TODO
 		$this->markTestIncomplete('Not yet implemented');
