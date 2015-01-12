@@ -8,6 +8,8 @@
 namespace FOF30\Tests\Helpers;
 
 
+use FOF30\Tests\Helpers\Application\MockApplicationCms;
+
 class FOFTestCase extends ApplicationTestCase
 {
 	/**
@@ -54,6 +56,22 @@ class FOFTestCase extends ApplicationTestCase
 		\JFactory::$acl			= $this->savedFactoryState['acl'];
 		\JFactory::$database	= $this->savedFactoryState['database'];
 		\JFactory::$mailer		= $this->savedFactoryState['mailer'];
+	}
+
+	/**
+	 * Gets a mock CMS application object.
+	 *
+	 * @param   array  $options      A set of options to configure the mock.
+	 * @param   array  $constructor  An array containing constructor arguments to inject into the mock.
+	 *
+	 * @return  \JApplicationCms
+	 */
+	public function getMockCmsApp($options = array(), $constructor = array())
+	{
+		// Attempt to load the real class first.
+		class_exists('JApplicationCms');
+
+		return MockApplicationCms::create($this, $options, $constructor);
 	}
 
 	/**
