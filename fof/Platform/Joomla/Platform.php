@@ -201,6 +201,18 @@ class Platform extends BasePlatform
 	}
 
 	/**
+	 * Returns the application's template name
+	 *
+	 * @param   boolean|array  $params  An optional associative array of configuration settings
+	 *
+	 * @return  string  The template name. System is the fallback.
+	 */
+	public function getTemplate($params = false)
+	{
+		return \JFactory::getApplication()->getTemplate($params);
+	}
+
+	/**
 	 * Get application-specific suffixes to use with template paths. This allows
 	 * you to look for view template overrides based on the application version.
 	 *
@@ -254,7 +266,7 @@ class Platform extends BasePlatform
 				$directory = 'html/' . $component;
 			}
 
-			$path .= \JFactory::getApplication()->getTemplate() .
+			$path .= $this->getTemplate() .
 				'/' . $directory;
 		}
 		else

@@ -118,6 +118,15 @@ interface PlatformInterface
 	public function getViewTemplatePaths($component, $view, $layout = 'default', $tpl = null, $strict = false);
 
 	/**
+	 * Returns the application's template name
+	 *
+	 * @param   boolean|array  $params  An optional associative array of configuration settings
+	 *
+	 * @return  string  The template name. System is the fallback.
+	 */
+	public function getTemplate($params = false);
+
+	/**
 	 * Get application-specific suffixes to use with template paths. This allows
 	 * you to look for view template overrides based on the application version.
 	 *

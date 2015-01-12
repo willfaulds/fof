@@ -57,7 +57,7 @@ class LayoutFile extends JLayoutFile
 			$prefix       = $this->container->platform->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
 
 			$possiblePaths = array(
-				$prefix . '/templates/' . \JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
+				$prefix . '/templates/' . $this->container->platform->getTemplate() . '/html/layouts/' . $filePath,
 				$this->basePath . '/' . $filePath
 			);
 
