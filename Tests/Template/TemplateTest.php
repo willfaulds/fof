@@ -8,6 +8,8 @@
 namespace FOF30\Tests\Template;
 
 use FOF30\Tests\Helpers\FOFTestCase;
+use FOF30\Tests\Helpers\TestJoomlaPlatform;
+use FOF30\Tests\Platform\PlatformJoomlaTest;
 use JFactory;
 use JDocument;
 use JFolder;
@@ -42,6 +44,28 @@ class TemplateTest extends FOFTestCase
 		// Fake the session
 		JFactory::$session = $this->getMockSession();
 		$application = JFactory::getApplication('site');
+
+		// Reset the fake platform
+		TestJoomlaPlatform::$template = null;
+		TestJoomlaPlatform::$baseDirs = null;
+		TestJoomlaPlatform::$isAdmin = null;
+		TestJoomlaPlatform::$isCli = null;
+		TestJoomlaPlatform::$templateSuffixes = null;
+
+		// Reset JURI
+		$reflector = new \ReflectionClass('\JUri');
+
+		$instancesProp = $reflector->getProperty('instances');
+		$instancesProp->setAccessible(true);
+		$instancesProp->setValue(array());
+
+		$baseProp = $reflector->getProperty('base');
+		$baseProp->setAccessible(true);
+		$baseProp->setValue(array());
+
+		$rootProp = $reflector->getProperty('root');
+		$rootProp->setAccessible(true);
+		$rootProp->setValue(array());
 
 		// Fake the template
 		$template = (object)array(
