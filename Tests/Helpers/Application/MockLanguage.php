@@ -11,6 +11,8 @@ use FOF30\Tests\Helpers\FOFTestCase;
 
 class MockLanguage
 {
+	public static $loadedLanguages = array();
+
 	/**
 	 * Creates and instance of the mock JLanguage object.
 	 *
@@ -23,12 +25,7 @@ class MockLanguage
 	public static function create($test)
 	{
 		// Collect all the relevant methods in JDatabase.
-		$methods = array(
-			'_',
-			'getInstance',
-			'getTag',
-			'test',
-		);
+		$methods = static::getMethods();
 
 		// Create the mock.
 		$mockObject = $test->getMock(
@@ -56,10 +53,22 @@ class MockLanguage
 			$mockObject,
 			array(
 				'_' => array(get_called_class(), 'mock_'),
+				'load' => array(get_called_class(), 'mockload'),
 			)
 		);
 
 		return $mockObject;
+	}
+
+	public static function getMethods()
+	{
+		return array(
+			'_',
+			'getInstance',
+			'getTag',
+			'test',
+			'load'
+		);
 	}
 
 	/**
@@ -76,5 +85,10 @@ class MockLanguage
 	public function mock_($string, $jsSafe = false, $interpretBackSlashes = true)
 	{
 		return $string;
+	}
+
+	public function mockload($extension = 'joomla', $basePath = JPATH_BASE, $lang = null, $reload = false, $default = true)
+	{
+		static::$loadedLanguages[] = array($extension, $basePath, $lang, $reload, $default);
 	}
 }

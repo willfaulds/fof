@@ -386,4 +386,15 @@ class PlatformJoomlaProvider
 			array('cli', 'media:/com_foobar', true, '', 'cli, media:/com_foobar, absolute path'),
 		);
 	}
+
+	public static function getTestLoadTranslations()
+	{
+		return array(
+			// $appType, $regularPath, $otherPath, $message
+			array('site', JPATH_ADMINISTRATOR, JPATH_SITE, "Site application, all languages must be loaded"),
+			array('admin', JPATH_SITE, JPATH_ADMINISTRATOR, "Admin application, all languages must be loaded"),
+			array('cli', JPATH_ADMINISTRATOR, JPATH_SITE, "CLI application, all languages must be loaded"),
+			array('exception', JPATH_ADMINISTRATOR, JPATH_SITE, "Exception application, all languages must be loaded"),
+		);
+	}
 }

@@ -9,10 +9,9 @@ namespace FOF30\Tests\Platform;
 
 
 use FOF30\Platform\Joomla\Platform;
-use FOF30\Tests\Helpers\Application\MockApplicationBase;
+use FOF30\Tests\Helpers\Application\MockLanguage;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
-use FOF30\Tests\Helpers\TestJoomlaPlatform;
 
 /**
  * @covers FOF30\Platform\Joomla\Platform::<protected>
@@ -371,13 +370,28 @@ class PlatformJoomlaTest extends FOFTestCase
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::loadTranslations
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLoadTranslations
+	 * @dataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLoadTranslations
 	 *
 	 */
-	public function testLoadTranslations()
+	public function testLoadTranslations($appType, $regularPath, $otherPath, $message)
 	{
-		// TODO Have getLanguage return a mock object
-		$this->markTestIncomplete('Not yet implemented');
+		$this->forceApplicationTypeAndResetPlatformCliAdminCache($appType);
+
+		$mockLanguage = MockLanguage::create($this);
+		MockLanguage::$loadedLanguages = array();
+		\JFactory::$language = $mockLanguage;
+
+		$this->platform->loadTranslations('com_foobar');
+
+		$expected = array(
+			// $extension = 'joomla', $basePath = JPATH_BASE, $lang = null, $reload = false, $default = true
+			array('com_foobar', $regularPath, 'en-GB', true, true),
+			array('com_foobar', $regularPath, null, true, true),
+			array('com_foobar', $otherPath, 'en-GB', true, true),
+			array('com_foobar', $otherPath, null, true, true),
+		);
+
+		$this->assertEquals($expected, MockLanguage::$loadedLanguages, $message);
 	}
 
 	/**
