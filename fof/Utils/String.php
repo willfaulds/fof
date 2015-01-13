@@ -18,28 +18,24 @@ abstract class String
 	 * @param   string  $value  A string to convert to slug
 	 *
 	 * @return  string  The slug
+	 *
+	 * @deprecated  3.0  Use \JApplicationHelper::stringURLSafe instead
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public static function toSlug($value)
 	{
-		// Remove any '-' from the string they will be used as concatenator
-		$value = str_replace('-', ' ', $value);
-
-		// Convert to ascii characters
-		$value = self::toASCII($value);
-
-		// Lowercase and trim
-		$value = trim(strtolower($value));
-
-		// Remove any duplicate whitespace, and ensure all characters are alphanumeric
-		$value = preg_replace(array('/\s+/', '/[^A-Za-z0-9\-_]/'), array('-', ''), $value);
-
-		// Limit length
-		if (strlen($value) > 100)
+		if (class_exists('\JLog'))
 		{
-			$value = substr($value, 0, 100);
+			\JLog::add('FOF30\\Utils\\String::toSlug is deprecated. Use \\JApplicationHelper::stringURLSafe instead', \JLog::WARNING, 'deprecated');
 		}
 
-		return $value;
+		if (!class_exists('\JApplicationHelper'))
+		{
+			\JLoader::import('cms.application.helper');
+		}
+
+		return \JApplicationHelper::stringURLSafe($value);
 	}
 
 	/**
@@ -49,15 +45,20 @@ abstract class String
 	 * @param   string  $value  The value to convert to ASCII
 	 *
 	 * @return  string  The converted string
+	 *
+	 * @deprecated   3.0  Use JFactory::getLanguage()->transliterate instead
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public static function toASCII($value)
 	{
-		$string = htmlentities(utf8_decode($value), null, 'ISO-8859-1');
-		$string = preg_replace(
-			array('/&szlig;/', '/&(..)lig;/', '/&([aouAOU])uml;/', '/&(.)[^;]*;/'), array('ss', "$1", "$1" . 'e', "$1"), $string
-		);
+		if (class_exists('\JLog'))
+		{
+			\JLog::add('FOF30\\Utils\\String::toASCII is deprecated. Use JFactory::getLanguage()->transliterate instead', \JLog::WARNING, 'deprecated');
+		}
 
-		return $string;
+		$lang = \JFactory::getLanguage();
+		return $lang->transliterate($value);
 	}
 
 	/**
@@ -72,12 +73,12 @@ abstract class String
 		$string = trim((string)$string);
 		$string = strtolower($string);
 
-		if (in_array($string, array(1, 'true', 'yes', 'on', 'enabled')))
+		if (in_array($string, array(1, 'true', 'yes', 'on', 'enabled'), true))
 		{
 			return true;
 		}
 
-		if (in_array($string, array(1, 'false', 'no', 'off', 'disabled')))
+		if (in_array($string, array(0, 'false', 'no', 'off', 'disabled'), true))
 		{
 			return false;
 		}
