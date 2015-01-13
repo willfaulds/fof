@@ -417,6 +417,18 @@ class PlatformJoomlaTest extends FOFTestCase
 	}
 
 	/**
+	 * @covers FOF30\Platform\Joomla\Platform::authorise
+	 *
+	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestAuthorise
+	 *
+	 */
+	public function testAuthorise()
+	{
+		// TODO
+		$this->markTestIncomplete('Not yet implemented');
+	}
+
+	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getDate
 	 */
 	public function testGetDate()
@@ -435,54 +447,6 @@ class PlatformJoomlaTest extends FOFTestCase
 	 *
 	 */
 	public function testGetUserStateFromRequest()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::importPlugin
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestImportPlugin
-	 *
-	 */
-	public function testImportPlugin()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::runPlugins
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestRunPlugins
-	 *
-	 */
-	public function testRunPlugins()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::authorise
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestAuthorise
-	 *
-	 */
-	public function testAuthorise()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::isGlobalF0FCacheEnabled
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestIsGlobalF0FCacheEnabled
-	 *
-	 */
-	public function testIsGlobalF0FCacheEnabled()
 	{
 		// TODO
 		$this->markTestIncomplete('Not yet implemented');
@@ -558,90 +522,6 @@ class PlatformJoomlaTest extends FOFTestCase
 	 *
 	 */
 	public function testLogoutUser()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::logAddLogger
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLogAddLogger
-	 *
-	 */
-	public function testLogAddLogger()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::logDeprecated
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLogDeprecated
-	 *
-	 */
-	public function testLogDeprecated()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::logDebug
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLogDebug
-	 *
-	 */
-	public function testLogDebug()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::URIroot
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestURIroot
-	 *
-	 */
-	public function testURIroot()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::URIbase
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestURIbase
-	 *
-	 */
-	public function testURIbase()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::setHeader
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestSetHeader
-	 *
-	 */
-	public function testSetHeader()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::sendHeaders
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestSendHeaders
-	 *
-	 */
-	public function testSendHeaders()
 	{
 		// TODO
 		$this->markTestIncomplete('Not yet implemented');

@@ -487,6 +487,8 @@ class Platform extends BasePlatform
 	 * @see PlatformInterface::importPlugin()
 	 *
 	 * @return void
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function importPlugin($type)
 	{
@@ -507,6 +509,8 @@ class Platform extends BasePlatform
 	 * @see PlatformInterface::runPlugins()
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function runPlugins($event, $data)
 	{
@@ -601,6 +605,8 @@ class Platform extends BasePlatform
 	 * Is the global F0F cache enabled?
 	 *
 	 * @return  boolean
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function isGlobalF0FCacheEnabled()
 	{
@@ -833,6 +839,8 @@ class Platform extends BasePlatform
 	 * @param   string  $file
 	 *
 	 * @return  void
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function logAddLogger($file)
 	{
@@ -846,6 +854,8 @@ class Platform extends BasePlatform
 	 * @param   string $message The deprecated practice log message
 	 *
 	 * @return  void
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function logDeprecated($message)
 	{
@@ -858,6 +868,8 @@ class Platform extends BasePlatform
 	 * @param   string  $message
 	 *
 	 * @return  void
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function logDebug($message)
 	{
@@ -871,6 +883,8 @@ class Platform extends BasePlatform
 	 * @param   string  $path     The path
 	 *
 	 * @return  string  The root URI string.
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function URIroot($pathonly = false, $path = null)
 	{
@@ -883,9 +897,10 @@ class Platform extends BasePlatform
 	 * Returns the base URI for the request.
 	 *
 	 * @param   boolean $pathonly If false, prepend the scheme, host and port information. Default is false.
-	 *                            |
 	 *
 	 * @return  string  The base URI string
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function URIbase($pathonly = false)
 	{
@@ -903,6 +918,8 @@ class Platform extends BasePlatform
 	 * @param   boolean $replace True to replace any headers with the same name.
 	 *
 	 * @return  void
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function setHeader($name, $value, $replace = false)
 	{
@@ -913,6 +930,8 @@ class Platform extends BasePlatform
 	 * In platforms that perform header caching, send all headers.
 	 *
 	 * @return  void
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function sendHeaders()
 	{
