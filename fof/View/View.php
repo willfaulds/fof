@@ -198,7 +198,10 @@ class View
 		$this->addTemplatePath($fallback);
 
 		// Get extra directories through event dispatchers
-		$extraPathsResults = $this->container->eventDispatcher->trigger('onGetViewTemplatePaths', array($this->getName()));
+		$extraPathsResults = $this->container->platform->runPlugins('onGetViewTemplatePaths', array(
+			$this->container->componentName,
+			$this->getName()
+		));
 
 		if (is_array($extraPathsResults) && !empty($extraPathsResults))
 		{
