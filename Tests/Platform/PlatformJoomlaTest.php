@@ -419,13 +419,20 @@ class PlatformJoomlaTest extends FOFTestCase
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::authorise
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestAuthorise
+	 * @dataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestAuthorise
 	 *
 	 */
-	public function testAuthorise()
+	public function testAuthorise($appType, $auths, $assetName, $action, $expected, $message)
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		$this->forceApplicationTypeAndResetPlatformCliAdminCache($appType);
+
+		$fakeUser = new UserForAdminAuth();
+		$fakeUser->allowedAuths = $auths;
+		MockSession::$user = $fakeUser;
+
+		$actual = $this->platform->authorise($action, $assetName);
+
+		$this->assertEquals($expected, $actual, $message);
 	}
 
 	/**
@@ -438,18 +445,6 @@ class PlatformJoomlaTest extends FOFTestCase
 
 		$date = $this->platform->getDate('now', 'GMT', false);
 		$this->assertInstanceOf('\\JDate', $date, "getDate must return a JDate object");
-	}
-
-	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getUserStateFromRequest
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetUserStateFromRequest
-	 *
-	 */
-	public function testGetUserStateFromRequest()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
 	}
 
 	/**
@@ -492,18 +487,6 @@ class PlatformJoomlaTest extends FOFTestCase
 	}
 
 	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getConfig
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetConfig
-	 *
-	 */
-	public function testGetConfig()
-	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
-	}
-
-	/**
 	 * @covers FOF30\Platform\Joomla\Platform::loginUser
 	 *
 	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestLoginUser
@@ -522,6 +505,18 @@ class PlatformJoomlaTest extends FOFTestCase
 	 *
 	 */
 	public function testLogoutUser()
+	{
+		// TODO
+		$this->markTestIncomplete('Not yet implemented');
+	}
+
+	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getUserStateFromRequest
+	 *
+	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetUserStateFromRequest
+	 *
+	 */
+	public function testGetUserStateFromRequest()
 	{
 		// TODO
 		$this->markTestIncomplete('Not yet implemented');

@@ -739,6 +739,8 @@ class Platform extends BasePlatform
 	 * Returns an object that holds the configuration of the current site.
 	 *
 	 * @return  \JRegistry
+	 *
+	 * @codeCoverageIgnore
 	 */
 	public function getConfig()
 	{

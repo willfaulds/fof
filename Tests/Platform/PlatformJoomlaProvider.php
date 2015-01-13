@@ -421,4 +421,32 @@ class PlatformJoomlaProvider
 			array('cli', array('core.manage#com_foobar', 'core.admin#com_foobar'), true, 'CLI app, all auths, implicitly authorised'),
 		);
 	}
+
+	public static function getTestAuthorise()
+	{
+		return array(
+			// $appType, $auths, $assetName, $action, $expected, $message
+
+			array('site', array(), null, 'foo.bar', false, 'Site app, authorise non-existent global action'),
+			array('site', array('baz.bat'), null, 'foo.bar', false, 'Site app, authorise wrong global action'),
+			array('site', array('foo.bar'), null, 'foo.bar', true, 'Site app, authorise existing global action'),
+			array('site', array(), 'com_foobar', 'foo.bar', false, 'Site app, authorise non-existent component action'),
+			array('site', array('baz.bat#com_foobar'), 'com_foobar', 'foo.bar', false, 'Site app, authorise wrong component action'),
+			array('site', array('foo.bar#com_foobar'), 'com_foobar', 'foo.bar', true, 'Site app, authorise existing component action'),
+
+			array('admin', array(), null, 'foo.bar', false, 'Admin app, authorise non-existent global action'),
+			array('admin', array('baz.bat'), null, 'foo.bar', false, 'Admin app, authorise wrong global action'),
+			array('admin', array('foo.bar'), null, 'foo.bar', true, 'Admin app, authorise existing global action'),
+			array('admin', array(), 'com_foobar', 'foo.bar', false, 'Admin app, authorise non-existent component action'),
+			array('admin', array('baz.bat#com_foobar'), 'com_foobar', 'foo.bar', false, 'Admin app, authorise wrong component action'),
+			array('admin', array('foo.bar#com_foobar'), 'com_foobar', 'foo.bar', true, 'Admin app, authorise existing component action'),
+
+			array('cli', array(), null, 'foo.bar', true, 'CLI app, authorise non-existent global action (explicitly allowed in CLI)'),
+			array('cli', array('baz.bat'), null, 'foo.bar', true, 'CLI app, authorise wrong global action (explicitly allowed in CLI)'),
+			array('cli', array('foo.bar'), null, 'foo.bar', true, 'CLI app, authorise existing global action (explicitly allowed in CLI)'),
+			array('cli', array(), 'com_foobar', 'foo.bar', true, 'CLI app, authorise non-existent component action (explicitly allowed in CLI)'),
+			array('cli', array('baz.bat#com_foobar'), 'com_foobar', 'foo.bar', true, 'CLI app, authorise wrong component action (explicitly allowed in CLI)'),
+			array('cli', array('foo.bar#com_foobar'), 'com_foobar', 'foo.bar', true, 'CLI app, authorise existing component action (explicitly allowed in CLI)'),
+		);
+	}
 }
