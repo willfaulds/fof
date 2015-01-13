@@ -32,7 +32,7 @@ defined('_JEXEC') or die;
  *
  * Type hinting -- end
  */
-class DataModel extends Model
+class DataModel extends Model implements \JTableInterface
 {
 	/** @var   array  A list of tables in the database */
 	protected static $tableCache = array();
@@ -630,6 +630,16 @@ class DataModel extends Model
 	}
 
 	/**
+	 * Alias of getIdFieldName. Used for JTableInterface compatibility.
+	 *
+	 * @return  string  The name of the primary key for the table.
+	 */
+	public function getKeyName()
+	{
+		return $this->getIdFieldName();
+	}
+
+	/**
 	 * Returns the database table name this model talks to
 	 *
 	 * @return  string
@@ -907,6 +917,27 @@ class DataModel extends Model
 		$this->behavioursDispatcher->trigger('onAfterSave', array(&$this));
 
 		return $this;
+	}
+
+	/**
+	 * Alias of store. For JTableInterface compatibility.
+	 *
+	 * @param   boolean  $updateNulls  Blatantly ignored.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	public function store($updateNulls = false)
+	{
+		try
+		{
+			$this->save();
+		}
+		catch (\Exception $e)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -1836,6 +1867,39 @@ class DataModel extends Model
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Method to load a row from the database by primary key. Used for JTableInterface compatibility.
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 *                           set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found.
+	 *
+	 * @link    http://docs.joomla.org/JTable/load
+	 * @since   3.2
+	 * @throws  \RuntimeException
+	 * @throws  \UnexpectedValueException
+	 */
+	public function load($keys = null, $reset = true)
+	{
+		if ($reset)
+		{
+			$this->reset(true);
+		}
+
+		try
+		{
+			$this->findOrFail($keys);
+		}
+		catch (\Exception $e)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
