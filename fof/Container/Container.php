@@ -25,6 +25,7 @@ defined('_JEXEC') or die;
  * @property  string                                   $componentNamespace The namespace of the component's classes (\Foobar)
  * @property  string                                   $frontEndPath       The absolute path to the front-end files
  * @property  string                                   $backEndPath        The absolute path to the front-end files
+ * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  array                                    $mvc_config         Configuration overrides for MVC, Dispatcher, Toolbar
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
@@ -48,6 +49,7 @@ class Container extends Pimple
 		$this->componentNamespace = '';
 		$this->frontEndPath = '';
 		$this->backEndPath = '';
+		$this->thisPath = '';
 
 		// Try to construct this container object
 		parent::__construct($values);
@@ -124,6 +126,16 @@ class Container extends Pimple
 			{
 				return new JoomlaPlatform($c);
 			};
+		}
+
+		if (empty($this['thisPath']))
+		{
+			$this['thisPath'] = $this['frontEndPath'];
+
+			if ($this->platform->isBackend())
+			{
+				$this['thisPath'] = $this['backEndPath'];
+			}
 		}
 
 		// Component Configuration service
