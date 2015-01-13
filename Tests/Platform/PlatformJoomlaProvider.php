@@ -397,4 +397,28 @@ class PlatformJoomlaProvider
 			array('exception', JPATH_ADMINISTRATOR, JPATH_SITE, "Exception application, all languages must be loaded"),
 		);
 	}
+
+	public static function getTestAuthorizeAdmin()
+	{
+		return array(
+			// $appType, $auths, $expected, $message
+			array('admin', array(), false, 'Admin app, no auths, not authorised'),
+			array('admin', array('foo.bar#com_foobar'), false, 'Admin app, other auths, not authorised'),
+			array('admin', array('core.admin#com_foobar'), true, 'Admin app, only core.admin, authorised'),
+			array('admin', array('core.manage#com_foobar'), true, 'Admin app, only core.manage, authorised'),
+			array('admin', array('core.manage#com_foobar', 'core.admin#com_foobar'), true, 'Admin app, all auths, authorised'),
+
+			array('site', array(), true, 'Site app, no auths, implicitly authorised'),
+			array('site', array('foo.bar#com_foobar'), true, 'Site app, other auths, implicitly authorised'),
+			array('site', array('core.admin#com_foobar'), true, 'Site app, only core.admin, implicitly authorised'),
+			array('site', array('core.manage#com_foobar'), true, 'Site app, only core.manage, implicitly authorised'),
+			array('site', array('core.manage#com_foobar', 'core.admin#com_foobar'), true, 'Site app, all auths, implicitly authorised'),
+
+			array('cli', array(), true, 'CLI app, no auths, implicitly authorised'),
+			array('cli', array('foo.bar#com_foobar'), true, 'CLI app, other auths, implicitly authorised'),
+			array('cli', array('core.admin#com_foobar'), true, 'CLI app, only core.admin, implicitly authorised'),
+			array('cli', array('core.manage#com_foobar'), true, 'CLI app, only core.manage, implicitly authorised'),
+			array('cli', array('core.manage#com_foobar', 'core.admin#com_foobar'), true, 'CLI app, all auths, implicitly authorised'),
+		);
+	}
 }

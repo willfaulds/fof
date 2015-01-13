@@ -11,6 +11,8 @@ namespace FOF30\Tests\Platform;
 use FOF30\Platform\Joomla\Platform;
 use FOF30\Tests\Helpers\Application\MockLanguage;
 use FOF30\Tests\Helpers\FOFTestCase;
+use FOF30\Tests\Helpers\MockSession;
+use FOF30\Tests\Helpers\Platform\UserForAdminAuth;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
 /**
@@ -33,6 +35,7 @@ class PlatformJoomlaTest extends FOFTestCase
 	protected function tearDown()
 	{
 		$this->restoreFactoryState();
+		MockSession::$user = null;
 
 		parent::tearDown();
 	}
@@ -397,13 +400,20 @@ class PlatformJoomlaTest extends FOFTestCase
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::authorizeAdmin
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestAuthorizeAdmin
+	 * @dataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestAuthorizeAdmin
 	 *
 	 */
-	public function testAuthorizeAdmin()
+	public function testAuthorizeAdmin($appType, $auths, $expected, $message)
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		$this->forceApplicationTypeAndResetPlatformCliAdminCache($appType);
+
+		$fakeUser = new UserForAdminAuth();
+		$fakeUser->allowedAuths = $auths;
+		MockSession::$user = $fakeUser;
+
+		$actual = $this->platform->authorizeAdmin('com_foobar');
+
+		$this->assertEquals($expected, $actual, $message);
 	}
 
 	/**

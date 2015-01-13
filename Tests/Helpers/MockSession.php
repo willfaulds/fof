@@ -19,6 +19,13 @@ class MockSession
 	protected static $options = array();
 
 	/**
+	 * The user to return from this session
+	 *
+	 * @var \JUser
+	 */
+	public static $user = null;
+
+	/**
 	 * Gets an option.
 	 *
 	 * @param   string  $name     The name of the option.
@@ -121,6 +128,11 @@ class MockSession
 		switch ($key)
 		{
 			case 'user':
+				if (is_object(static::$user) && (static::$user instanceof \JUser))
+				{
+					return static::$user;
+				}
+
 				// Attempt to load JUser.
 				class_exists('JUser');
 
