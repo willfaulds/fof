@@ -418,14 +418,14 @@ class PlatformJoomlaTest extends FOFTestCase
 
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getDate
-	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetDate
-	 *
 	 */
 	public function testGetDate()
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		$date = $this->platform->getDate('now', 'GMT', true);
+		$this->assertInstanceOf('\\JDate', $date, "getDate must return a JDate object");
+
+		$date = $this->platform->getDate('now', 'GMT', false);
+		$this->assertInstanceOf('\\JDate', $date, "getDate must return a JDate object");
 	}
 
 	/**
