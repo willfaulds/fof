@@ -21,6 +21,7 @@ defined('_JEXEC') or die;
  * Dependency injection container for FOF-powered components
  *
  * @property  string                                   $componentName      The name of the component (com_something)
+ * @property  string                                   $bareComponentName  The name of the component without com_ (something)
  * @property  string                                   $componentNamespace The namespace of the component's classes (\Foobar)
  * @property  string                                   $frontEndPath       The absolute path to the front-end files
  * @property  string                                   $backEndPath        The absolute path to the front-end files
@@ -42,6 +43,7 @@ class Container extends Pimple
 	public function __construct(array $values = array())
 	{
 		// Initialise
+		$this->bareComponentName = '';
 		$this->componentName = '';
 		$this->componentNamespace = '';
 		$this->frontEndPath = '';
@@ -56,10 +58,13 @@ class Container extends Pimple
 			throw new Exception\NoComponent;
 		}
 
+		$bareComponent = substr($this->componentName, 4);
+
+		$this['bareComponentName'] = $bareComponent;
+
 		// Try to guess the component's namespace
 		if (empty($this['componentNamespace']))
 		{
-			$bareComponent = substr($this->componentName, 3);
 			$this->componentNamespace = ucfirst($bareComponent);
 		}
 		else

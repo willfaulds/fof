@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
 
 /**
  * Base32 encoding class, used by the TOTP
- * @package Awf\Encrypt
  */
 class Base32
 {

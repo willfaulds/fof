@@ -12,8 +12,6 @@ defined('_JEXEC') or die;
 /**
  * Interface DownloadInterface
  *
- * @package Awf\Download
- *
  * @codeCoverageIgnore
  */
 interface DownloadInterface

@@ -47,7 +47,7 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 		$options = array(
 			'driver' => 'sqlite',
 			'database' => ':memory:',
-			'prefix' => 'awf_'
+			'prefix' => 'fof_'
 		);
 
 		try
