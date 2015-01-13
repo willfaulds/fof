@@ -406,4 +406,83 @@ class Model
 	{
 		return $this->_ignoreRequest;
 	}
+
+	/**
+	 * Triggers an object-specific event. The event runs both locally –if a suitable method exists– and through the
+	 * Joomla! plugin system. Neither the method nor the plugin are expected to return anything (return values are
+	 * ignored). If you want to mark an error and cancel the event you have to raise an exception.
+	 *
+	 * EXAMPLE
+	 * Component: com_foobar, Object name: item, Event: onBeforeSomething, Arguments: array(123, 456)
+	 * The event calls:
+	 * 1. $this->onBeforeSomething(123, 456)
+	 * 2. Joomla! plugin event onComFoobarItemBeforeSomething($this, 123, 456)
+	 *
+	 * @param   string  $event      The name of the event, typically named onPredicateVerb e.g. onBeforeKick
+	 * @param   array   $arguments  The arguments to pass to the event handlers
+	 *
+	 * @return  void
+	 */
+	protected function triggerEvent($event, array $arguments = array())
+	{
+		// If there is an object method for this event, call it
+		if (method_exists($this, $event))
+		{
+			switch (count($arguments))
+			{
+				case 0:
+					$this->{$event}();
+					break;
+				case 1:
+					$this->{$event}($arguments[0]);
+					break;
+				case 2:
+					$this->{$event}($arguments[0], $arguments[1]);
+					break;
+				case 3:
+					$this->{$event}($arguments[0], $arguments[1], $arguments[2]);
+					break;
+				case 4:
+					$this->{$event}($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+					break;
+				case 5:
+					$this->{$event}($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+					break;
+				default:
+					call_user_func_array(array($this, $event), $arguments);
+					break;
+			}
+		}
+
+		// All other event handlers live outside this object, therefore they need to be passed a reference to this
+		// objects as the first argument.
+		array_unshift($arguments, &$this);
+
+		// Trigger the object's behaviours dispatcher, if such a thing exists
+		if (property_exists($this, 'behavioursDispatcher') && method_exists($this->behavioursDispatcher, 'trigger'))
+		{
+			$this->behavioursDispatcher->trigger($event, $arguments);
+		}
+
+		// Prepare to run the Joomla! plugins now.
+
+		// If we have an "on" prefix for the event (e.g. onFooBar) remove it and stash it for later.
+		$prefix = '';
+
+		if (substr($event, 0, 2) == 'on')
+		{
+			$prefix = 'on';
+			$event = substr($event, 2);
+		}
+
+		// Get the component/model prefix for the event
+		$prefix .= 'Com' . ucfirst($this->container->bareComponentName);
+		$prefix .= ucfirst($this->getName());
+
+		// The event name will be something like onComFoobarItemsBeforeSomething
+		$event = $prefix . $event;
+
+		// Call the Joomla! plugins
+		$this->container->platform->runPlugins($event, $arguments);
+	}
 }

@@ -112,12 +112,13 @@ class TreeModel extends DataModel
 
 		// Execute the logic only if I have a primary key, otherwise I could have weird results
 		// Perform the checks on the current node *BEFORE* starting to delete the children
-		if (method_exists($this, 'onBeforeDelete'))
+		try
 		{
-			if(!$this->onBeforeDelete($pk))
-			{
-				return false;
-			}
+			$this->triggerEvent('onBeforeDelete', array(&$pk));
+		}
+		catch (\Exception $e)
+		{
+			return false;
 		}
 
 		$result = true;
@@ -163,10 +164,7 @@ class TreeModel extends DataModel
 
 			$db->setQuery($query)->execute();
 
-			if(method_exists($this, 'onAfterDelete'))
-			{
-				$this->onAfterDelete($pk);
-			}
+			$this->triggerEvent('onAfterUnlock', array(&$pk));
 		}
 
 		return $this;

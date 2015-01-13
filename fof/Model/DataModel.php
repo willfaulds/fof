@@ -755,12 +755,7 @@ class DataModel extends Model implements \JTableInterface
 		$oldPKValue = $this->getId();
 
 		// Call the onBeforeSave event
-		if (method_exists($this, 'onBeforeSave'))
-		{
-			$this->onBeforeSave($data);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeSave', array(&$this, &$data));
+		$this->triggerEvent('onBeforeSave', array(&$data));
 
 		// Bind any (optional) data. If no data is provided, the current record data is used
 		if (!is_null($data))
@@ -839,12 +834,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if ($isNewRecord)
 		{
-			if (method_exists($this, 'onBeforeCreate'))
-			{
-				$this->onBeforeCreate($dataObject);
-			}
-
-			$this->behavioursDispatcher->trigger('onBeforeCreate', array(&$this, &$dataObject));
+			$this->triggerEvent('onBeforeCreate', array(&$dataObject));
 
 			// Insert the new record
 			$db->insertObject($this->tableName, $dataObject, $this->idFieldName);
@@ -852,30 +842,15 @@ class DataModel extends Model implements \JTableInterface
 			// Update ourselves with the new ID field's value
 			$this->{$this->idFieldName} = $db->insertid();
 
-			if (method_exists($this, 'onAfterCreate'))
-			{
-				$this->onAfterCreate();
-			}
-
-			$this->behavioursDispatcher->trigger('onAfterCreate', array(&$this));
+			$this->triggerEvent('onAfterCreate');
 		}
 		else
 		{
-			if (method_exists($this, 'onBeforeUpdate'))
-			{
-				$this->onBeforeUpdate($dataObject);
-			}
-
-			$this->behavioursDispatcher->trigger('onBeforeUpdate', array(&$this, &$dataObject));
+			$this->triggerEvent('onBeforeUpdate', array(&$dataObject));
 
 			$db->updateObject($this->tableName, $dataObject, $this->idFieldName, true);
 
-			if (method_exists($this, 'onAfterUpdate'))
-			{
-				$this->onAfterUpdate();
-			}
-
-			$this->behavioursDispatcher->trigger('onAfterUpdate', array(&$this));
+			$this->triggerEvent('onAfterUpdate');
 		}
 
 		// If an ordering filter is set, attempt reorder the rows in the table based on the filter and value.
@@ -909,12 +884,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Finally, call the onAfterSave event
-		if (method_exists($this, 'onAfterSave'))
-		{
-			$this->onAfterSave();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterSave', array(&$this));
+		$this->triggerEvent('onAfterSave');
 
 		return $this;
 	}
@@ -1010,12 +980,7 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function bind($data, $ignore = array())
 	{
-		if (method_exists($this, 'onBeforeBind'))
-		{
-			$this->onBeforeBind($data);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeBind', array(&$this, &$data));
+		$this->triggerEvent('onBeforeBind', array(&$data));
 
 		// If the source value is not an array or object return false.
 		if (!is_object($data) && !is_array($data))
@@ -1046,12 +1011,7 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
-		if (method_exists($this, 'onAfterBind'))
-		{
-			$this->onAfterBind($data);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterBind', array(&$this, &$data));
+		$this->triggerEvent('onAfterBind');
 
 		return $this;
 	}
@@ -1109,12 +1069,7 @@ class DataModel extends Model implements \JTableInterface
 			throw new SpecialColumnMissing(sprintf('%s does not support ordering.', $this->tableName));
 		}
 
-		if (method_exists($this, 'onBeforeReorder'))
-		{
-			$this->onBeforeReorder($where);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeReorder', array(&$this, &$where));
+		$this->triggerEvent('onBeforeReorder', array(&$where));
 
 		$order_field = $this->getFieldAlias('ordering');
 		$k           = $this->getIdFieldName();
@@ -1154,12 +1109,7 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
-		if (method_exists($this, 'onAfterReorder'))
-		{
-			$this->onAfterReorder();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterReorder', array(&$this));
+		$this->triggerEvent('onAfterReorder');
 
 		return $this;
 	}
@@ -1184,24 +1134,14 @@ class DataModel extends Model implements \JTableInterface
 			throw new SpecialColumnMissing(sprintf('%s does not support ordering.', $this->tableName));
 		}
 
-		if (method_exists($this, 'onBeforeMove'))
-		{
-			$this->onBeforeMove($delta, $where);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeMove', array(&$this, &$delta, &$where));
+		$this->triggerEvent('onBeforeMove', array(&$delta, &$where));
 
 		$ordering_field = $this->getFieldAlias('ordering');
 
 		// If the change is none, do nothing.
 		if (empty($delta))
 		{
-			if (method_exists($this, 'onAfterMove'))
-			{
-				$this->onAfterMove();
-			}
-
-			$this->behavioursDispatcher->trigger('onAfterMove', array(&$this));
+			$this->triggerEvent('onAfterMove');
 
 			return $this;
 		}
@@ -1266,12 +1206,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->$ordering_field = $row->$ordering_field;
 		}
 
-		if (method_exists($this, 'onAfterMove'))
-		{
-			$this->onAfterMove();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterMove', array(&$this));
+		$this->triggerEvent('onAfterMove');
 
 		return $this;
 	}
@@ -1318,12 +1253,7 @@ class DataModel extends Model implements \JTableInterface
 		$query->select(null)->select('COUNT(*)');
 
 		// Run the "before build query" hook and behaviours
-		if (method_exists($this, 'buildCountQuery'))
-		{
-			$this->buildCountQuery($query);
-		}
-
-		$this->behavioursDispatcher->trigger('buildCountQuery', array(&$this, &$query));
+		$this->triggerEvent('onBuildCountQuery', array(&$query));
 
 		$total = $db->setQuery($query)->loadResult();
 
@@ -1346,12 +1276,7 @@ class DataModel extends Model implements \JTableInterface
 			->from($this->getTableName());
 
 		// Run the "before build query" hook and behaviours
-		if (method_exists($this, 'onBeforeBuildQuery'))
-		{
-			$this->onBeforeBuildQuery($query);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeBuildQuery', array(&$this, &$query));
+		$this->triggerEvent('onBeforeBuildQuery', array(&$query));
 
 		// Apply custom WHERE clauses
 		if (count($this->whereClauses))
@@ -1385,12 +1310,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Run the "before after query" hook and behaviours
-		if (method_exists($this, 'onAfterBuildQuery'))
-		{
-			$this->onAfterBuildQuery($query);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterBuildQuery', array(&$this, &$query));
+		$this->triggerEvent('onAfterBuildQuery', array(&$query));
 
 		return $query;
 	}
@@ -1453,12 +1373,7 @@ class DataModel extends Model implements \JTableInterface
 			$item->relationManager->rebase($item);
 		}
 
-		if (method_exists($this, 'onAfterGetItemsArray'))
-		{
-			$this->onAfterGetItemsArray($items);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterGetItemsArray', array(&$this, &$items));
+		$this->triggerEvent('onAfterGetItemsArray', array(&$items));
 
 		return $items;
 	}
@@ -1523,24 +1438,14 @@ class DataModel extends Model implements \JTableInterface
 			return $this;
 		}
 
-		if (method_exists($this, 'onBeforeArchive'))
-		{
-			$this->onBeforeArchive();
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeArchive', array(&$this));
+		$this->triggerEvent('onBeforeArchive', array());
 
 		$enabled = $this->getFieldAlias('enabled');
 
 		$this->$enabled = 2;
 		$this->save();
 
-		if (method_exists($this, 'onAfterArchive'))
-		{
-			$this->onAfterArchive();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterArchive', array(&$this));
+		$this->triggerEvent('onAfterArchive');
 
 		return $this;
 	}
@@ -1573,23 +1478,13 @@ class DataModel extends Model implements \JTableInterface
 			throw new SpecialColumnMissing("DataModel::trash method needs an 'enabled' field");
 		}
 
-		if (method_exists($this, 'onBeforeTrash'))
-		{
-			$this->onBeforeTrash($id);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeTrash', array(&$this, &$id));
+		$this->triggerEvent('onBeforeTrash', array(&$id));
 
 		$enabled = $this->getFieldAlias('enabled');
 		$this->$enabled = -2;
 		$this->save();
 
-		if (method_exists($this, 'onAfterTrash'))
-		{
-			$this->onAfterTrash($id);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterTrash', array(&$this, $id));
+		$this->triggerEvent('onAfterTrash', array(&$id));
 
 		return $this;
 	}
@@ -1614,24 +1509,14 @@ class DataModel extends Model implements \JTableInterface
 			return $this;
 		}
 
-		if (method_exists($this, 'onBeforePublish'))
-		{
-			$this->onBeforePublish();
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforePublish', array(&$this));
+		$this->triggerEvent('onBeforePublish', array());
 
 		$enabled = $this->getFieldAlias('enabled');
 
 		$this->$enabled = $state;
 		$this->save();
 
-		if (method_exists($this, 'onAfterPublish'))
-		{
-			$this->onAfterPublish();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterPublish', array(&$this));
+		$this->triggerEvent('onAfterPublish');
 
 		return $this;
 	}
@@ -1653,24 +1538,14 @@ class DataModel extends Model implements \JTableInterface
 			return $this;
 		}
 
-		if (method_exists($this, 'onBeforeUnpublish'))
-		{
-			$this->onBeforeUnpublish();
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeUnpublish', array(&$this));
+		$this->triggerEvent('onBeforeUnpublish', array());
 
 		$enabled = $this->getFieldAlias('enabled');
 
 		$this->$enabled = 0;
 		$this->save();
 
-		if (method_exists($this, 'onAfterUnpublish'))
-		{
-			$this->onAfterUnpublish();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterUnpublish', array(&$this));
+		$this->triggerEvent('onAfterUnpublish');
 
 		return $this;
 	}
@@ -1703,24 +1578,14 @@ class DataModel extends Model implements \JTableInterface
 			throw new RecordNotLoaded("Can't change the state of a not loaded DataModel");
 		}
 
-		if (method_exists($this, 'onBeforeRestore'))
-		{
-			$this->onBeforeRestore($id);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeRestore', array(&$this, &$id));
+		$this->triggerEvent('onBeforeRestore', array(&$id));
 
 		$enabled = $this->getFieldAlias('enabled');
 
 		$this->$enabled = 0;
 		$this->save();
 
-		if (method_exists($this, 'onAfterRestore'))
-		{
-			$this->onAfterRestore($id);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterRestore', array(&$this, $id));
+		$this->triggerEvent('onAfterRestore', array(&$id));
 
 		return $this;
 	}
@@ -1816,12 +1681,7 @@ class DataModel extends Model implements \JTableInterface
 			throw new RecordNotLoaded("Can't delete a not loaded DataModel object");
 		}
 
-		if (method_exists($this, 'onBeforeDelete'))
-		{
-			$this->onBeforeDelete($id);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeDelete', array(&$this, &$id));
+		$this->triggerEvent('onBeforeDelete', array(&$id));
 
 		$db = $this->getDbo();
 
@@ -1831,12 +1691,7 @@ class DataModel extends Model implements \JTableInterface
 			->where($db->qn($this->idFieldName) . ' = ' . $db->q($id));
 		$db->setQuery($query)->execute();
 
-		if (method_exists($this, 'onAfterDelete'))
-		{
-			$this->onAfterDelete($id);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterDelete', array(&$this));
+		$this->triggerEvent('onAfterDelete', array(&$id));
 
 		$this->reset();
 
@@ -1913,12 +1768,7 @@ class DataModel extends Model implements \JTableInterface
 	public function find($keys = null)
 	{
 		// Execute the onBeforeLoad event
-		if (method_exists($this, 'onBeforeLoad'))
-		{
-			$this->onBeforeLoad($keys);
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeLoad', array(&$this, &$keys));
+		$this->triggerEvent('onBeforeLoad', array(&$keys));
 
 		// If we are not given any keys, try to get the ID from the state or the table data
 		if (empty($keys))
@@ -1932,12 +1782,7 @@ class DataModel extends Model implements \JTableInterface
 
 			if (empty($id))
 			{
-				if (method_exists($this, 'onAfterLoad'))
-				{
-					$this->onAfterLoad(false);
-				}
-
-				$this->behavioursDispatcher->trigger('onAfterLoad', array(&$this, false, $keys));
+				$this->triggerEvent('onAfterLoad', array(false, &$keys));
 
 				$this->reset();
 
@@ -1950,12 +1795,7 @@ class DataModel extends Model implements \JTableInterface
 		{
 			if (empty($keys))
 			{
-				if (method_exists($this, 'onAfterLoad'))
-				{
-					$this->onAfterLoad(false);
-				}
-
-				$this->behavioursDispatcher->trigger('onAfterLoad', array(&$this, false, $keys));
+				$this->triggerEvent('onAfterLoad', array(false, &$keys));
 
 				$this->reset();
 
@@ -2002,12 +1842,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if (empty($row))
 		{
-			if (method_exists($this, 'onAfterLoad'))
-			{
-				$this->onAfterLoad(false, $keys);
-			}
-
-			$this->behavioursDispatcher->trigger('onAfterLoad', array(&$this, false, $keys));
+			$this->triggerEvent('onAfterLoad', array(false, &$keys));
 
 			return $this;
 		}
@@ -2016,12 +1851,7 @@ class DataModel extends Model implements \JTableInterface
 		$this->bind($row);
 
 		// Execute the onAfterLoad event
-		if (method_exists($this, 'onAfterLoad'))
-		{
-			$this->onAfterLoad(true, $keys);
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterLoad', array(&$this, true, $keys));
+		$this->triggerEvent('onAfterLoad', array(true, &$keys));
 
 		return $this;
 	}
@@ -2306,12 +2136,7 @@ class DataModel extends Model implements \JTableInterface
 			return $this;
 		}
 
-		if (method_exists($this, 'onBeforeLock'))
-		{
-			$this->onBeforeLock();
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeLock', array(&$this));
+		$this->triggerEvent('onBeforeLock', array());
 
 		$db = $this->getDbo();
 
@@ -2335,12 +2160,7 @@ class DataModel extends Model implements \JTableInterface
 
 		$this->save();
 
-		if (method_exists($this, 'onAfterLock'))
-		{
-			$this->onAfterLock();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterLock', array(&$this));
+		$this->triggerEvent('onAfterLock');
 
 		return $this;
 	}
@@ -2362,12 +2182,7 @@ class DataModel extends Model implements \JTableInterface
 			return $this;
 		}
 
-		if (method_exists($this, 'onBeforeUnlock'))
-		{
-			$this->onBeforeUnlock();
-		}
-
-		$this->behavioursDispatcher->trigger('onBeforeUnlock', array(&$this));
+		$this->triggerEvent('onBeforeUnlock', array());
 
 		$db = $this->getDbo();
 
@@ -2385,12 +2200,7 @@ class DataModel extends Model implements \JTableInterface
 
 		$this->save();
 
-		if (method_exists($this, 'onAfterUnlock'))
-		{
-			$this->onAfterUnlock();
-		}
-
-		$this->behavioursDispatcher->trigger('onAfterUnlock', array(&$this));
+		$this->triggerEvent('onAfterUnlock');
 
 		return $this;
 	}
