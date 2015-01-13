@@ -12,8 +12,16 @@ use FOF30\Platform\Base\Filesystem as BaseFilesystem;
 
 defined('_JEXEC') or die;
 
+/**
+ * Abstraction for Joomla! filesystem API
+ */
 class Filesystem extends BaseFilesystem
 {
+	/**
+	 * Public constructor
+	 *
+	 * @param \FOF30\Container\Container $c
+	 */
 	public function __construct(Container $c)
 	{
 		if (class_exists('\\JLoader'))

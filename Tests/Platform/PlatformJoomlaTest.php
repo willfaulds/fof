@@ -448,42 +448,193 @@ class PlatformJoomlaTest extends FOFTestCase
 	}
 
 	/**
+	 * @covers FOF30\Platform\Joomla\Platform::getCacheObject
+	 *
+	 * @group platformJoomlaCache
+	 */
+	public function testGetCacheObject()
+	{
+		// Force-enable the cache
+		$config = \JFactory::getConfig();
+		$config->set('caching', 1);
+		$config->set('cachetime', 15);
+
+		// Make sure there is no cache object set anywhere
+		$false = false;
+		$cache = \JFactory::getCache('fof', '');
+		$cache->store($false, 'cache', 'fof');
+
+		$reflector = new \ReflectionClass($this->platform);
+		$propCache = $reflector->getProperty('_cache');
+		$propCache->setAccessible(true);
+		$propCache->setValue($this->platform, null);
+
+		// Invoke the getCacheObject and assert its data type
+		$method = $reflector->getMethod('getCacheObject');
+		$method->setAccessible(true);
+		$object = $method->invoke($this->platform, true);
+
+		$this->assertInstanceOf('\\JRegistry', $object, 'Cache object must be an instance of JRegistry');
+
+		// Make sure we had no data
+		$foo = $object->get('foo', null);
+		$this->assertNull($foo, 'The returned cache object must be empty when there is no cache set anywhere');
+
+		// Save an object into the cache
+		$object->set('foo', 'bar');
+		$cache->store($object, 'cache', 'fof');
+
+		// Kill the cache in the object
+		$propCache->setValue($this->platform, null);
+
+		// Invoke the getCacheObject and assert its data type
+		$method = $reflector->getMethod('getCacheObject');
+		$method->setAccessible(true);
+		$object = $method->invoke($this->platform, true);
+
+		$this->assertInstanceOf('\\JRegistry', $object, 'Cache object must be an instance of JRegistry');
+
+		// Make sure we have data
+		$foo = $object->get('foo', null);
+		$this->assertEquals('bar', $foo, 'The returned cached object must not be empty when there is a cache set');
+	}
+
+	/**
 	 * @covers FOF30\Platform\Joomla\Platform::setCache
 	 * @covers FOF30\Platform\Joomla\Platform::getCacheObject
 	 * @covers FOF30\Platform\Joomla\Platform::saveCache
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestSetCache
-	 *
+	 * @group platformJoomlaCache
 	 */
 	public function testSetCache()
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		// Force-enable the cache
+		$config = \JFactory::getConfig();
+		$config->set('caching', 1);
+		$config->set('cachetime', 15);
+
+		// Make sure there is no cache object set anywhere
+		$false = false;
+		$cache = \JFactory::getCache('fof', '');
+		$cache->store($false, 'cache', 'fof');
+
+		$reflector = new \ReflectionClass($this->platform);
+		$propCache = $reflector->getProperty('_cache');
+		$propCache->setAccessible(true);
+		$propCache->setValue($this->platform, null);
+
+		// Invoke the getCacheObject and assert its data type
+		$method = $reflector->getMethod('getCacheObject');
+		$method->setAccessible(true);
+		$object = $method->invoke($this->platform, true);
+
+		$this->assertInstanceOf('\\JRegistry', $object, 'Cache object must be an instance of JRegistry');
+
+		// Make sure we had no data
+		$foo = $object->get('foo', null);
+		$this->assertNull($foo, 'The returned cache object must be empty when there is no cache set anywhere');
+
+		// Save an object into the cache
+		$this->platform->setCache('foo', 'bar');
+
+		// Kill the cache in the object
+		$propCache->setValue($this->platform, null);
+
+		// Invoke the getCacheObject and assert its data type
+		$method = $reflector->getMethod('getCacheObject');
+		$method->setAccessible(true);
+		$object = $method->invoke($this->platform, true);
+
+		$this->assertInstanceOf('\\JRegistry', $object, 'Cache object must be an instance of JRegistry');
+
+		// Make sure we had no data
+		$foo = $object->get('foo', null);
+		$this->assertEquals('bar', $foo, 'The returned cached object must not be empty when there is a cache set');
 	}
 
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getCache
 	 * @covers FOF30\Platform\Joomla\Platform::getCacheObject
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetCache
-	 *
+	 * @group platformJoomlaCache
 	 */
 	public function testGetCache()
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		// Force-enable the cache
+		$config = \JFactory::getConfig();
+		$config->set('caching', 1);
+		$config->set('cachetime', 15);
+
+		// Make sure there is no cache object set anywhere
+		$false = false;
+		$cache = \JFactory::getCache('fof', '');
+		$cache->store($false, 'cache', 'fof');
+
+		$reflector = new \ReflectionClass($this->platform);
+		$propCache = $reflector->getProperty('_cache');
+		$propCache->setAccessible(true);
+		$propCache->setValue($this->platform, null);
+
+		// Make sure we had no data
+		$foo = $this->platform->getCache('foo', null);
+		$this->assertNull($foo, 'The returned cache object must be empty when there is no cache set anywhere');
+
+		// Save an object into the cache
+		$this->platform->setCache('foo', 'bar');
+
+		// Kill the cache in the object
+		$propCache->setValue($this->platform, null);
+
+		// Make sure we have data
+		$foo = $this->platform->getCache('foo', null);
+		$this->assertEquals('bar', $foo, 'The returned cached object must not be empty when there is a cache set');
 	}
 
 	/**
 	 * @covers FOF30\Platform\Joomla\Platform::clearCache
 	 *
-	 * @XXXdataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestClearCache
-	 *
+	 * @group platformJoomlaCache
 	 */
 	public function testClearCache()
 	{
-		// TODO
-		$this->markTestIncomplete('Not yet implemented');
+		// Force-enable the cache
+		$config = \JFactory::getConfig();
+		$config->set('caching', 1);
+		$config->set('cachetime', 15);
+
+		// Make sure there is no cache object set anywhere
+		$false = false;
+		$cache = \JFactory::getCache('fof', '');
+		$cache->store($false, 'cache', 'fof');
+
+		$reflector = new \ReflectionClass($this->platform);
+		$propCache = $reflector->getProperty('_cache');
+		$propCache->setAccessible(true);
+		$propCache->setValue($this->platform, null);
+
+		// Make sure we had no data
+		$foo = $this->platform->getCache('foo', null);
+		$this->assertNull($foo, 'The returned cache object must be empty when there is no cache set anywhere');
+
+		// Save an object into the cache
+		$this->platform->setCache('foo', 'bar');
+
+		// Kill the cache in the object
+		$propCache->setValue($this->platform, null);
+
+		// Make sure we have data
+		$foo = $this->platform->getCache('foo', null);
+		$this->assertEquals('bar', $foo, 'The returned cached object must not be empty when there is a cache set');
+
+		// Clear the cache
+		$this->platform->clearCache();
+
+		// Kill the cache in the object
+		$propCache->setValue($this->platform, null);
+
+		// Make sure we had no data
+		$foo = $this->platform->getCache('foo', null);
+		$this->assertNull($foo, 'The returned cache object must be empty when there is no cache set any more');
 	}
 
 	/**

@@ -660,44 +660,15 @@ class Platform extends BasePlatform
 		// Check if we have to load the cache file or we are forced to do that
 		if (is_null($this->_cache) || $force)
 		{
-			// Create a new JRegistry object
-			\JLoader::import('joomla.registry.registry');
-			$this->_cache = new \JRegistry;
-
 			// Try to get data from Joomla!'s cache
 			$cache = \JFactory::getCache('fof', '');
-			$data = $cache->get('cache', 'fof');
+			$this->_cache = $cache->get('cache', 'fof');
 
-			// If data is not found, fall back to the legacy (F0F 2.1.rc3 and earlier) method
-			if ($data === false)
+			if (!is_object($this->_cache) || !($this->_cache instanceof \JRegistry))
 			{
-				// Find the path to the file
-				$cachePath = JPATH_CACHE . '/fof';
-				$filename = $cachePath . '/cache.php';
-				$filesystem = $this->container->filesystem;
-
-				// Load the cache file if it exists. JRegistryFormatPHP fails
-				// miserably, so I have to work around it.
-				if ($filesystem->fileExists($filename))
-				{
-					@include_once $filename;
-
-					$filesystem->fileDelete($filename);
-
-					$className = 'F0FCacheStorage';
-
-					if (class_exists($className))
-					{
-						$object = new $className;
-						$this->_cache->loadObject($object);
-
-						$cache->store($this->_cache, 'cache', 'fof');
-					}
-				}
-			}
-			else
-			{
-				$this->_cache = $data;
+				// Create a new JRegistry object
+				\JLoader::import('joomla.registry.registry');
+				$this->_cache = new \JRegistry;
 			}
 		}
 
