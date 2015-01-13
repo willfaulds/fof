@@ -51,26 +51,20 @@ class Json extends Raw
 	 */
 	public function display($tpl = null)
 	{
-		$method = 'onBefore' . ucfirst($this->doTask);
-		if (method_exists($this, $method))
-		{
-			$result = $this->$method($tpl);
+		$eventName = 'onBefore' . ucfirst($this->doTask);
+		$result = $this->triggerEvent($eventName);
 
-			if (!$result)
-			{
-				throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
+		if (!$result)
+		{
+			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
-		$method = 'onAfter' . ucfirst($this->doTask);
-		if (method_exists($this, $method))
-		{
-			$result = $this->$method($tpl);
+		$eventName = 'onAfter' . ucfirst($this->doTask);
+		$result = $this->triggerEvent($eventName);
 
-			if (!$result)
-			{
-				throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
+		if (!$result)
+		{
+			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
 		return true;

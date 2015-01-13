@@ -409,14 +409,15 @@ class Model
 
 	/**
 	 * Triggers an object-specific event. The event runs both locally –if a suitable method exists– and through the
-	 * Joomla! plugin system. Neither the method nor the plugin are expected to return anything (return values are
-	 * ignored). If you want to mark an error and cancel the event you have to raise an exception.
+	 * object's behaviours dispatcher and Joomla! plugin system. Neither handler is expected to return anything (return
+	 * values are ignored). If you want to mark an error and cancel the event you have to raise an exception.
 	 *
 	 * EXAMPLE
 	 * Component: com_foobar, Object name: item, Event: onBeforeSomething, Arguments: array(123, 456)
 	 * The event calls:
 	 * 1. $this->onBeforeSomething(123, 456)
-	 * 2. Joomla! plugin event onComFoobarItemBeforeSomething($this, 123, 456)
+	 * 2. $his->behavioursDispatcher->trigger('onBeforeSomething', array(&$this, 123, 456))
+	 * 3. Joomla! plugin event onComFoobarItemBeforeSomething($this, 123, 456)
 	 *
 	 * @param   string  $event      The name of the event, typically named onPredicateVerb e.g. onBeforeKick
 	 * @param   array   $arguments  The arguments to pass to the event handlers

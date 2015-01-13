@@ -430,39 +430,31 @@ class View
 	 */
 	public function display($tpl = null)
 	{
-		$method = 'onBefore' . ucfirst($this->doTask);
+		$eventName = 'onBefore' . ucfirst($this->doTask);
+		$result = $this->triggerEvent($eventName);
 
-		if (method_exists($this, $method))
+		if (!$result)
 		{
-			$result = $this->$method($tpl);
-
-			if (!$result)
-			{
-				throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
+			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
-		$result = $this->loadTemplate($tpl);
+		$templateResult = $this->loadTemplate($tpl);
 
-		$method = 'onAfter' . ucfirst($this->doTask);
+		$eventName = 'onAfter' . ucfirst($this->doTask);
+		$result = $this->triggerEvent($eventName);
 
-		if (method_exists($this, $method))
+		if (!$result)
 		{
-			$result = $this->$method($tpl);
-
-			if (!$result)
-			{
-				throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
+			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
-		if (is_object($result) && ($result instanceof \Exception))
+		if (is_object($templateResult) && ($templateResult instanceof \Exception))
 		{
-			throw $result;
+			throw $templateResult;
 		}
 		else
 		{
-			echo $result;
+			echo $templateResult;
 
 			return true;
 		}
@@ -736,5 +728,95 @@ class View
 		$this->doTask = $task;
 
 		return $this;
+	}
+
+	/**
+	 * Triggers an object-specific event. The event runs both locally –if a suitable method exists– and through the
+	 * Joomla! plugin system. A true/false return value is expected. The first false return cancels the event.
+	 *
+	 * EXAMPLE
+	 * Component: com_foobar, Object name: item, Event: onBeforeSomething, Arguments: array(123, 456)
+	 * The event calls:
+	 * 1. $this->onBeforeSomething(123, 456)
+	 * 2. Joomla! plugin event onComFoobarItemBeforeSomething($this, 123, 456)
+	 *
+	 * @param   string  $event      The name of the event, typically named onPredicateVerb e.g. onBeforeKick
+	 * @param   array   $arguments  The arguments to pass to the event handlers
+	 *
+	 * @return  bool
+	 */
+	protected function triggerEvent($event, array $arguments = array())
+	{
+		$result = false;
+
+		// If there is an object method for this event, call it
+		if (method_exists($this, $event))
+		{
+			switch (count($arguments))
+			{
+				case 0:
+					$result = $this->{$event}();
+					break;
+				case 1:
+					$result = $this->{$event}($arguments[0]);
+					break;
+				case 2:
+					$result = $this->{$event}($arguments[0], $arguments[1]);
+					break;
+				case 3:
+					$result = $this->{$event}($arguments[0], $arguments[1], $arguments[2]);
+					break;
+				case 4:
+					$result = $this->{$event}($arguments[0], $arguments[1], $arguments[2], $arguments[3]);
+					break;
+				case 5:
+					$result = $this->{$event}($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4]);
+					break;
+				default:
+					$result = call_user_func_array(array($this, $event), $arguments);
+					break;
+			}
+		}
+
+		if ($result === false)
+		{
+			return false;
+		}
+
+		// All other event handlers live outside this object, therefore they need to be passed a reference to this
+		// objects as the first argument.
+		array_unshift($arguments, &$this);
+
+		// If we have an "on" prefix for the event (e.g. onFooBar) remove it and stash it for later.
+		$prefix = '';
+
+		if (substr($event, 0, 2) == 'on')
+		{
+			$prefix = 'on';
+			$event = substr($event, 2);
+		}
+
+		// Get the component/model prefix for the event
+		$prefix .= 'Com' . ucfirst($this->container->bareComponentName);
+		$prefix .= ucfirst($this->getName());
+
+		// The event name will be something like onComFoobarItemsBeforeSomething
+		$event = $prefix . $event;
+
+		// Call the Joomla! plugins
+		$results = $this->container->platform->runPlugins($event, $arguments);
+
+		if (!empty($results))
+		{
+			foreach ($results as $result)
+			{
+				if ($result === false)
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }
