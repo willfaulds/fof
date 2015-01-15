@@ -8,7 +8,9 @@
 namespace FOF30\View;
 
 use FOF30\Container\Container;
+use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
+use FOF30\Render\RenderInterface;
 
 defined('_JEXEC') or die;
 
@@ -113,14 +115,43 @@ class View
 	public $doTask;
 
 	/**
+	 * The available renderer objects we can use to render views
+	 *
+	 * @var    array  Contains objects of the RenderInterface class
+	 */
+	public static $renderers = array();
+
+	/**
+	 * The chosen renderer object
+	 *
+	 * @var    RenderInterface
+	 */
+	protected $rendererObject = null;
+
+	/**
+	 * Should I run the pre-render step?
+	 *
+	 * @var    boolean
+	 */
+	protected $doPreRender = true;
+
+	/**
+	 * Should I run the post-render step?
+	 *
+	 * @var    boolean
+	 */
+	protected $doPostRender = true;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   Container $container   A named configuration array for object construction.<br/>
 	 *                                 Inside it you can have an 'mvc_option' array with the following options:<br/>
-	 *                                 name: the name (optional) of the view (defaults to the view class name suffix).<br/>
-	 *                                 escape: the name (optional) of the function to use for escaping strings<br/>
-	 *                                 template_path: the path (optional) of the layout directory (defaults to base_path + /views/ + view name<br/>
-	 *                                 layout: the layout (optional) to use to display the view<br/>
+	 *                                 name: the name (optional) of the view (defaults to the view class name
+	 *                                 suffix).<br/> escape: the name (optional) of the function to use for escaping
+	 *                                 strings<br/> template_path: the path (optional) of the layout directory
+	 *                                 (defaults to base_path + /views/ + view name<br/> layout: the layout (optional)
+	 *                                 to use to display the view<br/>
 	 *
 	 * @return  View
 	 */
@@ -180,7 +211,8 @@ class View
 	/**
 	 * Sets an entire array of search paths for templates or resources.
 	 *
-	 * @param   mixed $path The new search path, or an array of search paths.  If null or false, resets to the current directory only.
+	 * @param   mixed $path The new search path, or an array of search paths.  If null or false, resets to the current
+	 *                      directory only.
 	 *
 	 * @return  void
 	 */
@@ -470,6 +502,8 @@ class View
 	 */
 	public function loadTemplate($tpl = null, $strict = false)
 	{
+		$result = '';
+
 		$paths = $this->container->platform->getViewTemplatePaths(
 			$this->container->componentName,
 			$this->getName(),
@@ -818,5 +852,140 @@ class View
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get the renderer object for this view
+	 *
+	 * @return  RenderInterface
+	 */
+	public function &getRenderer()
+	{
+		if (!($this->rendererObject instanceof RenderInterface))
+		{
+			$this->rendererObject = $this->findRenderer();
+		}
+
+		return $this->rendererObject;
+	}
+
+	/**
+	 * Sets the renderer object for this view
+	 *
+	 * @param   RenderInterface  &$renderer  The render class to use
+	 *
+	 * @return  void
+	 */
+	public function setRenderer(RenderInterface &$renderer)
+	{
+		$this->rendererObject = $renderer;
+	}
+
+	/**
+	 * Finds a suitable renderer
+	 *
+	 * @return  RenderInterface
+	 */
+	protected function findRenderer()
+	{
+		$filesystem     = $this->container->filesystem;
+
+		// Try loading the stock renderers shipped with F0F
+		if (empty(self::$renderers))
+		{
+			$path = dirname(__FILE__) . '/../Render/';
+			$renderFiles = $filesystem->folderFiles($path, '.php');
+
+			if (!empty($renderFiles))
+			{
+				foreach ($renderFiles as $filename)
+				{
+					if ($filename == 'Base.php')
+					{
+						continue;
+					}
+
+					if ($filename == 'RenderInterface.php')
+					{
+						continue;
+					}
+
+					$camel = Inflector::camelize($filename);
+					$className = 'FOF30\\Render\\' . ucfirst(Inflector::getPart($camel, 0));
+
+					if (!class_exists($className, true))
+					{
+						continue;
+					}
+
+					$o = new $className;
+
+					self::registerRenderer($o);
+				}
+			}
+		}
+
+		// Try to detect the most suitable renderer
+		$o = null;
+		$priority = 0;
+
+		if (!empty(self::$renderers))
+		{
+			/** @var RenderInterface $r */
+			foreach (self::$renderers as $r)
+			{
+				$info = $r->getInformation();
+
+				if (!$info->enabled)
+				{
+					continue;
+				}
+
+				if ($info->priority > $priority)
+				{
+					$priority = $info->priority;
+					$o = $r;
+				}
+			}
+		}
+
+		// Return the current renderer
+		return $o;
+	}
+
+	/**
+	 * Registers a renderer object with the view
+	 *
+	 * @param   RenderInterface  &$renderer  The render object to register
+	 *
+	 * @return  void
+	 */
+	public static function registerRenderer(RenderInterface &$renderer)
+	{
+		self::$renderers[] = $renderer;
+	}
+
+	/**
+	 * Sets the pre-render flag
+	 *
+	 * @param   boolean  $value  True to enable the pre-render step
+	 *
+	 * @return  void
+	 */
+	public function setPreRender($value)
+	{
+		$this->doPreRender = $value;
+	}
+
+	/**
+	 * Sets the post-render flag
+	 *
+	 * @param   boolean  $value  True to enable the post-render step
+	 *
+	 * @return  void
+	 */
+	public function setPostRender($value)
+	{
+		$this->doPostRender = $value;
 	}
 }

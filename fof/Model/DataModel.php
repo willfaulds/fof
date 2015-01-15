@@ -94,6 +94,24 @@ class DataModel extends Model implements \JTableInterface
 	/** @var   array  A list of the relations which will be auto-touched by save() and touch() methods */
 	protected $touches = array();
 
+	/** @var bool Should rows be tracked as ACL assets? */
+	protected $_trackAssets = false;
+
+	/** @var bool Does the resource support joomla tags? */
+	protected $_has_tags = false;
+
+	/** @var  \JAccessRules  The rules associated with this record. */
+	protected $_rules;
+
+	/**
+	 * The asset key for items in this table. It's usually something in the
+	 * com_example.viewname format. They asset name will be this key appended
+	 * with the item's ID, e.g. com_example.viewname.123
+	 *
+	 * @var    string
+	 */
+	protected $_assetKey = '';
+
 	/**
 	 * Public constructor. Overrides the parent constructor, adding support for database-aware models.
 	 *
@@ -254,6 +272,24 @@ class DataModel extends Model implements \JTableInterface
 				}
 			}
 		}
+
+		// If we are tracking assets, make sure an access field exists and initially set the default.
+		$asset_id_field	= $this->getFieldAlias('asset_id');
+		$access_field	= $this->getFieldAlias('access');
+
+		if (in_array($asset_id_field, $this->knownFields))
+		{
+			\JLoader::import('joomla.access.rules');
+			$this->_trackAssets = true;
+		}
+
+		if (in_array($access_field, $this->knownFields))
+		{
+			$this->$access_field = (int) $this->container->platform->getConfig()->get('access');
+		}
+
+		$assetKey = $this->container->componentName . '.' . strtolower(Inflector::singularize($this->getName()));
+		$this->setAssetKey($assetKey);
 
 		// Do I have to auto-fill the fields?
 		if ($this->autoFill)
@@ -2788,5 +2824,191 @@ class DataModel extends Model implements \JTableInterface
 	public function &getTouches()
 	{
 		return $this->touches;
+	}
+
+	/**
+	 * Method to set rules for the record.
+	 *
+	 * @param   mixed  $input  A JAccessRules object, JSON string, or array.
+	 *
+	 * @return  void
+	 */
+	public function setRules($input)
+	{
+		if ($input instanceof \JAccessRules)
+		{
+			$this->_rules = $input;
+		}
+		else
+		{
+			$this->_rules = new \JAccessRules($input);
+		}
+	}
+
+	/**
+	 * Method to get the rules for the record.
+	 *
+	 * @return  \JAccessRules object
+	 */
+	public function getRules()
+	{
+		return $this->_rules;
+	}
+
+	/**
+	 * Method to check if the record is treated as an ACL asset
+	 *
+	 * @return  boolean [description]
+	 */
+	public function isAssetsTracked()
+	{
+		return $this->_trackAssets;
+	}
+
+	/**
+	 * Method to manually set this record as ACL asset or not.
+	 * We have to do this since the automatic check is made in the constructor, but here we can't set any alias.
+	 * So, even if you have an alias for `asset_id`, it wouldn't be reconized and assets won't be tracked.
+	 *
+	 * @param $state
+	 */
+	public function setAssetsTracked($state)
+	{
+		$state = (bool) $state;
+
+		if ($state)
+		{
+			\JLoader::import('joomla.access.rules');
+		}
+
+		$this->_trackAssets = $state;
+	}
+
+	/**
+	 * Gets the has tags switch state
+	 *
+	 * @return bool
+	 */
+	public function hasTags()
+	{
+		return $this->_has_tags;
+	}
+
+	/**
+	 * Sets the has tags switch state
+	 *
+	 * @param   bool  $newState
+	 */
+	public function setHasTags($newState = false)
+	{
+		$this->_has_tags = $newState;
+	}
+
+	/**
+	 * Loads the asset table related to this table.
+	 * This will help tests, too, since we can mock this function.
+	 *
+	 * @return bool|\JTableAsset     False on failure, otherwise JTableAsset
+	 */
+	protected function getAsset()
+	{
+		$name     = $this->getAssetName();
+
+		// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a F0FTable
+		$asset    = \JTable::getInstance('Asset');
+
+		if (!$asset->loadByName($name))
+		{
+			return false;
+		}
+
+		return $asset;
+	}
+
+	/**
+	 * Method to compute the default name of the asset.
+	 * The default name is in the form table_name.id
+	 * where id is the value of the primary key of the table.
+	 *
+	 * @throws  \UnexpectedValueException
+	 *
+	 * @return  string
+	 */
+	public function getAssetName()
+	{
+		$k = $this->getKeyName();
+
+		// If there is no assetKey defined, stop here, or we'll get a wrong name
+		if (!$this->_assetKey || !$this->$k)
+		{
+			throw new \UnexpectedValueException('Table must have an asset key defined and a value for the table id in order to track assets');
+		}
+
+		return $this->_assetKey . '.' . (int) $this->$k;
+	}
+
+	/**
+	 * Method to compute the default name of the asset.
+	 * The default name is in the form table_name.id
+	 * where id is the value of the primary key of the table.
+	 *
+	 * @return  string
+	 */
+	public function getAssetKey()
+	{
+		return $this->_assetKey;
+	}
+
+	/**
+	 * Method to return the title to use for the asset table.  In
+	 * tracking the assets a title is kept for each asset so that there is some
+	 * context available in a unified access manager.  Usually this would just
+	 * return $this->title or $this->name or whatever is being used for the
+	 * primary name of the row. If this method is not overridden, the asset name is used.
+	 *
+	 * @return  string  The string to use as the title in the asset table.
+	 */
+	public function getAssetTitle()
+	{
+		return $this->getAssetName();
+	}
+
+	/**
+	 * Method to get the parent asset under which to register this one.
+	 * By default, all assets are registered to the ROOT node with ID,
+	 * which will default to 1 if none exists.
+	 * The extended class can define a table and id to lookup.  If the
+	 * asset does not exist it will be created.
+	 *
+	 * @param   DataModel  $model  A model object for the asset parent.
+	 * @param   integer   $id     Id to look up
+	 *
+	 * @return  integer
+	 */
+	public function getAssetParentId($model = null, $id = null)
+	{
+		// For simple cases, parent to the asset root.
+		$assets = \JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$rootId = $assets->getRootId();
+
+		if (!empty($rootId))
+		{
+			return $rootId;
+		}
+
+		return 1;
+	}
+
+	/**
+	 * This method sets the asset key for the items of this table. Obviously, it
+	 * is only meant to be used when you have a table with an asset field.
+	 *
+	 * @param   string  $assetKey  The name of the asset key to use
+	 *
+	 * @return  void
+	 */
+	public function setAssetKey($assetKey)
+	{
+		$this->_assetKey = $assetKey;
 	}
 }
