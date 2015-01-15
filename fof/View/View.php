@@ -772,7 +772,7 @@ class View
 	 * Component: com_foobar, Object name: item, Event: onBeforeSomething, Arguments: array(123, 456)
 	 * The event calls:
 	 * 1. $this->onBeforeSomething(123, 456)
-	 * 2. Joomla! plugin event onComFoobarItemBeforeSomething($this, 123, 456)
+	 * 2. Joomla! plugin event onComFoobarViewItemBeforeSomething($this, 123, 456)
 	 *
 	 * @param   string  $event      The name of the event, typically named onPredicateVerb e.g. onBeforeKick
 	 * @param   array   $arguments  The arguments to pass to the event handlers
@@ -831,7 +831,7 @@ class View
 		}
 
 		// Get the component/model prefix for the event
-		$prefix .= 'Com' . ucfirst($this->container->bareComponentName);
+		$prefix .= 'Com' . ucfirst($this->container->bareComponentName) . 'View';
 		$prefix .= ucfirst($this->getName());
 
 		// The event name will be something like onComFoobarItemsBeforeSomething

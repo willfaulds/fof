@@ -417,7 +417,7 @@ class Model
 	 * The event calls:
 	 * 1. $this->onBeforeSomething(123, 456)
 	 * 2. $his->behavioursDispatcher->trigger('onBeforeSomething', array(&$this, 123, 456))
-	 * 3. Joomla! plugin event onComFoobarItemBeforeSomething($this, 123, 456)
+	 * 3. Joomla! plugin event onComFoobarModelItemBeforeSomething($this, 123, 456)
 	 *
 	 * @param   string  $event      The name of the event, typically named onPredicateVerb e.g. onBeforeKick
 	 * @param   array   $arguments  The arguments to pass to the event handlers
@@ -477,7 +477,7 @@ class Model
 		}
 
 		// Get the component/model prefix for the event
-		$prefix .= 'Com' . ucfirst($this->container->bareComponentName);
+		$prefix .= 'Com' . ucfirst($this->container->bareComponentName) . 'Model';
 		$prefix .= ucfirst($this->getName());
 
 		// The event name will be something like onComFoobarItemsBeforeSomething
