@@ -41,6 +41,104 @@ defined('_JEXEC') or die;
  */
 class Container extends Pimple
 {
+	/**
+	 * Returns a container instance for a specific component
+	 *
+	 * @param   string  $component  The component you want to get a container for, e.g. com_foobar.
+	 * @param   null    $namespace  The namespace of the component, if different that the bare name of the component.
+	 * @param   string  $section    The application section (site, admin) you want to fetch. Any other value results in auto-detection.
+	 * @param   array   $values     Any container configuration overrides you want to apply.
+	 *
+	 * @return \FOF30\Container\Container
+	 */
+	public static function &getInstance($component, $namespace = null, $section = 'auto', array $values = array())
+	{
+		// $values always overrides $namespace
+		if (isset($values['componentNamespace']))
+		{
+			$namespace = $values['componentNamespace'];
+		}
+
+		// If there is no namespace set, try to guess it.
+		if (empty($namespace))
+		{
+			$bareComponent = $component;
+
+			if (substr($component, 0, 4) == 'com_')
+			{
+				$bareComponent = substr($component, 4);
+			}
+
+			$namespace = ucfirst($bareComponent);
+		}
+
+		// Get the default front-end/back-end paths
+		$frontEndPath = JPATH_SITE . '/components/' . $component;
+		$backEndPath = JPATH_ADMINISTRATOR . '/components/' . $component;
+
+		// Apply path overrides
+		if (isset($values['frontEndPath']))
+		{
+			$frontEndPath = $values['frontEndPath'];
+		}
+
+		if (isset($values['backEndPath']))
+		{
+			$backEndPath = $values['backEndPath'];
+		}
+
+		// Get the namespaces for the front-end and back-end parts of the component
+		$frontEndNamespace = '\\' . $namespace . '\\Site\\';
+		$backEndNamespace = '\\' . $namespace . '\\Admin\\';
+
+		// Special case: if the frontend and backend paths are identical, we don't use the Site and Admin namespace
+		// suffixes after $this->componentNamespace (so you may use FOF with JApplicationWeb apps)
+		if ($frontEndPath == $backEndPath)
+		{
+			$frontEndNamespace = '\\' . $namespace . '\\';
+			$backEndNamespace = '\\' . $namespace . '\\';
+		}
+
+		// Do we have to register the component's namespaces with the autoloader?
+		$autoloader = Autoloader::getInstance();
+
+		if (!$autoloader->hasMap($frontEndNamespace))
+		{
+			$autoloader->addMap($frontEndNamespace, $frontEndPath);
+		}
+
+		if (!$autoloader->hasMap($backEndNamespace))
+		{
+			$autoloader->addMap($backEndNamespace, $backEndPath);
+		}
+
+		// Which component section (site, admin) do we want to get?
+		if (!in_array($section, array('site', 'admin')))
+		{
+			$tmpContainer = new Container(array('componentName' => $component));
+			$section = $tmpContainer->platform->isBackend() ? 'admin' : 'site';
+			unset($tmpContainer);
+		}
+
+		// Get the Container class name
+		$classNamespace = ($section == 'admin') ? $backEndNamespace : $frontEndNamespace;
+		$class = $classNamespace . 'Container';
+
+		$values = array_merge($values, array(
+			'componentName' => $component,
+			'componentNamespace' => $namespace,
+		));
+
+		if (class_exists($class, true))
+		{
+			return new $class($values);
+		}
+		else
+		{
+			return new Container($values);
+		}
+	}
+
 	public function __construct(array $values = array())
 	{
 		// Initialise
@@ -157,9 +255,9 @@ class Container extends Pimple
 		// Database Driver service
 		if (!isset($this['db']))
 		{
-			$this['db'] = function ()
+			$this['db'] = function (Container $c)
 			{
-				return $this->platform->getDbo();
+				return $c->platform->getDbo();
 			};
 		}
 
