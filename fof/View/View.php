@@ -8,9 +8,7 @@
 namespace FOF30\View;
 
 use FOF30\Container\Container;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
-use FOF30\Render\RenderInterface;
 
 defined('_JEXEC') or die;
 
@@ -113,20 +111,6 @@ class View
 	 * @var  string
 	 */
 	public $doTask;
-
-	/**
-	 * The available renderer objects we can use to render views
-	 *
-	 * @var    array  Contains objects of the RenderInterface class
-	 */
-	public static $renderers = array();
-
-	/**
-	 * The chosen renderer object
-	 *
-	 * @var    RenderInterface
-	 */
-	protected $rendererObject = null;
 
 	/**
 	 * Should I run the pre-render step?
@@ -852,117 +836,6 @@ class View
 		}
 
 		return true;
-	}
-
-	/**
-	 * Get the renderer object for this view
-	 *
-	 * @return  RenderInterface
-	 */
-	public function &getRenderer()
-	{
-		if (!($this->rendererObject instanceof RenderInterface))
-		{
-			$this->rendererObject = $this->findRenderer();
-		}
-
-		return $this->rendererObject;
-	}
-
-	/**
-	 * Sets the renderer object for this view
-	 *
-	 * @param   RenderInterface  &$renderer  The render class to use
-	 *
-	 * @return  void
-	 */
-	public function setRenderer(RenderInterface &$renderer)
-	{
-		$this->rendererObject = $renderer;
-	}
-
-	/**
-	 * Finds a suitable renderer
-	 *
-	 * @return  RenderInterface
-	 */
-	protected function findRenderer()
-	{
-		$filesystem     = $this->container->filesystem;
-
-		// Try loading the stock renderers shipped with F0F
-		if (empty(self::$renderers))
-		{
-			$path = dirname(__FILE__) . '/../Render/';
-			$renderFiles = $filesystem->folderFiles($path, '.php');
-
-			if (!empty($renderFiles))
-			{
-				foreach ($renderFiles as $filename)
-				{
-					if ($filename == 'Base.php')
-					{
-						continue;
-					}
-
-					if ($filename == 'RenderInterface.php')
-					{
-						continue;
-					}
-
-					$camel = Inflector::camelize($filename);
-					$className = 'FOF30\\Render\\' . ucfirst(Inflector::getPart($camel, 0));
-
-					if (!class_exists($className, true))
-					{
-						continue;
-					}
-
-					$o = new $className;
-
-					self::registerRenderer($o);
-				}
-			}
-		}
-
-		// Try to detect the most suitable renderer
-		$o = null;
-		$priority = 0;
-
-		if (!empty(self::$renderers))
-		{
-			/** @var RenderInterface $r */
-			foreach (self::$renderers as $r)
-			{
-				$info = $r->getInformation();
-
-				if (!$info->enabled)
-				{
-					continue;
-				}
-
-				if ($info->priority > $priority)
-				{
-					$priority = $info->priority;
-					$o = $r;
-				}
-			}
-		}
-
-		// Return the current renderer
-		return $o;
-	}
-
-	/**
-	 * Registers a renderer object with the view
-	 *
-	 * @param   RenderInterface  &$renderer  The render object to register
-	 *
-	 * @return  void
-	 */
-	public static function registerRenderer(RenderInterface &$renderer)
-	{
-		self::$renderers[] = $renderer;
 	}
 
 	/**

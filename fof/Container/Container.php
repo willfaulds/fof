@@ -8,9 +8,11 @@
 namespace FOF30\Container;
 
 use FOF30\Autoloader\Autoloader;
+use FOF30\Inflector\Inflector;
 use FOF30\Pimple\Pimple;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
 use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
+use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
 use JDatabaseDriver;
 use JSession;
@@ -27,6 +29,7 @@ defined('_JEXEC') or die;
  * @property  string                                   $backEndPath        The absolute path to the front-end files
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  array                                    $mvc_config         Configuration overrides for MVC, Dispatcher, Toolbar
+ * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
  * @property-read  \JDatabaseDriver                    $db                 The database connection object
@@ -34,6 +37,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
+ * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
  * @property-read  \JSession                           $session            Joomla! session storage
  * @property-read  \FOF30\Template\Template            $template           The template helper
  * @property-read  \FOF30\Toolbar\Toolbar              $toolbar            The component's toolbar
@@ -289,6 +293,73 @@ class Container extends Pimple
 				}
 
 				return $className($c);
+			};
+		}
+
+		// View renderer
+		if (!isset($this['renderer']))
+		{
+			$this['renderer'] = function (Container $c)
+			{
+				if (isset($c['rendererClass']) && class_exists($c['rendererClass']))
+				{
+					$class = $c['rendererClass'];
+					$renderer = new $class($c);
+
+					if ($renderer instanceof RenderInterface)
+					{
+						return $renderer;
+					}
+				}
+
+				$filesystem     = $c->filesystem;
+
+				// Try loading the stock renderers shipped with F0F
+				$path = dirname(__FILE__) . '/../Render/';
+				$renderFiles = $filesystem->folderFiles($path, '.php');
+				$renderer = null;
+				$priority = 0;
+
+				if (!empty($renderFiles))
+				{
+					foreach ($renderFiles as $filename)
+					{
+						if ($filename == 'Base.php')
+						{
+							continue;
+						}
+
+						if ($filename == 'RenderInterface.php')
+						{
+							continue;
+						}
+
+						$camel = Inflector::camelize($filename);
+						$className = 'FOF30\\Render\\' . ucfirst(Inflector::getPart($camel, 0));
+
+						if (!class_exists($className, true))
+						{
+							continue;
+						}
+
+						/** @var RenderInterface $renderer */
+						$renderer = new $className($c);
+
+						$info = $renderer->getInformation();
+
+						if (!$info->enabled)
+						{
+							continue;
+						}
+
+						if ($info->priority > $priority)
+						{
+							$priority = $info->priority;
+						}
+					}
+				}
+
+				return $renderer;
 			};
 		}
 

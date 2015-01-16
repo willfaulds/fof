@@ -14,6 +14,8 @@ use FOF30\Form\FormInterface;
 
 interface RenderInterface
 {
+	function __construct(Container $container);
+
 	/**
 	 * Returns the information about this renderer
 	 *
@@ -26,81 +28,74 @@ interface RenderInterface
 	 *
 	 * @param   string    $view      The current view
 	 * @param   string    $task      The current task
-	 * @param   Container $container The container
 	 *
 	 * @return  void
 	 */
-	function preRender($view, $task, Container $container);
+	function preRender($view, $task);
 
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
 	 * @param   string    $view      The current view
 	 * @param   string    $task      The current task
-	 * @param   Container $container The container
 	 *
 	 * @return  void
 	 */
-	function postRender($view, $task, Container $container);
+	function postRender($view, $task);
 
 	/**
 	 * Renders a Form and returns the corresponding HTML
 	 *
 	 * @param   FormInterface &$form     The form to render
 	 * @param   DataModel     $model     The model providing our data
-	 * @param   Container     $container The container
 	 * @param   string        $formType  The form type: edit, browse or read
 	 * @param   boolean       $raw       If true, the raw form fields rendering (without the surrounding form tag) is
 	 *                                   returned.
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderForm(FormInterface &$form, DataModel $model, Container $container, $formType = null, $raw = false);
+	function renderForm(FormInterface &$form, DataModel $model, $formType = null, $raw = false);
 
 	/**
 	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
 	 *
 	 * @param   FormInterface &$form     The form to render
 	 * @param   DataModel     $model     The model providing our data
-	 * @param   Container     $container The container
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormBrowse(FormInterface &$form, DataModel $model, Container $container);
+	function renderFormBrowse(FormInterface &$form, DataModel $model);
 
 	/**
 	 * Renders a F0FForm for a Read view and returns the corresponding HTML
 	 *
 	 * @param   FormInterface &$form     The form to render
 	 * @param   DataModel     $model     The model providing our data
-	 * @param   Container     $container The container
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormRead(FormInterface &$form, DataModel $model, Container $container);
+	function renderFormRead(FormInterface &$form, DataModel $model);
 
 	/**
 	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
 	 * @param   FormInterface &$form     The form to render
 	 * @param   DataModel     $model     The model providing our data
-	 * @param   Container     $container The container
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormEdit(FormInterface &$form, DataModel $model, Container $container);
+	function renderFormEdit(FormInterface &$form, DataModel $model);
 
 	/**
 	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
 	 * @param   FormInterface &$form     The form to render
 	 * @param   DataModel     $model     The model providing our data
-	 * @param   Container     $container The container
 	 * @param   string        $formType  The form type: edit, browse or read
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormRaw(FormInterface &$form, DataModel $model, Container $container, $formType = null);
+	function renderFormRaw(FormInterface &$form, DataModel $model, $formType = null);
 
 
 	/**
@@ -111,11 +106,9 @@ interface RenderInterface
 	 *         the ExtensionNameHelper class located in
 	 *         administrator/components/com_ExtensionName/helpers/Extensionname.php
 	 *
-	 * @param   Container $container The name of the extension
-	 *
 	 * @return  void
 	 */
-	function renderCategoryLinkbar(Container $container);
+	function renderCategoryLinkbar();
 
 	/**
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
@@ -123,13 +116,12 @@ interface RenderInterface
 	 * @param   \stdClass     &$fieldset  The fieldset to render
 	 * @param   FormInterface &$form      The form to render
 	 * @param   DataModel     $model      The model providing our data
-	 * @param   Container     $container  The input object
 	 * @param   string        $formType   The form type e.g. 'edit' or 'read'
 	 * @param   boolean       $showHeader Should I render the fieldset's header?
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 */
-	function renderFieldset(\stdClass &$fieldset, FormInterface &$form, DataModel $model, Container $container, $formType, $showHeader = true);
+	function renderFieldset(\stdClass &$fieldset, FormInterface &$form, DataModel $model, $formType, $showHeader = true);
 
 	/**
 	 * Renders a label for a fieldset.

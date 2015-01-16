@@ -45,7 +45,7 @@ class Html extends Raw
 			$this->setPageTitle();
 		}
 
-		$renderer = $this->getRenderer();
+		$renderer = $this->container->renderer;
 		$renderer->preRender($view, $task, $this->container);
 	}
 
@@ -60,7 +60,7 @@ class Html extends Raw
 		$view = $this->getName();
 		$task = $this->getModel()->getState('task', 'browse');
 
-		$renderer = $this->getRenderer();
+		$renderer = $this->container->renderer;
 
 		if ($renderer instanceof RenderInterface)
 		{
