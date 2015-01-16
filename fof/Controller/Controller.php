@@ -531,8 +531,7 @@ class Controller
 
 			// Get the model's class name
 			$modelNameForClass = empty($name) ? $this->modelName : ucfirst($name);
-			$className = $this->container->getNamespacePrefix() . 'Model\\' . $modelNameForClass;
-			$this->modelInstances[$modelName] = new $className($this->container, $config);
+			$this->modelInstances[$modelName] = $this->container->factory->model($modelNameForClass, $config);
 		}
 
 		return $this->modelInstances[$modelName];
@@ -577,9 +576,7 @@ class Controller
 
 			// Get the model's class name
 			$viewNameForClass = empty($name) ? $this->viewName : ucfirst($name);
-			$className = $this->container->getNamespacePrefix() . 'View\\' . $viewNameForClass . '\\' . ucfirst($viewType);
-
-			$this->viewInstances[$viewName] = new $className($this->container);
+			$this->viewInstances[$viewName] = $this->container->factory->view($viewName, $viewType, $config);
 		}
 
 		return $this->viewInstances[$viewName];

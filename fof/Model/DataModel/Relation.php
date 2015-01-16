@@ -21,7 +21,7 @@ abstract class Relation
 	protected $foreignModelClass = null;
 
 	/** @var   string  The application name of the foreign model */
-	protected $foreignModelNamespace = null;
+	protected $foreignModelComponent = null;
 
 	/** @var   string  The bade name of the foreign model */
 	protected $foreignModelName = null;
@@ -54,7 +54,7 @@ abstract class Relation
 	 * Public constructor. Initialises the relation.
 	 *
 	 * @param   DataModel $parentModel       The data model we are attached to
-	 * @param   string    $foreignModelClass The class name of the foreign key's model
+	 * @param   string    $foreignModelClass The class name of the foreign key's model in the format "modelName@com_something"
 	 * @param   string    $localKey          The local table key for this relation
 	 * @param   string    $foreignKey        The foreign key for this relation
 	 * @param   string    $pivotTable        For many-to-many relations, the pivot (glue) table
@@ -81,21 +81,16 @@ abstract class Relation
 			$class = substr($class, 1);
 		}
 
-		if (strpos($class, '\\Model') === false)
+		if (strpos($class, '@') === false)
 		{
-			$this->foreignModelNamespace = $this->container->componentNamespace;
+			$this->foreignModelComponent = null;
 			$this->foreignModelName = $class;
 		}
 		else
 		{
-			$foreignParts = explode('\\Model\\', $class, 2);
-			$this->foreignModelNamespace = $foreignParts[0];
-			$this->foreignModelName = $foreignParts[2];
-		}
-
-		if (strpos($this->foreignModelName, 'Model\\') === false)
-		{
-			$this->foreignModelName = 'Model\\' . $this->foreignModelName;
+			$foreignParts = explode('@', $class, 2);
+			$this->foreignModelComponent = $foreignParts[1];
+			$this->foreignModelName = $foreignParts[0];
 		}
 	}
 
@@ -147,9 +142,7 @@ abstract class Relation
 			$this->data = new Collection();
 
 			// Get a model instance
-			$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
-			/** @var DataModel $foreignModel */
-			$foreignModel = new $foreignClass($this->container);
+			$foreignModel = $this->getForeignModel();
 			$foreignModel->setIgnoreRequest(true);
 
 			$filtered = $this->filterForeignModel($foreignModel, $dataCollection);
@@ -252,5 +245,26 @@ abstract class Relation
 	public function &getForeignKeyMap()
 	{
 		return $this->foreignKeyMap;
+	}
+
+	/**
+	 * Gets an object instance of the foreign model
+	 *
+	 * @param  array  $config  Optional configuration information for the Model
+	 *
+	 * @return DataModel
+	 */
+	public function &getForeignModel(array $config = array())
+	{
+		// If the model comes from this component go through our Factory
+		if (is_null($this->foreignModelComponent))
+		{
+			return $this->container->factory->model($this->foreignModelName, $config);
+		}
+
+		// The model comes from another component. Create a container and go through its factory.
+		$foreignContainer = Container::getInstance($this->foreignModelComponent);
+
+		return $foreignContainer->factory->model($this->foreignModelName, $config);
 	}
 }

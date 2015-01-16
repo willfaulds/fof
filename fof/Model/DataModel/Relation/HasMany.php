@@ -117,9 +117,7 @@ class HasMany extends Relation
 	public function getCountSubquery()
 	{
 		// Get a model instance
-		$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
-		/** @var DataModel $foreignModel */
-		$foreignModel = new $foreignClass($this->container);
+		$foreignModel = $this->getForeignModel();
 		$foreignModel->setIgnoreRequest(true);
 
 		$db = $foreignModel->getDbo();
@@ -143,9 +141,7 @@ class HasMany extends Relation
 	public function getNew()
 	{
 		// Get a model instance
-		$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
-		/** @var DataModel $foreignModel */
-		$foreignModel = new $foreignClass($this->container);
+		$foreignModel = $this->getForeignModel();
 		$foreignModel->setIgnoreRequest(true);
 
 		// Prime the model

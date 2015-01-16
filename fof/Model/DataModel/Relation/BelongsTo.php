@@ -39,10 +39,8 @@ class BelongsTo extends HasOne
 
 		if (empty($localKey))
 		{
-			// Get a model instance
-			$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
 			/** @var DataModel $foreignModel */
-			$foreignModel = new $foreignClass($this->container);
+			$foreignModel = $this->getForeignModel();
 			$foreignModel->setIgnoreRequest(true);
 
 			$this->localKey = $foreignModel->getIdFieldName();
@@ -52,9 +50,8 @@ class BelongsTo extends HasOne
 		{
 			if (!isset($foreignModel))
 			{
-				$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
 				/** @var DataModel $foreignModel */
-				$foreignModel = new $foreignClass($this->container);
+				$foreignModel = $this->getForeignModel();
 				$foreignModel->setIgnoreRequest(true);
 			}
 

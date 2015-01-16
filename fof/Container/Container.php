@@ -28,12 +28,14 @@ defined('_JEXEC') or die;
  * @property  string                                   $frontEndPath       The absolute path to the front-end files
  * @property  string                                   $backEndPath        The absolute path to the front-end files
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
- * @property  array                                    $mvc_config         Configuration overrides for MVC, Dispatcher, Toolbar
  * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
+ * @property  string                                   $factoryClass       The fully qualified class name or slug (basic, switch) of the MVC Factory object, default is FOF30\Factory\BasicFactory.
+ * @property  array                                    $mvc_config         Configuration overrides for MVC, Dispatcher, Toolbar
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
  * @property-read  \JDatabaseDriver                    $db                 The database connection object
  * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The component's dispatcher
+ * @property-read  \FOF30\Factory\FactoryInterface     $factory            The MVC object factory
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
@@ -151,6 +153,7 @@ class Container extends Pimple
 		$this->frontEndPath = '';
 		$this->backEndPath = '';
 		$this->thisPath = '';
+		$this->factoryClass = 'FOF30\\Factory\\BasicFactory';
 
 		// Try to construct this container object
 		parent::__construct($values);
@@ -239,6 +242,41 @@ class Container extends Pimple
 			}
 		}
 
+		// MVC Factory service
+		if (!isset($this['factory']))
+		{
+			$this['factory'] = function (Container $c)
+			{
+				if (empty($c['factoryClass']))
+				{
+					$c['factoryClass'] = 'FOF30\\Factory\\BasicFactory';
+				}
+
+				if (strpos($c['factoryClass'], '\\') === false)
+				{
+					$class = $c->getNamespacePrefix() . 'Factory\\' . $c['factoryClass'];
+
+					if (class_exists($class))
+					{
+						$c['factoryClass'] = $class;
+					}
+					else
+					{
+						$c['factoryClass'] = '\\FOF30\\Factory\\' . ucfirst($c['factoryClass']) . 'Factory';
+ 					}
+				}
+
+				if (!class_exists($c['factoryClass'], true))
+				{
+					$c['factoryClass'] = 'FOF30\\Factory\\BasicFactory';
+				}
+
+				$factoryClass = $c['factoryClass'];
+
+				return new $factoryClass($c);
+			};
+		}
+
 		// Component Configuration service
 		if (!isset($this['appConfig']))
 		{
@@ -269,14 +307,7 @@ class Container extends Pimple
 		{
 			$this['dispatcher'] = function (Container $c)
 			{
-				$className = $c->getNamespacePrefix() . '\\Dispatcher';
-
-				if (!class_exists($className))
-				{
-					$className = '\\FOF30\\Dispatcher\\Dispatcher';
-				}
-
-				return new $className($c);
+				return $c->factory->dispatcher();
 			};
 		}
 
@@ -285,14 +316,7 @@ class Container extends Pimple
 		{
 			$this['toolbar'] = function (Container $c)
 			{
-				$className = $c->componentNamespace . '\\Toolbar';
-
-				if (!class_exists($className, true))
-				{
-					$className = '\\FOF30\\Toolbar\\Toolbar';
-				}
-
-				return $className($c);
+				return $c->factory->toolbar();
 			};
 		}
 
@@ -394,6 +418,7 @@ class Container extends Pimple
 	/**
 	 * Get the applicable namespace prefix for a component section. Possible sections:
 	 * auto			Auto-detect which is the current component section
+	 * inverse      The inverse area than auto
 	 * site			Frontend
 	 * admin		Backend
 	 *
@@ -426,6 +451,17 @@ class Container extends Pimple
 				else
 				{
 					return $frontEndNamespace;
+				}
+				break;
+
+			case 'inverse':
+				if ($this->platform->isBackend())
+				{
+					return $frontEndNamespace;
+				}
+				else
+				{
+					return $backEndNamespace;
 				}
 				break;
 

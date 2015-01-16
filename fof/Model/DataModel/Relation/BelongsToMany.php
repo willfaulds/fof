@@ -50,9 +50,8 @@ class BelongsToMany extends Relation
 
 		if (empty($foreignKey))
 		{
-			$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
 			/** @var DataModel $foreignModel */
-			$foreignModel = new $foreignClass($this->container);
+			$foreignModel = $this->getForeignModel();
 			$foreignModel->setIgnoreRequest(true);
 
 			$this->foreignKey = $foreignModel->getIdFieldName();
@@ -66,38 +65,34 @@ class BelongsToMany extends Relation
 		if (empty($pivotTable))
 		{
 			// Get the local model's name (e.g. "users")
-			$localParts = explode('\\', $parentModel->getName());
-			$localName = end($localParts);
+			$localName = $parentModel->getName();
 			$localName = strtolower($localName);
 
 			// Get the foreign model's name (e.g. "groups")
 			if (!isset($foreignModel))
 			{
-				$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
 				/** @var DataModel $foreignModel */
-				$foreignModel = new $foreignClass($this->container);
+				$foreignModel = $this->getForeignModel();
 				$foreignModel->setIgnoreRequest(true);
 			}
 
-			$foreignParts = explode('\\', $foreignModel->getName());
-			$foreignName = end($foreignParts);
+			$foreignName = $foreignModel->getName();
 			$foreignName = strtolower($foreignName);
 
 			// Get the local model's app name
-			$class = get_class($parentModel);
-			$localParts = explode('\\', $class);
-			$parentModelApp = $localParts[0];
+			$parentModelBareComponent = $parentModel->getContainer()->bareComponentName;
+			$foreignModelBareComponent = $foreignModel->getContainer()->bareComponentName;
 
-			// There are two possibilities for the table name: #__app_local_foreign or #__app_foreign_local.
-			// There are also two possibilities for an app name (local or foreign model's)
+			// There are two possibilities for the table name: #__component_local_foreign or #__component_foreign_local.
+			// There are also two possibilities for a component name (local or foreign model's)
 			$db = $parentModel->getDbo();
 			$prefix = $db->getPrefix();
 
 			$tableNames = array(
-				'#__' . strtolower($parentModelApp) . '_' . $localName . '_' . $foreignName,
-				'#__' . strtolower($parentModelApp) . '_' . $foreignName . '_' . $localName,
-				'#__' . strtolower($this->foreignModelNamespace) . '_' . $localName . '_' . $foreignName,
-				'#__' . strtolower($this->foreignModelNamespace) . '_' . $foreignName . '_' . $localName,
+				'#__' . strtolower($parentModelBareComponent) . '_' . $localName . '_' . $foreignName,
+				'#__' . strtolower($parentModelBareComponent) . '_' . $foreignName . '_' . $localName,
+				'#__' . strtolower($foreignModelBareComponent) . '_' . $localName . '_' . $foreignName,
+				'#__' . strtolower($foreignModelBareComponent) . '_' . $foreignName . '_' . $localName,
 			);
 
 			$allTables = $db->getTableList();
@@ -280,10 +275,8 @@ class BelongsToMany extends Relation
 	 */
 	public function getCountSubquery()
 	{
-		// Get a model instance
-		$foreignClass = $this->foreignModelNamespace . '\\' . $this->foreignModelName;
 		/** @var DataModel $foreignModel */
-		$foreignModel = new $foreignClass($this->container);
+		$foreignModel = $this->getForeignModel();
 		$foreignModel->setIgnoreRequest(true);
 
 		$db = $foreignModel->getDbo();
