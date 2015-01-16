@@ -18,6 +18,13 @@ defined('_JEXEC') or die;
  */
 class DataController extends Controller
 {
+	/**
+	 * The tasks for which caching should be enabled by default
+	 *
+	 * @var array
+	 */
+	protected $cacheableTasks = array('browse', 'read');
+
 	public function __construct(Container $container = null)
 	{
 		parent::__construct($container);
@@ -130,6 +137,87 @@ class DataController extends Controller
 		}
 
 		return $task;
+	}
+
+	/**
+	 * Checks if the current user has enough privileges for the requested ACL area. This overridden method supports
+	 * asset tracking as well.
+	 *
+	 * @param   string  $area  The ACL area, e.g. core.manage
+	 *
+	 * @return  boolean  True if the user has the ACL privilege specified
+	 */
+	protected function checkACL($area)
+	{
+		$result = parent::checkACL($area);
+
+		// Check if we're dealing with ids
+		$ids = null;
+
+		// First, check if there is an asset for this record
+		/** @var DataModel $model */
+		$model = $this->getModel();
+
+		$ids = null;
+
+		if (is_object($model) && ($model instanceof DataModel) && $model->isAssetsTracked())
+		{
+			$ids = $this->getIDsFromRequest($model, false);
+		}
+
+		// No IDs tracked, return parent's result
+		if (empty($ids))
+		{
+			return $result;
+		}
+
+		// Asset tracking
+		if (!is_array($ids))
+		{
+			$ids = array($ids);
+		}
+
+		$resource = Inflector::singularize($this->view);
+		$isEditState = ($area == 'core.edit.state');
+
+		foreach ($ids as $id)
+		{
+			$asset = $this->container->componentName . '.' . $resource . '.' . $id;
+
+			// Dedicated permission found, check it!
+			$platform = $this->container->platform;
+
+			if ($platform->authorise($area, $asset) )
+			{
+				return true;
+			}
+
+			// Fallback on edit.own, if not edit.state. First test if the permission is available.
+
+			if ((!$isEditState) && ($platform->authorise('core.edit.own', $asset)))
+			{
+				$model->load($id);
+
+				if (!$model->hasField('created_by'))
+				{
+					return false;
+				}
+
+				// Now test the owner is the user.
+				$owner_id = (int) $model->getFieldValue('created_by', null);
+
+				// If the owner matches 'me' then do the test.
+				if ($owner_id == $platform->getUser()->id)
+				{
+					return true;
+				}
+
+				return false;
+			}
+		}
+
+		// No result found? Not authorised.
+		return false;
 	}
 
 	/**

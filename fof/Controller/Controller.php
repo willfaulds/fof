@@ -8,6 +8,8 @@
 namespace FOF30\Controller;
 
 use FOF30\Container\Container;
+use FOF30\Inflector\Inflector;
+use FOF30\Model\DataModel;
 use FOF30\Model\Model;
 use FOF30\View\View;
 
@@ -147,6 +149,13 @@ class Controller
 	 * @var Container
 	 */
 	protected $container = null;
+
+	/**
+	 * The tasks for which caching should be enabled by default
+	 *
+	 * @var array
+	 */
+	protected $cacheableTasks = array();
 
 	/**
 	 * Set to true to enable CSRF protection on selected tasks. The possible
@@ -316,10 +325,28 @@ class Controller
 	 * Default task. Assigns a model to the view and asks the view to render
 	 * itself.
 	 *
+	 * YOU MUST NOT USE THIS TASK DIRECTLY IN A URL. It is supposed to be
+	 * used ONLY inside your code. In the URL, use task=browse instead.
+	 *
+	 * @param   bool    $cachable   Is this view cacheable?
+	 * @param   bool    $urlparams  Add your safe URL parameters (see further down in the code)
+	 * @param   string  $tpl        The name of the template file to parse
+	 *
 	 * @return  void
 	 */
-	public function display()
+	public function display($cachable = false, $urlparams = false, $tpl = null)
 	{
+		$document = $this->container->platform->getDocument();
+
+		if ($document instanceof \JDocument)
+		{
+			$viewType = $document->getType();
+		}
+		else
+		{
+			$viewType = $this->container->input->getCmd('format', 'html');
+		}
+
 		$view = $this->getView();
 		$view->setTask($this->task);
 		$view->setDoTask($this->doTask);
@@ -337,8 +364,72 @@ class Controller
 			$view->setLayout($this->layout);
 		}
 
-		// Display the view
-		$view->display();
+		$conf = $this->container->platform->getConfig();
+
+		if ($this->container->platform->isFrontend() && $cachable && ($viewType != 'feed') && ($conf->get('caching') >= 1))
+		{
+			// Get a JCache object
+			$option = $this->container->input->get('option', 'com_foobar', 'cmd');
+			$cache = \JFactory::getCache($option, 'view');
+
+			// Set up a cache ID based on component, view, task and user group assignment
+			$user = $this->container->platform->getUser();
+
+			if ($user->guest)
+			{
+				$groups = array();
+			}
+			else
+			{
+				$groups = $user->groups;
+			}
+
+			// Set up safe URL parameters
+
+			if (!is_array($urlparams))
+			{
+				$urlparams = array(
+					'option'		=> 'CMD',
+					'view'			=> 'CMD',
+					'task'			=> 'CMD',
+					'format'		=> 'CMD',
+					'layout'		=> 'CMD',
+					'id'			=> 'INT',
+				);
+			}
+
+			if (is_array($urlparams))
+			{
+				/** @var \JApplicationCms $app */
+				$app = \JFactory::getApplication();
+
+				$registeredurlparams = $app->get('registeredurlparams');
+
+				if (empty($registeredurlparams))
+				{
+					$registeredurlparams = new \stdClass;
+				}
+
+				foreach ($urlparams as $key => $value)
+				{
+					// Add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
+					$registeredurlparams->$key = $value;
+				}
+
+				$app->set('registeredurlparams', $registeredurlparams);
+			}
+
+			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
+			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups)));
+
+			// Get the cached view or cache the current view
+			$cache->get($view, 'display', $cacheId);
+		}
+		else
+		{
+			// Display without caching
+			$view->display($tpl);
+		}
 	}
 
 	/**
@@ -848,5 +939,32 @@ class Controller
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks if the current user has enough privileges for the requested ACL area.
+	 *
+	 * @param   string  $area  The ACL area, e.g. core.manage.
+	 *
+	 * @return  boolean  True if the user has the ACL privilege specified
+	 */
+	protected function checkACL($area)
+	{
+		if (in_array(strtolower($area), array('false','0','no','403')))
+		{
+			return false;
+		}
+
+		if (in_array(strtolower($area), array('true','1','yes')))
+		{
+			return true;
+		}
+
+		if (empty($area))
+		{
+			return true;
+		}
+
+		return $this->container->platform->authorise($area, $this->container->componentName);
 	}
 }
