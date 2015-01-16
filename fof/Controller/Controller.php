@@ -8,7 +8,6 @@
 namespace FOF30\Controller;
 
 use FOF30\Container\Container;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use FOF30\Model\Model;
 use FOF30\View\View;
@@ -156,6 +155,22 @@ class Controller
 	 * @var array
 	 */
 	protected $cacheableTasks = array();
+
+	/**
+	 * An associative array for required ACL privileges per task. For example:
+	 * array(
+	 *   'edit' => 'core.edit',
+	 *   'jump' => 'foobar.jump',
+	 *   'alwaysallow' => 'true',
+	 *   'neverallow' => 'false'
+	 * );
+	 *
+	 * You can use the notation '@task' which means 'apply the same privileges as "task"'. If you create a reference
+	 * back to yourself (e.g. 'mytask' => array('@mytask')) it will return TRUE.
+	 *
+	 * @var array
+	 */
+	protected $taskPrivileges = array();
 
 	/**
 	 * Set to true to enable CSRF protection on selected tasks. The possible
@@ -859,7 +874,8 @@ class Controller
 	 * Component: com_foobar, Object name: item, Event: onBeforeSomething, Arguments: array(123, 456)
 	 * The event calls:
 	 * 1. $this->onBeforeSomething(123, 456)
-	 * 2. Joomla! plugin event onComFoobarControllerItemBeforeSomething($this, 123, 456)
+	 * 2. $this->checkACL('@something') if there is no onBeforeSomething and the event starts with onBefore
+	 * 3. Joomla! plugin event onComFoobarControllerItemBeforeSomething($this, 123, 456)
 	 *
 	 * @param   string  $event      The name of the event, typically named onPredicateVerb e.g. onBeforeKick
 	 * @param   array   $arguments  The arguments to pass to the event handlers
@@ -868,7 +884,7 @@ class Controller
 	 */
 	protected function triggerEvent($event, array $arguments = array())
 	{
-		$result = false;
+		$result = true;
 
 		// If there is an object method for this event, call it
 		if (method_exists($this, $event))
@@ -897,6 +913,12 @@ class Controller
 					$result = call_user_func_array(array($this, $event), $arguments);
 					break;
 			}
+		}
+		// If there is no handler method perform a simple ACL check
+		elseif (substr($event, 0, 8) == 'onBefore')
+		{
+			$task = substr($event, 8);
+			$result = $this->checkACL('@' . strtolower($task));
 		}
 
 		if ($result === false)
@@ -950,6 +972,13 @@ class Controller
 	 */
 	protected function checkACL($area)
 	{
+		$area = $this->getACLRuleFor($area);
+
+		if (is_bool($area))
+		{
+			return $area;
+		}
+
 		if (in_array(strtolower($area), array('false','0','no','403')))
 		{
 			return false;
@@ -967,4 +996,76 @@ class Controller
 
 		return $this->container->platform->authorise($area, $this->container->componentName);
 	}
+
+	/**
+	 * Resolves @task and &callback notations for ACL privileges
+	 *
+	 * @param   string  $area      The task notation to resolve
+	 * @param   array   $oldAreas  Areas we've already been redirected from, used to detect circular references
+	 *
+	 * @return  mixed  The resolved ACL privilege
+	 */
+	protected function getACLRuleFor($area, $oldAreas = array())
+	{
+		// If it's a &notation return the callback result
+		if (substr($area, 0, 1) == '&')
+		{
+			$method = substr($area, 1);
+
+			// Method not found? Assume true.
+			if (!method_exists($this, $method))
+			{
+				return true;
+			}
+
+			return $this->$method();
+		}
+
+		// If it's not an @notation return the raw string
+		if (substr($area, 0, 1) != '@')
+		{
+			return $area;
+		}
+
+		// Get the array index (other task)
+		$index = substr($area, 1);
+
+		// If the referenced task has no ACL map, return true
+		if (!isset($this->taskPrivileges[$index]))
+		{
+			return true;
+		}
+
+		// Get the new ACL area
+		$newArea = $this->taskPrivileges[$index];
+
+		$oldAreas[] = $area;
+
+		// Circular reference found
+		if (in_array($newArea, $oldAreas))
+		{
+			return true;
+		}
+
+		// We've found an ACL privilege. Return it.
+		if (substr($area, 0, 1) != '@')
+		{
+			return $newArea;
+		}
+
+		// We have another reference. Resolve it.
+		return $this->getACLRuleFor($newArea, $oldAreas);
+	}
+
+	/**
+	 * Returns true if there is a redirect set in the controller
+	 *
+	 * @return  boolean
+	 */
+	public function hasRedirect()
+	{
+		return !empty($this->redirect);
+	}
+
+
 }

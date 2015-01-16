@@ -781,7 +781,7 @@ class View
 	 */
 	protected function triggerEvent($event, array $arguments = array())
 	{
-		$result = false;
+		$result = true;
 
 		// If there is an object method for this event, call it
 		if (method_exists($this, $event))

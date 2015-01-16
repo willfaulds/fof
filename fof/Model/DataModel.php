@@ -3011,4 +3011,57 @@ class DataModel extends Model implements \JTableInterface
 	{
 		$this->_assetKey = $assetKey;
 	}
+
+	/**
+	 * Method to load a row for editing from the version history table.
+	 *
+	 * @param   integer    $version_id  Key to the version history table.
+	 * @param   string     $alias       The type_alias in #__content_types
+	 *
+	 * @return  boolean  True on success
+	 *
+	 * @since   2.3
+	 *
+	 * @throws \Exception
+	 */
+	public function loadhistory($version_id, $alias)
+	{
+		// Only attempt to check the row in if it exists.
+		if (!$version_id)
+		{
+			throw new \Exception("Row doesn't exist");
+		}
+
+		// Get an instance of the row to checkout.
+		$historyTable = \JTable::getInstance('Contenthistory');
+
+		if (!$historyTable->load($version_id))
+		{
+			throw new \Exception($historyTable->getError());
+		}
+
+		$rowArray = \JArrayHelper::fromObject(json_decode($historyTable->version_data));
+
+		$typeId = \JTable::getInstance('Contenttype')->getTypeId($alias);
+
+		if ($historyTable->ucm_type_id != $typeId)
+		{
+			$key = $this->getKeyName();
+
+			if (isset($rowArray[$key]))
+			{
+				$this->{$this->idFieldName} = $rowArray[$key];
+				$this->unlock();
+			}
+
+			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_HISTORY_ID_MISMATCH'));
+		}
+
+		$this->setState('save_date', $historyTable->save_date);
+		$this->setState('version_note', $historyTable->version_note);
+
+		$this->bind($rowArray);
+
+		return true;
+	}
 }

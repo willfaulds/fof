@@ -25,6 +25,42 @@ class DataController extends Controller
 	 */
 	protected $cacheableTasks = array('browse', 'read');
 
+	/**
+	 * An associative array for required ACL privileges per task. For example:
+	 * array(
+	 *   'edit' => 'core.edit',
+	 *   'jump' => 'foobar.jump',
+	 *   'alwaysallow' => 'true',
+	 *   'neverallow' => 'false'
+	 * );
+	 *
+	 * You can use the notation '@task' which means 'apply the same privileges as "task"'. If you create a reference
+	 * back to yourself (e.g. 'mytask' => array('@mytask')) it will return TRUE.
+	 *
+	 * @var array
+	 */
+	protected $taskPrivileges = array(
+		// Special privileges
+		'*editown' => 'core.edit.own', // Privilege required to edit own record
+		// Standard tasks
+		'add' => 'core.create',
+		'apply' => '&getACLForApplySave', // Apply task: call the getACLForApplySave method
+		'archive' => 'core.edit.state',
+		'cancel' => 'core.edit.state',
+		'copy' => '@add', // Maps copy ACLs to the add task
+		'edit' => 'core.edit',
+		'loadhistory' => '@edit', // Maps loadhistory ACLs to the edit task
+		'orderup' => 'core.edit.state',
+		'orderdown' => 'core.edit.state',
+		'publish' => 'core.edit.state',
+		'remove' => 'core.delete',
+		'save' => '&getACLForApplySave', // Save task: call the getACLForApplySave method
+		'savenew' => 'core.create',
+		'saveorder' => 'core.edit.state',
+		'trash' => 'core.edit.state',
+		'unpublish' => 'core.edit.state',
+	);
+
 	public function __construct(Container $container = null)
 	{
 		parent::__construct($container);
@@ -149,6 +185,8 @@ class DataController extends Controller
 	 */
 	protected function checkACL($area)
 	{
+		$area = $this->getACLRuleFor($area);
+
 		$result = parent::checkACL($area);
 
 		// Check if we're dealing with ids
@@ -194,7 +232,9 @@ class DataController extends Controller
 
 			// Fallback on edit.own, if not edit.state. First test if the permission is available.
 
-			if ((!$isEditState) && ($platform->authorise('core.edit.own', $asset)))
+			$editOwn = $this->getACLRuleFor('@*editown');
+
+			if ((!$isEditState) && ($platform->authorise($editOwn, $asset)))
 			{
 				$model->load($id);
 
@@ -331,7 +371,7 @@ class DataController extends Controller
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?&view=' . Inflector::pluralize($this->view));
+			$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 			$this->setRedirect($url, $e->getMessage(), 'error');
 
 			return;
@@ -381,7 +421,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . $this->view . '&task=edit&id=' . $id);
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix());
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -423,7 +463,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -458,7 +498,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -484,7 +524,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::singularize($this->view) . '&task=add');
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::singularize($this->view) . '&task=add' . $this->getItemidURLSuffix());
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -514,7 +554,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 		$this->setRedirect($url);
 	}
 
@@ -554,7 +594,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -602,7 +642,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -650,7 +690,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -698,7 +738,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -774,7 +814,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url    = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url    = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		$this->setRedirect($url, $msg, $type);
 	}
@@ -815,7 +855,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -863,7 +903,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -911,7 +951,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?view=' . Inflector::pluralize($this->view));
+		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
 
 		if (!$status)
 		{
@@ -1004,11 +1044,11 @@ class DataController extends Controller
 			}
 			elseif ($id != 0)
 			{
-				$url = \JRoute::_('index.php?view=' . $this->view . '&task=edit&id=' . $id);
+				$url = \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix());
 			}
 			else
 			{
-				$url = \JRoute::_('index.php?view=' . $this->view . '&task=add');
+				$url = \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=add' . $this->getItemidURLSuffix());
 			}
 
 			$this->setRedirect($url, $error, 'error');
@@ -1094,216 +1134,130 @@ class DataController extends Controller
 	}
 
 	/**
-	 * Calls a global observer event to handle the onBefore/onAfter events of the Controller. The name of the observer
-	 * events has the format onController<Predicate><Task> e.g. onControllerBeforeBrowse. The event handler must have
-	 * the following signature:
+	 * Method to load a row from version history
 	 *
-	 * function(string $controllerName): bool
+	 * @return   boolean  True if the content history is reverted, false otherwise
 	 *
-	 * The $controllerName is the name of this controller. The return value of the event handler is true (continue
-	 * processing) or false (abort operation). Please note that only a boolean false (not a null, empty array or 0) will
-	 * trigger process abortion.
+	 * @since   2.2
+	 */
+	public function loadhistory()
+	{
+		$model = $this->getModel();
+		$historyId = $this->container->input->get('version_id', null, 'integer');
+		$model->lock();
+		$alias = $this->container->componentName . '.' . $this->view;
+
+		try
+		{
+			$model->loadhistory($historyId, $alias);
+		}
+		catch (\Exception $e)
+		{
+			$this->setMessage($e->getMessage(), 'error');
+
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+			$this->setRedirect($url);
+
+			return false;
+		}
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $model->getKeyName();
+		}
+
+		// Access check.
+		if (!$this->checkACL('@loadhistory'))
+		{
+			$this->setMessage(\JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
+
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+			$this->setRedirect($url);
+			$model->unlock();
+
+			return false;
+		}
+
+		$model->store();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$this->setRedirect($url);
+
+		$this->setMessage(\JText::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
+
+		return true;
+	}
+
+	/**
+	 * Gets a URL suffix with the Itemid parameter. If it's not the front-end of the site, or if
+	 * there is no Itemid set it returns an empty string.
 	 *
-	 * @param   string  $task    The task to fire the event for
-	 * @param   string  $whence  The event predicate: before|after
+	 * @return  string  The &Itemid=123 URL suffix, or an empty string if Itemid is not applicable
+	 */
+	public function getItemidURLSuffix()
+	{
+		if ($this->container->platform->isFrontend() && ($this->container->input->getCmd('Itemid', 0) != 0))
+		{
+			return '&Itemid=' . $this->container->input->getInt('Itemid', 0);
+		}
+		else
+		{
+			return '';
+		}
+	}
+
+	/**
+	 * Gets the applicable ACL privilege for the apply and save tasks. The value returned is:
+	 * - @add if the record's ID is empty / record doesn't exist
+	 * - True if the ACL privilege of the edit task (@edit) is allowed
+	 * - @editown if the owner of the record (field user_id, userid or user) is the same as the logged in user
+	 * - False if the record is not owned by the logged in user and the user doesn't have the @edit privilege
 	 *
-	 * @return  bool  True to continue execution, false to abort
-	 *
+	 * @return bool|string
 	 * @throws \Exception
 	 */
-	protected function callObserverEvent($task, $whence = 'before')
+	protected function getACLForApplySave()
 	{
-		// The even name is something like onControllerBeforeBrowse
-		$eventName = 'on' . ucfirst(strtolower($whence)) . ucfirst(strtolower($task));
+		$model = $this->getModel();
 
-		// Get the results
-		return $this->triggerEvent($eventName);
-	}
+		if (!$model->getId())
+		{
+			$this->getIDsFromRequest($model, true);
+		}
 
-	/**
-	 * Fires before executing the browse task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeBrowse()
-	{
-		return $this->callObserverEvent('browse', 'before');
-	}
+		$id = $model->getId();
 
-	/**
-	 * Fires before executing the read task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeRead()
-	{
-		return $this->callObserverEvent('read', 'before');
-	}
+		if (!$id)
+		{
+			return '@add';
+		}
 
-	/**
-	 * Fires before executing the add task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeAdd()
-	{
-		return $this->callObserverEvent('add', 'before');
-	}
+		if ($this->checkACL('@edit'))
+		{
+			return true;
+		}
 
-	/**
-	 * Fires before executing the edit task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeEdit()
-	{
-		return $this->callObserverEvent('edit', 'before');
-	}
+		$user = $this->container->platform->getUser();
+		$uid = 0;
 
-	/**
-	 * Fires before executing the apply task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeApply()
-	{
-		return $this->callObserverEvent('apply', 'before');
-	}
+		if ($model->hasField('user_id'))
+		{
+			$uid = $model->getFieldValue('user_id');
+		}
+		elseif ($model->hasField('userid'))
+		{
+			$uid = $model->getFieldValue('userid');
+		}
+		elseif ($model->hasField('user'))
+		{
+			$uid = $model->getFieldValue('user');
+		}
 
-	/**
-	 * Fires before executing the copy task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeCopy()
-	{
-		return $this->callObserverEvent('copy', 'before');
-	}
+		if (!empty($uid) && !$user->guest && ($user->id == $uid))
+		{
+			return '@editown';
+		}
 
-	/**
-	 * Fires before executing the save task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeSave()
-	{
-		return $this->callObserverEvent('save', 'before');
-	}
-
-	/**
-	 * Fires before executing the savenew task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeSavenew()
-	{
-		return $this->callObserverEvent('savenew', 'before');
-	}
-
-	/**
-	 * Fires before executing the canceltask. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeCancel()
-	{
-		return $this->callObserverEvent('cancel', 'before');
-	}
-
-	/**
-	 * Fires before executing the publish task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforePublish()
-	{
-		return $this->callObserverEvent('publish', 'before');
-	}
-
-	/**
-	 * Fires before executing the unpublish task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeUnpublish()
-	{
-		return $this->callObserverEvent('unpublish', 'before');
-	}
-
-	/**
-	 * Fires before executing the archive task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeArchive()
-	{
-		return $this->callObserverEvent('archive', 'before');
-	}
-
-	/**
-	 * Fires before executing the trash task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeTrash()
-	{
-		return $this->callObserverEvent('trash', 'before');
-	}
-
-	/**
-	 * Fires before executing the saveorder task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeSaveorder()
-	{
-		return $this->callObserverEvent('saveorder', 'before');
-	}
-
-	/**
-	 * Fires before executing the orderdown task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeOrderdown()
-	{
-		return $this->callObserverEvent('orderdown', 'before');
-	}
-
-	/**
-	 * Fires before executing the orderup task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeOrderup()
-	{
-		return $this->callObserverEvent('orderup', 'before');
-	}
-
-	/**
-	 * Fires before executing the remove task. In turn, it calls the respective event in the global observers to decide
-	 * if the execution of the task should proceed.
-	 *
-	 * @return bool
-	 */
-	protected function onBeforeRemove()
-	{
-		return $this->callObserverEvent('remove', 'before');
+		return false;
 	}
 }
