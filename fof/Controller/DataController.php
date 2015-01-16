@@ -15,6 +15,8 @@ defined('_JEXEC') or die;
 
 /**
  * Database-aware Controller
+ *
+ * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
  */
 class DataController extends Controller
 {
@@ -1143,7 +1145,7 @@ class DataController extends Controller
 	public function loadhistory()
 	{
 		$model = $this->getModel();
-		$historyId = $this->container->input->get('version_id', null, 'integer');
+		$historyId = $this->input->get('version_id', null, 'integer');
 		$model->lock();
 		$alias = $this->container->componentName . '.' . $this->view;
 
@@ -1159,12 +1161,6 @@ class DataController extends Controller
 			$this->setRedirect($url);
 
 			return false;
-		}
-
-		// Determine the name of the primary key for the data.
-		if (empty($key))
-		{
-			$key = $model->getKeyName();
 		}
 
 		// Access check.
@@ -1196,9 +1192,9 @@ class DataController extends Controller
 	 */
 	public function getItemidURLSuffix()
 	{
-		if ($this->container->platform->isFrontend() && ($this->container->input->getCmd('Itemid', 0) != 0))
+		if ($this->container->platform->isFrontend() && ($this->input->getCmd('Itemid', 0) != 0))
 		{
-			return '&Itemid=' . $this->container->input->getInt('Itemid', 0);
+			return '&Itemid=' . $this->input->getInt('Itemid', 0);
 		}
 		else
 		{

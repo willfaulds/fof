@@ -16,6 +16,8 @@ defined('_JEXEC') or die;
  * Class View
  *
  * A generic MVC view implementation
+ *
+ * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
  */
 class View
 {
@@ -190,6 +192,33 @@ class View
 		}
 
 		$this->baseurl = $this->container->platform->URIbase();
+	}
+
+	/**
+	 * Magic get method. Handles magic properties:
+	 * $this->input  mapped to $this->container->input
+	 *
+	 * @param   string  $name  The property to fetch
+	 *
+	 * @return  mixed|null
+	 */
+	function __get($name)
+	{
+		// Handle $this->input
+		if ($name == 'input')
+		{
+			return $this->container->input;
+		}
+
+		// Property not found; raise error
+		$trace = debug_backtrace();
+		trigger_error(
+			'Undefined property via __get(): ' . $name .
+			' in ' . $trace[0]['file'] .
+			' on line ' . $trace[0]['line'],
+			E_USER_NOTICE);
+
+		return null;
 	}
 
 	/**

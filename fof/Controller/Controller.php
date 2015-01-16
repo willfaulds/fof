@@ -19,7 +19,7 @@ defined('_JEXEC') or die;
  *
  * A generic MVC controller implementation
  *
- * @package Awf\Mvc
+ * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
  */
 class Controller
 {
@@ -210,13 +210,11 @@ class Controller
 			$config = array();
 		}
 
-		// Get local copies of things included in the container
-		$this->input = $container->input;
-
+		// Get a local copy of the container
 		$this->container = $container;
 
 		// Determine the methods to exclude from the base class.
-		$xMethods = get_class_methods('\\Awf\\Mvc\\Controller');
+		$xMethods = get_class_methods('\\FOF30\\Controller\\Controller');
 
 		// Get the public methods in this class using reflection.
 		$r = new \ReflectionClass($this);
@@ -273,6 +271,33 @@ class Controller
 		{
 			$this->setModelName($config['modelName']);
 		}
+	}
+
+	/**
+	 * Magic get method. Handles magic properties:
+	 * $this->input  mapped to $this->container->input
+	 *
+	 * @param   string  $name  The property to fetch
+	 *
+	 * @return  mixed|null
+	 */
+	function __get($name)
+	{
+		// Handle $this->input
+		if ($name == 'input')
+		{
+			return $this->container->input;
+		}
+
+		// Property not found; raise error
+		$trace = debug_backtrace();
+		trigger_error(
+			'Undefined property via __get(): ' . $name .
+			' in ' . $trace[0]['file'] .
+			' on line ' . $trace[0]['line'],
+			E_USER_NOTICE);
+
+		return null;
 	}
 
 	/**
@@ -359,7 +384,7 @@ class Controller
 		}
 		else
 		{
-			$viewType = $this->container->input->getCmd('format', 'html');
+			$viewType = $this->input->getCmd('format', 'html');
 		}
 
 		$view = $this->getView();
@@ -384,7 +409,7 @@ class Controller
 		if ($this->container->platform->isFrontend() && $cachable && ($viewType != 'feed') && ($conf->get('caching') >= 1))
 		{
 			// Get a JCache object
-			$option = $this->container->input->get('option', 'com_foobar', 'cmd');
+			$option = $this->input->get('option', 'com_foobar', 'cmd');
 			$cache = \JFactory::getCache($option, 'view');
 
 			// Set up a cache ID based on component, view, task and user group assignment

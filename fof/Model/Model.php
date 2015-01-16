@@ -15,6 +15,8 @@ defined('_JEXEC') or die;
  * Class Model
  *
  * A generic MVC model implementation
+ *
+ * @property-read  \FOF30\Input\Input  $input  The input object (magic __get returns the Input from the Container)
  */
 class Model
 {
@@ -161,7 +163,7 @@ class Model
 
 		if (is_null($value) && !$this->_ignoreRequest)
 		{
-			$value = $this->container->platform->getUserStateFromRequest($key, $key, $this->container->input, $value, 'none', $this->_savestate);
+			$value = $this->container->platform->getUserStateFromRequest($key, $key, $this->input, $value, 'none', $this->_savestate);
 
 			if (is_null($value))
 			{
@@ -305,7 +307,8 @@ class Model
 	}
 
 	/**
-	 * Magic getter; allows to use the name of model state keys as properties
+	 * Magic getter; allows to use the name of model state keys as properties. Also handles magic properties:
+	 * $this->input  mapped to $this->container->input
 	 *
 	 * @param   string $name The state variable key
 	 *
@@ -313,6 +316,12 @@ class Model
 	 */
 	public function __get($name)
 	{
+		// Handle $this->input
+		if ($name == 'input')
+		{
+			return $this->container->input;
+		}
+
 		return $this->getState($name);
 	}
 

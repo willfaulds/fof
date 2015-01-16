@@ -171,7 +171,7 @@ class Json extends Raw
 			}
 
 			// JSONP support
-			$callback = $this->container->input->get('callback', null, 'raw');
+			$callback = $this->input->get('callback', null, 'raw');
 
 			if (!empty($callback))
 			{
@@ -179,8 +179,8 @@ class Json extends Raw
 			}
 			else
 			{
-				$defaultName = $this->container->input->get('view', 'main', 'cmd');
-				$filename = $this->container->input->get('basename', $defaultName, 'cmd');
+				$defaultName = $this->input->get('view', 'main', 'cmd');
+				$filename = $this->input->get('basename', $defaultName, 'cmd');
 
 				$document->setName($filename);
 				echo $json;
@@ -276,7 +276,7 @@ class Json extends Raw
 			}
 
 			// JSONP support
-			$callback = $this->container->input->get('callback', null);
+			$callback = $this->input->get('callback', null);
 
 			if (!empty($callback))
 			{
@@ -284,8 +284,8 @@ class Json extends Raw
 			}
 			else
 			{
-				$defaultName = $this->container->input->get('view', 'main', 'cmd');
-				$filename = $this->container->input->get('basename', $defaultName, 'cmd');
+				$defaultName = $this->input->get('view', 'main', 'cmd');
+				$filename = $this->input->get('basename', $defaultName, 'cmd');
 				$document->setName($filename);
 
 				echo $json;
@@ -445,7 +445,7 @@ class Json extends Raw
 	protected function _getPrototypeURIForPagination()
 	{
 		$protoUri = new \JUri('index.php');
-		$protoUri->setQuery($this->container->input->getData());
+		$protoUri->setQuery($this->input->getData());
 		$protoUri->delVar('savestate');
 		$protoUri->delVar('base_path');
 
