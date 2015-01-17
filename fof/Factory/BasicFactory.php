@@ -12,6 +12,7 @@ use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
+use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
 
 defined('_JEXEC') or die;
@@ -121,8 +122,30 @@ class BasicFactory implements FactoryInterface
 		}
 		catch (\RuntimeException $e)
 		{
-			// Not found. Return the default Dispatcher
+			// Not found. Return the default Toolbar
 			return new Toolbar($this->container, $config);
+		}
+	}
+
+	/**
+	 * Creates a new TransparentAuthentication handler
+	 *
+	 * @param   array $config The configuration values for the TransparentAuthentication object
+	 *
+	 * @return  TransparentAuthentication
+	 */
+	function transparentAuthentication(array $config = array())
+	{
+		$authClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+
+		try
+		{
+			return $this->createTransparentAuthentication($authClass, $config);
+		}
+		catch (\RuntimeException $e)
+		{
+			// Not found. Return the default Dispatcher
+			return new TransparentAuthentication($this->container, $config);
 		}
 	}
 
@@ -224,5 +247,25 @@ class BasicFactory implements FactoryInterface
 		}
 
 		return new $dispatcherClass($this->container, $config);
+	}
+
+	/**
+	 * Creates a TransparentAuthentication object
+	 *
+	 * @param   string  $authClass  The fully qualified class name for the TransparentAuthentication
+	 * @param   array   $config     The configuration values for the TransparentAuthentication object
+	 *
+	 * @return  TransparentAuthentication
+	 *
+	 * @throws  \RuntimeException  If the $authClass does not exist
+	 */
+	protected function createTransparentAuthentication($authClass, $config)
+	{
+		if (!class_exists($authClass))
+		{
+			throw new \RuntimeException(\JText::_('LIB_FOF_TRANSPARENTAUTH_ERR_NOT_FOUND'), 500);
+		}
+
+		return new $authClass($this->container, $config);
 	}
 }

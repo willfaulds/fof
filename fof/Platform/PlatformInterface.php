@@ -424,4 +424,13 @@ interface PlatformInterface
 	 * @return  void
 	 */
 	public function sendHeaders();
+
+	/**
+	 * Immediately terminate the containing application's execution
+	 *
+	 * @param   int  $code  The result code which should be returned by the application
+	 *
+	 * @return  void
+	 */
+	public function closeApplication($code = 0);
 }

@@ -14,6 +14,7 @@ use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
 use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
 use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
+use FOF30\TransparentAuthentication\TransparentAuthentication as TransparentAuth;
 use JDatabaseDriver;
 use JSession;
 
@@ -60,6 +61,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
  * @property-read  \JSession                           $session            Joomla! session storage
  * @property-read  \FOF30\Template\Template            $template           The template helper
+ * @property-read  TransparentAuth                     $transparentAuth    Transparent authentication handler
  * @property-read  \FOF30\Toolbar\Toolbar              $toolbar            The component's toolbar
  */
 class Container extends Pimple
@@ -365,6 +367,15 @@ class Container extends Pimple
 			$this['toolbar'] = function (Container $c)
 			{
 				return $c->factory->toolbar();
+			};
+		}
+
+		// Component toolbar provider
+		if (!isset($this['transparentAuth']))
+		{
+			$this['transparentAuth'] = function (Container $c)
+			{
+				return $c->factory->transparentAuthentication();
 			};
 		}
 

@@ -910,4 +910,16 @@ class Platform extends BasePlatform
 	{
 		\JFactory::getApplication()->sendHeaders();
 	}
+
+	/**
+	 * Immediately terminate the containing application's execution
+	 *
+	 * @param   int  $code  The result code which should be returned by the application
+	 *
+	 * @return  void
+	 */
+	public function closeApplication($code = 0)
+	{
+		\JFactory::getApplication()->close($code);
+	}
 }

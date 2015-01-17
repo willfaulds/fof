@@ -12,6 +12,7 @@ use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
+use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
 
 defined('_JEXEC') or die;
@@ -76,4 +77,13 @@ interface FactoryInterface
 	 * @return  Dispatcher
 	 */
 	function dispatcher(array $config = array());
+
+	/**
+	 * Creates a new TransparentAuthentication handler
+	 *
+	 * @param   array  $config  The configuration values for the TransparentAuthentication object
+	 *
+	 * @return  TransparentAuthentication
+	 */
+	function transparentAuthentication(array $config = array());
 }

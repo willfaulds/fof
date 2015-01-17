@@ -11,6 +11,7 @@ use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
+use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
 
 defined('_JEXEC') or die;
@@ -158,8 +159,42 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		}
 		catch (\RuntimeException $e)
 		{
-			// Not found. Return the default Dispatcher
+			// Not found. Return the default Toolbar
 			return new Toolbar($this->container, $config);
+		}
+	}
+
+
+	/**
+	 * Creates a new TransparentAuthentication
+	 *
+	 * @param   array  $config  The configuration values for the TransparentAuthentication object
+	 *
+	 * @return  TransparentAuthentication
+	 */
+	function transparentAuthentication(array $config = array())
+	{
+		$toolbarClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+
+		try
+		{
+			return $this->createTransparentAuthentication($toolbarClass, $config);
+		}
+		catch (\RuntimeException $e)
+		{
+			// Not found. Let's go on.
+		}
+
+		$toolbarClass = $this->container->getNamespacePrefix('inverse') . 'TransparentAuthentication\\TransparentAuthentication';
+
+		try
+		{
+			return $this->createTransparentAuthentication($toolbarClass, $config);
+		}
+		catch (\RuntimeException $e)
+		{
+			// Not found. Return the default TransparentAuthentication
+			return new TransparentAuthentication($this->container, $config);
 		}
 	}
 }
