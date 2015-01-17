@@ -31,11 +31,14 @@ defined('_JEXEC') or die;
  *   <common>
  *      <container>
  *         <option name="componentNamespace"><![CDATA[MyCompany\MyApplication]]></option>
- *         <option name="frontEndPath"><![CDATA[%JPATH_SITE%\components\com_application]]></option>
+ *         <option name="frontEndPath"><![CDATA[%PUBLIC%\components\com_application]]></option>
  *         <option name="factoryClass">magic</option>
  *      </container>
  *   </common>
  * </fof>
+ *
+ * The paths can use the variables %ROOT%, %PUBLIC%, %ADMIN%, %TMP%, %LOG% i.e. all the path keys returned by Platform's
+ * getPlatformBaseDirs() method in uppercase and surrounded by percent signs.
  *
  *
  * @property  string                                   $componentName      The name of the component (com_something)
@@ -110,6 +113,10 @@ class Container extends Pimple
 		// Get the default front-end/back-end paths
 		$frontEndPath = $appConfig->get('container.frontEndPath', JPATH_SITE . '/components/' . $component);
 		$backEndPath = $appConfig->get('container.backEndPath', JPATH_ADMINISTRATOR . '/components/' . $component);
+
+		// Parse path variables if necessary
+		$frontEndPath = $tmpContainer->parsePathVariables($frontEndPath);
+		$backEndPath = $tmpContainer->parsePathVariables($backEndPath);
 
 		// Apply path overrides
 		if (isset($values['frontEndPath']))
@@ -514,5 +521,18 @@ class Container extends Pimple
 				return $backEndNamespace;
 				break;
 		}
+	}
+
+	public function parsePathVariables($path)
+	{
+		$platformDirs = $this->platform->getPlatformBaseDirs();
+		// root public admin tmp log
+
+		$search = array_map(function ($x){
+			return '%' . strtoupper($x) . '%';
+		}, array_keys($platformDirs));
+		$replace = array_values($platformDirs);
+
+		return str_replace($search, $replace, $path);
 	}
 }
