@@ -11,7 +11,7 @@ use FOF30\Render\RenderInterface;
 
 defined('_JEXEC') or die;
 
-class Html extends Raw
+class Html extends Raw implements DataViewInterface
 {
 	/** @var bool Should I set the page title in the front-end of the site? */
 	public $setFrontendPageTitle = false;

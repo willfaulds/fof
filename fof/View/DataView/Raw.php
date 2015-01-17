@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 /**
  * View for a raw data-driven view
  */
-class Raw extends View
+class Raw extends View implements DataViewInterface
 {
 	/** @var   array  Data lists */
 	protected $lists = null;

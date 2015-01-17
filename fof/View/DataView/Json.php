@@ -13,7 +13,7 @@ use FOF30\Model\DataModel;
 
 defined('_JEXEC') or die;
 
-class Json extends Raw
+class Json extends Raw implements DataViewInterface
 {
 	protected $limitStart = 0;
 

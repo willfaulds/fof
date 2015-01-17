@@ -183,6 +183,16 @@ class Dispatcher
 	}
 
 	/**
+	 * Returns a reference to the Controller object currently in use by the dispatcher
+	 *
+	 * @return Controller
+	 */
+	public function &getController()
+	{
+		return $this->controller;
+	}
+
+	/**
 	 * Triggers an object-specific event. The event runs both locally –if a suitable method exists– and through the
 	 * Joomla! plugin system. A true/false return value is expected. The first false return cancels the event.
 	 *

@@ -8,8 +8,11 @@
 namespace FOF30\Toolbar;
 
 use FOF30\Container\Container;
+use FOF30\Controller\Controller;
 use FOF30\Inflector\Inflector;
 use FOF30\Utils\String;
+use FOF30\View\DataView\DataViewInterface;
+use FOF30\View\View;
 use JToolBarHelper;
 use JText;
 
@@ -37,6 +40,9 @@ class Toolbar
 
 	/** @var   bool   Should I render buttons in the front-end? */
 	protected $renderFrontendButtons = false;
+
+	/** @var  null|bool  Are we rendering a data-aware view? */
+	protected $isDataView = null;
 
 	/**
 	 * Public constructor.
@@ -204,6 +210,12 @@ class Toolbar
 		$option = $this->container->componentName;
 
 		JToolBarHelper::title(JText::_(strtoupper($option)), str_replace('com_', '', $option));
+
+		if (!$this->isDataView())
+		{
+			return;
+		}
+
 		JToolBarHelper::preferences($option);
 	}
 
@@ -232,6 +244,11 @@ class Toolbar
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
+
+		if (!$this->isDataView())
+		{
+			return;
+		}
 
 		// Add toolbar buttons
 		if ($this->perms->create)
@@ -289,6 +306,11 @@ class Toolbar
 		$subtitle_key = strtoupper($option . '_TITLE_' . $view . '_READ');
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
+		if (!$this->isDataView())
+		{
+			return;
+		}
+
 		// Set toolbar icons
 		JToolBarHelper::back();
 	}
@@ -313,6 +335,11 @@ class Toolbar
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . Inflector::pluralize($view)) . '_EDIT';
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
+
+		if (!$this->isDataView())
+		{
+			return;
+		}
 
 		// Set toolbar icons
 		if ($this->perms->edit || $this->perms->editown)
@@ -627,5 +654,32 @@ class Toolbar
 	public function getRenderFrontendSubmenu()
 	{
 		return $this->renderFrontendSubmenu;
+	}
+
+	/**
+	 * Is the view we are rendering the toolbar for a data-aware view?
+	 *
+	 * @return  bool
+	 */
+	public function isDataView()
+	{
+		if (is_null($this->isDataView))
+		{
+			$this->isDataView = false;
+			$controller = $this->container->dispatcher->getController();
+			$view = null;
+
+			if (is_object($controller) && ($controller instanceof Controller))
+			{
+				$view = $controller->getView();
+			}
+
+			if (is_object($view) && ($view instanceof View))
+			{
+				$this->isDataView = $view instanceof DataViewInterface;
+			}
+		}
+
+		return $this->isDataView;
 	}
 }
