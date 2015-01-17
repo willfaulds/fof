@@ -41,6 +41,9 @@ class Toolbar
 	/** @var   bool   Should I render buttons in the front-end? */
 	protected $renderFrontendButtons = false;
 
+	/** @var   bool  Should I use the configuration file (fof.xml) of the component? */
+	protected $useConfigurationFile = false;
+
 	/** @var  null|bool  Are we rendering a data-aware view? */
 	protected $isDataView = null;
 
@@ -49,8 +52,9 @@ class Toolbar
 	 *
 	 * The $config array can contain the following optional values:
 	 *
-	 * renderFrontendButtons		bool	Should I render buttons in the front-end of the component?
-	 * renderFrontendSubmenu		bool	Should I render the submenu in the front-end of the component?
+	 * renderFrontendButtons	bool	Should I render buttons in the front-end of the component?
+	 * renderFrontendSubmenu	bool	Should I render the submenu in the front-end of the component?
+	 * useConfigurationFile		bool	Should we use the configuration file (fof.xml) of the component?
 	 *
 	 * @param   Container  $c       The container for the component
 	 * @param   array      $config  The configuration overrides, see above
@@ -88,11 +92,11 @@ class Toolbar
 		if (!$platform->isBackend())
 		{
 			// Needed for tests, so we can inject our "special" helper class
-			// TODO Do we really need this?
 			if (!class_exists('\\JToolbarHelper'))
 			{
 				$platformDirs = $platform->getPlatformBaseDirs();
-				require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
+				$path = $platformDirs['root'] . '/administrator/includes/toolbar.php';
+				require_once $path;
 			}
 
 			// Things to do if we have to render a front-end toolbar
@@ -145,19 +149,37 @@ class Toolbar
 		}
 
 		// Get the view and task
+		$controller = $this->container->dispatcher->getController();
+		$autoDetectedView = 'cpanel';
+		$autoDetectedTask = 'main';
+
+		if (is_object($controller) && ($controller instanceof Controller))
+		{
+			$autoDetectedView = $controller->getName();
+			$autoDetectedTask = $controller->getTask();
+		}
+
 		if (empty($view))
 		{
-			$view = $input->getCmd('view', 'cpanel');
+			$view = $input->getCmd('view', $autoDetectedView);
 		}
 
 		if (empty($task))
 		{
-			$task = $input->getCmd('task', 'default');
+			$task = $input->getCmd('task', $autoDetectedTask);
 		}
 
-		$this->view = $view;
-		$this->task = $task;
 		$view = Inflector::pluralize($view);
+
+		// If there is a fof.xml toolbar configuration use it and return
+		$toolbarConfig = $this->container->appConfig->get('views.' . $view . '.toolbar.' . $task);
+
+		if (!empty($toolbarConfig) && $this->useConfigurationFile)
+		{
+			$this->renderFromConfig($toolbarConfig);
+
+			return;
+		}
 
 		// Check for an onViewTask method
 		$methodName = 'on' . ucfirst($view) . ucfirst($task);
@@ -544,7 +566,6 @@ class Toolbar
 	 */
 	protected function getMyViews()
 	{
-		$views = array();
 		$t_views = array();
 		$using_meta = false;
 
@@ -681,5 +702,320 @@ class Toolbar
 		}
 
 		return $this->isDataView;
+	}
+
+	/**
+	 * Render the toolbar from the configuration.
+	 *
+	 * @param   array  $toolbar  The toolbar definition
+	 *
+	 * @return  void
+	 */
+	private function renderFromConfig(array $toolbar)
+	{
+		$isBackend = $this->container->platform->isBackend();
+
+		if ($isBackend || $this->renderFrontendSubmenu)
+		{
+			$this->renderSubmenu();
+		}
+
+		if (!$isBackend && !$this->renderFrontendButtons)
+		{
+			return;
+		}
+
+		if (!$this->isDataView())
+		{
+			return;
+		}
+
+		// Render each element
+		foreach ($toolbar as $elementType => $elementAttributes)
+		{
+			$value = isset($elementAttributes['value']) ? $elementAttributes['value'] : null;
+			$this->renderToolbarElement($elementType, $value, $elementAttributes);
+		}
+
+		return;
+	}
+
+	/**
+	 * Render a toolbar element.
+	 *
+	 * @param   string  $type        The element type.
+	 * @param   mixed   $value       The element value.
+	 * @param   array   $attributes  The element attributes.
+	 *
+	 * @return  void
+	 *
+	 * @codeCoverageIgnore
+	 * @throws  \InvalidArgumentException
+	 */
+	private function renderToolbarElement($type, $value = null, array $attributes = array())
+	{
+		switch ($type)
+		{
+			case 'title':
+				$icon = isset($attributes['icon']) ? $attributes['icon'] : 'generic.png';
+				JToolbarHelper::title($value, $icon);
+				break;
+
+			case 'divider':
+				JToolbarHelper::divider();
+				break;
+
+			case 'custom':
+				$task = isset($attributes['task']) ? $attributes['task'] : '';
+				$icon = isset($attributes['icon']) ? $attributes['icon'] : '';
+				$iconOver = isset($attributes['icon_over']) ? $attributes['icon_over'] : '';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : '';
+				$listSelect = isset($attributes['list_select']) ?
+					String::toBool($attributes['list_select']) : true;
+
+				JToolbarHelper::custom($task, $icon, $iconOver, $alt, $listSelect);
+				break;
+
+			case 'preview':
+				$url = isset($attributes['url']) ? $attributes['url'] : '';
+				$update_editors = isset($attributes['update_editors']) ?
+					String::toBool($attributes['update_editors']) : false;
+
+				JToolbarHelper::preview($url, $update_editors);
+				break;
+
+			case 'help':
+				if (!isset($attributes['help']))
+				{
+					throw new \InvalidArgumentException(
+						'The help attribute is missing in the help button type.'
+					);
+				}
+
+				$ref = $attributes['help'];
+				$com = isset($attributes['com']) ? String::toBool($attributes['com']) : false;
+				$override = isset($attributes['override']) ? $attributes['override'] : null;
+				$component = isset($attributes['component']) ? $attributes['component'] : null;
+
+				JToolbarHelper::help($ref, $com, $override, $component);
+				break;
+
+			case 'back':
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_BACK';
+				$href = isset($attributes['href']) ? $attributes['href'] : 'javascript:history.back();';
+
+				JToolbarHelper::back($alt, $href);
+				break;
+
+			case 'media_manager':
+				$directory = isset($attributes['directory']) ? $attributes['directory'] : '';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UPLOAD';
+
+				JToolbarHelper::media_manager($directory, $alt);
+				break;
+
+			case 'assign':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'assign';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_ASSIGN';
+
+				JToolbarHelper::assign($task, $alt);
+				break;
+
+			case 'new':
+				if ($this->perms->create)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'add';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
+					$check = isset($attributes['check']) ?
+						String::toBool($attributes['check']) : false;
+
+					JToolbarHelper::addNew($task, $alt, $check);
+				}
+
+				break;
+
+			case 'publish':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
+					$check = isset($attributes['check']) ?
+						String::toBool($attributes['check']) : false;
+
+					JToolbarHelper::publish($task, $alt, $check);
+				}
+
+				break;
+
+			case 'publishList':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
+
+					JToolbarHelper::publishList($task, $alt);
+				}
+
+				break;
+
+			case 'unpublish':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
+					$check = isset($attributes['check']) ?
+						String::toBool($attributes['check']) : false;
+
+					JToolbarHelper::unpublish($task, $alt, $check);
+				}
+
+				break;
+
+			case 'unpublishList':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
+
+					JToolbarHelper::unpublishList($task, $alt);
+				}
+
+				break;
+
+			case 'archiveList':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'archive';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_ARCHIVE';
+
+					JToolbarHelper::archiveList($task, $alt);
+				}
+
+				break;
+
+			case 'unarchiveList':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'unarchive';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNARCHIVE';
+
+					JToolbarHelper::unarchiveList($task, $alt);
+				}
+
+				break;
+
+			case 'editList':
+				if ($this->perms->edit)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'edit';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_EDIT';
+
+					JToolbarHelper::editList($task, $alt);
+				}
+
+				break;
+
+			case 'editHtml':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'edit_source';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_EDIT_HTML';
+
+				JToolbarHelper::editHtml($task, $alt);
+				break;
+
+			case 'editCss':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'edit_css';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_EDIT_CSS';
+
+				JToolbarHelper::editCss($task, $alt);
+				break;
+
+			case 'deleteList':
+				if ($this->perms->delete)
+				{
+					$msg = isset($attributes['msg']) ? $attributes['msg'] : '';
+					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_DELETE';
+
+					JToolbarHelper::deleteList($msg, $task, $alt);
+				}
+
+				break;
+
+			case 'trash':
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
+					$check = isset($attributes['check']) ?
+						String::toBool($attributes['check']) : true;
+
+					JToolbarHelper::trash($task, $alt, $check);
+				}
+
+				break;
+
+			case 'apply':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'apply';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_APPLY';
+
+				JToolbarHelper::apply($task, $alt);
+				break;
+
+			case 'save':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'save';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_SAVE';
+
+				JToolbarHelper::save($task, $alt);
+				break;
+
+			case 'save2new':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'save2new';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_SAVE_AND_NEW';
+
+				JToolbarHelper::save2new($task, $alt);
+				break;
+
+			case 'save2copy':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'save2copy';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_SAVE_AS_COPY';
+				JToolbarHelper::save2copy($task, $alt);
+				break;
+
+			case 'checkin':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'checkin';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] :'JTOOLBAR_CHECKIN';
+				$check = isset($attributes['check']) ?
+					String::toBool($attributes['check']) : true;
+
+				JToolbarHelper::checkin($task, $alt, $check);
+				break;
+
+			case 'cancel':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'cancel';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_CANCEL';
+
+				JToolbarHelper::cancel($task, $alt);
+				break;
+
+			case 'preferences':
+				if (!isset($attributes['component']))
+				{
+					throw new \InvalidArgumentException(
+						'The component attribute is missing in the preferences button type.'
+					);
+				}
+
+				$component = $attributes['component'];
+				$height = isset($attributes['height']) ? $attributes['height'] : '550';
+				$width = isset($attributes['width']) ? $attributes['width'] : '875';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JToolbar_Options';
+				$path = isset($attributes['path']) ? $attributes['path'] : '';
+
+				JToolbarHelper::preferences($component, $height, $width, $alt, $path);
+				break;
+
+			default:
+				throw new \InvalidArgumentException(sprintf('Unknown button type %s', $type));
+		}
 	}
 }
