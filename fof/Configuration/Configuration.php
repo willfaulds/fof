@@ -122,19 +122,19 @@ class Configuration
 		// Get the folders of the component
 		$componentPaths = $this->container->platform->getComponentBaseDirs($component);
 		$filesystem     = $this->container->filesystem;
+		$path = $componentPaths['admin'];
+
+		if (isset($this->container['backEndPath']))
+		{
+			$path = $this->container['backEndPath'];
+		}
 
 		// Check that the path exists
-		$path = $componentPaths['admin'];
 		$path = $filesystem->pathCheck($path);
 
 		if (!$filesystem->folderExists($path))
 		{
-			$path = $this->container->backEndPath;
-
-			if (!is_dir($path))
-			{
-				return $ret;
-			}
+			return $ret;
 		}
 
 		// Read the filename if it exists

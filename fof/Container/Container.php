@@ -20,7 +20,23 @@ use JSession;
 defined('_JEXEC') or die;
 
 /**
- * Dependency injection container for FOF-powered components
+ * Dependency injection container for FOF-powered components.
+ *
+ * The properties below (except componentName, bareComponentName and the ones marked with property-read) can be
+ * configured in the fof.xml component configuration file.
+ *
+ * Sample fof.xml:
+ *
+ * <fof>
+ *   <common>
+ *      <container>
+ *         <option name="componentNamespace"><![CDATA[MyCompany\MyApplication]]></option>
+ *         <option name="frontEndPath"><![CDATA[%JPATH_SITE%\components\com_application]]></option>
+ *         <option name="factoryClass">magic</option>
+ *      </container>
+ *   </common>
+ * </fof>
+ *
  *
  * @property  string                                   $componentName      The name of the component (com_something)
  * @property  string                                   $bareComponentName  The name of the component without com_ (something)
@@ -30,7 +46,6 @@ defined('_JEXEC') or die;
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
  * @property  string                                   $factoryClass       The fully qualified class name or slug (basic, switch) of the MVC Factory object, default is FOF30\Factory\BasicFactory.
- * @property  array                                    $mvc_config         Configuration overrides for MVC, Dispatcher, Toolbar
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
  * @property-read  \JDatabaseDriver                    $db                 The database connection object
@@ -47,18 +62,33 @@ defined('_JEXEC') or die;
 class Container extends Pimple
 {
 	/**
-	 * Returns a container instance for a specific component
+	 * Returns a container instance for a specific component. This method goes through fof.xml to read the default
+	 * configuration values for the container. You are advised to use this unless you have a specific reason for
+	 * instantiating a Container without going through the fof.xml file.
 	 *
 	 * @param   string  $component  The component you want to get a container for, e.g. com_foobar.
-	 * @param   null    $namespace  The namespace of the component, if different that the bare name of the component.
+	 * @param   array   $values     Container configuration overrides you want to apply. Optional.
 	 * @param   string  $section    The application section (site, admin) you want to fetch. Any other value results in auto-detection.
-	 * @param   array   $values     Any container configuration overrides you want to apply.
 	 *
 	 * @return \FOF30\Container\Container
 	 */
-	public static function &getInstance($component, $namespace = null, $section = 'auto', array $values = array())
+	public static function &getInstance($component, array $values = array(), $section = 'auto')
 	{
-		// $values always overrides $namespace
+		// Try to auto-detect some defaults
+		$tmpConfig = array_merge($section, array('componentName' => $component));
+		$tmpContainer = new Container($tmpConfig);
+
+		if (!in_array($section, array('site', 'admin')))
+		{
+			$section = $tmpContainer->platform->isBackend() ? 'admin' : 'site';
+		}
+
+		$appConfig = $tmpContainer->appConfig;
+
+		// Get the namespace from fof.xml
+		$namespace = $appConfig->get('container.componentNamespace', null);
+
+		// $values always overrides $namespace and fof.xml
 		if (isset($values['componentNamespace']))
 		{
 			$namespace = $values['componentNamespace'];
@@ -78,8 +108,8 @@ class Container extends Pimple
 		}
 
 		// Get the default front-end/back-end paths
-		$frontEndPath = JPATH_SITE . '/components/' . $component;
-		$backEndPath = JPATH_ADMINISTRATOR . '/components/' . $component;
+		$frontEndPath = $appConfig->get('container.frontEndPath', JPATH_SITE . '/components/' . $component);
+		$backEndPath = $appConfig->get('container.backEndPath', JPATH_ADMINISTRATOR . '/components/' . $component);
 
 		// Apply path overrides
 		if (isset($values['frontEndPath']))
@@ -91,6 +121,8 @@ class Container extends Pimple
 		{
 			$backEndPath = $values['backEndPath'];
 		}
+
+		$thisPath = ($section == 'admin') ? $backEndPath : $frontEndPath;
 
 		// Get the namespaces for the front-end and back-end parts of the component
 		$frontEndNamespace = '\\' . $namespace . '\\Site\\';
@@ -117,22 +149,24 @@ class Container extends Pimple
 			$autoloader->addMap($backEndNamespace, $backEndPath);
 		}
 
-		// Which component section (site, admin) do we want to get?
-		if (!in_array($section, array('site', 'admin')))
-		{
-			$tmpContainer = new Container(array('componentName' => $component));
-			$section = $tmpContainer->platform->isBackend() ? 'admin' : 'site';
-			unset($tmpContainer);
-		}
-
 		// Get the Container class name
 		$classNamespace = ($section == 'admin') ? $backEndNamespace : $frontEndNamespace;
 		$class = $classNamespace . 'Container';
 
+		// Get the values overrides from fof.xml
 		$values = array_merge($values, array(
 			'componentName' => $component,
 			'componentNamespace' => $namespace,
+			'frontEndPath' => $frontEndPath,
+			'backEndPath' => $backEndPath,
+			'thisPath' => $thisPath,
+			'rendererClass' => $appConfig->get('container.rendererClass', null),
+			'factoryClass' => $appConfig->get('container.factoryClass', '\\FOF30\\Factory\\BasicFactory'),
 		));
+
+		unset($appConfig);
+		unset($tmpConfig);
+		unset($tmpContainer);
 
 		if (class_exists($class, true))
 		{
@@ -144,6 +178,13 @@ class Container extends Pimple
 		}
 	}
 
+	/**
+	 * Public constructor. This does NOT go through the fof.xml file. You are advised to use getInstance() instead.
+	 *
+	 * @param   array  $values  Overrides for the container configuration and services
+	 *
+	 * @throws  \FOF30\Container\Exception\NoComponent  If no component name is specified
+	 */
 	public function __construct(array $values = array())
 	{
 		// Initialise
