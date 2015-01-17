@@ -62,14 +62,18 @@ interface FactoryInterface
 	/**
 	 * Creates a new Toolbar
 	 *
+	 * @param   array  $config  The configuration values for the Toolbar object
+	 *
 	 * @return  Toolbar
 	 */
-	function toolbar();
+	function toolbar(array $config = array());
 
 	/**
 	 * Creates a new Dispatcher
 	 *
+	 * @param   array  $config  The configuration values for the Dispatcher object
+	 *
 	 * @return  Dispatcher
 	 */
-	function dispatcher();
+	function dispatcher(array $config = array());
 }

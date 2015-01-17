@@ -85,40 +85,44 @@ class BasicFactory implements FactoryInterface
 	/**
 	 * Creates a new Dispatcher
 	 *
+	 * @param   array  $config  The configuration values for the Dispatcher object
+	 *
 	 * @return  Dispatcher
 	 */
-	function dispatcher()
+	function dispatcher(array $config = array())
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
 
 		try
 		{
-			return $this->createDispatcher($dispatcherClass);
+			return $this->createDispatcher($dispatcherClass, $config);
 		}
 		catch (\RuntimeException $e)
 		{
 			// Not found. Return the default Dispatcher
-			return new Dispatcher($this->container);
+			return new Dispatcher($this->container, $config);
 		}
 	}
 
 	/**
 	 * Creates a new Toolbar
 	 *
+	 * @param   array  $config  The configuration values for the Toolbar object
+	 *
 	 * @return  Toolbar
 	 */
-	function toolbar()
+	function toolbar(array $config = array())
 	{
 		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
 
 		try
 		{
-			return $this->createToolbar($toolbarClass);
+			return $this->createToolbar($toolbarClass, $config);
 		}
 		catch (\RuntimeException $e)
 		{
 			// Not found. Return the default Dispatcher
-			return new Toolbar($this->container);
+			return new Toolbar($this->container, $config);
 		}
 	}
 
@@ -186,37 +190,39 @@ class BasicFactory implements FactoryInterface
 	 * Creates a Toolbar object
 	 *
 	 * @param   string  $toolbarClass  The fully qualified class name for the Toolbar
+	 * @param   array   $config        The configuration values for the Toolbar object
 	 *
 	 * @return  Toolbar
 	 *
 	 * @throws  \RuntimeException  If the $toolbarClass does not exist
 	 */
-	protected function createToolbar($toolbarClass)
+	protected function createToolbar($toolbarClass, array $config = array())
 	{
 		if (!class_exists($toolbarClass))
 		{
 			throw new \RuntimeException(\JText::_('LIB_FOF_TOOLBAR_ERR_NOT_FOUND'), 500);
 		}
 
-		return new $toolbarClass($this->container);
+		return new $toolbarClass($this->container, $config);
 	}
 
 	/**
 	 * Creates a Dispatcher object
 	 *
 	 * @param   string  $dispatcherClass  The fully qualified class name for the Dispatcher
+	 * @param   array   $config            The configuration values for the Dispatcher object
 	 *
 	 * @return  Dispatcher
 	 *
 	 * @throws  \RuntimeException  If the $dispatcherClass does not exist
 	 */
-	protected function createDispatcher($dispatcherClass)
+	protected function createDispatcher($dispatcherClass, array $config = array())
 	{
 		if (!class_exists($dispatcherClass))
 		{
 			throw new \RuntimeException(\JText::_('LIB_FOF_DISPATCHER_ERR_NOT_FOUND'), 500);
 		}
 
-		return new $dispatcherClass($this->container);
+		return new $dispatcherClass($this->container, $config);
 	}
 }

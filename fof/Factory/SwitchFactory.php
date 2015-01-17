@@ -7,7 +7,6 @@
 
 namespace FOF30\Factory;
 
-use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
 use FOF30\Model\Model;
@@ -101,15 +100,17 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	/**
 	 * Creates a new Dispatcher
 	 *
+	 * @param   array  $config  The configuration values for the Dispatcher object
+	 *
 	 * @return  Dispatcher
 	 */
-	function dispatcher()
+	function dispatcher(array $config = array())
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
 
 		try
 		{
-			return $this->createDispatcher($dispatcherClass);
+			return $this->createDispatcher($dispatcherClass, $config);
 		}
 		catch (\RuntimeException $e)
 		{
@@ -120,27 +121,29 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 
 		try
 		{
-			return $this->createDispatcher($dispatcherClass);
+			return $this->createDispatcher($dispatcherClass, $config);
 		}
 		catch (\RuntimeException $e)
 		{
 			// Not found. Return the default Dispatcher
-			return new Dispatcher($this->container);
+			return new Dispatcher($this->container, $config);
 		}
 	}
 
 	/**
 	 * Creates a new Toolbar
 	 *
+	 * @param   array  $config  The configuration values for the Toolbar object
+	 *
 	 * @return  Toolbar
 	 */
-	function toolbar()
+	function toolbar(array $config = array())
 	{
 		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
 
 		try
 		{
-			return $this->createToolbar($toolbarClass);
+			return $this->createToolbar($toolbarClass, $config);
 		}
 		catch (\RuntimeException $e)
 		{
@@ -151,12 +154,12 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 
 		try
 		{
-			return $this->createToolbar($toolbarClass);
+			return $this->createToolbar($toolbarClass, $config);
 		}
 		catch (\RuntimeException $e)
 		{
 			// Not found. Return the default Dispatcher
-			return new Toolbar($this->container);
+			return new Toolbar($this->container, $config);
 		}
 	}
 }

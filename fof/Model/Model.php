@@ -65,7 +65,8 @@ class Model
 	/**
 	 * Public class constructor
 	 *
-	 * You can use the $container['mvc_config'] array to pass some configuration values to the object:
+	 * You can use the $config array to pass some configuration values to the object:
+	 *
 	 * state			stdClass|array. The state variables of the Model.
 	 * use_populate		Boolean. When true the model will set its state from populateState() instead of the request.
 	 * ignore_request	Boolean. When true getState will now automatically load state data from the request.
@@ -77,7 +78,13 @@ class Model
 	{
 		$this->container = $container;
 
-		// Set the model's name
+		// Set the model's name from $config
+		if (isset($config['name']))
+		{
+			$this->name = $config['name'];
+		}
+
+		// If $config['name'] is not set, auto-detect the model's name
 		$this->name = $this->getName();
 
 		// Set the model state

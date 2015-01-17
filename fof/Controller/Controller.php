@@ -185,13 +185,20 @@ class Controller
 	protected $csrfProtection = 2;
 
 	/**
-	 * Public constructor of the Controller class
+	 * Public constructor of the Controller class. You can pass the following variables in the $config array:
+	 * name          string  The name of the Controller. Default: auto detect from the class name
+	 * default_task  string  The task to use when none is specified. Default: main
+	 * viewName      string  The view name. Default: the same as the controller name
+	 * modelName     string  The model name. Default: the same as the controller name
+	 * viewConfig    array   The configuration overrides for the View.
+	 * modelConfig   array   The configuration overrides for the Model.
 	 *
-	 * @param   Container $container The application container
+	 * @param   Container  $container  The application container
+	 * @param   array      $config     The configuration array
 	 *
 	 * @return  Controller
 	 */
-	public function __construct(Container $container)
+	public function __construct(Container $container, array $config = array())
 	{
 		// Initialise
 		$this->methods = array();
@@ -200,15 +207,6 @@ class Controller
 		$this->paths = array();
 		$this->redirect = null;
 		$this->taskMap = array();
-
-		if (isset($container['mvc_config']))
-		{
-			$config = $container['mvc_config'];
-		}
-		else
-		{
-			$config = array();
-		}
 
 		// Get a local copy of the container
 		$this->container = $container;
@@ -234,6 +232,11 @@ class Controller
 			}
 		}
 
+		if (isset($config['name']))
+		{
+			$this->name = $config['name'];
+		}
+
 		// Get the default values for the component and view names
 		$this->view = $this->getName();
 		$this->layout = $this->input->getCmd('layout', null);
@@ -246,16 +249,6 @@ class Controller
 		else
 		{
 			$this->registerDefaultTask('main');
-		}
-
-		// Set the default view.
-		if (array_key_exists('default_view', $config))
-		{
-			$this->default_view = $config['default_view'];
-		}
-		elseif (empty($this->default_view))
-		{
-			$this->default_view = $this->view;
 		}
 
 		// Cache the config
@@ -510,9 +503,9 @@ class Controller
 
 		if (!array_key_exists($modelName, $this->modelInstances))
 		{
-			if (empty($config))
+			if (empty($config) && isset($this->config['modelConfig']))
 			{
-				$config = $this->config;
+				$config = $this->config['modelConfig'];
 			}
 
 			if (empty($name))
@@ -526,8 +519,6 @@ class Controller
 				$config['modelClearState'] = true;
 				$config['modelClearInput'] = true;
 			}
-
-			$this->container['mvc_config'] = $config;
 
 			// Get the model's class name
 			$modelNameForClass = empty($name) ? $this->modelName : ucfirst($name);
@@ -565,14 +556,12 @@ class Controller
 
 		if (!array_key_exists($viewName, $this->viewInstances))
 		{
-			if (empty($config))
+			if (empty($config) && isset($this->config['viewConfig']))
 			{
-				$config = $this->config;
+				$config = $this->config['viewConfig'];
 			}
 
 			$viewType = $this->input->getCmd('format', 'html');
-
-			$this->container['mvc_config'] = $config;
 
 			// Get the model's class name
 			$viewNameForClass = empty($name) ? $this->viewName : ucfirst($name);

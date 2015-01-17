@@ -1076,7 +1076,7 @@ class DataController extends Controller
 	 *
 	 * @return  DataModel  The instance of the Model known to this Controller
 	 *
-	 * @throws  \Exception  When the model type doesn't match our expectations
+	 * @throws  \RuntimeException  When the model type doesn't match our expectations
 	 */
 	public function getModel($name = null, $config = array())
 	{
@@ -1084,7 +1084,7 @@ class DataController extends Controller
 
 		if (is_null($name) && !($model instanceof DataModel))
 		{
-			throw new \Exception('Model ' . get_class($model) . ' is not a database-aware Model');
+			throw new \RuntimeException('Model ' . get_class($model) . ' is not a database-aware Model');
 		}
 
 		return $model;

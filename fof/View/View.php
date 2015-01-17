@@ -129,25 +129,30 @@ class View
 	protected $doPostRender = true;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param   Container $container   A named configuration array for object construction.<br/>
-	 *                                 Inside it you can have an 'mvc_option' array with the following options:<br/>
-	 *                                 name: the name (optional) of the view (defaults to the view class name
-	 *                                 suffix).<br/> escape: the name (optional) of the function to use for escaping
-	 *                                 strings<br/> template_path: the path (optional) of the layout directory
-	 *                                 (defaults to base_path + /views/ + view name<br/> layout: the layout (optional)
-	 *                                 to use to display the view<br/>
+	 * The $config array can contain the following overrides:
+	 * name           string  The name of the view (defaults to the view class name)
+	 * template_path  string  The path of the layout directory
+	 * layout         string  The layout for displaying the view
+	 *
+	 * @param   Container $container  The container we belong to
+	 * @param   array     $config     The configuration overrides for the view
 	 *
 	 * @return  View
 	 */
-	public function __construct(Container $container)
+	public function __construct(Container $container, array $config = array())
 	{
 		$this->container = $container;
 
-		$this->config = isset($container['mvc_config']) ? $container['mvc_config'] : array();
+		$this->config = $config;
 
 		// Get the view name
+		if (isset($this->config['name']))
+		{
+			$this->name = $this->config['name'];
+		}
+
 		$this->name = $this->getName();
 
 		// Set the default template search path

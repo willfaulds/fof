@@ -39,21 +39,20 @@ class Toolbar
 	protected $renderFrontendButtons = false;
 
 	/**
-	 * Public constructor. The Container can include a key 'mvc_config' holding an array with MVC configuration
-	 * overrides. The values taken into account by the Toolbar are:
+	 * Public constructor.
+	 *
+	 * The $config array can contain the following optional values:
 	 *
 	 * renderFrontendButtons		bool	Should I render buttons in the front-end of the component?
 	 * renderFrontendSubmenu		bool	Should I render the submenu in the front-end of the component?
 	 *
-	 * @param   Container  $c  The container for the component
+	 * @param   Container  $c       The container for the component
+	 * @param   array      $config  The configuration overrides, see above
 	 */
-	public function __construct(Container $c)
+	public function __construct(Container $c, array $config = array())
 	{
 		// Store the container reference in this object
 		$this->container = $c;
-
-		// Extract the MVC configuration
-		$config = isset($container['mvc_config']) ? $container['mvc_config'] : array();
 
 		// Get a reference to some useful objects
 		$input = $this->container->input;

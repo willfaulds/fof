@@ -115,20 +115,20 @@ class DataModel extends Model implements \JTableInterface
 	/**
 	 * Public constructor. Overrides the parent constructor, adding support for database-aware models.
 	 *
-	 * You can use the $container['mvc_config'] array to pass some configuration values to the object:
+	 * You can use the $config array to pass some configuration values to the object:
 	 *
-	 * tableName            String. The name of the database table to use. Default: #__appName_viewNamePlural (Ruby on Rails convention)
-	 * idFieldName            String. The table key field name. Default: appName_viewNameSingular_id (Ruby on Rails convention)
-	 * knownFields            Array. The known fields in the table. Default: read from the table itself
-	 * autoChecks            Boolean. Should I turn on automatic data validation checks?
-	 * fieldsSkipChecks        Array. List of fields which should not participate in automatic data validation checks.
-	 * aliasFields            Array. Associative array of "magic" field aliases.
-	 * behavioursDispatcher    EventDispatcher. The model behaviours event dispatcher.
-	 * behaviourObservers    Array. The model behaviour observers to attach to the behavioursDispatcher.
-	 * behaviours            Array. A list of behaviour names to instantiate and attach to the behavioursDispatcher.
-	 * fillable_fields        Array. Which fields should be auto-filled from the model state (by extent, the request)?
-	 * guarded_fields        Array. Which fields should never be auto-filled from the model state (by extent, the request)?
-	 * relations            Array (hashed). The relations to autoload on model creation.
+	 * tableName             String   The name of the database table to use. Default: #__appName_viewNamePlural (Ruby on Rails convention)
+	 * idFieldName           String   The table key field name. Default: appName_viewNameSingular_id (Ruby on Rails convention)
+	 * knownFields           Array    The known fields in the table. Default: read from the table itself
+	 * autoChecks            Boolean  Should I turn on automatic data validation checks?
+	 * fieldsSkipChecks      Array    List of fields which should not participate in automatic data validation checks.
+	 * aliasFields           Array    Associative array of "magic" field aliases.
+	 * behavioursDispatcher  EventDispatcher  The model behaviours event dispatcher.
+	 * behaviourObservers    Array    The model behaviour observers to attach to the behavioursDispatcher.
+	 * behaviours            Array    A list of behaviour names to instantiate and attach to the behavioursDispatcher.
+	 * fillable_fields       Array    Which fields should be auto-filled from the model state (by extent, the request)?
+	 * guarded_fields        Array    Which fields should never be auto-filled from the model state (by extent, the request)?
+	 * relations             Array (hashed)  The relations to autoload on model creation.
 	 *
 	 * Setting either fillable_fields or guarded_fields turns on automatic filling of fields in the constructor. If both
 	 * are set only guarded_fields is taken into account. Fields are not filled automatically outside the constructor.
@@ -142,7 +142,7 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function __construct(Container $container, array $config = array())
 	{
-		// First call the parent constructor. It also populates $this->config from $container['mvc_config']
+		// First call the parent constructor.
 		parent::__construct($container, $config);
 
 		// Should I use a different database object?
