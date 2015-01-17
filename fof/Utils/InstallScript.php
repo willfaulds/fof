@@ -1680,9 +1680,9 @@ class InstallScript
 				->where('home = 0');
 
 			$db->setQuery($query);
-			$menu_ids_level1 = $db->loadColumn();
+			$menu_ids_level1 = $db->loadResult();
 
-			if (empty($menu_ids_level1))
+			if (!$menu_ids_level1)
 			{
 				// Oops! Could not get the menu ID. Go back and rollback changes.
 				\JError::raiseWarning(1, $table->getError());
