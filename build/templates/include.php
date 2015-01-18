@@ -14,9 +14,9 @@ if (!defined('FOF30_INCLUDED'))
 	// Register the F0F autoloader
     require_once __DIR__ . '/Autoloader/Autoloader.php';
 
-	// TODO Register a debug log
-	if (defined('JDEBUG') && JDEBUG)
+	// Register a debug log
+	if (defined('JDEBUG') && JDEBUG && class_exists('JLog'))
 	{
-		// F0FPlatform::getInstance()->logAddLogger('fof.log.php');
+		\JLog::addLogger(array('text_file' => 'fof.log.php'), \JLog::ALL, array('fof'));
 	}
 }
