@@ -7,7 +7,7 @@
 
 defined('_JEXEC') or die();
 
-if (!defined('FOF30_INCLUDED'))
+if (!defined('FOF30_INCLUDED') && !class_exists('FOF30\\Autoloader\\Autoloader'))
 {
     define('FOF30_INCLUDED', '##VERSION##');
 
