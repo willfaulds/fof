@@ -9,7 +9,6 @@ namespace FOF30\Container;
 
 use FOF30\Autoloader\Autoloader;
 use FOF30\Inflector\Inflector;
-use FOF30\Pimple\Pimple;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
 use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
 use FOF30\Render\RenderInterface;
@@ -64,7 +63,7 @@ defined('_JEXEC') or die;
  * @property-read  TransparentAuth                     $transparentAuth    Transparent authentication handler
  * @property-read  \FOF30\Toolbar\Toolbar              $toolbar            The component's toolbar
  */
-class Container extends Pimple
+class Container extends ContainerBase
 {
 	/**
 	 * Returns a container instance for a specific component. This method goes through fof.xml to read the default
