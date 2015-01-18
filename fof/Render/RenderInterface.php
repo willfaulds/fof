@@ -10,7 +10,7 @@ namespace FOF30\Render;
 
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
-use FOF30\Form\FormInterface;
+use FOF30\Form\Form;
 
 interface RenderInterface
 {
@@ -26,8 +26,8 @@ interface RenderInterface
 	/**
 	 * Echoes any HTML to show before the view template
 	 *
-	 * @param   string    $view      The current view
-	 * @param   string    $task      The current task
+	 * @param   string $view The current view
+	 * @param   string $task The current task
 	 *
 	 * @return  void
 	 */
@@ -36,8 +36,8 @@ interface RenderInterface
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
-	 * @param   string    $view      The current view
-	 * @param   string    $task      The current task
+	 * @param   string $view The current view
+	 * @param   string $task The current task
 	 *
 	 * @return  void
 	 */
@@ -46,56 +46,56 @@ interface RenderInterface
 	/**
 	 * Renders a Form and returns the corresponding HTML
 	 *
-	 * @param   FormInterface &$form     The form to render
-	 * @param   DataModel     $model     The model providing our data
-	 * @param   string        $formType  The form type: edit, browse or read
-	 * @param   boolean       $raw       If true, the raw form fields rendering (without the surrounding form tag) is
+	 * @param   Form      &$form         The form to render
+	 * @param   DataModel $model         The model providing our data
+	 * @param   string    $formType      The form type: edit, browse or read
+	 * @param   boolean   $raw           If true, the raw form fields rendering (without the surrounding form tag) is
 	 *                                   returned.
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderForm(FormInterface &$form, DataModel $model, $formType = null, $raw = false);
+	function renderForm(Form &$form, DataModel $model, $formType = null, $raw = false);
 
 	/**
 	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FormInterface &$form     The form to render
-	 * @param   DataModel     $model     The model providing our data
+	 * @param   Form      &$form The form to render
+	 * @param   DataModel $model The model providing our data
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormBrowse(FormInterface &$form, DataModel $model);
+	function renderFormBrowse(Form &$form, DataModel $model);
 
 	/**
 	 * Renders a F0FForm for a Read view and returns the corresponding HTML
 	 *
-	 * @param   FormInterface &$form     The form to render
-	 * @param   DataModel     $model     The model providing our data
+	 * @param   Form      &$form The form to render
+	 * @param   DataModel $model The model providing our data
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormRead(FormInterface &$form, DataModel $model);
+	function renderFormRead(Form &$form, DataModel $model);
 
 	/**
 	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   FormInterface &$form     The form to render
-	 * @param   DataModel     $model     The model providing our data
+	 * @param   Form      &$form The form to render
+	 * @param   DataModel $model The model providing our data
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormEdit(FormInterface &$form, DataModel $model);
+	function renderFormEdit(Form &$form, DataModel $model);
 
 	/**
 	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   FormInterface &$form     The form to render
-	 * @param   DataModel     $model     The model providing our data
-	 * @param   string        $formType  The form type: edit, browse or read
+	 * @param   Form      &$form    The form to render
+	 * @param   DataModel $model    The model providing our data
+	 * @param   string    $formType The form type: edit, browse or read
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	function renderFormRaw(FormInterface &$form, DataModel $model, $formType = null);
+	function renderFormRaw(Form &$form, DataModel $model, $formType = null);
 
 
 	/**
@@ -113,26 +113,26 @@ interface RenderInterface
 	/**
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
 	 *
-	 * @param   \stdClass     &$fieldset  The fieldset to render
-	 * @param   FormInterface &$form      The form to render
-	 * @param   DataModel     $model      The model providing our data
-	 * @param   string        $formType   The form type e.g. 'edit' or 'read'
-	 * @param   boolean       $showHeader Should I render the fieldset's header?
+	 * @param   \stdClass &$fieldset  The fieldset to render
+	 * @param   Form      &$form      The form to render
+	 * @param   DataModel $model      The model providing our data
+	 * @param   string    $formType   The form type e.g. 'edit' or 'read'
+	 * @param   boolean   $showHeader Should I render the fieldset's header?
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 */
-	function renderFieldset(\stdClass &$fieldset, FormInterface &$form, DataModel $model, $formType, $showHeader = true);
+	function renderFieldset(\stdClass &$fieldset, Form &$form, DataModel $model, $formType, $showHeader = true);
 
 	/**
 	 * Renders a label for a fieldset.
 	 *
-	 * @param   object        $field The field of the label to render
-	 * @param   FormInterface &$form The form to render
-	 * @param    string       $title The title of the label
+	 * @param   object  $field The field of the label to render
+	 * @param   Form    &$form The form to render
+	 * @param    string $title The title of the label
 	 *
 	 * @return    string        The rendered label
 	 */
-	function renderFieldsetLabel($field, FormInterface &$form, $title);
+	function renderFieldsetLabel($field, Form &$form, $title);
 
 	/**
 	 * Checks if the fieldset defines a tab pane

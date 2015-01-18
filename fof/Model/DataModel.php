@@ -103,6 +103,9 @@ class DataModel extends Model implements \JTableInterface
 	/** @var  \JAccessRules  The rules associated with this record. */
 	protected $_rules;
 
+	/** @var  string  The UCM content type (typically: com_something.viewname, e.g. com_foobar.items) */
+	protected $contentType = null;
+
 	/**
 	 * The asset key for items in this table. It's usually something in the
 	 * com_example.viewname format. They asset name will be this key appended
@@ -128,7 +131,8 @@ class DataModel extends Model implements \JTableInterface
 	 * behaviours            Array    A list of behaviour names to instantiate and attach to the behavioursDispatcher.
 	 * fillable_fields       Array    Which fields should be auto-filled from the model state (by extent, the request)?
 	 * guarded_fields        Array    Which fields should never be auto-filled from the model state (by extent, the request)?
-	 * relations             Array (hashed)  The relations to autoload on model creation.
+	 * relations             Array    (hashed)  The relations to autoload on model creation.
+	 * contentType           String   The UCM content type, e.g. "com_foobar.items"
 	 *
 	 * Setting either fillable_fields or guarded_fields turns on automatic filling of fields in the constructor. If both
 	 * are set only guarded_fields is taken into account. Fields are not filled automatically outside the constructor.
@@ -290,6 +294,12 @@ class DataModel extends Model implements \JTableInterface
 
 		$assetKey = $this->container->componentName . '.' . strtolower(Inflector::singularize($this->getName()));
 		$this->setAssetKey($assetKey);
+
+		// Set the UCM content type if applicable
+		if (isset($config['contentType']))
+		{
+			$this->contentType = $config['contentType'];
+		}
 
 		// Do I have to auto-fill the fields?
 		if ($this->autoFill)
@@ -3063,5 +3073,46 @@ class DataModel extends Model implements \JTableInterface
 		$this->bind($rowArray);
 
 		return true;
+	}
+
+	/**
+	 * Applies view access level filtering for the specified user. Useful to
+	 * filter a front-end items listing.
+	 *
+	 * @param   integer  $userID  The user ID to use. Skip it to use the currently logged in user.
+	 *
+	 * @return  DataModel  Reference to self
+	 */
+	public function applyAccessFiltering($userID = null)
+	{
+		if (!$this->hasField('access'))
+		{
+			return $this;
+		}
+
+		$user = $this->container->platform->getUser($userID);
+
+		$accessField = $this->getFieldAlias('access');
+
+		$this->setState($accessField, $user->getAuthorisedViewLevels());
+
+		return $this;
+	}
+
+	/**
+	 * Get the content type for ucm
+	 *
+	 * @return   string  The content type alias
+	 *
+	 * @throws   \Exception  If you have not set the contentType configuration variable
+	 */
+	public function getContentType()
+	{
+		if ($this->contentType)
+		{
+			return $this->contentType;
+		}
+
+		throw new \Exception("Content type for DataModel {$this->name} is not set.");
 	}
 }

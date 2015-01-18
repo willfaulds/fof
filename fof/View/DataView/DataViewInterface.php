@@ -8,6 +8,8 @@
 namespace FOF30\View\DataView;
 
 
+use FOF30\Container\Container;
+
 interface DataViewInterface
 {
 	/**
@@ -22,7 +24,7 @@ interface DataViewInterface
 	/**
 	 * Returns the internal list of useful variables to the benefit of header fields.
 	 *
-	 * @return array
+	 * @return \stdClass
 	 */
 	public function getLists();
 
@@ -32,4 +34,30 @@ interface DataViewInterface
 	 * @return \stdClass
 	 */
 	public function getPerms();
+
+	/**
+	 * Returns a reference to the pagination object of this view
+	 *
+	 * @return \JPagination
+	 */
+	public function getPagination();
+
+	/**
+	 * Method to get the view name
+	 *
+	 * The model name by default parsed using the classname, or it can be set
+	 * by passing a $config['name'] in the class constructor
+	 *
+	 * @return  string  The name of the model
+	 *
+	 * @throws  \Exception
+	 */
+	public function getName();
+
+	/**
+	 * Returns a reference to the container attached to this View
+	 *
+	 * @return Container
+	 */
+	public function &getContainer();
 }

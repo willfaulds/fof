@@ -19,7 +19,7 @@ defined('_JEXEC') or die;
  */
 class Raw extends View implements DataViewInterface
 {
-	/** @var   array  Data lists */
+	/** @var   \stdClass  Data lists */
 	protected $lists = null;
 
 	/** @var \JPagination The pagination object */
@@ -173,6 +173,16 @@ class Raw extends View implements DataViewInterface
 	public function getPerms()
 	{
 		return $this->permissions;
+	}
+
+	/**
+	 * Returns a reference to the pagination object of this view
+	 *
+	 * @return \JPagination
+	 */
+	public function getPagination()
+	{
+		return $this->pagination;
 	}
 
 	/**
