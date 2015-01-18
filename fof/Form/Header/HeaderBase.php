@@ -7,6 +7,7 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Form;
 use FOF30\Inflector\Inflector;
 use SimpleXMLElement;
 
