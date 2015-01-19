@@ -10,6 +10,7 @@ namespace FOF30\Factory;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
+use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -86,4 +87,17 @@ interface FactoryInterface
 	 * @return  TransparentAuthentication
 	 */
 	function transparentAuthentication(array $config = array());
+
+	/**
+	 * Creates a new Form object
+	 *
+	 * @param   string  $name     The name of the form.
+	 * @param   string  $source   The form source filename without path and .xml extension e.g. "form.default"
+	 * @param   array   $options  Options to the Form object
+	 * @param   bool    $replace  Should form fields be replaced if a field already exists with the same group/name?
+	 * @param   bool    $xpath    An optional xpath to search for the fields.
+	 *
+	 * @return  Form|null  The loaded form or null if the form filename doesn't exist
+	 */
+	function form($name, $source, array $options = array(), $replace = true, $xpath = false);
 }

@@ -10,6 +10,7 @@ namespace FOF30\Factory;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
+use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -26,6 +27,8 @@ class BasicFactory implements FactoryInterface
 {
 	/** @var  Container  The container we belong to */
 	protected $container = null;
+
+	protected $formLookupInOtherSide = false;
 
 	/**
 	 * Public constructor for the factory object
@@ -150,6 +153,51 @@ class BasicFactory implements FactoryInterface
 	}
 
 	/**
+	 * Creates a new Form object
+	 *
+	 * @param   string $name    The name of the form.
+	 * @param   string $source  The form source filename without path and .xml extension e.g. "form.default" OR raw XML data
+	 * @param   array  $options Options to the Form object
+	 * @param   bool   $replace Should form fields be replaced if a field already exists with the same group/name?
+	 * @param   bool   $xpath   An optional xpath to search for the fields.
+	 *
+	 * @return  Form|null  The loaded form or null if the form filename doesn't exist
+	 *
+	 * @throws  \RuntimeException If the form exists but cannot be loaded
+	 */
+	function form($name, $source, array $options = array(), $replace = true, $xpath = false)
+	{
+		// Get a new form instance
+		$form = new Form($this->container, $name, $options);
+
+		// If $source looks like raw XML data, parse it directly
+		if (strpos($source, '<fof') !== false)
+		{
+			if ($form->load($source, $replace, $xpath) === false)
+			{
+				throw new \RuntimeException('FOF: could not load form from raw data');
+			}
+
+			return $form;
+		}
+
+		$formFileName = $this->getFormFilename($source);
+
+		if (empty($formFileName))
+		{
+			return null;
+		}
+
+		if ($form->loadFile($formFileName, $replace, $xpath) === false)
+		{
+			throw new \RuntimeException('FOF: could not load form from filename ' . $source);
+		}
+
+		return $form;
+	}
+
+
+	/**
 	 * Creates a Controller object
 	 *
 	 * @param   string  $controllerClass  The fully qualified class name for the Controller
@@ -267,5 +315,23 @@ class BasicFactory implements FactoryInterface
 		}
 
 		return new $authClass($this->container, $config);
+	}
+
+	/**
+	 * Tries to find the absolute file path for an abstract form filename. For example, it may convert form.default to
+	 * /home/myuser/mysite/components/com_foobar/View/tmpl/form.default.xml.
+	 *
+	 * @param $source
+	 */
+	protected function getFormFilename($source)
+	{
+		$componentName = $this->container->componentName;
+		$viewName = $this->container->dispatcher->getController()->getView()->getName();
+
+		$componentPaths = $this->container->platform->getComponentBaseDirs($componentName);
+
+		$file_root      = $componentPaths['main'];
+		$alt_file_root  = $componentPaths['alt'];
+		$template_root  = $this->container->platform->getTemplateOverridePath($componentName);
 	}
 }

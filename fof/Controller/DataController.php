@@ -136,12 +136,12 @@ class DataController extends Controller
 		}
 
 		// Get the request HTTP verb
-		if (!isset($_SERVER['REQUEST_METHOD']))
-		{
-			$_SERVER['REQUEST_METHOD'] = 'GET';
-		}
+		$requestMethod = 'GET';
 
-		$requestMethod = strtoupper($_SERVER['REQUEST_METHOD']);
+		if (isset($_SERVER['REQUEST_METHOD']))
+		{
+			$requestMethod = strtoupper($_SERVER['REQUEST_METHOD']);
+		}
 
 		// Alter the task based on the verb
 		switch ($requestMethod)
@@ -270,10 +270,25 @@ class DataController extends Controller
 	 */
 	public function browse()
 	{
-		if ($this->input->get('savestate', -999, 'int') == -999)
+		// Initialise the savestate
+		$saveState = $this->input->get('savestate', -999, 'int');
+
+		if ($saveState == -999)
 		{
-			$this->input->set('savestate', true);
+			$saveState = true;
 		}
+
+		$this->getModel()->savestate($saveState);
+
+		// Apply the Form name
+		$formName = 'form.default';
+
+		if (!empty($this->layout))
+		{
+			$formName = 'form.' . $this->layout;
+		}
+
+		$this->getModel()->setFormName($formName);
 
 		$this->display();
 	}
