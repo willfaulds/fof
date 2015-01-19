@@ -91,13 +91,16 @@ interface FactoryInterface
 	/**
 	 * Creates a new Form object
 	 *
-	 * @param   string  $name     The name of the form.
-	 * @param   string  $source   The form source filename without path and .xml extension e.g. "form.default"
-	 * @param   array   $options  Options to the Form object
-	 * @param   bool    $replace  Should form fields be replaced if a field already exists with the same group/name?
-	 * @param   bool    $xpath    An optional xpath to search for the fields.
+	 * @param   string  $name      The name of the form.
+	 * @param   string  $source    The form source filename without path and .xml extension e.g. "form.default" OR raw XML data
+	 * @param   string  $viewName  The name of the view you're getting the form for.
+	 * @param   array   $options   Options to the Form object
+	 * @param   bool    $replace   Should form fields be replaced if a field already exists with the same group/name?
+	 * @param   bool    $xpath     An optional xpath to search for the fields.
 	 *
 	 * @return  Form|null  The loaded form or null if the form filename doesn't exist
+	 *
+	 * @throws  \RuntimeException If the form exists but cannot be loaded
 	 */
-	function form($name, $source, array $options = array(), $replace = true, $xpath = false);
+	function form($name, $source, $viewName = null, array $options = array(), $replace = true, $xpath = false);
 }

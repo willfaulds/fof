@@ -290,7 +290,7 @@ class DataController extends Controller
 
 		$this->getModel()->setFormName($formName);
 
-		$this->display();
+		$this->display(in_array('browse', $this->cacheableTasks));
 	}
 
 	/**
@@ -325,7 +325,11 @@ class DataController extends Controller
 			$this->layout = 'item';
 		}
 
-		$this->display();
+		// Apply the Form name
+		$formName = 'form.' . $this->layout;
+		$this->getModel()->setFormName($formName);
+
+		$this->display(in_array('read', $this->cacheableTasks));
 	}
 
 	/**
@@ -355,8 +359,18 @@ class DataController extends Controller
 			$model->bind($itemData);
 		}
 
+		// Apply the Form name
+		$formName = 'form.form';
+
+		if (!empty($this->layout))
+		{
+			$formName = 'form.' . $this->layout;
+		}
+
+		$this->getModel()->setFormName($formName);
+
 		// Display the edit form
-		$this->display();
+		$this->display(in_array('add', $this->cacheableTasks));
 	}
 
 	/**
@@ -410,8 +424,12 @@ class DataController extends Controller
 			$model->bind($itemData);
 		}
 
+		// Apply the Form name
+		$formName = 'form.' . $this->layout;
+		$this->getModel()->setFormName($formName);
+
 		// Display the edit form
-		$this->display();
+		$this->display(in_array('edit', $this->cacheableTasks));
 	}
 
 	/**
@@ -1005,6 +1023,10 @@ class DataController extends Controller
 		{
 			$this->layout = 'form';
 		}
+
+		// Apply the Form name
+		$formName = 'form.' . $this->layout;
+		$this->getModel()->setFormName($formName);
 
 		// Save the data
 		$status = true;

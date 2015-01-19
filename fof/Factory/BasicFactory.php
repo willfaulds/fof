@@ -11,6 +11,7 @@ use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
 use FOF30\Form\Form;
+use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -155,17 +156,18 @@ class BasicFactory implements FactoryInterface
 	/**
 	 * Creates a new Form object
 	 *
-	 * @param   string $name    The name of the form.
-	 * @param   string $source  The form source filename without path and .xml extension e.g. "form.default" OR raw XML data
-	 * @param   array  $options Options to the Form object
-	 * @param   bool   $replace Should form fields be replaced if a field already exists with the same group/name?
-	 * @param   bool   $xpath   An optional xpath to search for the fields.
+	 * @param   string  $name      The name of the form.
+	 * @param   string  $source    The form source filename without path and .xml extension e.g. "form.default" OR raw XML data
+	 * @param   string  $viewName  The name of the view you're getting the form for.
+	 * @param   array   $options   Options to the Form object
+	 * @param   bool    $replace   Should form fields be replaced if a field already exists with the same group/name?
+	 * @param   bool    $xpath     An optional xpath to search for the fields.
 	 *
 	 * @return  Form|null  The loaded form or null if the form filename doesn't exist
 	 *
 	 * @throws  \RuntimeException If the form exists but cannot be loaded
 	 */
-	function form($name, $source, array $options = array(), $replace = true, $xpath = false)
+	function form($name, $source, $viewName = null, array $options = array(), $replace = true, $xpath = false)
 	{
 		// Get a new form instance
 		$form = new Form($this->container, $name, $options);
@@ -181,7 +183,7 @@ class BasicFactory implements FactoryInterface
 			return $form;
 		}
 
-		$formFileName = $this->getFormFilename($source);
+		$formFileName = $this->getFormFilename($source, $viewName);
 
 		if (empty($formFileName))
 		{
@@ -321,17 +323,109 @@ class BasicFactory implements FactoryInterface
 	 * Tries to find the absolute file path for an abstract form filename. For example, it may convert form.default to
 	 * /home/myuser/mysite/components/com_foobar/View/tmpl/form.default.xml.
 	 *
-	 * @param $source
+	 * @param   string  $source    The abstract form filename
+	 * @param   string  $viewName  The name of the view we're getting the path for
+	 *
+	 * @return  string|bool  The fill path to the form XML file or boolean false if it's not found
 	 */
-	protected function getFormFilename($source)
+	protected function getFormFilename($source, $viewName = null)
 	{
+		if (empty($source))
+		{
+			return false;
+		}
+
 		$componentName = $this->container->componentName;
-		$viewName = $this->container->dispatcher->getController()->getView()->getName();
+
+		if (empty($viewName))
+		{
+			$viewName = $this->container->dispatcher->getController()->getView()->getName();
+		}
+
+		$viewNameAlt = Inflector::singularize($viewName);
+
+		if ($viewNameAlt == $viewName)
+		{
+			$viewNameAlt = Inflector::pluralize($viewName);
+		}
 
 		$componentPaths = $this->container->platform->getComponentBaseDirs($componentName);
 
 		$file_root      = $componentPaths['main'];
 		$alt_file_root  = $componentPaths['alt'];
 		$template_root  = $this->container->platform->getTemplateOverridePath($componentName);
+
+		// Basic paths we need to always search
+		$paths = array(
+			// Template override
+			$template_root . '/' . $viewName,
+			$template_root . '/' . $viewNameAlt,
+			// This side of the component
+			$file_root . '/View/' . $viewName . '/tmpl',
+			$file_root . '/View/' . $viewNameAlt . '/tmpl',
+		);
+
+		// The other side of the component
+		if ($this->formLookupInOtherSide)
+		{
+			$paths[] = $alt_file_root . '/View/' . $viewName . '/tmpl';
+			$paths[] = $alt_file_root . '/View/' . $viewNameAlt . '/tmpl';
+		}
+
+		// Legacy paths, this side of the component
+		$paths[] = $file_root . '/views/' . $viewName . '/tmpl';
+		$paths[] = $file_root . '/views/' . $viewNameAlt . '/tmpl';
+		$paths[] = $file_root . '/Model/forms';
+		$paths[] = $file_root . '/models/forms';
+
+		// Legacy paths, the other side of the component
+		if ($this->formLookupInOtherSide)
+		{
+			$paths[] = $file_root . '/views/' . $viewName . '/tmpl';
+			$paths[] = $file_root . '/views/' . $viewNameAlt . '/tmpl';
+			$paths[] = $file_root . '/Model/forms';
+			$paths[] = $file_root . '/models/forms';
+		}
+
+		$paths = array_unique($paths);
+
+		// Set up the suffixes to look into
+		$suffixes = array();
+		$temp_suffixes = $this->container->platform->getTemplateSuffixes();
+
+		if (!empty($temp_suffixes))
+		{
+			foreach ($temp_suffixes as $suffix)
+			{
+				$suffixes[] = $suffix . '.xml';
+			}
+		}
+
+		$suffixes[] = '.xml';
+
+		// Look for all suffixes in all paths
+		$result     = false;
+		$filesystem = $this->container->filesystem;
+
+		foreach ($paths as $path)
+		{
+			foreach ($suffixes as $suffix)
+			{
+				$filename = $path . '/' . $source . $suffix;
+
+				if ($filesystem->fileExists($filename))
+				{
+					$result = $filename;
+					break;
+				}
+			}
+
+			if ($result)
+			{
+				break;
+			}
+		}
+
+		return $result;
 	}
 }
