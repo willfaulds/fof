@@ -504,7 +504,17 @@ class View
 		}
 		else
 		{
+			if ($this->doPreRender)
+			{
+				$this->preRender();
+			}
+
 			echo $templateResult;
+
+			if ($this->doPostRender)
+			{
+				$this->postRender();
+			}
 
 			return true;
 		}
@@ -894,5 +904,27 @@ class View
 	public function setPostRender($value)
 	{
 		$this->doPostRender = $value;
+	}
+
+	/**
+	 * Runs before rendering the view template, echoing HTML to put before the
+	 * view template's generated HTML
+	 *
+	 * @return void
+	 */
+	protected function preRender()
+	{
+		// You need to implement this in children classes
+	}
+
+	/**
+	 * Runs after rendering the view template, echoing HTML to put after the
+	 * view template's generated HTML
+	 *
+	 * @return  void
+	 */
+	protected function postRender()
+	{
+		// You need to implement this in children classes
 	}
 }

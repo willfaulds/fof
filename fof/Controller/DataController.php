@@ -10,6 +10,7 @@ namespace FOF30\Controller;
 use FOF30\Container\Container;
 use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
+use FOF30\View\View;
 
 defined('_JEXEC') or die;
 
@@ -23,9 +24,16 @@ class DataController extends Controller
 	/**
 	 * The tasks for which caching should be enabled by default
 	 *
-	 * @var array
+	 * @var  array
 	 */
 	protected $cacheableTasks = array('browse', 'read');
+
+	/**
+	 * Do we have a valid XML form?
+	 *
+	 * @var  bool
+	 */
+	protected $hasForm = false;
 
 	/**
 	 * An associative array for required ACL privileges per task. For example:
@@ -263,6 +271,53 @@ class DataController extends Controller
 	}
 
 	/**
+	 * Returns a named View object
+	 *
+	 * @param   string $name     The Model name. If null we'll use the modelName
+	 *                           variable or, if it's empty, the same name as
+	 *                           the Controller
+	 * @param   array  $config   Configuration parameters to the Model. If skipped
+	 *                           we will use $this->config
+	 *
+	 * @return  View  The instance of the Model known to this Controller
+	 */
+	public function getView($name = null, $config = array())
+	{
+		if (!empty($name))
+		{
+			$viewName = strtolower($name);
+		}
+		elseif (!empty($this->viewName))
+		{
+			$viewName = strtolower($this->viewName);
+		}
+		else
+		{
+			$viewName = strtolower($this->view);
+		}
+
+		if (!array_key_exists($viewName, $this->viewInstances))
+		{
+			if (empty($config) && isset($this->config['viewConfig']))
+			{
+				$config = $this->config['viewConfig'];
+			}
+
+			$viewType = $this->input->getCmd('format', 'html');
+
+			if (($viewType == 'html') && $this->hasForm)
+			{
+				$viewType = 'form';
+			}
+
+			// Get the model's class name
+			$this->viewInstances[$viewName] = $this->container->factory->view($viewName, $viewType, $config);
+		}
+
+		return $this->viewInstances[$viewName];
+	}
+
+	/**
 	 * Implements a default browse task, i.e. read a bunch of records and send
 	 * them to the browser.
 	 *
@@ -290,6 +345,15 @@ class DataController extends Controller
 
 		$this->getModel()->setFormName($formName);
 
+		// Do we have a _valid_ form?
+		$form = $this->getModel()->getForm();
+
+		if ($form !== false)
+		{
+			$this->hasForm = true;
+		}
+
+		// Display the view
 		$this->display(in_array('browse', $this->cacheableTasks));
 	}
 
@@ -329,6 +393,15 @@ class DataController extends Controller
 		$formName = 'form.' . $this->layout;
 		$this->getModel()->setFormName($formName);
 
+		// Do we have a _valid_ form?
+		$form = $this->getModel()->getForm();
+
+		if ($form !== false)
+		{
+			$this->hasForm = true;
+		}
+
+		// Display the view
 		$this->display(in_array('read', $this->cacheableTasks));
 	}
 
@@ -369,7 +442,15 @@ class DataController extends Controller
 
 		$this->getModel()->setFormName($formName);
 
-		// Display the edit form
+		// Do we have a _valid_ form?
+		$form = $this->getModel()->getForm();
+
+		if ($form !== false)
+		{
+			$this->hasForm = true;
+		}
+
+		// Display the view
 		$this->display(in_array('add', $this->cacheableTasks));
 	}
 
@@ -428,7 +509,15 @@ class DataController extends Controller
 		$formName = 'form.' . $this->layout;
 		$this->getModel()->setFormName($formName);
 
-		// Display the edit form
+		// Do we have a _valid_ form?
+		$form = $this->getModel()->getForm();
+
+		if ($form !== false)
+		{
+			$this->hasForm = true;
+		}
+
+		// Display the view
 		$this->display(in_array('edit', $this->cacheableTasks));
 	}
 

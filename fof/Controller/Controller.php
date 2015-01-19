@@ -564,7 +564,6 @@ class Controller
 			$viewType = $this->input->getCmd('format', 'html');
 
 			// Get the model's class name
-			$viewNameForClass = empty($name) ? $this->viewName : ucfirst($name);
 			$this->viewInstances[$viewName] = $this->container->factory->view($viewName, $viewType, $config);
 		}
 
