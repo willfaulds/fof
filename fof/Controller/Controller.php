@@ -8,6 +8,8 @@
 namespace FOF30\Controller;
 
 use FOF30\Container\Container;
+use FOF30\Controller\Exception\CannotGetName;
+use FOF30\Controller\Exception\TaskNotFound;
 use FOF30\Model\DataModel;
 use FOF30\Model\Model;
 use FOF30\View\View;
@@ -301,7 +303,7 @@ class Controller
 	 *
 	 * @return  null|bool  False on execution failure
 	 *
-	 * @throws  \Exception  When the task is not found
+	 * @throws  TaskNotFound  When the task is not found
 	 */
 	public function execute($task)
 	{
@@ -311,7 +313,7 @@ class Controller
 
 		if (!isset($this->taskMap[$task]) && !isset($this->taskMap['__default']))
 		{
-			throw new \Exception(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
+			throw new TaskNotFound(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
 		}
 
 		$eventName = 'onBefore' . ucfirst($task);
@@ -628,7 +630,7 @@ class Controller
 	 *
 	 * @return  string  The name of the controller
 	 *
-	 * @throws  \Exception  If it's impossible to determine the name and it's not set
+	 * @throws  CannotGetName  If it's impossible to determine the name and it's not set
 	 */
 	public function getName()
 	{
@@ -638,7 +640,7 @@ class Controller
 
 			if (!preg_match('/(.*)\\\\Controller\\\\(.*)/i', get_class($this), $r))
 			{
-				throw new \Exception(\JText::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
+				throw new CannotGetName(\JText::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
 			}
 
 			$this->name = strtolower($r[2]);

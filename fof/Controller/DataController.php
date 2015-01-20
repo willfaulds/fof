@@ -8,6 +8,9 @@
 namespace FOF30\Controller;
 
 use FOF30\Container\Container;
+use FOF30\Controller\Exception\ItemNotFound;
+use FOF30\Controller\Exception\NotADataModel;
+use FOF30\Controller\Exception\TaskNotFound;
 use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use FOF30\View\View;
@@ -99,7 +102,7 @@ class DataController extends Controller
 	 *
 	 * @return  null|bool  False on execution failure
 	 *
-	 * @throws  \Exception  When the task is not found
+	 * @throws  TaskNotFound  When the task is not found
 	 */
 	public function execute($task)
 	{
@@ -363,7 +366,7 @@ class DataController extends Controller
 	 *
 	 * @return  void
 	 *
-	 * @throws \RuntimeException When the item is not found
+	 * @throws ItemNotFound When the item is not found
 	 */
 	public function read()
 	{
@@ -379,7 +382,7 @@ class DataController extends Controller
 			if ($model->getId() != reset($ids))
 			{
 				$key = $this->container->componentName . '_ERR_' . $model->getName() . '_NOTFOUND';
-				throw new \RuntimeException(\JText::_($key), 404);
+				throw new ItemNotFound(\JText::_($key), 404);
 			}
 		}
 
@@ -1202,7 +1205,7 @@ class DataController extends Controller
 	 *
 	 * @return  DataModel  The instance of the Model known to this Controller
 	 *
-	 * @throws  \RuntimeException  When the model type doesn't match our expectations
+	 * @throws  NotADataModel  When the model type doesn't match our expectations
 	 */
 	public function getModel($name = null, $config = array())
 	{
@@ -1210,7 +1213,7 @@ class DataController extends Controller
 
 		if (is_null($name) && !($model instanceof DataModel))
 		{
-			throw new \RuntimeException('Model ' . get_class($model) . ' is not a database-aware Model');
+			throw new NotADataModel('Model ' . get_class($model) . ' is not a database-aware Model');
 		}
 
 		return $model;
@@ -1336,7 +1339,6 @@ class DataController extends Controller
 	 * - False if the record is not owned by the logged in user and the user doesn't have the @edit privilege
 	 *
 	 * @return bool|string
-	 * @throws \Exception
 	 */
 	protected function getACLForApplySave()
 	{
