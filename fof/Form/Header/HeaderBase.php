@@ -151,6 +151,14 @@ abstract class HeaderBase
 	protected $sortable = false;
 
 	/**
+	 * Should we ignore the header (have the field act as just a filter)?
+	 *
+	 * @var    bool
+	 * @since  3.0
+	 */
+	protected $onlyFilter = false;
+
+	/**
 	 * Method to instantiate the form field object.
 	 *
 	 * @param   Form  $form  The form to attach to the form field object.
@@ -208,7 +216,7 @@ abstract class HeaderBase
 			case 'header':
 				if (empty($this->header))
 				{
-					$this->header = $this->getHeader();
+					$this->header = $this->onlyFilter ? '' : $this->getHeader();
 				}
 
 				return $this->header;
@@ -325,6 +333,10 @@ abstract class HeaderBase
 
 		// Set the field default value.
 		$this->value = $this->getValue();
+
+		// Setup the onlyFilter property
+		$onlyFilter = $this->element['onlyFilter'] ? (string) $this->element['onlyFilter'] : false;
+		$this->onlyFilter = in_array($onlyFilter, array('yes', 'on', '1', 'true'));
 
 		return true;
 	}
@@ -520,7 +532,7 @@ abstract class HeaderBase
 		{
 			if (empty($this->header))
 			{
-				$this->header = $this->getHeader();
+				$this->header = $this->onlyFilter ? '' : $this->getHeader();
 			}
 
 			$sortable = !empty($this->header);
