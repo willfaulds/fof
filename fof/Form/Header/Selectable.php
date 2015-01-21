@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
 /**
  * Generic field header, with drop down filters
  */
-class FieldSelectable extends Field
+class Selectable extends Field
 {
 	/**
 	 * Create objects for the options

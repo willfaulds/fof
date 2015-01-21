@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 /**
  * Language field header
  */
-class Language extends FieldSelectable
+class Language extends Selectable
 {
 	/**
 	 * Method to get the filter options.

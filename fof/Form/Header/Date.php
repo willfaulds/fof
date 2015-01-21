@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
 /**
  * Generic field header, with text input (search) filter
  */
-class FieldDate extends Field
+class Date extends Field
 {
 	/**
 	 * Get the filter field

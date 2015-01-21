@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
 /**
  * Generic field header, with drop down filters based on a SQL query
  */
-class FieldSql extends FieldSelectable
+class Sql extends Selectable
 {
 	/**
 	 * Create objects for the options

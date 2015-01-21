@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 /**
  * Field header for Published (enabled) columns
  */
-class Published extends FieldSelectable
+class Published extends Selectable
 {
 	/**
 	 * Create objects for the options

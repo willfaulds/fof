@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 /**
  * Generic field header, with text input (search) filter
  */
-class FieldFilterable extends FieldSearchable
+class Filterable extends Searchable
 {
 	/**
 	 * Get the filter field

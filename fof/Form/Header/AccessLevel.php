@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 /**
  * Access level field header
  */
-class AccessLevel extends FieldSelectable
+class AccessLevel extends Selectable
 {
 	/**
 	 * Method to get the list of access levels
