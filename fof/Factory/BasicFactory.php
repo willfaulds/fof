@@ -10,6 +10,14 @@ namespace FOF30\Factory;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
+use FOF30\Factory\Exception\ControllerNotFound;
+use FOF30\Factory\Exception\DispatcherNotFound;
+use FOF30\Factory\Exception\FormLoadData;
+use FOF30\Factory\Exception\FormLoadFile;
+use FOF30\Factory\Exception\ModelNotFound;
+use FOF30\Factory\Exception\ToolbarNotFound;
+use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
+use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Form\Form;
 use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
@@ -102,7 +110,7 @@ class BasicFactory implements FactoryInterface
 		{
 			return $this->createDispatcher($dispatcherClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (DispatcherNotFound $e)
 		{
 			// Not found. Return the default Dispatcher
 			return new Dispatcher($this->container, $config);
@@ -122,9 +130,9 @@ class BasicFactory implements FactoryInterface
 
 		try
 		{
-			return $this->createToolbar($toolbarClass, $config);
+			return $this->createtoolbar($toolbarClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (ToolbarNotFound $e)
 		{
 			// Not found. Return the default Toolbar
 			return new Toolbar($this->container, $config);
@@ -146,7 +154,7 @@ class BasicFactory implements FactoryInterface
 		{
 			return $this->createTransparentAuthentication($authClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (TransparentAuthenticationNotFound $e)
 		{
 			// Not found. Return the default Dispatcher
 			return new TransparentAuthentication($this->container, $config);
@@ -173,11 +181,11 @@ class BasicFactory implements FactoryInterface
 		$form = new Form($this->container, $name, $options);
 
 		// If $source looks like raw XML data, parse it directly
-		if (strpos($source, '<fof') !== false)
+		if (strpos($source, '<form ') !== false)
 		{
 			if ($form->load($source, $replace, $xpath) === false)
 			{
-				throw new \RuntimeException('FOF: could not load form from raw data');
+				throw new FormLoadData;
 			}
 
 			return $form;
@@ -192,7 +200,7 @@ class BasicFactory implements FactoryInterface
 
 		if ($form->loadFile($formFileName, $replace, $xpath) === false)
 		{
-			throw new \RuntimeException('FOF: could not load form from filename ' . $source);
+			throw new FormLoadFile($source);
 		}
 
 		return $form;
@@ -213,7 +221,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($controllerClass))
 		{
-			throw new \RuntimeException(\JText::_('LIB_FOF_CONTROLLER_ERR_NOT_FOUND'), 500);
+			throw new ControllerNotFound;
 		}
 
 		return new $controllerClass($this->container, $config);
@@ -233,7 +241,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($modelClass))
 		{
-			throw new \RuntimeException(\JText::_('LIB_FOF_MODEL_ERR_NOT_FOUND'), 500);
+			throw new ModelNotFound;
 		}
 
 		return new $modelClass($this->container, $config);
@@ -253,7 +261,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($viewClass))
 		{
-			throw new \RuntimeException(\JText::_('LIB_FOF_VIEW_ERR_NOT_FOUND'), 500);
+			throw new ViewNotFound;
 		}
 
 		return new $viewClass($this->container, $config);
@@ -273,7 +281,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($toolbarClass))
 		{
-			throw new \RuntimeException(\JText::_('LIB_FOF_TOOLBAR_ERR_NOT_FOUND'), 500);
+			throw new ToolbarNotFound;
 		}
 
 		return new $toolbarClass($this->container, $config);
@@ -293,7 +301,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($dispatcherClass))
 		{
-			throw new \RuntimeException(\JText::_('LIB_FOF_DISPATCHER_ERR_NOT_FOUND'), 500);
+			throw new DispatcherNotFound;
 		}
 
 		return new $dispatcherClass($this->container, $config);
@@ -313,7 +321,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($authClass))
 		{
-			throw new \RuntimeException(\JText::_('LIB_FOF_TRANSPARENTAUTH_ERR_NOT_FOUND'), 500);
+			throw new TransparentAuthenticationNotFound;
 		}
 
 		return new $authClass($this->container, $config);

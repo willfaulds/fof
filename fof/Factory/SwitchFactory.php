@@ -10,6 +10,12 @@ namespace FOF30\Factory;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Dispatcher\Dispatcher;
+use FOF30\Factory\Exception\ControllerNotFound;
+use FOF30\Factory\Exception\DispatcherNotFound;
+use FOF30\Factory\Exception\ModelNotFound;
+use FOF30\Factory\Exception\ToolbarNotFound;
+use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
+use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -51,7 +57,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createController($controllerClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (ControllerNotFound $e)
 		{
 			$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst($viewName);
 
@@ -75,7 +81,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createModel($modelClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (ModelNotFound $e)
 		{
 			$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst($viewName);
 
@@ -100,7 +106,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createModel($viewClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (ViewNotFound $e)
 		{
 			$viewClass = $this->container->getNamespacePrefix('inverse') . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
@@ -123,7 +129,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createDispatcher($dispatcherClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (DispatcherNotFound $e)
 		{
 			// Not found. Let's go on.
 		}
@@ -134,7 +140,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createDispatcher($dispatcherClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (DispatcherNotFound $e)
 		{
 			// Not found. Return the default Dispatcher
 			return new Dispatcher($this->container, $config);
@@ -156,7 +162,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createToolbar($toolbarClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (ToolbarNotFound $e)
 		{
 			// Not found. Let's go on.
 		}
@@ -167,7 +173,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createToolbar($toolbarClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (ToolbarNotFound $e)
 		{
 			// Not found. Return the default Toolbar
 			return new Toolbar($this->container, $config);
@@ -190,7 +196,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createTransparentAuthentication($toolbarClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (TransparentAuthenticationNotFound $e)
 		{
 			// Not found. Let's go on.
 		}
@@ -201,7 +207,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		{
 			return $this->createTransparentAuthentication($toolbarClass, $config);
 		}
-		catch (\RuntimeException $e)
+		catch (TransparentAuthenticationNotFound $e)
 		{
 			// Not found. Return the default TransparentAuthentication
 			return new TransparentAuthentication($this->container, $config);
