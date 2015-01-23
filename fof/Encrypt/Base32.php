@@ -49,12 +49,12 @@ class Base32
 	{
 		if (strlen($str) % 8 > 0)
 		{
-			throw new \Exception('Length must be divisible by 8');
+			throw new \InvalidArgumentException('Length must be divisible by 8');
 		}
 
 		if (!preg_match('/^[01]+$/', $str))
 		{
-			throw new \Exception('Only 0\'s and 1\'s are permitted');
+			throw new \InvalidArgumentException('Only 0\'s and 1\'s are permitted');
 		}
 
 		preg_match_all('/.{8}/', $str, $chrs);
@@ -79,12 +79,12 @@ class Base32
 	{
 		if (strlen($str) % 8 > 0)
 		{
-			throw new \Exception('Length must be divisible by 8');
+			throw new \InvalidArgumentException('Length must be divisible by 8');
 		}
 
 		if (!preg_match('/^[01]+$/', $str))
 		{
-			throw new \Exception('Only 0\'s and 1\'s are permitted');
+			throw new \InvalidArgumentException('Only 0\'s and 1\'s are permitted');
 		}
 
 		// Base32 works on the first 5 bits of a byte, so we insert blanks to pad it out
@@ -121,7 +121,7 @@ class Base32
 	{
 		if (!preg_match('/^[' . self::CSRFC3548 . ']+$/', $str))
 		{
-			throw new \Exception('Base64 string must match character set');
+			throw new \InvalidArgumentException('Base64 string must match character set');
 		}
 
 		// Convert the base32 string back to a binary string
