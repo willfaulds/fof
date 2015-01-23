@@ -110,7 +110,7 @@ class Dispatcher
 	 *
 	 * @return  void
 	 *
-	 * @throws  AccessForbidden  When the access is forbidden
+	 * @throws  \Exception
 	 */
 	public function dispatch()
 	{
@@ -150,7 +150,7 @@ class Dispatcher
 
 			$this->transparentAuthenticationLogout();
 
-			throw new AccessForbidden(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		// Get and execute the controller
@@ -175,7 +175,7 @@ class Dispatcher
 
 			$this->transparentAuthenticationLogout();
 
-			throw new AccessForbidden(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		$this->transparentAuthenticationLogout();
