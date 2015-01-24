@@ -7,6 +7,8 @@
 
 namespace FOF30\Download;
 
+use FOF30\Download\Exception\DownloadError;
+
 defined('_JEXEC') or die;
 
 /**
@@ -70,7 +72,7 @@ interface DownloadInterface
 	 *
 	 * @return  string  The raw file data retrieved from the remote URL.
 	 *
-	 * @throws  \Exception  A generic exception is thrown on error
+	 * @throws  DownloadError  A generic exception is thrown on error
 	 */
 	public function downloadAndReturn($url, $from = null, $to = null, array $params = array());
 

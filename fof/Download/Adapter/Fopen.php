@@ -8,6 +8,7 @@
 namespace FOF30\Download\Adapter;
 
 use FOF30\Download\DownloadInterface;
+use FOF30\Download\Exception\DownloadError;
 use JText;
 
 defined('_JEXEC') or die;
@@ -52,7 +53,7 @@ class Fopen extends AbstractAdapter implements DownloadInterface
 	 *
 	 * @return  string  The raw file data retrieved from the remote URL.
 	 *
-	 * @throws  \Exception  A generic exception is thrown on error
+	 * @throws  DownloadError  A generic exception is thrown on error
 	 */
 	public function downloadAndReturn($url, $from = null, $to = null, array $params = array())
 	{
@@ -118,7 +119,7 @@ class Fopen extends AbstractAdapter implements DownloadInterface
 		if (!isset($http_response_header) && empty($http_response_header_test))
 		{
 			$error = JText::_('LIB_FOF_DOWNLOAD_ERR_FOPEN_ERROR');
-			throw new \Exception($error, 404);
+			throw new DownloadError($error, 404);
 		}
 		else
 		{
@@ -145,14 +146,14 @@ class Fopen extends AbstractAdapter implements DownloadInterface
 			if ($http_code >= 299)
 			{
 				$error = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_HTTPERROR', $http_code);
-				throw new \Exception($error, $http_code);
+				throw new DownloadError($error, $http_code);
 			}
 		}
 
 		if ($result === false)
 		{
 			$error = JText::sprintf('LIB_FOF_DOWNLOAD_ERR_FOPEN_ERROR');
-			throw new \Exception($error, 1);
+			throw new DownloadError($error, 1);
 		}
 		else
 		{

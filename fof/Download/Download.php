@@ -8,6 +8,7 @@
 namespace FOF30\Download;
 
 use FOF30\Container\Container;
+use FOF30\Download\Exception\DownloadError;
 use JText;
 use FOF30\Timer\Timer;
 
@@ -176,7 +177,7 @@ class Download
 		{
 			return $this->adapter->downloadAndReturn($url, null, null, $this->adapterOptions);
 		}
-		catch (\Exception $e)
+		catch (DownloadError $e)
 		{
 			return false;
 		}
@@ -284,7 +285,7 @@ class Download
 				{
 					$result = $this->adapter->downloadAndReturn($url, $from, $to, $this->adapterOptions);
 				}
-				catch (\Exception $e)
+				catch (DownloadError $e)
 				{
 					$result = false;
 					$error = $e->getMessage();
@@ -390,7 +391,7 @@ class Download
 				"percent"   => $percent,
 			);
 		}
-		catch (\Exception $e)
+		catch (DownloadError $e)
 		{
 			$retArray['status'] = false;
 			$retArray['error'] = $e->getMessage();

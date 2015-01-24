@@ -8,6 +8,7 @@
 namespace FOF30\Download\Adapter;
 
 use FOF30\Download\DownloadInterface;
+use FOF30\Download\Exception\DownloadError;
 use JText;
 
 defined('_JEXEC') or die;
@@ -43,7 +44,7 @@ class Curl extends AbstractAdapter implements DownloadInterface
 	 *
 	 * @return  string  The raw file data retrieved from the remote URL.
 	 *
-	 * @throws  \Exception  A generic exception is thrown on error
+	 * @throws  DownloadError  A generic exception is thrown on error
 	 */
 	public function downloadAndReturn($url, $from = null, $to = null, array $params = array())
 	{
@@ -112,7 +113,7 @@ class Curl extends AbstractAdapter implements DownloadInterface
 
 		if ($result === false)
 		{
-			throw new \Exception($error, $errno);
+			throw new DownloadError($error, $errno);
 		}
 		else
 		{
