@@ -43,7 +43,7 @@ class Base32
 	 *
 	 * @return  string  The ascii output
 	 *
-	 * @throws  \Exception
+	 * @throws  \InvalidArgumentException
 	 */
 	private function bin2str($str)
 	{
@@ -73,7 +73,7 @@ class Base32
 	 *
 	 * @return  string  String encoded as base32
 	 *
-	 * @throws  \Exception
+	 * @throws  \InvalidArgumentException
 	 */
 	private function fromBin($str)
 	{
@@ -115,7 +115,7 @@ class Base32
 	 *
 	 * @return  string  Ascii binary string
 	 *
-	 * @throws  \Exception
+	 * @throws  \InvalidArgumentException
 	 */
 	private function toBin($str)
 	{

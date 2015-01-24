@@ -7,6 +7,7 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Exceptions\InvalidGroupContents;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
@@ -180,7 +181,7 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 			}
 			else
 			{
-				throw new \RuntimeException('Invalid group contents.', 1);
+				throw new InvalidGroupContents(get_called_class());
 			}
 
 			if ($noGroup)

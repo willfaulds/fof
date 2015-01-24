@@ -7,6 +7,8 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Exceptions\DataModelRequired;
+use FOF30\Form\Exceptions\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
@@ -138,11 +140,11 @@ class Ordering extends \JFormField implements FieldInterface
 	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \Exception
+	 * @throws  \LogicException
 	 */
 	public function getStatic()
 	{
-		throw new \Exception(__CLASS__ . ' cannot be used in single item display forms');
+		throw new GetStaticNotAllowed(__CLASS__);
 	}
 
 	/**
@@ -153,13 +155,13 @@ class Ordering extends \JFormField implements FieldInterface
 	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \Exception
+	 * @throws  DataModelRequired
 	 */
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof DataModel))
 		{
-			throw new \Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new DataModelRequired(__CLASS__);
 		}
 
 		$class = isset($this->element['class']) ? $this->element['class'] : 'input-mini';

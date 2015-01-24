@@ -7,6 +7,9 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Exceptions\DataModelRequired;
+use FOF30\Form\Exceptions\GetInputNotAllowed;
+use FOF30\Form\Exceptions\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
@@ -94,11 +97,11 @@ class SelectRow extends \JFormField implements FieldInterface
 	 *
 	 * @return  string  The field input markup.
 	 *
-	 * @throws  \Exception
+	 * @throws  GetInputNotAllowed
 	 */
 	protected function getInput()
 	{
-		throw new \Exception(__CLASS__ . ' cannot be used in input forms');
+		throw new GetInputNotAllowed(__CLASS__);
 	}
 
 	/**
@@ -109,11 +112,11 @@ class SelectRow extends \JFormField implements FieldInterface
 	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \Exception
+	 * @throws  \LogicException
 	 */
 	public function getStatic()
 	{
-		throw new \Exception(__CLASS__ . ' cannot be used in single item display forms');
+		throw new GetStaticNotAllowed(__CLASS__);
 	}
 
 	/**
@@ -124,13 +127,13 @@ class SelectRow extends \JFormField implements FieldInterface
 	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \Exception
+	 * @throws  DataModelRequired
 	 */
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof DataModel))
 		{
-			throw new \Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new DataModelRequired(__CLASS__);
 		}
 
 		// Is this record checked out?

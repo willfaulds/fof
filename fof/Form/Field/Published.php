@@ -7,6 +7,7 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Exceptions\DataModelRequired;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
@@ -201,13 +202,13 @@ class Published extends \JFormFieldList implements FieldInterface
 	 *
 	 * @return  string  The field HTML
 	 *
-	 * @throws  \Exception
+	 * @throws  DataModelRequired
 	 */
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof DataModel))
 		{
-			throw new \Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new DataModelRequired(__CLASS__);
 		}
 
 		// Initialise
