@@ -7,6 +7,7 @@
 
 namespace FOF30\Hal;
 
+use FOF30\Hal\Exceptions\InvalidRenderFormat;
 use FOF30\Hal\Render\RenderInterface;
 
 defined('_JEXEC') or die;
@@ -214,7 +215,7 @@ class Document
 	 *
 	 * @return  string  The rendered document
 	 *
-	 * @throws  \RuntimeException  If the format is unknown, i.e. there is no suitable renderer
+	 * @throws  \LogicException  If the format is unknown, i.e. there is no suitable renderer
 	 */
 	public function render($format = 'json')
 	{
@@ -222,7 +223,7 @@ class Document
 
 		if (!class_exists($class_name, true))
 		{
-			throw new \RuntimeException("Unsupported HAL Document format '$format'. Render aborted.");
+			throw new InvalidRenderFormat($format);
 		}
 
 		/** @var RenderInterface $renderer */

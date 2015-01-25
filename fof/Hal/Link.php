@@ -7,6 +7,8 @@
 
 namespace FOF30\Hal;
 
+use FOF30\Hal\Exceptions\InvalidLinkFormat;
+
 defined('_JEXEC') or die;
 
 /**
@@ -70,13 +72,13 @@ class Link
 	 * @param   string   $hreflang   See $this->_hreflang
 	 * @param   string   $title      See $this->_title
 	 *
-	 * @throws  \RuntimeException  If $href is empty
+	 * @throws  \InvalidArgumentException  If $href is empty
 	 */
 	public function __construct($href, $templated = false, $name = null, $hreflang = null, $title = null)
 	{
 		if (empty($href))
 		{
-			throw new \RuntimeException('A HAL link must always have a non-empty href');
+			throw new InvalidLinkFormat;
 		}
 
 		$this->_href = $href;
