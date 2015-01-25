@@ -7,10 +7,11 @@
 
 namespace FOF30\Render;
 
-
 use FOF30\Container\Container;
 use FOF30\Model\DataModel;
 use FOF30\Form\Form;
+
+defined('_JEXEC') or die;
 
 interface RenderInterface
 {

@@ -7,8 +7,9 @@
 
 namespace FOF30\View\DataView;
 
-
 use FOF30\Container\Container;
+
+defined('_JEXEC') or die;
 
 interface DataViewInterface
 {

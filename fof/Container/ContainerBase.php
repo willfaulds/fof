@@ -1,13 +1,15 @@
 <?php
 /**
- * @package		FOF3 (Work In Progress)
- * @copyright	2015 Nicholas K. Dionysopoulos / Akeeba Ltd 
- * @license		GNU GPL version 3 or later
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
 
 namespace FOF30\Container;
 
 use Pimple\Container;
+
+defined('_JEXEC') or die;
 
 class ContainerBase extends Container
 {

@@ -9,6 +9,8 @@
 
 namespace FOF30\Utils;
 
+defined('_JEXEC') or die;
+
 /**
  * Intercept calls to PHP functions.
  *
