@@ -9,6 +9,9 @@ namespace FOF30\View;
 
 use FOF30\Container\Container;
 use FOF30\Model\Model;
+use FOF30\View\Exception\AccessForbidden;
+use FOF30\View\Exception\CannotGetName;
+use FOF30\View\Exception\ModelNotFound;
 
 defined('_JEXEC') or die;
 
@@ -316,7 +319,7 @@ class View
 
 			if (!preg_match('/(.*)\\\\View\\\\(.*)\\\\(.*)/i', get_class($this), $r))
 			{
-				throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_VIEW_GET_NAME'), 500);
+				throw new CannotGetName;
 			}
 
 			$this->name = strtolower($r[2]);
@@ -424,7 +427,7 @@ class View
 
 		if (!array_key_exists($modelName, $this->modelInstances))
 		{
-			throw new \RuntimeException("Model $modelName does not exist in view {$this->name}", 500);
+			throw new ModelNotFound($modelName, $this->name);
 		}
 
 		return $this->modelInstances[$modelName];
@@ -485,7 +488,7 @@ class View
 
 		if (!$result)
 		{
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		$templateResult = $this->loadTemplate($tpl);
@@ -495,7 +498,7 @@ class View
 
 		if (!$result)
 		{
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		if (is_object($templateResult) && ($templateResult instanceof \Exception))
@@ -710,7 +713,7 @@ class View
 		{
 			if ($throwErrorIfNotFound)
 			{
-				return new \Exception(\JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path), 500);
+				return new \RuntimeException(\JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path), 500);
 			}
 
 			return false;

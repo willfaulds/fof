@@ -10,6 +10,7 @@ namespace FOF30\View\DataView;
 use FOF30\Hal\Document;
 use FOF30\Hal\Link;
 use FOF30\Model\DataModel;
+use FOF30\View\Exception\AccessForbidden;
 
 defined('_JEXEC') or die;
 
@@ -56,7 +57,7 @@ class Json extends Raw implements DataViewInterface
 
 		if (!$result)
 		{
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
@@ -64,7 +65,7 @@ class Json extends Raw implements DataViewInterface
 
 		if (!$result)
 		{
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		return true;
