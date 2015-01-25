@@ -10,6 +10,8 @@ namespace FOF30\Toolbar;
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
 use FOF30\Inflector\Inflector;
+use FOF30\Toolbar\Exception\MissingAttribute;
+use FOF30\Toolbar\Exception\UnknownButtonType;
 use FOF30\Utils\String;
 use FOF30\View\DataView\DataViewInterface;
 use FOF30\View\View;
@@ -787,9 +789,7 @@ class Toolbar
 			case 'help':
 				if (!isset($attributes['help']))
 				{
-					throw new \InvalidArgumentException(
-						'The help attribute is missing in the help button type.'
-					);
+					throw new MissingAttribute('help', 'help');
 				}
 
 				$ref = $attributes['help'];
@@ -1000,9 +1000,7 @@ class Toolbar
 			case 'preferences':
 				if (!isset($attributes['component']))
 				{
-					throw new \InvalidArgumentException(
-						'The component attribute is missing in the preferences button type.'
-					);
+					throw new MissingAttribute('component', 'preferences');
 				}
 
 				$component = $attributes['component'];
@@ -1015,7 +1013,7 @@ class Toolbar
 				break;
 
 			default:
-				throw new \InvalidArgumentException(sprintf('Unknown button type %s', $type));
+				throw new UnknownButtonType($type);
 		}
 	}
 }
