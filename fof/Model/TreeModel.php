@@ -8,6 +8,15 @@
 namespace FOF30\Model;
 
 use FOF30\Container\Container;
+use FOF30\Model\DataModel\Exception\TreeIncompatibleTable;
+use FOF30\Model\DataModel\Exception\TreeInvalidLftRgtCurrent;
+use FOF30\Model\DataModel\Exception\TreeInvalidLftRgtOther;
+use FOF30\Model\DataModel\Exception\TreeInvalidLftRgtParent;
+use FOF30\Model\DataModel\Exception\TreeInvalidLftRgtSibling;
+use FOF30\Model\DataModel\Exception\TreeMethodOnlyAllowedInRoot;
+use FOF30\Model\DataModel\Exception\TreeRootNotFound;
+use FOF30\Model\DataModel\Exception\TreeUnexpectedPrimaryKey;
+use FOF30\Model\DataModel\Exception\TreeUnsupportedMethod;
 
 defined('_JEXEC') or die;
 
@@ -49,7 +58,7 @@ class TreeModel extends DataModel
 
 		if (!$this->hasField('lft') || !$this->hasField('rgt'))
 		{
-			throw new \RuntimeException("Table $this->tableName is not compatible with TreeModel: it does not have lft/rgt columns");
+			throw new TreeIncompatibleTable($this->tableName);
 		}
 	}
 
@@ -107,7 +116,7 @@ class TreeModel extends DataModel
 		// If no primary key is given, return false.
 		if (!$pk)
 		{
-			throw new \UnexpectedValueException('Null primary key not allowed.');
+			throw new TreeUnexpectedPrimaryKey;
 		}
 
 		// Execute the logic only if I have a primary key, otherwise I could have weird results
@@ -227,7 +236,7 @@ class TreeModel extends DataModel
 	 */
 	public function reorder($where = '')
 	{
-		throw new \RuntimeException('reorder() is not supported by TreeModel');
+		throw new TreeUnsupportedMethod(__METHOD__);
 	}
 
 	/**
@@ -242,7 +251,7 @@ class TreeModel extends DataModel
 	 */
 	public function move($delta, $where = '')
 	{
-		throw new \RuntimeException('move() is not supported by TreeModel');
+		throw new TreeUnsupportedMethod(__METHOD__);
 	}
 
 	/**
@@ -306,7 +315,7 @@ class TreeModel extends DataModel
         // You can't insert a node that is already saved i.e. the table has an id
         if($this->getId())
         {
-            throw new \RuntimeException(__METHOD__.' can be only used with new nodes');
+            throw new TreeMethodOnlyAllowedInRoot(__METHOD__);
         }
 
 		// First we need to find the right value of the last parent, a.k.a. the max(rgt) of the table
@@ -346,7 +355,7 @@ class TreeModel extends DataModel
 	{
         if($parentNode->lft >= $parentNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the parent node');
+            throw new TreeInvalidLftRgtParent;
         }
 
 		// Get a reference to the database
@@ -419,7 +428,7 @@ class TreeModel extends DataModel
 	{
         if($parentNode->lft >= $parentNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the parent node');
+	        throw new TreeInvalidLftRgtParent;
         }
 
 		// Get a reference to the database
@@ -505,7 +514,7 @@ class TreeModel extends DataModel
 	{
         if($siblingNode->lft >= $siblingNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the sibling node');
+	        throw new TreeInvalidLftRgtSibling;
         }
 
 		// Get a reference to the database
@@ -577,7 +586,7 @@ class TreeModel extends DataModel
 	{
         if($siblingNode->lft >= $siblingNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the sibling node');
+	        throw new TreeInvalidLftRgtSibling;
         }
 
 		// Get a reference to the database
@@ -655,7 +664,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		// If it is a root node we will not move the node (roots don't participate in tree ordering)
@@ -694,7 +703,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		// If it is a root node we will not move the node (roots don't participate in tree ordering)
@@ -738,12 +747,12 @@ class TreeModel extends DataModel
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($siblingNode->lft >= $siblingNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the sibling node');
+	        throw new TreeInvalidLftRgtSibling;
         }
 
 		$db = $this->getDbo();
@@ -843,12 +852,12 @@ class TreeModel extends DataModel
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($siblingNode->lft >= $siblingNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the sibling node');
+	        throw new TreeInvalidLftRgtSibling;
         }
 
 		$db = $this->getDbo();
@@ -983,12 +992,12 @@ class TreeModel extends DataModel
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($parentNode->lft >= $parentNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the parent node');
+	        throw new TreeInvalidLftRgtParent;
         }
 
 		$db    = $this->getDbo();
@@ -1089,12 +1098,12 @@ class TreeModel extends DataModel
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($parentNode->lft >= $parentNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the parent node');
+	        throw new TreeInvalidLftRgtParent;
         }
 
 		$db    = $this->getDbo();
@@ -1232,7 +1241,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		if (is_null($this->treeDepth))
@@ -1270,7 +1279,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		if ($this->isRoot())
@@ -1332,7 +1341,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		return ($this->rgt - 1) == $this->lft;
@@ -1364,12 +1373,12 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($otherNode->lft >= $otherNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the other node');
+	        throw new TreeInvalidLftRgtOther;
         }
 
 		return ($otherNode->lft < $this->lft) && ($otherNode->rgt > $this->rgt);
@@ -1387,12 +1396,12 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($otherNode->lft >= $otherNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the other node');
+            throw new TreeInvalidLftRgtOther;
         }
 
 		return ($otherNode->lft <= $this->lft) && ($otherNode->rgt >= $this->rgt);
@@ -1438,12 +1447,12 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($node->lft >= $node->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the other node');
+	        throw new TreeInvalidLftRgtOther;
         }
 
 		return (
@@ -1468,12 +1477,12 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
         if($otherNode->lft >= $otherNode->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the other node');
+	        throw new TreeInvalidLftRgtOther;
         }
 
 		return ($this->lft > $otherNode->lft) && ($this->rgt < $otherNode->rgt);
@@ -1639,7 +1648,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		$db = $this->getDbo();
@@ -1749,7 +1758,7 @@ class TreeModel extends DataModel
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
-            throw new \RuntimeException('Invalid position values for the current node');
+	        throw new TreeInvalidLftRgtCurrent;
         }
 
 		// If this is a root node return itself (there is no such thing as the root of a root node)
@@ -1786,7 +1795,7 @@ class TreeModel extends DataModel
 			catch (\RuntimeException $e)
 			{
 				// If there is no root found throw an exception. Basically: your table is FUBAR.
-				throw new \RuntimeException("No root found for table {$this->tableName}, node lft=" . $this->lft);
+				throw new TreeRootNotFound($this->tableName, $this->lft);
 			}
 
 			// If the above method didn't work, get all roots and select the one with the appropriate lft/rgt values
@@ -1813,7 +1822,7 @@ class TreeModel extends DataModel
 				if (empty($targetLeft))
 				{
 					// If there is no root found throw an exception. Basically: your table is FUBAR.
-					throw new \RuntimeException("No root found for table {$this->tableName}, node lft=" . $this->lft);
+					throw new TreeRootNotFound($this->tableName, $this->lft);
 				}
 
 				try
@@ -1825,7 +1834,7 @@ class TreeModel extends DataModel
 				catch (\RuntimeException $e)
 				{
 					// If there is no root found throw an exception. Basically: your table is FUBAR.
-					throw new \RuntimeException("No root found for table {$this->tableName}, node lft=" . $this->lft);
+					throw new TreeRootNotFound($this->tableName, $this->lft);
 				}
 			}
 		}

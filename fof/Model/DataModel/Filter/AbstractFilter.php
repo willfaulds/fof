@@ -7,6 +7,9 @@
 
 namespace FOF30\Model\DataModel\Filter;
 
+use FOF30\Model\DataModel\Filter\Exception\InvalidFieldObject;
+use FOF30\Model\DataModel\Filter\Exception\NoDatabaseObject;
+
 defined('_JEXEC') or die;
 
 abstract class AbstractFilter
@@ -46,7 +49,7 @@ abstract class AbstractFilter
 
 		if(!is_object($field) || !isset($field->name) || !isset($field->type))
 		{
-			throw new \InvalidArgumentException('Invalid field object');
+			throw new InvalidFieldObject;
 		}
 
 		$this->name = $field->name;
@@ -239,7 +242,7 @@ abstract class AbstractFilter
 	{
 		if(!is_object($field) || !isset($field->name) || !isset($field->type))
 		{
-			throw new \InvalidArgumentException('Invalid field object');
+			throw new InvalidFieldObject;
 		}
 
 		$type = $field->type;
@@ -252,7 +255,7 @@ abstract class AbstractFilter
 		{
 			if (!isset($config['dbo']))
 			{
-				throw new \InvalidArgumentException('Database object unspecified creating a ' . $className . ' filter');
+				throw new NoDatabaseObject($className);
 			}
 
 			$db = $config['dbo'];

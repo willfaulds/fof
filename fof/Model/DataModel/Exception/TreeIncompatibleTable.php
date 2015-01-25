@@ -11,14 +11,11 @@ use Exception;
 
 defined('_JEXEC') or die;
 
-class RecordNotLoaded extends BaseException
+class TreeIncompatibleTable extends \UnexpectedValueException
 {
-	public function __construct( $message = "", $code = 404, Exception $previous = null )
+	public function __construct( $tableName, $code = 500, Exception $previous = null )
 	{
-		if (empty($message))
-		{
-			$message = \JText::_('LIB_FOF_MODEL_ERR_COULDNOTLOAD');
-		}
+		$message = \JText::sprintf('LIB_FOF_MODEL_ERR_TREE_INCOMPATIBLETABLE', $tableName);
 
 		parent::__construct( $message, $code, $previous );
 	}

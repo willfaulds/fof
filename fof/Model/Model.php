@@ -8,6 +8,7 @@
 namespace FOF30\Model;
 
 use FOF30\Container\Container;
+use FOF30\Model\Exception\CannotGetName;
 
 defined('_JEXEC') or die;
 
@@ -140,7 +141,7 @@ class Model
 
 			if (!preg_match('/(.*)\\\\Model\\\\(.*)/i', get_class($this), $r))
 			{
-				throw new \RuntimeException(\JText::_('LIB_FOF_MODEL_ERR_GET_NAME'), 500);
+				throw new CannotGetName;
 			}
 
 			$this->name = strtolower($r[2]);

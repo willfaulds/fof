@@ -13,7 +13,12 @@ use FOF30\Event\Observer;
 use FOF30\Form\Form;
 use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel\Collection as DataCollection;
+use FOF30\Model\DataModel\Exception\BaseException;
+use FOF30\Model\DataModel\Exception\CannotLockNotLoadedRecord;
 use FOF30\Model\DataModel\Exception\InvalidSearchMethod;
+use FOF30\Model\DataModel\Exception\NoAssetKey;
+use FOF30\Model\DataModel\Exception\NoContentType;
+use FOF30\Model\DataModel\Exception\NoItemsFound;
 use FOF30\Model\DataModel\Exception\NoTableColumns;
 use FOF30\Model\DataModel\Exception\RecordNotLoaded;
 use FOF30\Model\DataModel\Exception\SpecialColumnMissing;
@@ -1041,7 +1046,7 @@ class DataModel extends Model implements \JTableInterface
 		// If the source value is not an array or object return false.
 		if (!is_object($data) && !is_array($data))
 		{
-			throw new \InvalidArgumentException(sprintf('%s::bind(*%s*)', get_class($this), gettype($data)));
+			throw new \InvalidArgumentException(\JText::sprintf('LIB_FOF_MODEL_ERR_BIND', get_class($this), gettype($data)));
 		}
 
 		// If the ignore value is a string, explode it over spaces.
@@ -1817,7 +1822,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if (empty($value))
 		{
-			throw new \RuntimeException('Could not load record', 404);
+			throw new RecordNotLoaded;
 		}
 
 		return $this;
@@ -2000,7 +2005,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if (is_null($item))
 		{
-			throw new \RuntimeException('No items found in ' . get_class($this));
+			throw new NoItemsFound(get_class($this));
 		}
 
 		return $item;
@@ -2227,7 +2232,7 @@ class DataModel extends Model implements \JTableInterface
 	{
 		if(!$this->getId())
 		{
-			throw new \RuntimeException("Can't lock a not loaded DataModel");
+			throw new CannotLockNotLoadedRecord;
 		}
 
 		if (!$this->hasField('locked_on') && !$this->hasField('locked_by'))
@@ -2993,7 +2998,7 @@ class DataModel extends Model implements \JTableInterface
 	 * The default name is in the form table_name.id
 	 * where id is the value of the primary key of the table.
 	 *
-	 * @throws  \UnexpectedValueException
+	 * @throws  NoAssetKey
 	 *
 	 * @return  string
 	 */
@@ -3004,7 +3009,7 @@ class DataModel extends Model implements \JTableInterface
 		// If there is no assetKey defined, stop here, or we'll get a wrong name
 		if (!$this->_assetKey || !$this->$k)
 		{
-			throw new \UnexpectedValueException('Table must have an asset key defined and a value for the table id in order to track assets');
+			throw new NoAssetKey;
 		}
 
 		return $this->_assetKey . '.' . (int) $this->$k;
@@ -3088,14 +3093,15 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @since   2.3
 	 *
-	 * @throws \Exception
+	 * @throws  RecordNotLoaded
+	 * @throws  BaseException
 	 */
 	public function loadhistory($version_id, $alias)
 	{
 		// Only attempt to check the row in if it exists.
 		if (!$version_id)
 		{
-			throw new \Exception("Row doesn't exist");
+			throw new RecordNotLoaded;
 		}
 
 		// Get an instance of the row to checkout.
@@ -3103,7 +3109,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if (!$historyTable->load($version_id))
 		{
-			throw new \Exception($historyTable->getError());
+			throw new BaseException($historyTable->getError());
 		}
 
 		$rowArray = \JArrayHelper::fromObject(json_decode($historyTable->version_data));
@@ -3120,7 +3126,7 @@ class DataModel extends Model implements \JTableInterface
 				$this->unlock();
 			}
 
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_HISTORY_ID_MISMATCH'));
+			throw new BaseException(\JText::_('JLIB_APPLICATION_ERROR_HISTORY_ID_MISMATCH'));
 		}
 
 		$this->setState('save_date', $historyTable->save_date);
@@ -3169,7 +3175,7 @@ class DataModel extends Model implements \JTableInterface
 			return $this->contentType;
 		}
 
-		throw new \Exception("Content type for DataModel {$this->name} is not set.");
+		throw new NoContentType(get_class($this));
 	}
 
 	/**
@@ -3347,7 +3353,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return  mixed   Array of filtered data if valid, false otherwise.
 	 *
-	 * @throws  \Exception  On validation error
+	 * @throws  BaseException|\Exception  On validation error
 	 *
 	 * @see     \JFormRule
 	 * @see     \JFilterInput
@@ -3378,7 +3384,7 @@ class DataModel extends Model implements \JTableInterface
 				}
 				else
 				{
-					throw new \Exception($message);
+					throw new BaseException($message);
 				}
 			}
 
