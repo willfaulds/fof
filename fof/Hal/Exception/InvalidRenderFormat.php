@@ -11,7 +11,7 @@ use Exception;
 
 defined('_JEXEC') or die;
 
-class InvalidRenderFormat extends \LogicException
+class InvalidRenderFormat extends \RuntimeException
 {
 	public function __construct($format, $code = 500, Exception $previous = null)
 	{

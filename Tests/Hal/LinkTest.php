@@ -91,7 +91,7 @@ class LinkTest extends FOFTestCase
 	 * @dataProvider				getTestCreateExceptionData
 	 * @covers						FOF30\Hal\Link::__construct
 	 * @expectedException			\RuntimeException
-	 * @expectedExceptionMessage	A HAL link must always have a non-empty href
+	 * @expectedExceptionMessage	LIB_FOF_HAL_ERR_INVALIDLINK
 	 */
 	public function testCreateException($href, $templated, $name, $hreflang, $title, $message)
 	{
