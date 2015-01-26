@@ -58,7 +58,30 @@ interface DataViewInterface
 	/**
 	 * Returns a reference to the container attached to this View
 	 *
-	 * @return Container
+	 * @return  Container
 	 */
 	public function &getContainer();
+
+	/**
+	 * Escapes a value for output in a view script.
+	 *
+	 * @param   mixed  $var  The output to escape.
+	 *
+	 * @return  string  The escaped value.
+	 */
+	public function escape($var);
+
+	/**
+	 * Returns the task being rendered by the view
+	 *
+	 * @return  string
+	 */
+	public function getTask();
+
+	/**
+	 * Get the layout.
+	 *
+	 * @return  string  The layout name
+	 */
+	public function getLayout();
 }

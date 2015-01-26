@@ -168,7 +168,7 @@ class Container extends ContainerBase
 			'frontEndPath' => $frontEndPath,
 			'backEndPath' => $backEndPath,
 			'thisPath' => $thisPath,
-			'rendererClass' => $appConfig->get('container.rendererClass', null),
+			'rendererClass' => $appConfig->get('container.rendererClass', '\\FOF30\\Render\\Joomla3'),
 			'factoryClass' => $appConfig->get('container.factoryClass', '\\FOF30\\Factory\\BasicFactory'),
 		));
 
@@ -406,7 +406,7 @@ class Container extends ContainerBase
 				{
 					foreach ($renderFiles as $filename)
 					{
-						if ($filename == 'Base.php')
+						if ($filename == 'RenderBase.php')
 						{
 							continue;
 						}

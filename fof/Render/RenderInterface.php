@@ -15,6 +15,11 @@ defined('_JEXEC') or die;
 
 interface RenderInterface
 {
+	/**
+	 * Public constructor
+	 *
+	 * @param   Container  $container  The container we are attached to
+	 */
 	function __construct(Container $container);
 
 	/**
@@ -143,4 +148,33 @@ interface RenderInterface
 	 * @return  boolean
 	 */
 	function isTabFieldset($fieldset);
+
+	/**
+	 * Set a renderer option (depends on the renderer)
+	 *
+	 * @param   string  $key    The name of the option to set
+	 * @param   string  $value  The value of the option
+	 *
+	 * @return  void
+	 */
+	function setOption($key, $value);
+
+	/**
+	 * Set multiple renderer options at once (depends on the renderer)
+	 *
+	 * @param   array  $options  The options to set as key => value pairs
+	 *
+	 * @return  void
+	 */
+	function setOptions(array $options);
+
+	/**
+	 * Get the value of a renderer option
+	 *
+	 * @param   string  $key      The name of the parameter
+	 * @param   mixed   $default  The default value to return if the parameter is not set
+	 *
+	 * @return  mixed  The parameter value
+	 */
+	function getOption($key, $default = null);
 }
