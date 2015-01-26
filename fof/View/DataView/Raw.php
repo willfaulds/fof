@@ -46,11 +46,12 @@ class Raw extends View implements DataViewInterface
 	/**
 	 * Overrides the constructor to apply Joomla! ACL permissions
 	 *
-	 * @param \FOF30\Container\Container $container
+	 * @param   Container  $container  The container we belong to
+	 * @param   array      $config     The configuration overrides for the view
 	 */
-	public function __construct(Container $container)
+	public function __construct(Container $container, array $config = array())
 	{
-		parent::__construct($container);
+		parent::__construct($container, $config);
 
 		$this->permissions = $this->getPermissions(null, $this->additionalPermissions);
 	}

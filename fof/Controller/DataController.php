@@ -74,9 +74,9 @@ class DataController extends Controller
 		'unpublish' => 'core.edit.state',
 	);
 
-	public function __construct(Container $container = null)
+	public function __construct(Container $container = null, array $config = array())
 	{
-		parent::__construct($container);
+		parent::__construct($container, $config);
 
 		// Set up a default model name if none is provided
 		if (empty($this->modelName))

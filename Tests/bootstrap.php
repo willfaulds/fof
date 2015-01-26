@@ -9,7 +9,7 @@
 define('_JEXEC', 1);
 
 // Include the FOF autoloader.
-if (false == include __DIR__ . '/../fof/Autoloader/Autoloader.php')
+if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 {
 	echo 'ERROR: FOF Autoloader not found' . PHP_EOL;
 

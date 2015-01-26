@@ -64,6 +64,11 @@ class Container implements DomainInterface
 	 */
 	public function get(&$configuration, $var, $default)
 	{
+		if ($var == '*')
+		{
+			return $configuration['container'];
+		}
+
 		if (isset($configuration['container'][$var]))
 		{
 			return $configuration['container'][$var];

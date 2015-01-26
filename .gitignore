@@ -14,8 +14,7 @@
 /documentation/*.xml~
 
 /fof/include.php
-/fof/lib_fof.xml
-/fof/lib_f0f.xml
+/fof/lib_fof30.xml
 /fof/version.txt
 
 /fof2/include.php

@@ -23,7 +23,7 @@ class ConfigurationTest extends FOFTestCase
 	 */
 	protected function setUp()
 	{
-		self::$container->backEndPath = __DIR__ . '/../_data/configuration';
+		self::$container->backEndPath = realpath(__DIR__ . '/../_data/configuration');
 	}
 
 	/**

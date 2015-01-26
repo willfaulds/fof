@@ -7,7 +7,7 @@
 
 namespace FOF30\Hal;
 
-use FOF30\Hal\Exceptions\InvalidLinkFormat;
+use FOF30\Hal\Exception\InvalidLinkFormat;
 
 defined('_JEXEC') or die;
 

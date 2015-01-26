@@ -207,6 +207,11 @@ class Views implements DomainInterface
 
 		$acl = $default;
 
+		if (empty($params) || empty($params[0]))
+		{
+			return $aclmap;
+		}
+
 		if (isset($aclmap['*']))
 		{
 			$acl = $aclmap['*'];
@@ -235,18 +240,26 @@ class Views implements DomainInterface
 	{
 		$ret = $default;
 
-		if (isset($configuration['views']['*'])
-			&& isset($configuration['views']['*']['config'])
-			&& isset($configuration['views']['*']['config'][$params[0]]))
+		$config = array();
+
+		if (isset($configuration['views']['*']['config']))
 		{
-			$ret = $configuration['views']['*']['config'][$params[0]];
+			$config = $configuration['views']['*']['config'];
 		}
 
-		if (isset($configuration['views'][$view])
-			&& isset($configuration['views'][$view]['config'])
-			&& isset($configuration['views'][$view]['config'][$params[0]]))
+		if (isset($configuration['views'][$view]['config']))
 		{
-			$ret = $configuration['views'][$view]['config'][$params[0]];
+			$config = array_merge($config, $configuration['views'][$view]['config']);
+		}
+
+		if (empty($params) || empty($params[0]))
+		{
+			return $config;
+		}
+
+		if (isset($config[$params[0]]))
+		{
+			$ret = $config[$params[0]];
 		}
 
 		return $ret;

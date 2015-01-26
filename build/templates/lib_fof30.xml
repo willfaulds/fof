@@ -21,19 +21,28 @@
 		<folder>Autoloader</folder>
 		<folder>Configuration</folder>
 		<folder>Container</folder>
+		<folder>Controller</folder>
 		<folder>Database</folder>
+		<folder>Dispatcher</folder>
 		<folder>Download</folder>
 		<folder>Encrypt</folder>
+		<folder>Event</folder>
+		<folder>Factory</folder>
+		<folder>Form</folder>
 		<folder>Hal</folder>
 		<folder>Inflector</folder>
 		<folder>Input</folder>
 		<folder>Layout</folder>
 		<folder>Less</folder>
-		<folder>Pimple</folder>
+		<folder>Model</folder>
 		<folder>Platform</folder>
+		<folder>Render</folder>
 		<folder>Template</folder>
 		<folder>Timer</folder>
+		<folder>Toolbar</folder>
+		<folder>TransparentAuthentication</folder>
 		<folder>Utils</folder>
+		<folder>View</folder>
 
 		<file>LICENSE.txt</file>
 		<file>include.php</file>

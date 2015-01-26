@@ -7,7 +7,7 @@
 
 namespace FOF30\Autoloader;
 
-defined('_JEXEC') or die;
+// Do not put the JEXEC or die check on this file (necessary omission for testing)
 
 /**
  * A PSR-4 class autoloader. This is a modified version of Composer's ClassLoader class

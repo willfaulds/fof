@@ -29,7 +29,7 @@ class ViewsTest extends FOFTestCase
 	{
 		$this->object = new Views();
 
-		$file = __DIR__ . '/../../_data/configuration/views.xml';
+		$file = realpath(__DIR__ . '/../../_data/configuration/views.xml');
 		$xml = simplexml_load_file($file);
 
 		$this->object->parseDomain($xml, $this->data);
@@ -44,7 +44,7 @@ class ViewsTest extends FOFTestCase
 	{
 		$this->data = array();
 
-		$file = __DIR__ . '/../../_data/configuration/views.xml';
+		$file = realpath(__DIR__ . '/../../_data/configuration/views.xml');
 		$xml = simplexml_load_file($file);
 
 		$this->object->parseDomain($xml, $this->data);
@@ -200,7 +200,7 @@ class ViewsTest extends FOFTestCase
 			array('*.config.foobar', null, 1, 'Config: non-existent config, star view'),
 			array('item.config.behaviors', 'filter,access', 1, 'Config: implicitly named config, existing view'),
 			array('item.config.autoRouting', '3', 1, 'Config: explicitly named empty config, existing view'),
-			array('bad.config.behaiors', '', 1, 'Config: explicitly named non-empty config, existing view, override star view'),
+			array('bad.config.behaviors', '', 1, 'Config: explicitly named non-empty config, existing view, override star view'),
 			array('notthere.config.behaviors', 'filter,access', 1, 'Config: implicitly named config, not-existent view'),
 			array('notthere.config.kot', '', 1, 'Config: not-existent config, not-existent view'),
 		);

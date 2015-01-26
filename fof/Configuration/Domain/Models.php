@@ -193,7 +193,7 @@ class Models implements DomainInterface
 
 		$map = $default;
 
-		if (empty($params[0]))
+		if (empty($params[0]) || ($params[0] == '*'))
 		{
 			$map = $fieldmap;
 		}
@@ -210,30 +210,33 @@ class Models implements DomainInterface
 	 *
 	 * @param   string  $model           The model for which we will be fetching table alias
 	 * @param   array   &$configuration  The configuration parameters hash array
-	 * @param   array   $params          Extra options; key 0 defines the table we want to fetch
+	 * @param   array   $params          Ignored
 	 * @param   string  $default         Default table alias
 	 *
 	 * @return  string  Table alias
 	 */
 	protected function getTablealias($model, &$configuration, $params, $default = '')
 	{
-		$tablealias = $default;
+		$tableAlias = $default;
 
-		if (isset($configuration['models']['*'])
-			&& isset($configuration['models']['*']['tablealias'])
-			&& isset($configuration['models']['*']['tablealias'][0]))
+		$tableMap = array();
+
+		if (isset($configuration['models']['*']['tablealias']))
 		{
-			$tablealias = (string) $configuration['models']['*']['tablealias'][0];
+			$tableMap = $configuration['models']['*']['tablealias'];
 		}
 
-		if (isset($configuration['models'][$model])
-			&& isset($configuration['models'][$model]['tablealias'])
-			&& isset($configuration['models'][$model]['tablealias'][0]))
+		if (isset($configuration['models'][$model]['tablealias']))
 		{
-			$tablealias = (string) $configuration['models'][$model]['tablealias'][0];
+			$tableMap = array_merge($tableMap, $configuration['models'][$model]['tablealias']);
 		}
 
-		return $tablealias;
+		if (empty($tableMap))
+		{
+			return null;
+		}
+
+		return $tableMap[0];
 	}
 
 	/**

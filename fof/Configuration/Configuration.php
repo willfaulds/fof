@@ -129,9 +129,10 @@ class Configuration
 			$path = $this->container['backEndPath'];
 		}
 
-		// Check that the path exists
-		$path = $filesystem->pathCheck($path);
+		// This line unfortunately doesn't work with Unit Tests because JPath depends on the JPATH_SITE constant :(
+		// $path = $filesystem->pathCheck($path);
 
+		// Check that the path exists
 		if (!$filesystem->folderExists($path))
 		{
 			return $ret;
@@ -197,7 +198,7 @@ class Configuration
 		{
 			$filesystem = $this->container->filesystem;
 
-			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
+			$files = $filesystem->folderFiles(__DIR__ . '/Domain', '.php');
 
 			if (!empty($files))
 			{
