@@ -20,29 +20,36 @@ class ControllerFactory extends BaseFactory
 	/**
 	 * Create a new object instance
 	 *
-	 * @param   string $name The name of the class we're making
+	 * @param   string  $name    The name of the class we're making
+	 * @param   array   $config  The config parameters which override the fof.xml information
 	 *
 	 * @return  DataController  A new DataController object
 	 */
-	public function make($name = null)
+	public function make($name = null, array $config = array())
 	{
 		if (empty($name))
 		{
 			throw new ControllerNotFound;
 		}
 
-		$config = array(
+		$defaultConfig = array(
 			'name'           => $name,
 			'default_task'   => $this->container->appConfig->get("views.$name.config.default_task"),
 			'viewName'       => $this->container->appConfig->get("views.$name.config.viewName"),
 			'modelName'      => $this->container->appConfig->get("views.$name.config.modelName"),
 			'taskPrivileges' => $this->container->appConfig->get("views.$name.acl"),
-			'cacheableTasks' =>  $this->container->appConfig->get("views.$name.config.cacheableTasks", array('browse', 'read')),
+			'cacheableTasks' => $this->container->appConfig->get("views.$name.config.cacheableTasks", array(
+				'browse',
+				'read'
+			)),
+			'taskMap'        => $this->container->appConfig->get("views.$name.taskmap")
 		);
+
+		$config = array_merge($defaultConfig, $config);
 
 		$controller = new DataController($this->container, $config);
 
-		$taskMap = $this->container->appConfig->get("views.$name.taskmap");
+		$taskMap = $config['taskMap'];
 
 		if (is_array($taskMap) && !empty($taskMap))
 		{

@@ -29,13 +29,4 @@ abstract class BaseFactory
 	{
 		$this->container = $container;
 	}
-
-	/**
-	 * Create a new object instance
-	 *
-	 * @param   string $name The name of the class we're making
-	 *
-	 * @return  mixed  Object type depends on the factory
-	 */
-	abstract public function make($name = null);
 }

@@ -21,11 +21,12 @@ class ModelFactory extends BaseFactory
 	/**
 	 * Create a new object instance
 	 *
-	 * @param   string $name The name of the class we're making
+	 * @param   string  $name    The name of the class we're making
+	 * @param   array   $config  The config parameters which override the fof.xml information
 	 *
 	 * @return  TreeModel|DataModel  A new TreeModel or DataModel object
 	 */
-	public function make($name = null)
+	public function make($name = null, array $config = array())
 	{
 		if (empty($name))
 		{
@@ -34,7 +35,7 @@ class ModelFactory extends BaseFactory
 
 		$appConfig = $this->container->appConfig;
 
-		$config = array(
+		$defaultConfig = array(
 			'name'             => $name,
 			'use_populate'     => $appConfig->get("views.$name.config.use_populate"),
 			'ignore_request'   => $appConfig->get("views.$name.config.ignore_request"),
@@ -50,6 +51,8 @@ class ModelFactory extends BaseFactory
 			'guarded_fields'   => $appConfig->get("views.$name.config.guarded_fields", array()),
 			'relations'        => $appConfig->get("views.$name.relations", array()),
 		);
+
+		$config = array_merge($defaultConfig, $config);
 
 		try
 		{
