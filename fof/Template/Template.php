@@ -309,6 +309,7 @@ class Template
 	 * media://		The media directory or a media override
 	 * admin://		Path relative to administrator directory (no alternate)
 	 * site://		Path relative to site's root (no alternate)
+	 * auto://      Automatically guess if it should be site:// or admin://
 	 *
 	 * @param   string  $path  Fancy path
 	 *
@@ -326,6 +327,11 @@ class Template
 		{
 			$protocol = $protoAndPath[0];
 			$path = $protoAndPath[1];
+		}
+
+		if ($protocol == 'auto')
+		{
+			$protocol = $this->container->platform->isBackend() ? 'admin' : 'site';
 		}
 
 		$path = ltrim($path, '/' . DIRECTORY_SEPARATOR);

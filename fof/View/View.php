@@ -524,6 +524,43 @@ class View
 	}
 
 	/**
+	 * Get the layout.
+	 *
+	 * @return  string  The layout name
+	 */
+	public function getLayout()
+	{
+		return $this->layout;
+	}
+
+	/**
+	 * Sets the layout name to use
+	 *
+	 * @param   string $layout The layout name or a string in format <template>:<layout file>
+	 *
+	 * @return  string  Previous value.
+	 */
+	public function setLayout($layout)
+	{
+		$previous = $this->layout;
+		if (strpos($layout, ':') === false)
+		{
+			$this->layout = $layout;
+		}
+		else
+		{
+			// Convert parameter to array based on :
+			$temp = explode(':', $layout);
+			$this->layout = $temp[1];
+
+			// Set layout template
+			$this->layoutTemplate = $temp[0];
+		}
+
+		return $previous;
+	}
+
+	/**
 	 * Our function uses loadAnyTemplate to provide smarter view template loading.
 	 *
 	 * @param   string  $tpl    The name of the template file to parse
@@ -562,45 +599,68 @@ class View
 	}
 
 	/**
-	 * Get the layout.
+	 * Parses a template path in the form of admin:/component/view/layout or
+	 * site:/component/view/layout to an array which can be used by
+	 * loadAnyTemplate to locate and load the view template file.
 	 *
-	 * @return  string  The layout name
+	 * @param   string  $path  The template path to parse
+	 *
+	 * @return  array  A hash array with the parsed path parts
 	 */
-	public function getLayout()
+	protected function parseTemplatePath($path = '')
 	{
-		return $this->layout;
+		$parts = array(
+			'admin'		 => 0,
+			'component'	 => $this->config['option'],
+			'view'		 => $this->config['view'],
+			'template'	 => 'default'
+		);
+
+		if (substr($path, 0, 5) == 'auto:')
+		{
+			$replacement = $this->container->platform->isBackend() ? 'admin:' : 'site:';
+			$path = $replacement . substr($path, 5);
+		}
+
+		if (substr($path, 0, 6) == 'admin:')
+		{
+			$parts['admin'] = 1;
+			$path = substr($path, 6);
+		}
+		elseif (substr($path, 0, 5) == 'site:')
+		{
+			$path = substr($path, 5);
+		}
+
+		if (empty($path))
+		{
+			return;
+		}
+
+		$pathparts = explode('/', $path, 3);
+
+		switch (count($pathparts))
+		{
+			case 3:
+				$parts['component'] = array_shift($pathparts);
+
+			case 2:
+				$parts['view'] = array_shift($pathparts);
+
+			case 1:
+				$parts['template'] = array_shift($pathparts);
+				break;
+		}
+
+		return $parts;
 	}
 
 	/**
-	 * Sets the layout name to use
-	 *
-	 * @param   string $layout The layout name or a string in format <template>:<layout file>
-	 *
-	 * @return  string  Previous value.
-	 */
-	public function setLayout($layout)
-	{
-		$previous = $this->layout;
-		if (strpos($layout, ':') === false)
-		{
-			$this->layout = $layout;
-		}
-		else
-		{
-			// Convert parameter to array based on :
-			$temp = explode(':', $layout);
-			$this->layout = $temp[1];
-
-			// Set layout template
-			$this->layoutTemplate = $temp[0];
-		}
-
-		return $previous;
-	}
-
-	/**
-	 * Loads a template given any path. The path is in the format:
-	 * viewname/templatename
+	 * Loads a template given any path. The path is in the format componentPart://componentName/viewName/layoutName,
+	 * for example
+	 * site:com_example/items/default
+	 * admin:com_example/items/default_subtemplate
+	 * auto:com_example/things/chair
 	 *
 	 * @param   string $path        The template path
 	 * @param   array  $forceParams A hash array of variables to be extracted in the local scope of the template file
@@ -641,7 +701,7 @@ class View
 		$layoutTemplate = $this->getLayoutTemplate();
 
 		// Parse the path
-		$templateParts = $this->container->template->parsePath($path);
+		$templateParts = $this->parseTemplatePath($path);
 
 		// Get the paths
 		$componentPaths = $this->container->platform->getComponentBaseDirs($templateParts['component']);
