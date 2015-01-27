@@ -74,6 +74,16 @@ class DataController extends Controller
 		'unpublish' => 'core.edit.state',
 	);
 
+	/**
+	 * Public constructor of the Controller class. You can pass the following variables in the $config array,
+	 * on top of what you already have in the base Controller class:
+	 *
+	 * taskPrivileges       array   ACL privileges for each task
+	 * cacheableTasks       array   The cache-enabled tasks
+	 *
+	 * @param   Container  $container  The application container
+	 * @param   array      $config     The configuration array
+	 */
 	public function __construct(Container $container = null, array $config = array())
 	{
 		parent::__construct($container, $config);
@@ -88,6 +98,21 @@ class DataController extends Controller
 		if (empty($this->viewName))
 		{
 			$this->viewName = Inflector::pluralize($this->view);
+		}
+
+		if (isset($config['cacheableTasks']))
+		{
+			if (!is_array($config['cacheableTasks']))
+			{
+				$config['cacheableTasks'] = explode(',', $config['cacheableTasks']);
+			}
+
+			$this->cacheableTasks = $config['cacheableTasks'];
+		}
+
+		if (isset($config['taskPrivileges']) && is_array($config['taskPrivileges']))
+		{
+			$this->taskPrivileges = array_merge($this->taskPrivileges, $config['taskPrivileges']);
 		}
 	}
 
