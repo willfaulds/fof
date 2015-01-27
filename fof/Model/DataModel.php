@@ -192,8 +192,13 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Do I have a list of known fields?
-		if (isset($config['knownFields']))
+		if (isset($config['knownFields']) && !empty($config['knownFields']))
 		{
+			if (!is_array($config['knownFields']))
+			{
+				$config['knownFields'] = explode(',', $config['knownFields']);
+			}
+
 			$this->knownFields = $config['knownFields'];
 		}
 		else
@@ -202,7 +207,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->knownFields = $this->getTableFields();
 		}
 
-		if(empty($this->knownFields))
+		if (empty($this->knownFields))
 		{
 			throw new NoTableColumns(sprintf('Model %s could not fetch column list for the table %s', $this->getName(), $this->tableName));
 		}
@@ -210,12 +215,24 @@ class DataModel extends Model implements \JTableInterface
 		// Should I turn on autoChecks?
 		if (isset($config['autoChecks']))
 		{
+			if (!is_bool($config['autoChecks']))
+			{
+				$config['autoChecks'] = strtolower($config['autoChecks']);
+				$config['autoChecks'] = in_array($config['autoChecks'], array('yes', 'true', 'on', 1));
+			}
+
 			$this->autoChecks = $config['autoChecks'];
 		}
 
 		// Should I exempt fields from autoChecks?
 		if (isset($config['fieldsSkipChecks']))
 		{
+			if (!is_array($config['fieldsSkipChecks']))
+			{
+				$config['fieldsSkipChecks'] = explode(',', $config['fieldsSkipChecks']);
+				$config['fieldsSkipChecks'] = array_map(function ($x) { return trim($x); }, $config['fieldsSkipChecks']);
+			}
+
 			$this->fieldsSkipChecks = $config['fieldsSkipChecks'];
 		}
 
@@ -255,8 +272,14 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Do I have a list of fillable fields?
-		if (isset($config['fillable_fields']) && is_array($config['fillable_fields']))
+		if (isset($config['fillable_fields']) && !empty($config['fillable_fields']))
 		{
+			if (!is_array($config['fillable_fields']))
+			{
+				$config['fillable_fields'] = explode(',', $config['fillable_fields']);
+				$config['fillable_fields'] = array_map(function ($x) { return trim($x); }, $config['fillable_fields']);
+			}
+
 			$this->fillable = array();
 			$this->autoFill = true;
 
@@ -274,8 +297,14 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Do I have a list of guarded fields?
-		if (isset($config['guarded_fields']) && is_array($config['guarded_fields']))
+		if (isset($config['guarded_fields']) && !empty($config['guarded_fields']))
 		{
+			if (!is_array($config['guarded_fields']))
+			{
+				$config['guarded_fields'] = explode(',', $config['guarded_fields']);
+				$config['guarded_fields'] = array_map(function ($x) { return trim($x); }, $config['guarded_fields']);
+			}
+
 			$this->guarded = array();
 			$this->autoFill = true;
 

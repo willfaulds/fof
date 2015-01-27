@@ -7,29 +7,16 @@
 
 namespace FOF30\Factory\Magic;
 
-use FOF30\Container\Container;
 use FOF30\Controller\DataController;
 use FOF30\Factory\Exception\ControllerNotFound;
 
 defined('_JEXEC') or die;
 
+/**
+ * Creates a DataControler object instance based on the information provided by the fof.xml configuration file
+ */
 class ControllerFactory extends BaseFactory
 {
-	/**
-	 * @var   Container|null  The container where this factory belongs to
-	 */
-	protected $container = null;
-
-	/**
-	 * Public constructor
-	 *
-	 * @param   Container  $container  The container we belong to
-	 */
-	public function __construct(Container $container)
-	{
-		$this->container = $container;
-	}
-
 	/**
 	 * Create a new object instance
 	 *
