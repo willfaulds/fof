@@ -474,7 +474,7 @@ class Model
 
 		// All other event handlers live outside this object, therefore they need to be passed a reference to this
 		// objects as the first argument.
-		array_unshift($arguments, &$this);
+		array_unshift($arguments, $this);
 
 		// Trigger the object's behaviours dispatcher, if such a thing exists
 		if (property_exists($this, 'behavioursDispatcher') && method_exists($this->behavioursDispatcher, 'trigger'))

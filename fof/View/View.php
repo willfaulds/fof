@@ -690,6 +690,7 @@ class View
 				unset($this->this);
 			}
 
+			// TODO – BEGIN – Use engines (depend on extension of $this->_tempFilePath)
 			// Force parameters into scope
 
 			if (!empty($forceParams))
@@ -707,6 +708,7 @@ class View
 			$output = ob_get_contents();
 			ob_end_clean();
 
+			// TODO – END – Use engines
 			return $output;
 		}
 		else
@@ -850,7 +852,7 @@ class View
 
 		// All other event handlers live outside this object, therefore they need to be passed a reference to this
 		// objects as the first argument.
-		array_unshift($arguments, &$this);
+		array_unshift($arguments, $this);
 
 		// If we have an "on" prefix for the event (e.g. onFooBar) remove it and stash it for later.
 		$prefix = '';
