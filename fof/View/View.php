@@ -9,9 +9,11 @@ namespace FOF30\View;
 
 use FOF30\Container\Container;
 use FOF30\Model\Model;
+use FOF30\View\Engine\EngineInterface;
 use FOF30\View\Exception\AccessForbidden;
 use FOF30\View\Exception\CannotGetName;
 use FOF30\View\Exception\ModelNotFound;
+use FOF30\View\Exception\UnrecognisedExtension;
 
 defined('_JEXEC') or die;
 
@@ -139,6 +141,16 @@ class View
 	protected $doPostRender = true;
 
 	/**
+	 * Maps view template extensions to view engine classes
+	 *
+	 * @var    array
+	 */
+	protected $viewEngineMap = array(
+		'.blade.php' => 'FOF30\\View\\Engine\\PhpEngine',
+		'.php'       => 'FOF30\\View\\Engine\\BladeEngine',
+	);
+
+	/**
 	 * Constructor.
 	 *
 	 * The $config array can contain the following overrides:
@@ -146,6 +158,7 @@ class View
 	 * template_path  string  The path of the layout directory
 	 * layout         string  The layout for displaying the view
 	 * viewFinder     ViewTemplateFinder  The object used to locate view templates in the filesystem
+	 * viewEngineMap  array   Maps view template extensions to view engine classes
 	 *
 	 * @param   Container $container  The container we belong to
 	 * @param   array     $config     The configuration overrides for the view
@@ -207,14 +220,44 @@ class View
 			}
 		}
 
+		// Apply the viewEngineMap
+		if (isset($config['viewEngineMap']))
+		{
+			if (!is_array($config['viewEngineMap']))
+			{
+				$temp = explode(',', $config['viewEngineMap']);
+				$config['viewEngineMap'] = array();
+
+				foreach ($temp as $assignment)
+				{
+					$parts = explode('=>', $assignment, 2);
+
+					if (count($parts) != 2)
+					{
+						continue;
+					}
+
+					$parts = array_map(function($x) { return trim($x); }, $parts);
+
+					$config['viewEngineMap'][$parts[0]] = $parts[1];
+				}
+			}
+
+			$this->viewEngineMap = array_merge($this->viewEngineMap, $config['viewEngineMap']);
+		}
+
 		// Set the ViewFinder
 		$this->viewFinder = $this->container->factory->viewFinder($this);
 
-		if (!empty($config['viewFinder']) && is_object($config['viewFinder']) && ($config['viewFinder'] instanceof ViewTemplateFinder))
+		if (isset($config['viewFinder']) && !empty($config['viewFinder']) && is_object($config['viewFinder']) && ($config['viewFinder'] instanceof ViewTemplateFinder))
 		{
 			$this->viewFinder = $config['viewFinder'];
 		}
 
+		// Apply the registered view template extensions to the view finder
+		$this->viewFinder->setExtensions(array_keys($this->viewEngineMap));
+
+		// Apply the base URL
 		$this->baseurl = $this->container->platform->URIbase();
 	}
 
@@ -644,39 +687,58 @@ class View
 			$extraPaths = $this->path['template'];
 		}
 
+		// First get the raw view template path
 		$this->_tempFilePath = $this->viewFinder->resolveUriToPath($uri, $layoutTemplate, $extraPaths);
+		// Now get the parsed view template path
+		$this->_tempFilePath = $this->getEngine($this->_tempFilePath)->get($this->_tempFilePath);
 
+		unset($uri);
 		unset($layoutTemplate);
 		unset($extraPaths);
-		unset($uri);
-
-		// Never allow a 'this' property
-
-		if (isset($this->this))
-		{
-			unset($this->this);
-		}
-
-		// TODO – BEGIN – Use engines (depend on extension of $this->_tempFilePath)
-		// Force parameters into scope
 
 		if (!empty($forceParams))
 		{
 			extract($forceParams);
+			unset($forceParams);
 		}
 
-		// Start capturing output into a buffer
+		$obLevel = ob_get_level();
+
 		ob_start();
 
-		// Include the requested template filename in the local scope (this will execute the view logic).
-		include $this->_tempFilePath;
+		// We'll evaluate the contents of the view inside a try/catch block so we can
+		// flush out any stray output that might get out before an error occurs or
+		// an exception is thrown. This prevents any partial views from leaking.
+		try
+		{
+			include $this->_tempFilePath;
+		}
+		catch (\Exception $e)
+		{
+			$this->handleViewException($e, $obLevel);
+		}
 
-		// Done with the requested template; get the buffer and clear it.
-		$output = ob_get_contents();
-		ob_end_clean();
+		return ob_get_clean();
+	}
 
-		// TODO – END – Use engines
-		return $output;
+	/**
+	 * Handle a view exception.
+	 *
+	 * @param   \Exception  $e        The exception to handle
+	 * @param   int         $obLevel  The target output buffering level
+	 *
+	 * @return  void
+	 *
+	 * @throws  $e
+	 */
+	protected function handleViewException(\Exception $e, $obLevel)
+	{
+		while (ob_get_level() > $obLevel)
+		{
+			ob_end_clean();
+		}
+
+		throw $e;
 	}
 
 	/**
@@ -687,6 +749,43 @@ class View
 	public function getLayoutTemplate()
 	{
 		return $this->layoutTemplate;
+	}
+
+	/**
+	 * Get the appropriate view engine for the given view template path.
+	 *
+	 * @param   string  $path  The path of the view template
+	 *
+	 * @return  EngineInterface
+	 *
+	 * @throws  UnrecognisedExtension
+	 */
+	protected function getEngine($path)
+	{
+		if ( ! $extension = $this->getExtension($path))
+		{
+			throw new UnrecognisedExtension($path);
+		}
+
+		$engine = $this->viewEngineMap[$extension];
+
+		return new $engine;
+	}
+
+	/**
+	 * Get the extension used by the view file.
+	 *
+	 * @param  string  $path
+	 * @return string
+	 */
+	protected function getExtension($path)
+	{
+		$extensions = array_keys($this->extensions);
+
+		return array_first($extensions, function($key, $value) use ($path)
+		{
+			return ends_with($path, $value);
+		});
 	}
 
 	/**

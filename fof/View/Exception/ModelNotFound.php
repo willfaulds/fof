@@ -16,9 +16,9 @@ defined('_JEXEC') or die;
  */
 class ModelNotFound extends \RuntimeException
 {
-	public function __construct($model, $viewName, $code = 500, Exception $previous = null)
+	public function __construct($path, $viewName, $code = 500, Exception $previous = null)
 	{
-		$message = \JText::sprintf('LIB_FOF_VIEW_MODELNOTINVIEW', $model, $viewName);
+		$message = \JText::sprintf('LIB_FOF_VIEW_MODELNOTINVIEW', $path, $viewName);
 
 		parent::__construct($message, $code, $previous);
 	}
