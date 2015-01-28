@@ -100,7 +100,7 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		$params = $this->getOptions();
 
@@ -144,7 +144,7 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? $this->class : '';
 
 		$db = $this->form->getContainer()->platform->getDbo();
 		$query = $db->getQuery(true);

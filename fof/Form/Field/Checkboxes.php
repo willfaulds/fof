@@ -112,7 +112,7 @@ class Checkboxes extends \JFormFieldCheckboxes implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class     = $this->element['class'] ? (string) $this->element['class'] : $this->id;
+		$class     = $this->class ? (string) $this->class : $this->id;
 		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
 
 		$html = '<span class="' . $class . '">';
@@ -136,21 +136,5 @@ class Checkboxes extends \JFormFieldCheckboxes implements FieldInterface
 		$html .= '</span>';
 
 		return $html;
-	}
-
-	/**
-	 * Get the rendering of this field type for static display, e.g. in a single
-	 * item view (typically a "read" task).
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 */
-	public function getInput()
-	{
-		// Used for J! 2.5 compatibility
-		$this->value = !is_array($this->value) ? explode(',', $this->value) : $this->value;
-
-		return parent::getInput();
 	}
 }

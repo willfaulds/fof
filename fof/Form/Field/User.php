@@ -106,9 +106,9 @@ class User extends \JFormFieldUser implements FieldInterface
 		$class         = '';
 
 		// Get the field parameters
-		if ($this->element['class'])
+		if ($this->class)
 		{
-			$class = ' class="' . (string) $this->element['class'] . '"';
+			$class = ' class="' . $this->class . '"';
 		}
 
 		if ($this->element['show_username'] == 'false')
@@ -188,9 +188,9 @@ class User extends \JFormFieldUser implements FieldInterface
 		$user = $this->form->getContainer()->platform->getUser($this->value);
 
 		// Get the field parameters
-		if ($this->element['class'])
+		if ($this->class)
 		{
-			$class = ' class="' . (string) $this->element['class'] . '"';
+			$class = ' class="' . $this->class . '"';
 		}
 
 		if ($this->element['show_username'] == 'false')

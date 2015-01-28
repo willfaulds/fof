@@ -99,7 +99,7 @@ class Email extends \JFormFieldEMail implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 		$dolink = $this->element['show_link'] == 'true';
 		$empty_replacement = '';
 
@@ -142,9 +142,9 @@ class Email extends \JFormFieldEMail implements FieldInterface
 		$empty_replacement = '';
 
 		// Get field parameters
-		if ($this->element['class'])
+		if ($this->class)
 		{
-			$class = (string) $this->element['class'];
+			$class = $this->class;
 		}
 
 		if ($this->element['show_link'] == 'true')

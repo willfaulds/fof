@@ -99,7 +99,7 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? $this->class : '';
 
 		$selected = self::getOptionName($this->getGroups(), $this->value);
 
@@ -129,7 +129,7 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? $this->class : '';
 
 		$selected = self::getOptionName($this->getGroups(), $this->value);
 

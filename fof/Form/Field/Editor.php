@@ -98,7 +98,7 @@ class Editor extends \JFormFieldEditor implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<div id="' . $this->id . '" ' . $class . '>' . $this->value . '</div>';
 	}
@@ -113,7 +113,7 @@ class Editor extends \JFormFieldEditor implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? $this->class : '';
 
 		return '<div class="' . $this->id . ' ' . $class . '">' . $this->value . '</div>';
 	}

@@ -104,9 +104,9 @@ class ImageList extends \JFormFieldImageList implements FieldInterface
 			'id' => $this->id
 		);
 
-		if ($this->element['class'])
+		if ($this->class)
 		{
-			$imgattr['class'] = (string) $this->element['class'];
+			$imgattr['class'] = $this->class;
 		}
 
 		if ($this->element['style'])

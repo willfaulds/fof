@@ -100,7 +100,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(self::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
@@ -120,7 +120,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 		$show_link         = false;
 		$link_url          = '';
 
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? $this->class : '';
 
 		if ($this->element['show_link'] == 'true')
 		{

@@ -42,7 +42,7 @@ class Relation extends GenericList
 	 */
 	public function getRepeatable()
 	{
-		$class         = $this->element['class'] ? (string) $this->element['class'] : $this->id;
+		$class         = $this->class ? $this->class : $this->id;
 		$relationclass = $this->element['relationclass'] ? (string) $this->element['relationclass'] : '';
 		$value_field   = $this->element['value_field'] ? (string) $this->element['value_field'] : 'title';
 		$translate     = $this->element['translate'] ? (string) $this->element['translate'] : false;

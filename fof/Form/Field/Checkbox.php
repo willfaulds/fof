@@ -98,10 +98,10 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$value = $this->element['value'] ? (string) $this->element['value'] : '1';
-		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
-		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
+		$class    = $this->class ? ' class="' . $this->class . '"' : '';
+		$value    = $this->element['value'] ? (string) $this->element['value'] : '1';
+		$disabled = $this->disabled ? ' disabled="disabled"' : '';
+		$onclick  = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
 		$required = $this->required ? ' required="required" aria-required="true"' : '';
 
 		if (empty($this->value))
@@ -129,10 +129,10 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
-		$value = $this->element['value'] ? (string) $this->element['value'] : '1';
-		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
-		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
+		$class    = $this->class ? $this->class : '';
+		$value    = $this->element['value'] ? (string) $this->element['value'] : '1';
+		$disabled = $this->disabled ? ' disabled="disabled"' : '';
+		$onclick  = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
 		$required = $this->required ? ' required="required" aria-required="true"' : '';
 
 		if (empty($this->value))

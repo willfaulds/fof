@@ -164,7 +164,7 @@ class Ordering extends \JFormField implements FieldInterface
 			throw new DataModelRequired(__CLASS__);
 		}
 
-		$class = isset($this->element['class']) ? $this->element['class'] : 'input-mini';
+		$class = isset($this->class) ? $this->class : 'input-mini';
 		$icon  = isset($this->element['icon']) ? $this->element['icon'] : 'icon-menu';
 
 		$html = '';

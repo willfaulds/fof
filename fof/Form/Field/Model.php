@@ -101,7 +101,7 @@ class Model extends GenericList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
@@ -125,9 +125,9 @@ class Model extends GenericList implements FieldInterface
 		$empty_replacement	= '';
 
 		// Get field parameters
-		if ($this->element['class'])
+		if ($this->class)
 		{
-			$class = (string) $this->element['class'];
+			$class = $this->class;
 		}
 
 		if ($this->element['format'])

@@ -98,7 +98,7 @@ class TextArea extends \JFormFieldTextarea implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<div id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(nl2br($this->value), ENT_COMPAT, 'UTF-8') .

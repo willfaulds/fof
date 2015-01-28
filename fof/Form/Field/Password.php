@@ -98,7 +98,7 @@ class Password extends \JFormFieldPassword implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .

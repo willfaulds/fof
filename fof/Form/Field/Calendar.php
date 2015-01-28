@@ -130,7 +130,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	{
 		// Initialize some field attributes.
 		$format  = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
-		$class   = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class   = $this->class ? $this->class : '';
 		$default = $this->element['default'] ? (string) $this->element['default'] : '';
 
 		// PHP date doesn't use percentages (%) for the format, but the calendar Javascript
@@ -187,9 +187,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 			// Build the attributes array.
 			$attributes = array();
 
-			if ($this->element['size'])
+			if ($this->size])
 			{
-				$attributes['size'] = (int) $this->element['size'];
+				$attributes['size'] = $this->size;
 			}
 
 			if ($this->element['maxlength'])
@@ -197,24 +197,24 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 				$attributes['maxlength'] = (int) $this->element['maxlength'];
 			}
 
-			if ($this->element['class'])
+			if ($this->class)
 			{
-				$attributes['class'] = (string) $this->element['class'];
+				$attributes['class'] = $this->class;
 			}
 
-			if ((string) $this->element['readonly'] == 'true')
+			if ($this->readonly)
 			{
 				$attributes['readonly'] = 'readonly';
 			}
 
-			if ((string) $this->element['disabled'] == 'true')
+			if ($this->disabled)
 			{
 				$attributes['disabled'] = 'disabled';
 			}
 
-			if ($this->element['onchange'])
+			if ($this->onchange)
 			{
-				$attributes['onchange'] = (string) $this->element['onchange'];
+				$attributes['onchange'] = $this->onchange;
 			}
 
 			if ($this->required)

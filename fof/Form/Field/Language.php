@@ -121,7 +121,7 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
@@ -138,7 +138,7 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? $this->class : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .

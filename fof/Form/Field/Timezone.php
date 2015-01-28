@@ -98,7 +98,7 @@ class Timezone extends \JFormFieldTimezone implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$class = $this->class ? (string) $this->class : '';
 
 		$selected = GroupedList::getOptionName($this->getGroups(), $this->value);
 
