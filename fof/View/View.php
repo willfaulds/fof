@@ -95,9 +95,16 @@ class View
 	protected $container;
 
 	/**
+	 * The object used to locate view templates in the filesystem
+	 *
+	 * @var   ViewTemplateFinder
+	 */
+	private $viewFinder = null;
+
+	/**
 	 * Used when loading template files to avoid variable scope issues
 	 *
-	 * @var null
+	 * @var   null
 	 */
 	private $_tempFilePath = null;
 
@@ -138,6 +145,7 @@ class View
 	 * name           string  The name of the view (defaults to the view class name)
 	 * template_path  string  The path of the layout directory
 	 * layout         string  The layout for displaying the view
+	 * viewFinder     ViewTemplateFinder  The object used to locate view templates in the filesystem
 	 *
 	 * @param   Container $container  The container we belong to
 	 * @param   array     $config     The configuration overrides for the view
@@ -197,6 +205,15 @@ class View
 					}
 				}
 			}
+		}
+
+		// Set the ViewFinder
+		// TODO Go through the Factory
+		$this->viewFinder = new ViewTemplateFinder($this);
+
+		if (!empty($config['viewFinder']) && is_object($config['viewFinder']) && ($config['viewFinder'] instanceof ViewTemplateFinder))
+		{
+			$this->viewFinder = $config['viewFinder'];
 		}
 
 		$this->baseurl = $this->container->platform->URIbase();
@@ -572,17 +589,17 @@ class View
 	{
 		$result = '';
 
-		$paths = $this->container->platform->getViewTemplatePaths(
-			$this->container->componentName,
-			$this->getName(),
-			$this->getLayout(),
-			$tpl,
-			$strict
-		);
+		$uris = $this->viewFinder->getViewTemplateUris(array(
+			'component' => $this->container->componentName,
+			'view'      => $this->getName(),
+			'layout'    => $this->getLayout(),
+			'tpl'       => $tpl,
+			'strictTpl' => $strict
+		));
 
-		foreach ($paths as $path)
+		foreach ($uris as $uri)
 		{
-			$result = $this->loadAnyTemplate($path);
+			$result = $this->loadAnyTemplate($uri);
 
 			if (!($result instanceof \Exception))
 			{
@@ -599,187 +616,68 @@ class View
 	}
 
 	/**
-	 * Parses a template path in the form of admin:/component/view/layout or
-	 * site:/component/view/layout to an array which can be used by
-	 * loadAnyTemplate to locate and load the view template file.
-	 *
-	 * @param   string  $path  The template path to parse
-	 *
-	 * @return  array  A hash array with the parsed path parts
-	 */
-	protected function parseTemplatePath($path = '')
-	{
-		$parts = array(
-			'admin'		 => 0,
-			'component'	 => $this->config['option'],
-			'view'		 => $this->config['view'],
-			'template'	 => 'default'
-		);
-
-		if (substr($path, 0, 5) == 'auto:')
-		{
-			$replacement = $this->container->platform->isBackend() ? 'admin:' : 'site:';
-			$path = $replacement . substr($path, 5);
-		}
-
-		if (substr($path, 0, 6) == 'admin:')
-		{
-			$parts['admin'] = 1;
-			$path = substr($path, 6);
-		}
-		elseif (substr($path, 0, 5) == 'site:')
-		{
-			$path = substr($path, 5);
-		}
-
-		if (empty($path))
-		{
-			return;
-		}
-
-		$pathparts = explode('/', $path, 3);
-
-		switch (count($pathparts))
-		{
-			case 3:
-				$parts['component'] = array_shift($pathparts);
-
-			case 2:
-				$parts['view'] = array_shift($pathparts);
-
-			case 1:
-				$parts['template'] = array_shift($pathparts);
-				break;
-		}
-
-		return $parts;
-	}
-
-	/**
 	 * Loads a template given any path. The path is in the format componentPart://componentName/viewName/layoutName,
 	 * for example
 	 * site:com_example/items/default
 	 * admin:com_example/items/default_subtemplate
 	 * auto:com_example/things/chair
+	 * any:com_example/invoices/printpreview
 	 *
-	 * @param   string $path        The template path
+	 * @param   string $uri        The template path
 	 * @param   array  $forceParams A hash array of variables to be extracted in the local scope of the template file
 	 *
 	 * @return  string  The output of the template
 	 *
 	 * @throws  \Exception  When the layout file is not found
 	 */
-	public function loadAnyTemplate($path = '', $forceParams = array())
+	public function loadAnyTemplate($uri = '', $forceParams = array())
 	{
-		// Automatically check for a Joomla! version specific override
-		$throwErrorIfNotFound = true;
-
-		$suffixes = $this->container->platform->getTemplateSuffixes();
-
-		foreach ($suffixes as $suffix)
-		{
-			if (substr($path, -strlen($suffix)) == $suffix)
-			{
-				$throwErrorIfNotFound = false;
-				break;
-			}
-		}
-
-		if ($throwErrorIfNotFound)
-		{
-			foreach ($suffixes as $suffix)
-			{
-				$result = $this->loadAnyTemplate($path . $suffix, $forceParams);
-
-				if ($result !== false)
-				{
-					return $result;
-				}
-			}
-		}
-
 		$layoutTemplate = $this->getLayoutTemplate();
 
-		// Parse the path
-		$templateParts = $this->parseTemplatePath($path);
-
-		// Get the paths
-		$componentPaths = $this->container->platform->getComponentBaseDirs($templateParts['component']);
-		$templatePath   = $this->container->platform->getTemplateOverridePath($templateParts['component']);
-
-		// Get the default paths
-		$paths = array();
-		$paths[] = $templatePath . '/' . $templateParts['view'];
-		$paths[] = ($templateParts['admin'] ? $componentPaths['admin'] : $componentPaths['site']) . '/views/' . $templateParts['view'] . '/tmpl';
+		$extraPaths = array();
 
 		if (isset($this->_path) || property_exists($this, '_path'))
 		{
-			$paths = array_merge($paths, $this->_path['template']);
+			$extraPaths = $this->_path['template'];
 		}
 		elseif (isset($this->path) || property_exists($this, 'path'))
 		{
-			$paths = array_merge($paths, $this->path['template']);
+			$extraPaths = $this->path['template'];
 		}
 
-		// Look for a template override
+		$this->_tempFilePath = $this->viewFinder->resolveUriToPath($uri, $layoutTemplate, $extraPaths);
 
-		if (isset($layoutTemplate) && ($layoutTemplate != '_') && ($layoutTemplate != $templateParts['template']))
+		unset($layoutTemplate);
+		unset($extraPaths);
+		unset($uri);
+
+		// Never allow a 'this' property
+
+		if (isset($this->this))
 		{
-			$apath = array_shift($paths);
-			array_unshift($paths, str_replace($templateParts['template'], $layoutTemplate, $apath));
+			unset($this->this);
 		}
 
-		$filetofind = $templateParts['template'] . '.php';
-		$filesystem = $this->container->filesystem;
+		// TODO – BEGIN – Use engines (depend on extension of $this->_tempFilePath)
+		// Force parameters into scope
 
-		$this->_tempFilePath = $filesystem->pathFind($paths, $filetofind);
-
-		if ($this->_tempFilePath)
+		if (!empty($forceParams))
 		{
-			// Unset from local scope
-			unset($template);
-			unset($layoutTemplate);
-			unset($paths);
-			unset($path);
-			unset($filetofind);
-
-			// Never allow a 'this' property
-
-			if (isset($this->this))
-			{
-				unset($this->this);
-			}
-
-			// TODO – BEGIN – Use engines (depend on extension of $this->_tempFilePath)
-			// Force parameters into scope
-
-			if (!empty($forceParams))
-			{
-				extract($forceParams);
-			}
-
-			// Start capturing output into a buffer
-			ob_start();
-
-			// Include the requested template filename in the local scope (this will execute the view logic).
-			include $this->_tempFilePath;
-
-			// Done with the requested template; get the buffer and clear it.
-			$output = ob_get_contents();
-			ob_end_clean();
-
-			// TODO – END – Use engines
-			return $output;
+			extract($forceParams);
 		}
-		else
-		{
-			if ($throwErrorIfNotFound)
-			{
-				return new \RuntimeException(\JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path), 500);
-			}
 
-			return false;
-		}
+		// Start capturing output into a buffer
+		ob_start();
+
+		// Include the requested template filename in the local scope (this will execute the view logic).
+		include $this->_tempFilePath;
+
+		// Done with the requested template; get the buffer and clear it.
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		// TODO – END – Use engines
+		return $output;
 	}
 
 	/**

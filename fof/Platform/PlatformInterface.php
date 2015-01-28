@@ -96,28 +96,6 @@ interface PlatformInterface
 	public function getComponentBaseDirs($component);
 
 	/**
-	 * Return a list of the view template paths for this component. The paths
-	 * are in the format site:/component_name/view_name/layout_name or
-	 * admin:/component_name/view_name/layout_name
-	 *
-	 * The list of paths returned is a prioritised list. If a file is
-	 * found in the first path the other paths will not be scanned.
-	 *
-	 * @param   string   $component  The name of the component, e.g. "com_example"
-	 * @param   string   $view       The name of the view you're looking a
-	 *                               template for
-	 * @param   string   $layout     The layout name to load, e.g. 'default'
-	 * @param   string   $tpl        The sub-template name to load (null by default)
-	 * @param   boolean  $strict     If true, only the specified layout will be
-	 *                               searched for. Otherwise we'll fall back to
-	 *                               the 'default' layout if the specified layout
-	 *                               is not found.
-	 *
-	 * @return  array
-	 */
-	public function getViewTemplatePaths($component, $view, $layout = 'default', $tpl = null, $strict = false);
-
-	/**
 	 * Returns the application's template name
 	 *
 	 * @param   boolean|array  $params  An optional associative array of configuration settings
