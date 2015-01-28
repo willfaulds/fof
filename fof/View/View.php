@@ -688,13 +688,20 @@ class View
 		}
 
 		// First get the raw view template path
-		$this->_tempFilePath = $this->viewFinder->resolveUriToPath($uri, $layoutTemplate, $extraPaths);
+		$path = $this->viewFinder->resolveUriToPath($uri, $layoutTemplate, $extraPaths);
 		// Now get the parsed view template path
-		$this->_tempFilePath = $this->getEngine($this->_tempFilePath)->get($this->_tempFilePath);
+		$this->_tempFilePath = $this->getEngine($path)->get($path, $forceParams);
+
+		// If the engine returned raw content, return the raw content immediately
+		if ($this->_tempFilePath['type'] = 'raw')
+		{
+			return $this->_tempFilePath['content'];
+		}
 
 		unset($uri);
 		unset($layoutTemplate);
 		unset($extraPaths);
+		unset($path);
 
 		if (!empty($forceParams))
 		{
@@ -711,7 +718,7 @@ class View
 		// an exception is thrown. This prevents any partial views from leaking.
 		try
 		{
-			include $this->_tempFilePath;
+			include $this->_tempFilePath['content'];
 		}
 		catch (\Exception $e)
 		{
@@ -769,7 +776,7 @@ class View
 
 		$engine = $this->viewEngineMap[$extension];
 
-		return new $engine;
+		return new $engine($this);
 	}
 
 	/**
