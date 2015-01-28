@@ -24,6 +24,7 @@ use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
+use FOF30\View\ViewTemplateFinder;
 
 defined('_JEXEC') or die;
 
@@ -37,6 +38,7 @@ class BasicFactory implements FactoryInterface
 	/** @var  Container  The container we belong to */
 	protected $container = null;
 
+	/** @var  bool  Should I look for form files on the other side of the component? */
 	protected $formLookupInOtherSide = false;
 
 	/**
@@ -204,6 +206,52 @@ class BasicFactory implements FactoryInterface
 		}
 
 		return $form;
+	}
+
+	/**
+	 * Creates a view template finder object for a specific View
+	 *
+	 * The default configuration is:
+	 * Look for .php, .blade.php files; default layout "default"; no default subtemplate;
+	 * look only for the specified view; do NOT fall back to the default layout or subtemplate;
+	 * look for templates ONLY in site or admin, depending on where we're running from
+	 *
+	 * @param   View  $view   The view this view template finder will be attached to
+	 * @param   array $config Configuration variables for the object
+	 *
+	 * @return  mixed
+	 */
+	function viewFinder(View $view, array $config = array())
+	{
+		// Initialise the configuration with the default values
+		$defaultConfig = array(
+			'extensions'    => array('.php', '.blade.php'),
+			'defaultLayout' => 'default',
+			'defaultTpl'    => '',
+			'strictView'    => true,
+			'strictTpl'     => true,
+			'strictLayout'  => true,
+			'sidePrefix'    => 'auto'
+		);
+
+		$config = array_merge($defaultConfig, $config);
+
+		// Apply fof.xml overrides
+		$appConfig = $this->container->appConfig;
+		$key = "views." . $view->getName() . ".config.";
+
+		$fofXmlConfig = array(
+			'extensions'    => $appConfig->get("$key.templateExtensions", $config['extensions']),
+			'strictView'    => $appConfig->get("$key.templateStrictView", $config['strictView']),
+			'strictTpl'     => $appConfig->get("$key.templateStrictTpl", $config['strictTpl']),
+			'strictLayout'  => $appConfig->get("$key.templateStrictLayout", $config['strictLayout']),
+			'sidePrefix'    => $appConfig->get("$key.templateLocation", $config['sidePrefix'])
+		);
+
+		$config = array_merge($config, $fofXmlConfig);
+
+		// Create the new view template finder object
+		return new ViewTemplateFinder($view, $config);
 	}
 
 

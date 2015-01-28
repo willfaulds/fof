@@ -208,8 +208,7 @@ class View
 		}
 
 		// Set the ViewFinder
-		// TODO Go through the Factory
-		$this->viewFinder = new ViewTemplateFinder($this);
+		$this->viewFinder = $this->container->factory->viewFinder($this);
 
 		if (!empty($config['viewFinder']) && is_object($config['viewFinder']) && ($config['viewFinder'] instanceof ViewTemplateFinder))
 		{

@@ -103,4 +103,14 @@ interface FactoryInterface
 	 * @throws  \RuntimeException If the form exists but cannot be loaded
 	 */
 	function form($name, $source, $viewName = null, array $options = array(), $replace = true, $xpath = false);
+
+	/**
+	 * Creates a view template finder object for a specific View
+	 *
+	 * @param   View   $view    The view this view template finder will be attached to
+	 * @param   array  $config  Configuration variables for the object
+	 *
+	 * @return  mixed
+	 */
+	function viewFinder(View $view, array $config = array());
 }

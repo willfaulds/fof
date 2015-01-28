@@ -250,11 +250,14 @@ class ViewTemplateFinder
 	}
 
 	/**
-	 * @param        $uri
-	 * @param string $layoutTemplate
-	 * @param array  $extraPaths
+	 * Resolves a view template URI (e.g. any:com_foobar/Items/cheese) to an absolute filesystem path
+	 * (e.g. /var/www/html/administrator/components/com_foobar/View/Items/tmpl/cheese.php)
 	 *
-	 * @return string
+	 * @param   string  $uri             The view template URI to parse
+	 * @param   string  $layoutTemplate  The layout template override of the View class
+	 * @param   array   $extraPaths      Any extra lookup paths where we'll be looking for this view template
+	 *
+	 * @return  string
 	 *
 	 * @throws \RuntimeException
 	 */

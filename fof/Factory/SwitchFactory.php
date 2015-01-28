@@ -213,4 +213,35 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 			return new TransparentAuthentication($this->container, $config);
 		}
 	}
+
+	/**
+	 * Creates a view template finder object for a specific View.
+	 *
+	 * The default configuration is:
+	 * Look for .php, .blade.php files; default layout "default"; no default subtemplate;
+	 * look for both pluralised and singular views; fall back to the default layout without subtemplate;
+	 * look for templates in both site and admin
+	 *
+	 * @param   View  $view   The view this view template finder will be attached to
+	 * @param   array $config Configuration variables for the object
+	 *
+	 * @return  mixed
+	 */
+	function viewFinder(View $view, array $config = array())
+	{
+		// Initialise the configuration with the default values
+		$defaultConfig = array(
+			'extensions'    => array('.php', '.blade.php'),
+			'defaultLayout' => 'default',
+			'defaultTpl'    => '',
+			'strictView'    => false,
+			'strictTpl'     => false,
+			'strictLayout'  => false,
+			'sidePrefix'    => 'any'
+		);
+
+		$config = array_merge($defaultConfig, $config);
+
+		return parent::viewFinder($view, $config);
+	}
 }
