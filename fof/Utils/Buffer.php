@@ -35,18 +35,18 @@ class Buffer
 	 */
 	public static $buffers = array();
 
-	public static $hasRegisteredWrapper = null;
+	public static $canRegisterWrapper = null;
 
 	/**
-	 * Registers the fof:// stream wrapper
+	 * Should I register the fof:// stream wrapper
 	 *
-	 * @return  bool  True if the stream wrapper is registered successfully
+	 * @return  bool  True if the stream wrapper can be registered
 	 */
-	public static function registerWrapper()
+	public static function canRegisterWrapper()
 	{
-		if (is_null(static::$hasRegisteredWrapper))
+		if (is_null(static::$canRegisterWrapper))
 		{
-			static::$hasRegisteredWrapper = false;
+			static::$canRegisterWrapper = false;
 
 			// Check for Suhosin
 			$hasSuhosin = false;
@@ -69,7 +69,14 @@ class Buffer
 			{
 				if (function_exists('ini_get'))
 				{
-					$hasSuhosin = ini_get('suhosin.session.max_id_length') !== '';
+					$hasSuhosin = false;
+
+					$maxIdLength = ini_get('suhosin.session.max_id_length');
+
+					if ($maxIdLength !== false)
+					{
+						$hasSuhosin = ini_get('suhosin.session.max_id_length') !== '';
+					}
 				}
 			}
 
@@ -105,13 +112,10 @@ class Buffer
 				}
 			}
 
-			static::$hasRegisteredWrapper = true;
-
-			// Register the stream
-			stream_wrapper_register('fof', 'FOF30\\Utils\\Buffer');
+			static::$canRegisterWrapper = true;
 		}
 
-		return static::$hasRegisteredWrapper;
+		return static::$canRegisterWrapper;
 	}
 
 	/**
@@ -298,4 +302,7 @@ class Buffer
 	}
 }
 
-Buffer::registerWrapper();
+if (Buffer::canRegisterWrapper())
+{
+	stream_wrapper_register('fof', 'FOF30\\Utils\\Buffer');
+}
