@@ -395,7 +395,7 @@ class DataController extends Controller
 	{
 		// Load the model
 		/** @var DataModel $model */
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		// If there is no record loaded, try loading a record based on the id passed in the input object
 		if (!$model->getId())
@@ -439,7 +439,7 @@ class DataController extends Controller
 	public function add()
 	{
 		// Load and reset the model
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 		$model->reset();
 
 		// Set the layout to form, if it's not set in the URL
@@ -490,7 +490,7 @@ class DataController extends Controller
 	{
 		// Load the model
 		/** @var DataModel $model */
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		if (!$model->getId())
 		{
@@ -585,7 +585,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		$ids = $this->getIDsFromRequest($model, true);
 
@@ -685,7 +685,7 @@ class DataController extends Controller
 	 */
 	public function cancel()
 	{
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		if (!$model->getId())
 		{
@@ -721,7 +721,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 		$ids   = $this->getIDsFromRequest($model, false);
 		$error = false;
 
@@ -769,7 +769,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 		$ids   = $this->getIDsFromRequest($model, false);
 		$error = null;
 
@@ -817,7 +817,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 		$ids   = $this->getIDsFromRequest($model, false);
 		$error = null;
 
@@ -865,7 +865,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 		$ids   = $this->getIDsFromRequest($model, false);
 		$error = null;
 
@@ -915,7 +915,7 @@ class DataController extends Controller
 
 		$type   = null;
 		$msg    = null;
-		$model  = $this->getModel();
+		$model  = $this->getModel()->savestate(false);
 		$ids    = $this->getIDsFromRequest($model, false);
 		$orders = $this->input->get('order', array(), 'array');
 
@@ -982,7 +982,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		if (!$model->getId())
 		{
@@ -1030,7 +1030,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		if (!$model->getId())
 		{
@@ -1078,7 +1078,7 @@ class DataController extends Controller
 		// CSRF prevention
 		$this->csrfProtection();
 
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 		$ids = $this->getIDsFromRequest($model, false);
 		$error = null;
 
@@ -1125,7 +1125,7 @@ class DataController extends Controller
 	protected function applySave()
 	{
 		// Load the model
-		$model = $this->getModel();
+		$model = $this->getModel()->savestate(false);
 
 		if (!$model->getId())
 		{
