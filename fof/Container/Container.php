@@ -183,12 +183,14 @@ class Container extends ContainerBase
 
 		if (class_exists($class, true))
 		{
-			return new $class($values);
+			$container = new $class($values);
 		}
 		else
 		{
-			return new Container($values);
+			$container = new Container($values);
 		}
+
+		return $container;
 	}
 
 	/**
