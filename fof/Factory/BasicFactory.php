@@ -269,7 +269,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($controllerClass))
 		{
-			throw new ControllerNotFound;
+			throw new ControllerNotFound($controllerClass);
 		}
 
 		return new $controllerClass($this->container, $config);
@@ -289,7 +289,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($modelClass))
 		{
-			throw new ModelNotFound;
+			throw new ModelNotFound($modelClass);
 		}
 
 		return new $modelClass($this->container, $config);
@@ -309,7 +309,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($viewClass))
 		{
-			throw new ViewNotFound;
+			throw new ViewNotFound($viewClass);
 		}
 
 		return new $viewClass($this->container, $config);
@@ -329,7 +329,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($toolbarClass))
 		{
-			throw new ToolbarNotFound;
+			throw new ToolbarNotFound($toolbarClass);
 		}
 
 		return new $toolbarClass($this->container, $config);
@@ -349,7 +349,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($dispatcherClass))
 		{
-			throw new DispatcherNotFound;
+			throw new DispatcherNotFound($dispatcherClass);
 		}
 
 		return new $dispatcherClass($this->container, $config);
@@ -369,7 +369,7 @@ class BasicFactory implements FactoryInterface
 	{
 		if (!class_exists($authClass))
 		{
-			throw new TransparentAuthenticationNotFound;
+			throw new TransparentAuthenticationNotFound($authClass);
 		}
 
 		return new $authClass($this->container, $config);

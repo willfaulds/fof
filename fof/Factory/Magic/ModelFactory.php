@@ -30,7 +30,7 @@ class ModelFactory extends BaseFactory
 	{
 		if (empty($name))
 		{
-			throw new ModelNotFound;
+			throw new ModelNotFound($name);
 		}
 
 		$appConfig = $this->container->appConfig;

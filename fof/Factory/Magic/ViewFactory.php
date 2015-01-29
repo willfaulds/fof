@@ -31,7 +31,7 @@ class ViewFactory extends BaseFactory
 	{
 		if (empty($name))
 		{
-			throw new ViewNotFound;
+			throw new ViewNotFound("[name : type] = [$name : $viewType]");
 		}
 
 		$appConfig = $this->container->appConfig;

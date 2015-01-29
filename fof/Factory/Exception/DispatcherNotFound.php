@@ -14,12 +14,9 @@ defined('_JEXEC') or die;
 
 class DispatcherNotFound extends RuntimeException
 {
-	public function __construct( $message = "", $code = 500, Exception $previous = null )
+	public function __construct( $dispatcherClass, $code = 500, Exception $previous = null )
 	{
-		if (empty($message))
-		{
-			$message = \JText::_('LIB_FOF_DISPATCHER_ERR_NOT_FOUND');
-		}
+		$message = \JText::sprintf('LIB_FOF_DISPATCHER_ERR_NOT_FOUND', $dispatcherClass);
 
 		parent::__construct( $message, $code, $previous );
 	}

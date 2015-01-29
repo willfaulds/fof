@@ -14,12 +14,9 @@ defined('_JEXEC') or die;
 
 class TransparentAuthenticationNotFound extends RuntimeException
 {
-	public function __construct( $message = "", $code = 500, Exception $previous = null )
+	public function __construct( $taClass, $code = 500, Exception $previous = null )
 	{
-		if (empty($message))
-		{
-			$message = \JText::_('LIB_FOF_TRANSPARENTAUTH_ERR_NOT_FOUND');
-		}
+		$message = \JText::sprintf('LIB_FOF_TRANSPARENTAUTH_ERR_NOT_FOUND', $taClass);
 
 		parent::__construct( $message, $code, $previous );
 	}
