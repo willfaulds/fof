@@ -104,7 +104,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 
 		try
 		{
-			return $this->createModel($viewClass, $config);
+			return $this->createView($viewClass, $config);
 		}
 		catch (ViewNotFound $e)
 		{
