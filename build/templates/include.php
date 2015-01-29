@@ -17,6 +17,9 @@ if (!defined('FOF30_INCLUDED'))
 {
 	define('FOF30_INCLUDED', '##VERSION##');
 
+	JFactory::getLanguage()->load('lib_fof30', JPATH_ADMINISTRATOR, 'en-GB', true);
+	JFactory::getLanguage()->load('lib_fof30', JPATH_ADMINISTRATOR, null, true);
+
 	// Register a debug log
 	if (defined('JDEBUG') && JDEBUG && class_exists('JLog'))
 	{
