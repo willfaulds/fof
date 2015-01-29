@@ -821,4 +821,45 @@ class Form extends JForm
 	{
 		$this->container = $container;
 	}
+
+	/**
+	 * Method to bind data to the form.
+	 *
+	 * @param   mixed  $data  An array or object of data to bind to the form.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @since   11.1
+	 */
+	public function bind($data)
+	{
+		if (is_object($data) && ($data instanceof DataModel))
+		{
+			return parent::bind($data->toArray());
+		}
+
+		return parent::bind($data);
+	}
+
+	/**
+	 * Method to bind data to the form for the group level.
+	 *
+	 * @param   string  $group  The dot-separated form group path on which to bind the data.
+	 * @param   mixed   $data   An array or object of data to bind to the form for the group level.
+	 *
+	 * @return  void
+	 *
+	 * @since   11.1
+	 */
+	protected function bindLevel($group, $data)
+	{
+		if (is_object($data) && ($data instanceof DataModel))
+		{
+			parent::bindLevel($group, $data->toArray());
+
+			return;
+		}
+
+		parent::bindLevel($group, $data);
+	}
 }
