@@ -3299,10 +3299,17 @@ class DataModel extends Model implements \JTableInterface
 		// Create a signature hash.
 		$hash = md5($source . serialize($options));
 
-		if (isset($this->_forms[$hash]) || $clear)
+		if (!isset($this->_forms[$hash]) || $clear)
 		{
 			// Get the form.
 			$form = $this->container->factory->form($name, $source, $this->name, $options, false, $xpath);
+
+			if (!is_object($form))
+			{
+				$this->_forms[$hash] = false;
+
+				return false;
+			}
 
 			$data = array();
 
@@ -3329,7 +3336,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->_forms[$hash] = $form;
 		}
 
-		$this->_forms[$hash];
+		return $this->_forms[$hash];
 	}
 
 	/**

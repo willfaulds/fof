@@ -8,10 +8,13 @@
 namespace FOF30\Factory;
 
 use FOF30\Controller\Controller;
+use FOF30\Dispatcher\Dispatcher;
 use FOF30\Factory\Exception\ControllerNotFound;
+use FOF30\Factory\Exception\DispatcherNotFound;
 use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
+use FOF30\Factory\Magic\DispatcherFactory;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\View\View;
@@ -45,6 +48,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		catch (ControllerNotFound $e)
 		{
 			$magic = new Magic\ControllerFactory($this->container);
+
 			return $magic->make($viewName, $config);
 		}
 	}
@@ -66,6 +70,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		catch (ModelNotFound $e)
 		{
 			$magic = new Magic\ModelFactory($this->container);
+
 			return $magic->make($viewName, $config);
 		}
 	}
@@ -88,6 +93,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		catch (ViewNotFound $e)
 		{
 			$magic = new Magic\ViewFactory($this->container);
+
 			return $magic->make($viewName, $viewType, $config);
 		}
 	}
@@ -112,5 +118,40 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		$config = array_merge($defaultConfig, $config);
 
 		return parent::toolbar($config);
+	}
+
+	/**
+	 * Creates a new Dispatcher
+	 *
+	 * @param   array  $config  The configuration values for the Dispatcher object
+	 *
+	 * @return  Dispatcher
+	 */
+	function dispatcher(array $config = array())
+	{
+		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
+
+		try
+		{
+			return $this->createDispatcher($dispatcherClass, $config);
+		}
+		catch (DispatcherNotFound $e)
+		{
+			// Not found. Let's go on.
+		}
+
+		$dispatcherClass = $this->container->getNamespacePrefix('inverse') . 'Dispatcher\\Dispatcher';
+
+		try
+		{
+			return $this->createDispatcher($dispatcherClass, $config);
+		}
+		catch (DispatcherNotFound $e)
+		{
+			// Not found. Return the magically created Dispatcher
+			$magic = new DispatcherFactory($this->container);
+
+			return $magic->make($config);
+		}
 	}
 }
