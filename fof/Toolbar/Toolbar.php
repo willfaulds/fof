@@ -572,7 +572,7 @@ class Toolbar
 		$using_meta = false;
 
 		$componentPaths = $this->container->platform->getComponentBaseDirs($this->container->componentName);
-		$searchPath = $componentPaths['main'] . '/views';
+		$searchPath = $componentPaths['main'] . '/View';
 		$filesystem = $this->container->filesystem;
 
 		$allFolders = $filesystem->folderFolders($searchPath);
