@@ -505,6 +505,12 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function __get($name)
 	{
+		// Handle $this->input
+		if ($name == 'input')
+		{
+			return $this->container->input;
+		}
+
 		$isState = false;
 
 		if (substr($name, 0, 3) == 'flt')
