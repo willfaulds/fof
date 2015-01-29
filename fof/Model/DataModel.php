@@ -1499,13 +1499,13 @@ class DataModel extends Model implements \JTableInterface
 
 		$itemsTemp = $db->loadAssocList();
 		$items = array();
-		$className = get_class($this);
 
 		while (!empty($itemsTemp))
 		{
 			$data = array_shift($itemsTemp);
 			/** @var DataModel $item */
-			$item = new $className($this->container);
+			$item = clone $this;
+			$item->clearState()->reset(true);
 			$item->bind($data);
 			$items[$item->getId()] = $item;
 			$item->relationManager = clone $this->relationManager;
