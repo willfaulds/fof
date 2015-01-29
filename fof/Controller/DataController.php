@@ -692,7 +692,10 @@ class DataController extends Controller
 			$this->getIDsFromRequest($model, true);
 		}
 
-		$model->unlock();
+		if ($model->getId())
+		{
+			$model->unlock();
+		}
 
 		// Remove any saved data
 		$sessionKey = $this->viewName . '.savedata';

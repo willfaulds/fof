@@ -1669,7 +1669,7 @@ class DataModel extends Model implements \JTableInterface
 	{
 		if(!$this->getId())
 		{
-			throw new RecordNotLoaded("Can't unlock a not loaded DataModel");
+			throw new RecordNotLoaded("Can't unpublish a not loaded DataModel");
 		}
 
 		if (!$this->hasField('enabled'))
