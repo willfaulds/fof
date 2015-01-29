@@ -8,6 +8,7 @@
 namespace FOF30\Less\Parser;
 
 use FOF30\Less\Less;
+use Exception;
 
 defined('_JEXEC') or die;
 
@@ -2077,7 +2078,7 @@ class Parser
 	 */
 	protected function pushBlock($selectors = null, $type = null)
 	{
-		$b = new stdclass;
+		$b = new \stdClass;
 		$b->parent = $this->env;
 
 		$b->type = $type;

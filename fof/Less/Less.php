@@ -8,6 +8,8 @@
 namespace FOF30\Less;
 
 use \FOF30\Less\Parser\Parser;
+use Exception;
+use stdClass;
 
 defined('_JEXEC') or die;
 
