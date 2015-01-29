@@ -37,19 +37,19 @@ class ModelFactory extends BaseFactory
 
 		$defaultConfig = array(
 			'name'             => $name,
-			'use_populate'     => $appConfig->get("views.$name.config.use_populate"),
-			'ignore_request'   => $appConfig->get("views.$name.config.ignore_request"),
-			'tableName'        => $appConfig->get("views.$name.config.tbl"),
-			'idFieldName'      => $appConfig->get("views.$name.config.tbl_key"),
-			'knownFields'      => $appConfig->get("views.$name.config.knownFields", null),
-			'autoChecks'       => $appConfig->get("views.$name.config.autoChecks"),
-			'contentType'      => $appConfig->get("views.$name.config.contentType"),
-			'fieldsSkipChecks' => $appConfig->get("views.$name.config.fieldsSkipChecks", array()),
-			'aliasFields'      => $appConfig->get("views.$name.field", array()),
-			'behaviours'       => $appConfig->get("views.$name.behaviors", array()),
-			'fillable_fields'  => $appConfig->get("views.$name.config.fillable_fields", array()),
-			'guarded_fields'   => $appConfig->get("views.$name.config.guarded_fields", array()),
-			'relations'        => $appConfig->get("views.$name.relations", array()),
+			'use_populate'     => $appConfig->get("models.$name.config.use_populate"),
+			'ignore_request'   => $appConfig->get("models.$name.config.ignore_request"),
+			'tableName'        => $appConfig->get("models.$name.config.tbl"),
+			'idFieldName'      => $appConfig->get("models.$name.config.tbl_key"),
+			'knownFields'      => $appConfig->get("models.$name.config.knownFields", null),
+			'autoChecks'       => $appConfig->get("models.$name.config.autoChecks"),
+			'contentType'      => $appConfig->get("models.$name.config.contentType"),
+			'fieldsSkipChecks' => $appConfig->get("models.$name.config.fieldsSkipChecks", array()),
+			'aliasFields'      => $appConfig->get("models.$name.field", array()),
+			'behaviours'       => $appConfig->get("models.$name.behaviors", array()),
+			'fillable_fields'  => $appConfig->get("models.$name.config.fillable_fields", array()),
+			'guarded_fields'   => $appConfig->get("models.$name.config.guarded_fields", array()),
+			'relations'        => $appConfig->get("models.$name.relations", array()),
 		);
 
 		$config = array_merge($defaultConfig, $config);

@@ -238,7 +238,7 @@ class BasicFactory implements FactoryInterface
 
 		// Apply fof.xml overrides
 		$appConfig = $this->container->appConfig;
-		$key = "views." . $view->getName() . ".config";
+		$key = "models." . $view->getName() . ".config";
 
 		$fofXmlConfig = array(
 			'extensions'    => $appConfig->get("$key.templateExtensions", $config['extensions']),

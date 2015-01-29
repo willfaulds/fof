@@ -38,10 +38,10 @@ class ViewFactory extends BaseFactory
 
 		$defaultConfig = array(
 			'name'          => $name,
-			'template_path' => $appConfig->get("views.$name.config.template_path"),
-			'layout'        => $appConfig->get("views.$name.config.layout"),
+			'template_path' => $appConfig->get("models.$name.config.template_path"),
+			'layout'        => $appConfig->get("models.$name.config.layout"),
 			// You can pass something like .php => Class1, .foo.bar => Class 2
-			'viewEngineMap' => $appConfig->get("views.$name.config.viewEngineMap"),
+			'viewEngineMap' => $appConfig->get("models.$name.config.viewEngineMap"),
 		);
 
 		$config = array_merge($defaultConfig, $config);

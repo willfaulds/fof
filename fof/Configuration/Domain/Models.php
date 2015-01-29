@@ -32,15 +32,15 @@ class Models implements DomainInterface
 		$ret['models'] = array();
 
 		// Parse model configuration
-		$behaviorsData = $xml->xpath('model');
+		$modelsData = $xml->xpath('model');
 
 		// Sanity check
-		if (empty($behaviorsData))
+		if (empty($modelsData))
 		{
 			return;
 		}
 
-		foreach ($behaviorsData as $aModel)
+		foreach ($modelsData as $aModel)
 		{
 			$key = (string) $aModel['name'];
 

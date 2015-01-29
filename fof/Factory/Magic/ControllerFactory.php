@@ -34,15 +34,15 @@ class ControllerFactory extends BaseFactory
 
 		$defaultConfig = array(
 			'name'           => $name,
-			'default_task'   => $this->container->appConfig->get("views.$name.config.default_task"),
-			'viewName'       => $this->container->appConfig->get("views.$name.config.viewName"),
-			'modelName'      => $this->container->appConfig->get("views.$name.config.modelName"),
-			'taskPrivileges' => $this->container->appConfig->get("views.$name.acl"),
-			'cacheableTasks' => $this->container->appConfig->get("views.$name.config.cacheableTasks", array(
+			'default_task'   => $this->container->appConfig->get("models.$name.config.default_task"),
+			'viewName'       => $this->container->appConfig->get("models.$name.config.viewName"),
+			'modelName'      => $this->container->appConfig->get("models.$name.config.modelName"),
+			'taskPrivileges' => $this->container->appConfig->get("models.$name.acl"),
+			'cacheableTasks' => $this->container->appConfig->get("models.$name.config.cacheableTasks", array(
 				'browse',
 				'read'
 			)),
-			'taskMap'        => $this->container->appConfig->get("views.$name.taskmap")
+			'taskMap'        => $this->container->appConfig->get("models.$name.taskmap")
 		);
 
 		$config = array_merge($defaultConfig, $config);
