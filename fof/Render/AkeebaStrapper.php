@@ -1375,4 +1375,57 @@ JS;
 
 		return $html;
 	}
+
+	/**
+	 * Renders a Form and returns the corresponding HTML
+	 *
+	 * @param   Form      &$form         The form to render
+	 * @param   DataModel $model         The model providing our data
+	 * @param   string    $formType      The form type: edit, browse or read
+	 * @param   boolean   $raw           If true, the raw form fields rendering (without the surrounding form tag) is
+	 *                                   returned.
+	 *
+	 * @return  string    The HTML rendering of the form
+	 */
+	function renderForm(Form &$form, DataModel $model, $formType = null, $raw = false)
+	{
+		if (is_null($formType))
+		{
+			$formType = $form->getAttribute('type', 'edit');
+		}
+		else
+		{
+			$formType = strtolower($formType);
+		}
+
+		switch ($formType)
+		{
+			case 'browse':
+				return $this->renderFormBrowse($form, $model);
+				break;
+
+			case 'read':
+				if ($raw)
+				{
+					return $this->renderFormRaw($form, $model, 'read');
+				}
+				else
+				{
+					return $this->renderFormRead($form, $model);
+				}
+
+				break;
+
+			default:
+				if ($raw)
+				{
+					return $this->renderFormRaw($form, $model, 'edit');
+				}
+				else
+				{
+					return $this->renderFormEdit($form, $model);
+				}
+				break;
+		}
+	}
 }
