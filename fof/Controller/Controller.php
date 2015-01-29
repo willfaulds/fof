@@ -227,10 +227,10 @@ class Controller
 			// Add default display method if not explicitly declared.
 			if (!in_array($mName, $xMethods) || $mName == 'display' || $mName == 'main')
 			{
-				$this->methods[] = strtolower($mName);
+				$this->methods[] = $mName;
 
 				// Auto register the methods as tasks.
-				$this->taskMap[strtolower($mName)] = $mName;
+				$this->taskMap[$mName] = $mName;
 			}
 		}
 
@@ -309,8 +309,6 @@ class Controller
 	{
 		$this->task = $task;
 
-		$task = strtolower($task);
-
 		if (!isset($this->taskMap[$task]) && !isset($this->taskMap['__default']))
 		{
 			throw new TaskNotFound(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
@@ -325,8 +323,6 @@ class Controller
 		}
 
 		// Do not allow the display task to be directly called
-		$task = strtolower($task);
-
 		if (isset($this->taskMap[$task]))
 		{
 			$doTask = $this->taskMap[$task];
@@ -492,15 +488,15 @@ class Controller
 	{
 		if (!empty($name))
 		{
-			$modelName = strtolower($name);
+			$modelName = $name;
 		}
 		elseif (!empty($this->modelName))
 		{
-			$modelName = strtolower($this->modelName);
+			$modelName = $this->modelName;
 		}
 		else
 		{
-			$modelName = strtolower($this->view);
+			$modelName = $this->view;
 		}
 
 		if (!array_key_exists($modelName, $this->modelInstances))
@@ -545,15 +541,15 @@ class Controller
 	{
 		if (!empty($name))
 		{
-			$viewName = strtolower($name);
+			$viewName = $name;
 		}
 		elseif (!empty($this->viewName))
 		{
-			$viewName = strtolower($this->viewName);
+			$viewName = $this->viewName;
 		}
 		else
 		{
-			$viewName = strtolower($this->view);
+			$viewName = $this->view;
 		}
 
 		if (!array_key_exists($viewName, $this->viewInstances))
@@ -643,7 +639,7 @@ class Controller
 				throw new CannotGetName(\JText::_('LIB_FOF_CONTROLLER_ERR_GET_NAME'), 500);
 			}
 
-			$this->name = strtolower($r[2]);
+			$this->name = $r[2];
 		}
 
 		return $this->name;
@@ -712,9 +708,9 @@ class Controller
 	 */
 	public function registerTask($task, $method)
 	{
-		if (in_array(strtolower($method), $this->methods))
+		if (in_array($method, $this->methods))
 		{
-			$this->taskMap[strtolower($task)] = $method;
+			$this->taskMap[$task] = $method;
 		}
 
 		return $this;
@@ -729,7 +725,7 @@ class Controller
 	 */
 	public function unregisterTask($task)
 	{
-		unset($this->taskMap[strtolower($task)]);
+		unset($this->taskMap[$task]);
 
 		return $this;
 	}
@@ -930,7 +926,7 @@ class Controller
 		elseif (substr($event, 0, 8) == 'onBefore')
 		{
 			$task = substr($event, 8);
-			$result = $this->checkACL('@' . strtolower($task));
+			$result = $this->checkACL('@' . $task);
 		}
 
 		if ($result === false)

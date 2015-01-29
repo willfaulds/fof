@@ -131,8 +131,6 @@ class DataController extends Controller
 	 */
 	public function execute($task)
 	{
-		$task = strtolower($task);
-
 		if ($task == 'default')
 		{
 			$task = $this->getCrudTask();
@@ -313,15 +311,15 @@ class DataController extends Controller
 	{
 		if (!empty($name))
 		{
-			$viewName = strtolower($name);
+			$viewName = $name;
 		}
 		elseif (!empty($this->viewName))
 		{
-			$viewName = strtolower($this->viewName);
+			$viewName = $this->viewName;
 		}
 		else
 		{
-			$viewName = strtolower($this->view);
+			$viewName = $this->view;
 		}
 
 		if (!array_key_exists($viewName, $this->viewInstances))

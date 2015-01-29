@@ -381,7 +381,7 @@ class View
 				throw new CannotGetName;
 			}
 
-			$this->name = strtolower($r[2]);
+			$this->name = $r[2];
 		}
 
 		return $this->name;
@@ -417,7 +417,7 @@ class View
 		}
 		else
 		{
-			$model = strtolower($modelName);
+			$model = $modelName;
 		}
 
 		// First check to make sure the model requested exists
@@ -473,15 +473,15 @@ class View
 	{
 		if (!empty($name))
 		{
-			$modelName = strtolower($name);
+			$modelName = $name;
 		}
 		elseif (!empty($this->defaultModel))
 		{
-			$modelName = strtolower($this->defaultModel);
+			$modelName = $this->defaultModel;
 		}
 		else
 		{
-			$modelName = strtolower($this->name);
+			$modelName = $this->name;
 		}
 
 		if (!array_key_exists($modelName, $this->modelInstances))

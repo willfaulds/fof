@@ -144,7 +144,7 @@ class Model
 				throw new CannotGetName;
 			}
 
-			$this->name = strtolower($r[2]);
+			$this->name = $r[2];
 		}
 
 		return $this->name;
