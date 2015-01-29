@@ -187,7 +187,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 			// Build the attributes array.
 			$attributes = array();
 
-			if ($this->size])
+			if ($this->size)
 			{
 				$attributes['size'] = $this->size;
 			}
