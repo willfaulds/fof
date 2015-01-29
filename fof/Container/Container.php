@@ -162,14 +162,19 @@ class Container extends ContainerBase
 		$class = $classNamespace . 'Container';
 
 		// Get the values overrides from fof.xml
+		$values = array_merge(array(
+			'rendererClass' => '\\FOF30\\Render\\Joomla3',
+			'factoryClass' => '\\FOF30\\Factory\\BasicFactory',
+		), $values);
+
 		$values = array_merge($values, array(
 			'componentName' => $component,
 			'componentNamespace' => $namespace,
 			'frontEndPath' => $frontEndPath,
 			'backEndPath' => $backEndPath,
 			'thisPath' => $thisPath,
-			'rendererClass' => $appConfig->get('container.rendererClass', '\\FOF30\\Render\\Joomla3'),
-			'factoryClass' => $appConfig->get('container.factoryClass', '\\FOF30\\Factory\\BasicFactory'),
+			'rendererClass' => $appConfig->get('container.rendererClass', $values['rendererClass']),
+			'factoryClass' => $appConfig->get('container.factoryClass', $values['factoryClass']),
 		));
 
 		unset($appConfig);
