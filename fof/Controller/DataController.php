@@ -420,7 +420,7 @@ class DataController extends Controller
 		$this->getModel()->setFormName($formName);
 
 		// Do we have a _valid_ form?
-		$form = $this->getModel()->getForm();
+		$form = $this->getModel()->getForm($model);
 
 		if ($form !== false)
 		{
@@ -469,7 +469,7 @@ class DataController extends Controller
 		$this->getModel()->setFormName($formName);
 
 		// Do we have a _valid_ form?
-		$form = $this->getModel()->getForm();
+		$form = $this->getModel()->getForm($model);
 
 		if ($form !== false)
 		{
@@ -536,7 +536,7 @@ class DataController extends Controller
 		$this->getModel()->setFormName($formName);
 
 		// Do we have a _valid_ form?
-		$form = $this->getModel()->getForm();
+		$form = $this->getModel()->getForm($model);
 
 		if ($form !== false)
 		{
