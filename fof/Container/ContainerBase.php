@@ -7,7 +7,7 @@
 
 namespace FOF30\Container;
 
-use Pimple\Container;
+use FOF30\Pimple\Container;
 
 defined('_JEXEC') or die;
 
