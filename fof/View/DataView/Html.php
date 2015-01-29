@@ -28,7 +28,7 @@ class Html extends Raw implements DataViewInterface
 	protected function preRender()
 	{
 		$view = $this->getName();
-		$task = $this->getModel()->getState('task', 'browse');
+		$task = $this->task;
 
 		// Don't load the toolbar on CLI
 		$platform = $this->container->platform;
@@ -58,7 +58,7 @@ class Html extends Raw implements DataViewInterface
 	protected function postRender()
 	{
 		$view = $this->getName();
-		$task = $this->getModel()->getState('task', 'browse');
+		$task = $this->task;
 
 		$renderer = $this->container->renderer;
 
