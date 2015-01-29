@@ -1389,7 +1389,7 @@ class DataModel extends Model implements \JTableInterface
 		// Get a "count all" query
 		$db = $this->getDbo();
 		$query = $this->buildQuery(true);
-		$query->select(null)->select('COUNT(*)');
+		$query->clear('select')->select('COUNT(*)');
 
 		// Run the "before build query" hook and behaviours
 		$this->triggerEvent('onBuildCountQuery', array(&$query));
