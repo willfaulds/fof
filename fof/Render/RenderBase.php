@@ -243,6 +243,21 @@ abstract class RenderBase implements RenderInterface
 	 */
 	function isTabFieldset($fieldset)
 	{
-		throw new \LogicException(sprintf('Renderer class %s must implement the %s method', get_class($this), __METHOD__));
+		if (!isset($fieldset->class) || !$fieldset->class)
+		{
+			return false;
+		}
+
+		$class = $fieldset->class;
+		$classes = explode(' ', $class);
+
+		if (!in_array('tab-pane', $classes))
+		{
+			return false;
+		}
+		else
+		{
+			return in_array('active', $classes) ? 2 : 1;
+		}
 	}
 }
