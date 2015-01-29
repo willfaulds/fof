@@ -79,7 +79,7 @@ class Container extends ContainerBase
 	public static function &getInstance($component, array $values = array(), $section = 'auto')
 	{
 		// Try to auto-detect some defaults
-		$tmpConfig = array_merge($section, array('componentName' => $component));
+		$tmpConfig = array_merge($values, array('componentName' => $component));
 		$tmpContainer = new Container($tmpConfig);
 
 		if (!in_array($section, array('site', 'admin')))
