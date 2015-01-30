@@ -19,7 +19,7 @@ defined('_JEXEC') or die;
  *
  * @since    2.1
  */
-class Access extends Observer
+class Enabled extends Observer
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record
@@ -41,12 +41,15 @@ class Access extends Observer
 		}
 
 		// Make sure the field actually exists
-		if (!$model->hasField('access'))
+		if (!$model->hasField('enabled'))
 		{
 			return;
 		}
 
-		$model->applyAccessFiltering(null);
+		$fieldName = $model->getFieldAlias('enabled');
+		$db = $model->getDbo();
+
+		$model->whereRaw($db->qn($fieldName) . ' = ' . $db->q(1));
 	}
 
 	/**
@@ -67,17 +70,16 @@ class Access extends Observer
 		}
 
 		// Make sure the field actually exists
-		if (!$model->hasField('access'))
+		if (!$model->hasField('enabled'))
 		{
 			return;
 		}
 
 		// Get the user
-		$user = $model->getContainer()->platform->getUser();
-		$recordAccessLevel = $model->getFieldValue('access', null);
+		$recordEnabled = $model->getFieldValue('enabled', 0);
 
 		// Filter by authorised access levels
-		if (!in_array($recordAccessLevel, $user->getAuthorisedViewLevels()))
+		if (!$model->getFieldValue('enabled', 0))
 		{
 			$model->reset(true);
 		}
