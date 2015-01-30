@@ -100,13 +100,59 @@ class ImageList extends \JFormFieldImageList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$imgattr = array(
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
 			'id' => $this->id
 		);
 
-		if ($this->class)
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Get the rendering of this field type for a repeatable (grid) display,
+	 * e.g. in a view listing many item (typically a "browse" task)
+	 *
+	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getRepeatable()
+	{
+		if (isset($this->element['legacy']))
 		{
-			$imgattr['class'] = $this->class;
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$imgattr = array();
+
+		if ($fieldOptions['id'])
+		{
+			$imgattr['id'] = $fieldOptions['id'];
+		}
+
+		if ($this->class || $fieldOptions['class'])
+		{
+			$imgattr['class'] = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 		}
 
 		if ($this->element['style'])
@@ -161,18 +207,5 @@ class ImageList extends \JFormFieldImageList implements FieldInterface
 		}
 
 		return JHtml::image($src, $alt, $imgattr);
-	}
-
-	/**
-	 * Get the rendering of this field type for a repeatable (grid) display,
-	 * e.g. in a view listing many item (typically a "browse" task)
-	 *
-	 * @since 2.0
-	 *
-	 * @return  string  The field HTML
-	 */
-	public function getRepeatable()
-	{
-		return $this->getStatic();
 	}
 }

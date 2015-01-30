@@ -99,31 +99,16 @@ class Url extends \JFormFieldUrl implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class  = $this->class ? ' class="' . $this->class . '"' : '';
-		$dolink = $this->element['show_link'] == 'true';
-		$empty_replacement = '';
-
-		if ($this->element['empty_replacement'])
+		if (isset($this->element['legacy']))
 		{
-			$empty_replacement = (string) $this->element['empty_replacement'];
+			return $this->getInput();
 		}
 
-		if (!empty($empty_replacement) && empty($this->value))
-		{
-			$this->value = JText::_($empty_replacement);
-		}
+		$options = array(
+			'id' => $this->id
+		);
 
-		$innerHtml = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-
-		if ($dolink)
-		{
-			$innerHtml = '<a href="' . $innerHtml . '">' .
-				$innerHtml . '</a>';
-		}
-
-		return '<span id="' . $this->id . '" ' . $class . '>' .
-			$innerHtml .
-			'</span>';
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -136,54 +121,49 @@ class Url extends \JFormFieldUrl implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		// Initialise
-		$class             = $this->id;
-		$show_link         = false;
-		$empty_replacement = '';
-
-		$link_url = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-
-		// Get field parameters
-		if ($this->class)
+		if (isset($this->element['legacy']))
 		{
-			$class .= ' ' . $this->class;
+			return $this->getInput();
 		}
 
-		if ($this->element['show_link'] == 'true')
-		{
-			$show_link = true;
-		}
+		$options = array(
+			'class' => $this->id
+		);
 
-		if ($this->element['empty_replacement'])
-		{
-			$empty_replacement = (string) $this->element['empty_replacement'];
-		}
+		return $this->getFieldContents($options);
+	}
 
-		// Get the (optionally formatted) value
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		$show_link = $this->element['show_link'] == 'true';
+
+		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
+
 		if (!empty($empty_replacement) && empty($this->value))
 		{
 			$this->value = JText::_($empty_replacement);
 		}
 
-		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-
-		// Create the HTML
-		$html = '<span class="' . $class . '">';
+		$html = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
 		if ($show_link)
 		{
-			$html .= '<a href="' . $link_url . '">';
+			$html = '<a href="' . $html . '">' .
+				$html . '</a>';
 		}
 
-		$html .= $value;
-
-		if ($show_link)
-		{
-			$html .= '</a>';
-		}
-
-		$html .= '</span>';
-
-		return $html;
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '"">' .
+			$html .
+			'</span>';
 	}
 }

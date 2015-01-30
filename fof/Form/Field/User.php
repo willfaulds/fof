@@ -98,38 +98,17 @@ class User extends \JFormFieldUser implements FieldInterface
 	 */
 	public function getStatic()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		// Initialise
-		$show_username = true;
-		$show_email    = false;
-		$show_name     = false;
-		$show_id       = false;
-		$class         = '';
-
-		// Get the field parameters
-		if ($this->class)
-		{
-			$class = ' class="' . $this->class . '"';
-		}
-
-		if ($this->element['show_username'] == 'false')
-		{
-			$show_username = false;
-		}
-
-		if ($this->element['show_email'] == 'true')
-		{
-			$show_email = true;
-		}
-
-		if ($this->element['show_name'] == 'true')
-		{
-			$show_name = true;
-		}
-
-		if ($this->element['show_id'] == 'true')
-		{
-			$show_id = true;
-		}
+		$show_username = !$this->element['show_username'] == 'false';
+		$show_email    = $this->element['show_email'] == 'true';
+		$show_name     = $this->element['show_name'] == 'true';
+		$show_id       = $this->element['show_id'] == 'true';
+		$class         = $this->class ? ' class="' . $this->class . '"' : '';
 
 		// Get the user record
 		$user = $this->form->getContainer()->platform->getUser($this->value);
@@ -172,16 +151,21 @@ class User extends \JFormFieldUser implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		// Initialise
-		$show_username = true;
-		$show_email    = true;
-		$show_name     = true;
-		$show_id       = true;
-		$show_avatar   = true;
-		$show_link     = false;
-		$link_url      = null;
+		$show_username = !$this->element['show_username'] == 'false';
+		$show_email    = !$this->element['show_email'] == 'false';
+		$show_name     = !$this->element['show_name'] == 'false';
+		$show_id       = !$this->element['show_id'] == 'false';
+		$show_avatar   = !$this->element['show_avatar'] == 'false';
+		$show_link     = $this->element['show_link'] == 'true';
+		$link_url      = $this->element['link_url'] ? $this->element['link_url'] : null;
 		$avatar_method = 'gravatar';
-		$avatar_size   = 64;
+		$avatar_size   = $this->element['avatar_size'] ? $this->element['avatar_size'] : 64;
 		$class         = '';
 
 		// Get the user record
@@ -193,64 +177,19 @@ class User extends \JFormFieldUser implements FieldInterface
 			$class = ' class="' . $this->class . '"';
 		}
 
-		if ($this->element['show_username'] == 'false')
-		{
-			$show_username = false;
-		}
-
-		if ($this->element['show_email'] == 'false')
-		{
-			$show_email = false;
-		}
-
-		if ($this->element['show_name'] == 'false')
-		{
-			$show_name = false;
-		}
-
-		if ($this->element['show_id'] == 'false')
-		{
-			$show_id = false;
-		}
-
-		if ($this->element['show_avatar'] == 'false')
-		{
-			$show_avatar = false;
-		}
-
 		if ($this->element['avatar_method'])
 		{
 			$avatar_method = strtolower($this->element['avatar_method']);
 		}
 
-		if ($this->element['avatar_size'])
+		if (!$link_url && $this->form->getContainer()->platform->isBackend())
 		{
-			$avatar_size = $this->element['avatar_size'];
-		}
-
-		if ($this->element['show_link'] == 'true')
-		{
-			$show_link = true;
-		}
-
-		if ($this->element['link_url'])
-		{
-			$link_url = $this->element['link_url'];
-		}
+				$link_url = 'index.php?option=com_users&task=user.edit&id=[USER:ID]';
 		else
 		{
-			if ($this->form->getContainer()->platform->isBackend())
-			{
-				// If no link is defined in the back-end, assume the user edit
-				// link in the User Manager component
-				$link_url = 'index.php?option=com_users&task=user.edit&id=[USER:ID]';
-			}
-			else
-			{
-				// If no link is defined in the front-end, we can't create a
-				// default link. Therefore, show no link.
-				$show_link = false;
-			}
+			// If no link is defined in the front-end, we can't create a
+			// default link. Therefore, show no link.
+			$show_link = false;
 		}
 
 		// Post-process the link URL

@@ -99,13 +99,14 @@ class Text extends \JFormFieldText implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? ' class="' . $this->class . '"' : '';
-		$empty_replacement = '';
-
-		if ($this->element['empty_replacement'])
+		if (isset($this->element['legacy']))
 		{
-			$empty_replacement = (string) $this->element['empty_replacement'];
+			return $this->getInput();
 		}
+
+		$class = $this->class ? ' class="' . $this->class . '"' : '';
+
+		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
 
 		if (!empty($empty_replacement) && empty($this->value))
 		{
@@ -127,62 +128,27 @@ class Text extends \JFormFieldText implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		// Initialise
-		$class					= $this->id;
-		$format_string			= '';
-		$format_if_not_empty	= false;
-		$parse_value			= false;
-		$show_link				= false;
-		$link_url				= '';
-		$empty_replacement		= '';
+		$class					= $this->class ? $this->class : $this->id;
+		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
+		$format_if_not_empty	= in_array((string) $this->element['format_if_not_empty']), array('true', '1', 'on', 'yes');
+		$parse_value			= in_array((string) $this->element['parse_value']), array('true', '1', 'on', 'yes');
+		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
+		$empty_replacement		= $this->element['empty_replacement'] ? : (string) $this->element['empty_replacement'] : '';
 
-		// Get field parameters
-		if ($this->class)
-		{
-			$class = $this->class;
-		}
 
-		if ($this->element['format'])
-		{
-			$format_string = (string) $this->element['format'];
-		}
-
-		if ($this->element['show_link'] == 'true')
-		{
-			$show_link = true;
-		}
-
-		if ($this->element['format_if_not_empty'] == 'true')
-		{
-			$format_if_not_empty = true;
-		}
-
-		if ($this->element['parse_value'] == 'true')
-		{
-			$parse_value = true;
-		}
-
-		if ($this->element['url'])
-		{
-			$link_url = $this->element['url'];
-		}
-		else
-		{
-			$show_link = false;
-		}
-
-		if ($show_link && ($this->item instanceof DataModel))
+		if ($link_url && ($this->item instanceof DataModel))
 		{
 			$link_url = $this->parseFieldTags($link_url);
 		}
 		else
 		{
-			$show_link = false;
-		}
-
-		if ($this->element['empty_replacement'])
-		{
-			$empty_replacement = (string) $this->element['empty_replacement'];
+			$link_url = false;
 		}
 
 		// Get the (optionally formatted) value
@@ -211,14 +177,14 @@ class Text extends \JFormFieldText implements FieldInterface
 		// Create the HTML
 		$html = '<span class="' . $class . '">';
 
-		if ($show_link)
+		if ($link_url)
 		{
 			$html .= '<a href="' . $link_url . '">';
 		}
 
 		$html .= $value;
 
-		if ($show_link)
+		if ($link_url)
 		{
 			$html .= '</a>';
 		}

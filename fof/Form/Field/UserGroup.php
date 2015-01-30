@@ -100,22 +100,25 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 */
 	public function getStatic()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		$params = $this->getOptions();
 
 		$db = $this->form->getContainer()->platform->getDbo();
-		$query = $db->getQuery(true);
-
-		$query->select('a.id AS value, a.title AS text');
-		$query->from('#__usergroups AS a');
-		$query->group('a.id, a.title');
-		$query->order('a.id ASC');
-		$query->order($query->qn('title') . ' ASC');
+		$query = $db->getQuery(true)
+				->select('a.id AS value, a.title AS text')
+				->from('#__usergroups AS a')
+				->group('a.id, a.title')
+				->order('a.id ASC')
+				->order($query->qn('title') . ' ASC');
 
 		// Get the options.
-		$db->setQuery($query);
-		$options = $db->loadObjectList();
+		$options = $db->setQuery($query)->loadObjectList();
 
 		// If params is an array, push these options to the array
 		if (is_array($params))
@@ -144,21 +147,23 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		$class = $this->class ? $this->class : '';
 
 		$db = $this->form->getContainer()->platform->getDbo();
-		$query = $db->getQuery(true);
-
-		$query->select('a.id AS value, a.title AS text');
-		$query->from('#__usergroups AS a');
-		$query->group('a.id, a.title');
-		$query->order('a.id ASC');
-		$query->order($query->qn('title') . ' ASC');
+		$query = $db->getQuery(true)
+				->select('a.id AS value, a.title AS text')
+				->from('#__usergroups AS a')
+				->group('a.id, a.title')
+				->order('a.id ASC')
+				->order($query->qn('title') . ' ASC');
 
 		// Get the options.
-		$db->setQuery($query);
-		$options = $db->loadObjectList();
-
+		$options = $db->setQuery($query)->loadObjectList();
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .

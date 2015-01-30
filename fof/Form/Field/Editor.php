@@ -98,9 +98,16 @@ class Editor extends \JFormFieldEditor implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? ' class="' . $this->class . '"' : '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
 
-		return '<div id="' . $this->id . '" ' . $class . '>' . $this->value . '</div>';
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -113,8 +120,30 @@ class Editor extends \JFormFieldEditor implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->class ? $this->class : '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
 
-		return '<div class="' . $this->id . ' ' . $class . '">' . $this->value . '</div>';
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		return '<div ' . ($id ? $id : '') . 'class="' . $class . '">' . $this->value . '</div>';
 	}
 }

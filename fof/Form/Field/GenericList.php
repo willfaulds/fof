@@ -100,6 +100,11 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 */
 	public function getStatic()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
@@ -117,44 +122,32 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$show_link         = false;
-		$link_url          = '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
 
 		$class = $this->class ? $this->class : '';
 
-		if ($this->element['show_link'] == 'true')
-		{
-			$show_link = true;
-		}
-
-		if ($this->element['url'])
-		{
-			$link_url = $this->element['url'];
-		}
-		else
-		{
-			$show_link = false;
-		}
-
-		if ($show_link && ($this->item instanceof DataModel))
+		if ($this->element['url'] && ($this->item instanceof DataModel))
 		{
 			$link_url = $this->parseFieldTags($link_url);
 		}
 		else
 		{
-			$show_link = false;
+			$link_url = false;
 		}
 
 		$html = '<span class="' . $this->id . ' ' . $class . '">';
 
-		if ($show_link)
+		if ($link_url)
 		{
 			$html .= '<a href="' . $link_url . '">';
 		}
 
 		$html .= htmlspecialchars(self::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8');
 
-		if ($show_link)
+		if ($link_url)
 		{
 			$html .= '</a>';
 		}
@@ -312,7 +305,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 		$source_value     = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
 		$source_translate = empty($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
 		$source_translate = in_array(strtolower($source_translate), array('true','yes','1','on')) ? true : false;
-		$source_format	  = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
+		$source_format    = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
 
 		if ($source_class && $source_method)
 		{

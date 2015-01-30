@@ -98,25 +98,16 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class    = $this->class ? ' class="' . $this->class . '"' : '';
-		$value    = $this->element['value'] ? (string) $this->element['value'] : '1';
-		$disabled = $this->disabled ? ' disabled="disabled"' : '';
-		$onclick  = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
-		$required = $this->required ? ' required="required" aria-required="true"' : '';
-
-		if (empty($this->value))
+		if (isset($this->element['legacy']))
 		{
-			$checked = (isset($this->checked)) ? ' checked="checked"' : '';
-		}
-		else
-		{
-			$checked = ' checked="checked"';
+			return $this->getInput();
 		}
 
-		return '<span id="' . $this->id . '" ' . $class . '>' .
-			'<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
-			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . $required . ' />' .
-			'</span>';
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -129,24 +120,43 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class    = $this->class ? $this->class : '';
-		$value    = $this->element['value'] ? (string) $this->element['value'] : '1';
-		$disabled = $this->disabled ? ' disabled="disabled"' : '';
-		$onclick  = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
-		$required = $this->required ? ' required="required" aria-required="true"' : '';
-
-		if (empty($this->value))
+		if (isset($this->element['legacy']))
 		{
-			$checked = (isset($this->checked)) ? ' checked="checked"' : '';
-		}
-		else
-		{
-			$checked = ' checked="checked"';
+			return $this->getInput();
 		}
 
-		return '<span class="' . $this->id . ' ' . $class . '">' .
-			'<input type="checkbox" name="' . $this->name . '" class="' . $this->id . ' ' . $class . '"' . ' value="'
-			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $disabled . $onclick . $required . ' />' .
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		$value     = $this->element['value'] ? (string) $this->element['value'] : '1';
+		$disabled  = $this->disabled ? ' disabled="disabled"' : '';
+		$required  = $this->required ? ' required="required" aria-required="true"' : '';
+		$autofocus = $this->autofocus ? ' autofocus' : '';
+		$checked   = $this->checked || !empty($this->value) ? ' checked' : '';
+
+		$onchange  = $this->onchange ? ' onchange="' . $this->onchange . '"' : '';
+		$onclick   = $this->onclick ? ' onclick="' . $this->onclick . '"' : '';
+
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
+			'<input type="checkbox" name="' . $this->name . '" ' . ($id ? $id : '') . 'class="' . $this->id . ' ' . $class . '"' . ' value="'
+			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $checked . $disabled . $onclick . $onchange
+			. $required . $autofocus . ' />' .
 			'</span>';
 	}
 }

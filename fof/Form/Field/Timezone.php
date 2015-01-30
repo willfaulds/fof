@@ -98,24 +98,16 @@ class Timezone extends \JFormFieldTimezone implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? (string) $this->class : '';
-
-		$selected = GroupedList::getOptionName($this->getGroups(), $this->value);
-
-		if (is_null($selected))
+		if (isset($this->element['legacy']))
 		{
-			$selected = array(
-				'group'	 => '',
-				'item'	 => ''
-			);
+			return $this->getInput();
 		}
 
-		return '<span id="' . $this->id . '-group" class="fof-groupedlist-group ' . $class . '>' .
-			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
-			'</span>' .
-			'<span id="' . $this->id . '-item" class="fof-groupedlist-item ' . $class . '>' .
-			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
-			'</span>';
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -128,6 +120,45 @@ class Timezone extends \JFormFieldTimezone implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		return $this->getStatic();
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? $fieldOptions['id'] : null;
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		$selected = GroupedList::getOptionName($this->getGroups(), $this->value);
+
+		if (is_null($selected))
+		{
+			$selected = array(
+				'group'	 => '',
+				'item'	 => ''
+			);
+		}
+
+		return '<span ' . ($id ? 'id="' . $id . '-group" ' : '') . 'class="fof-groupedlist-group ' . $class . '>' .
+			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
+			'</span>' .
+			'<span ' . ($id ? 'id="' . $id . '-item" ' : '') . 'class="fof-groupedlist-item ' . $class . '>' .
+			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
+			'</span>';
 	}
 }

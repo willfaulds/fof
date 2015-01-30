@@ -100,38 +100,16 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? ' class="' . $this->class . '"' : '';
-
-		$params = $this->getOptions();
-
-		$db    = $this->form->getContainer()->platform->getDbo();
-		$query = $db->getQuery(true);
-
-		$query->select('a.id AS value, a.title AS text');
-		$query->from('#__viewlevels AS a');
-		$query->group('a.id, a.title, a.ordering');
-		$query->order('a.ordering ASC');
-		$query->order($query->qn('title') . ' ASC');
-
-		// Get the options.
-		$db->setQuery($query);
-		$options = $db->loadObjectList();
-
-		// If params is an array, push these options to the array
-		if (is_array($params))
+		if (isset($this->element['legacy']))
 		{
-			$options = array_merge($params, $options);
+			return $this->getInput();
 		}
 
-		// If all levels is allowed, push it into the array.
-		elseif ($params)
-		{
-			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
-		}
+		$options = array(
+			'id' => $this->id
+		);
 
-		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(GenericList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
-			'</span>';
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -144,22 +122,42 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->class ? (string) $this->class : '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
 		$params = $this->getOptions();
 
 		$db    = $this->form->getContainer()->platform->getDbo();
-		$query = $db->getQuery(true);
-
-		$query->select('a.id AS value, a.title AS text');
-		$query->from('#__viewlevels AS a');
-		$query->group('a.id, a.title, a.ordering');
-		$query->order('a.ordering ASC');
-		$query->order($query->qn('title') . ' ASC');
+		$query = $db->getQuery(true)
+				->select('a.id AS value, a.title AS text')
+				->from('#__viewlevels AS a')
+				->group('a.id, a.title, a.ordering')
+				->order('a.ordering ASC')
+				->order($query->qn('title') . ' ASC');
 
 		// Get the options.
-		$db->setQuery($query);
-		$options = $db->loadObjectList();
+		$options = $db->setQuery($query)->loadObjectList();
 
 		// If params is an array, push these options to the array
 		if (is_array($params))
@@ -173,7 +171,7 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
 		}
 
-		return '<span class="' . $this->id . ' ' . $class . '">' .
+		return '<span ' . ($id ? $id : '') . 'class="'. $class . '">' .
 			htmlspecialchars(GenericList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

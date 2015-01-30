@@ -98,6 +98,11 @@ class Integer extends \JFormFieldInteger implements FieldInterface
 	 */
 	public function getStatic()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		$class = $this->class ? ' class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
@@ -115,6 +120,11 @@ class Integer extends \JFormFieldInteger implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
 		$class = $this->class ? $this->class : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .

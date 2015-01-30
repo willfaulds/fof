@@ -99,24 +99,16 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? $this->class : '';
-
-		$selected = self::getOptionName($this->getGroups(), $this->value);
-
-		if (is_null($selected))
+		if (isset($this->element['legacy']))
 		{
-			$selected = array(
-				'group'	 => '',
-				'item'	 => ''
-			);
+			return $this->getInput();
 		}
 
-		return '<span id="' . $this->id . '-group" class="fof-groupedlist-group ' . $class . '>' .
-			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
-			'</span>' .
-			'<span id="' . $this->id . '-item" class="fof-groupedlist-item ' . $class . '>' .
-			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
-			'</span>';
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -129,7 +121,29 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class = $this->class ? $this->class : '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? $fieldOptions['id'] : null;
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
 		$selected = self::getOptionName($this->getGroups(), $this->value);
 
@@ -141,10 +155,10 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 			);
 		}
 
-		return '<span class="' . $this->id . '-group fof-groupedlist-group ' . $class . '">' .
+		return '<span ' . ($id ? 'id="' . $id . '-group" ' : '') . 'class="fof-groupedlist-group ' . $class . '>' .
 			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
 			'</span>' .
-			'<span class="' . $this->id . '-item fof-groupedlist-item ' . $class . '">' .
+			'<span ' . ($id ? 'id="' . $id . '-item" ' : '') . 'class="fof-groupedlist-item ' . $class . '>' .
 			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

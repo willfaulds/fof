@@ -211,33 +211,11 @@ class Published extends \JFormFieldList implements FieldInterface
 			throw new DataModelRequired(__CLASS__);
 		}
 
-		// Initialise
-		$prefix = '';
-		$checkbox = 'cb';
-		$publish_up = null;
-		$publish_down = null;
-		$enabled = true;
-
-		// Get options
-		if ($this->element['prefix'])
-		{
-			$prefix = (string) $this->element['prefix'];
-		}
-
-		if ($this->element['checkbox'])
-		{
-			$checkbox = (string) $this->element['checkbox'];
-		}
-
-		if ($this->element['publish_up'])
-		{
-			$publish_up = (string) $this->element['publish_up'];
-		}
-
-		if ($this->element['publish_down'])
-		{
-			$publish_down = (string) $this->element['publish_down'];
-		}
+		$prefix       = $this->element['prefix'] ? (string) $this->element['prefix'] : '';
+		$checkbox     = $this->element['checkbox'] ? (string) $this->element['checkbox'] : 'cb';
+		$publish_up   = $this->element['publish_up'] ? (string) $this->element['publish_up'] : null;
+		$publish_down = $this->element['publish_down'] ? (string) $this->element['publish_down'] : null;
+		$enabled      = true;
 
 		// @todo Enforce ACL checks to determine if the field should be enabled or not
 		// Get the HTML

@@ -98,11 +98,16 @@ class Password extends \JFormFieldPassword implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? ' class="' . $this->class . '"' : '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
 
-		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
-			'</span>';
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -115,6 +120,32 @@ class Password extends \JFormFieldPassword implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		return $this->getStatic();
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
+			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
+			'</span>';
 	}
 }

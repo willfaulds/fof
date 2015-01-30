@@ -99,7 +99,16 @@ class Checkboxes extends \JFormFieldCheckboxes implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		return $this->getRepeatable();
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -112,10 +121,33 @@ class Checkboxes extends \JFormFieldCheckboxes implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class     = $this->class ? (string) $this->class : $this->id;
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
 		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
 
-		$html = '<span class="' . $class . '">';
+		$html = '<span ' . ($id ? $id : '') . 'class="' . $class . '">';
 
 		foreach ($this->value as $value) {
 

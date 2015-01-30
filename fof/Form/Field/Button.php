@@ -120,19 +120,14 @@ class Button extends Text implements FieldInterface
 		else
 			$type = 'button';
 
-		$text    = $this->element['text'];
+		$text    = $this->element['text'] ? (string) $this->element['text'] : '';
 		$class   = $this->class ? $this->class : '';
-		$icon    = $this->element['icon'] ? (string) $this->element['icon'] : '';
+		$icon    = $this->element['icon'] ? '<span class="icon ' . (string) $this->element['icon'] . '"></span>' : '';
 		$onclick = $this->onclick ? 'onclick="' . $this->onclick . '"' : '';
 		$url     = $this->element['url'] ? 'href="' . $this->parseFieldTags((string) $this->element['url']) . '"' : '';
 		$title   = $this->element['title'] ? 'title="' . JText::_((string) $this->element['title']) . '"' : '';
 
 		$this->value = JText::_($text);
-
-		if ($icon)
-		{
-			$icon = '<span class="icon ' . $icon . '"></span>';
-		}
 
 		return '<' . $type . ' id="' . $this->id . '" class="btn ' . $class . '" ' .
 			$onclick . $url . $title . '>' .

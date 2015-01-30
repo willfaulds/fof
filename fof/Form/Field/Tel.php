@@ -99,31 +99,16 @@ class Tel extends \JFormFieldTel implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class  = $this->class ? ' class="' . $this->class . '"' : '';
-		$dolink = $this->element['show_link'] == 'true';
-		$empty_replacement = '';
-
-		if ($this->element['empty_replacement'])
+		if (isset($this->element['legacy']))
 		{
-			$empty_replacement = (string) $this->element['empty_replacement'];
+			return $this->getInput();
 		}
 
-		if (!empty($empty_replacement) && empty($this->value))
-		{
-			$this->value = JText::_($empty_replacement);
-		}
+		$options = array(
+			'id' => $this->id
+		);
 
-		$innerHtml = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-
-		if ($dolink)
-		{
-			$innerHtml = '<a href="tel:' . $innerHtml . '">' .
-				$innerHtml . '</a>';
-		}
-
-		return '<span id="' . $this->id . '" ' . $class . '>' .
-			$innerHtml .
-			'</span>';
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -136,30 +121,33 @@ class Tel extends \JFormFieldTel implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		// Initialise
-		$class             = $this->id;
-		$show_link         = false;
-		$empty_replacement = '';
-
-		$link_url = 'tel:' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-
-		// Get field parameters
-		if ($this->class)
+		if (isset($this->element['legacy']))
 		{
-			$class = ' ' . $this->class;
+			return $this->getInput();
 		}
 
-		if ($this->element['show_link'] == 'true')
-		{
-			$show_link = true;
-		}
+		$options = array(
+			'class' => $this->id
+		);
 
-		if ($this->element['empty_replacement'])
-		{
-			$empty_replacement = (string) $this->element['empty_replacement'];
-		}
+		return $this->getFieldContents($options);
+	}
 
-		// Get the (optionally formatted) value
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		$show_link         = in_array((string) $this->element['show_link'], array('true', '1', 'on', 'yes'));
+		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
+
 		if (!empty($empty_replacement) && empty($this->value))
 		{
 			$this->value = JText::_($empty_replacement);
@@ -167,23 +155,63 @@ class Tel extends \JFormFieldTel implements FieldInterface
 
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
-		// Create the HTML
-		$html = '<span class="' . $class . '">';
-
 		if ($show_link)
 		{
-			$html .= '<a href="' . $link_url . '">';
+			if ($this->element['url'])
+			{
+				$link_url = $this->parseFieldTags((string) $this->element['url']);
+			}
+			else
+			{
+				$link_url = $value;
+			}
+
+			$html = '<a href="tel:' . $link_url . '">' .
+				$value . '</a>';
 		}
 
-		$html .= $value;
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '"">' .
+			$html .
+			'</span>';
+	}
 
-		if ($show_link)
+	/**
+	 * Replace string with tags that reference fields
+	 *
+	 * @param   string  $text  Text to process
+	 *
+	 * @return  string         Text with tags replace
+	 */
+	protected function parseFieldTags($text)
+	{
+		$ret = $text;
+
+		// Replace [ITEM:ID] in the URL with the item's key value (usually:
+		// the auto-incrementing numeric ID)
+		$keyfield = $this->item->getKeyName();
+		$replace  = $this->item->$keyfield;
+		$ret = str_replace('[ITEM:ID]', $replace, $ret);
+
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+
+		// Replace other field variables in the URL
+		$fields = $this->item->getTableFields();
+
+		foreach ($fields as $fielddata)
 		{
-			$html .= '</a>';
+			$fieldname = $fielddata->Field;
+
+			if (empty($fieldname))
+			{
+				$fieldname = $fielddata->column_name;
+			}
+
+			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
+			$replace   = $this->item->$fieldname;
+			$ret  = str_replace($search, $replace, $ret);
 		}
 
-		$html .= '</span>';
-
-		return $html;
+		return $ret;
 	}
 }

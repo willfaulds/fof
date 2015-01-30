@@ -118,44 +118,19 @@ class Model extends GenericList implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		$class				= $this->id;
-		$format_string		= '';
-		$show_link			= false;
-		$link_url			= '';
-		$empty_replacement	= '';
-
 		// Get field parameters
-		if ($this->class)
-		{
-			$class = $this->class;
-		}
+		$class					= $this->class ? $this->class : $this->id;
+		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
+		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
+		$empty_replacement		= $this->element['empty_replacement'] ? : (string) $this->element['empty_replacement'] : '';
 
-		if ($this->element['format'])
-		{
-			$format_string = (string) $this->element['format'];
-		}
-
-		if ($this->element['show_link'] == 'true')
-		{
-			$show_link = true;
-		}
-
-		if ($this->element['url'])
-		{
-			$link_url = $this->element['url'];
-		}
-		else
-		{
-			$show_link = false;
-		}
-
-		if ($show_link && ($this->item instanceof DataModel))
+		if ($link_url && ($this->item instanceof DataModel))
 		{
 			$link_url = $this->parseFieldTags($link_url);
 		}
 		else
 		{
-			$show_link = false;
+			$link_url = false;
 		}
 
 		if ($this->element['empty_replacement'])
@@ -183,14 +158,14 @@ class Model extends GenericList implements FieldInterface
 		// Create the HTML
 		$html = '<span class="' . $class . '">';
 
-		if ($show_link)
+		if ($link_url)
 		{
 			$html .= '<a href="' . $link_url . '">';
 		}
 
 		$html .= $value;
 
-		if ($show_link)
+		if ($link_url)
 		{
 			$html .= '</a>';
 		}
