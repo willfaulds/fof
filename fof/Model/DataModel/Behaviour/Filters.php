@@ -30,12 +30,14 @@ class Filters extends Observer
 		$db = $model->getDbo();
 
 		$fields = $model->getTableFields();
+		$filterZero = $model->getState('_emptynonzero', null);
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{
 			$fieldInfo = (object)array(
 				'name'	=> $fieldname,
 				'type'	=> $fieldmeta->Type,
+				'filterZero' => $filterZero,
 			);
 
 			$filterName = ($fieldInfo->name == $tableKey) ? 'id' : $fieldInfo->name;

@@ -31,6 +31,13 @@ abstract class AbstractFilter
 	protected $type = '';
 
 	/**
+	 * Should I allow filtering against the number 0?
+	 *
+	 * @var bool
+	 */
+	protected $filterZero = true;
+
+	/**
 	 * The null value for this type
 	 *
 	 * @var  mixed
@@ -54,6 +61,7 @@ abstract class AbstractFilter
 
 		$this->name = $field->name;
 		$this->type = $field->type;
+		$this->filterZero = $field->filterZero;
 	}
 
 	/**
@@ -65,7 +73,8 @@ abstract class AbstractFilter
 	 */
 	public function isEmpty($value)
 	{
-		return ($value === $this->null_value) || empty($value);
+		return (($value === $this->null_value) || empty($value))
+			&& !($this->filterZero && ($value === "0"));
 	}
 
 	/**
