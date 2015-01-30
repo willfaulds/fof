@@ -14,8 +14,7 @@ use JDatabaseQuery;
 defined('_JEXEC') or die;
 
 /**
- * FOF model behavior class to filter front-end access to items
- * based on the viewing access levels.
+ * FOF model behavior class to filter access to items based on the enabled status
  *
  * @since    2.1
  */
@@ -32,14 +31,6 @@ class Enabled extends Observer
 	 */
 	public function onAfterBuildQuery(&$model, &$query)
 	{
-		$platform = $model->getContainer()->platform;
-
-		// This behavior only applies to the front-end.
-		if (!$platform->isFrontend())
-		{
-			return;
-		}
-
 		// Make sure the field actually exists
 		if (!$model->hasField('enabled'))
 		{
@@ -75,10 +66,7 @@ class Enabled extends Observer
 			return;
 		}
 
-		// Get the user
-		$recordEnabled = $model->getFieldValue('enabled', 0);
-
-		// Filter by authorised access levels
+		// Filter by enabled status
 		if (!$model->getFieldValue('enabled', 0))
 		{
 			$model->reset(true);
