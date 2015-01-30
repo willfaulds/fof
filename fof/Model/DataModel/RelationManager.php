@@ -51,7 +51,7 @@ class RelationManager
 
 		if (!empty($this->relations))
 		{
-			/** @var Relation $relation */
+			/** @var Relation[] $relations */
 			foreach ($this->relations as $key => $relation)
 			{
 				$relations[$key] = clone($relation);
@@ -149,7 +149,7 @@ class RelationManager
 	 *
 	 * @param   string $name               The name of the relation as known to this relation manager, e.g. 'phone'
 	 * @param   string $type               The relation type, e.g. 'hasOne'
-	 * @param   string $foreignModelClass  The class name of the foreign key's model, e.g. '\Foobar\Phones'
+	 * @param   string $foreignModelName   The name of the foreign key's model in the format "modelName@com_something"
 	 * @param   string $localKey           The local table key for this relation
 	 * @param   string $foreignKey         The foreign key for this relation
 	 * @param   string $pivotTable         For many-to-many relations, the pivot (glue) table
@@ -161,7 +161,7 @@ class RelationManager
 	 * @throws Relation\Exception\RelationTypeNotFound when $type is not known
 	 * @throws Relation\Exception\ForeignModelNotFound when $foreignModelClass doesn't exist
 	 */
-	public function addRelation($name, $type, $foreignModelClass = null, $localKey = null, $foreignKey = null, $pivotTable = null, $pivotLocalKey = null, $pivotForeignKey = null)
+	public function addRelation($name, $type, $foreignModelName = null, $localKey = null, $foreignKey = null, $pivotTable = null, $pivotLocalKey = null, $pivotForeignKey = null)
 	{
 		if (!isset(static::$relationTypes[$type]))
 		{
@@ -169,29 +169,15 @@ class RelationManager
 		}
 
 		// Guess the foreign model class if necessary
-		if (empty($foreignModelClass) || !class_exists($foreignModelClass, true))
+		if (empty($foreignModelName))
 		{
-			$parentClass = get_class($this->parentModel);
-			$classNameParts = explode('\\', $parentClass);
-			array_pop($classNameParts);
-			$classPrefix = implode('\\', $classNameParts);
-
-			$foreignModelClass = $classPrefix . '\\' . ucfirst($name);
-
-			if (!class_exists($foreignModelClass, true))
-			{
-				$foreignModelClass = $classPrefix . '\\' . ucfirst(Inflector::pluralize($name));
-			}
-		}
-
-		if (!class_exists($foreignModelClass, true))
-		{
-			throw new DataModel\Relation\Exception\ForeignModelNotFound("Foreign model '$foreignModelClass' for relation '$name' not found");
+			$foreignModelName = ucfirst($name);
 		}
 
 		$className = static::$relationTypes[$type];
+
 		/** @var Relation $relation */
-		$relation = new $className($this->parentModel, $foreignModelClass, $localKey, $foreignKey,
+		$relation = new $className($this->parentModel, $foreignModelName, $localKey, $foreignKey,
 			$pivotTable, $pivotLocalKey, $pivotForeignKey);
 
 		$this->relations[$name] = $relation;

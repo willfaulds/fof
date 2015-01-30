@@ -23,16 +23,16 @@ class HasMany extends Relation
 	 * Public constructor. Initialises the relation.
 	 *
 	 * @param   DataModel $parentModel       The data model we are attached to
-	 * @param   string    $foreignModelClass The class name of the foreign key's model
+	 * @param   string    $foreignModelName  The name of the foreign key's model in the format "modelName@com_something"
 	 * @param   string    $localKey          The local table key for this relation, default: parentModel's ID field name
 	 * @param   string    $foreignKey        The foreign key for this relation, default: parentModel's ID field name
 	 * @param   string    $pivotTable        IGNORED
 	 * @param   string    $pivotLocalKey     IGNORED
 	 * @param   string    $pivotForeignKey   IGNORED
 	 */
-	public function __construct(DataModel $parentModel, $foreignModelClass, $localKey = null, $foreignKey = null, $pivotTable = null, $pivotLocalKey = null, $pivotForeignKey = null)
+	public function __construct(DataModel $parentModel, $foreignModelName, $localKey = null, $foreignKey = null, $pivotTable = null, $pivotLocalKey = null, $pivotForeignKey = null)
 	{
-		parent::__construct($parentModel, $foreignModelClass, $localKey, $foreignKey, $pivotTable, $pivotLocalKey, $pivotForeignKey);
+		parent::__construct($parentModel, $foreignModelName, $localKey, $foreignKey, $pivotTable, $pivotLocalKey, $pivotForeignKey);
 
 		if (empty($this->localKey))
 		{

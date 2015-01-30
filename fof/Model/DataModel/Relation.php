@@ -54,17 +54,17 @@ abstract class Relation
 	 * Public constructor. Initialises the relation.
 	 *
 	 * @param   DataModel $parentModel       The data model we are attached to
-	 * @param   string    $foreignModelClass The class name of the foreign key's model in the format "modelName@com_something"
+	 * @param   string    $foreignModelName  The name of the foreign key's model in the format "modelName@com_something"
 	 * @param   string    $localKey          The local table key for this relation
 	 * @param   string    $foreignKey        The foreign key for this relation
 	 * @param   string    $pivotTable        For many-to-many relations, the pivot (glue) table
 	 * @param   string    $pivotLocalKey     For many-to-many relations, the pivot table's column storing the local key
 	 * @param   string    $pivotForeignKey   For many-to-many relations, the pivot table's column storing the foreign key
 	 */
-	public function __construct(DataModel $parentModel, $foreignModelClass, $localKey = null, $foreignKey = null, $pivotTable = null, $pivotLocalKey = null, $pivotForeignKey = null)
+	public function __construct(DataModel $parentModel, $foreignModelName, $localKey = null, $foreignKey = null, $pivotTable = null, $pivotLocalKey = null, $pivotForeignKey = null)
 	{
 		$this->parentModel = $parentModel;
-		$this->foreignModelClass = $foreignModelClass;
+		$this->foreignModelClass = $foreignModelName;
 		$this->localKey = $localKey;
 		$this->foreignKey = $foreignKey;
 		$this->pivotTable = $pivotTable;
@@ -73,13 +73,7 @@ abstract class Relation
 
 		$this->container = $parentModel->getContainer();
 
-		$class = $foreignModelClass;
-
-		// Work around for PHP 5.3.0 - 5.3.2 https://bugs.php.net/50731
-		if ('\\' == $class[0])
-		{
-			$class = substr($class, 1);
-		}
+		$class = $foreignModelName;
 
 		if (strpos($class, '@') === false)
 		{
