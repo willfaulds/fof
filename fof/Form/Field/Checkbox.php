@@ -106,7 +106,7 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 
 		if (empty($this->value))
 		{
-			$checked = (isset($this->element['checked'])) ? ' checked="checked"' : '';
+			$checked = (isset($this->checked)) ? ' checked="checked"' : '';
 		}
 		else
 		{
@@ -137,7 +137,7 @@ class Checkbox extends \JFormFieldCheckbox implements FieldInterface
 
 		if (empty($this->value))
 		{
-			$checked = (isset($this->element['checked'])) ? ' checked="checked"' : '';
+			$checked = (isset($this->checked)) ? ' checked="checked"' : '';
 		}
 		else
 		{

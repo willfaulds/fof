@@ -129,7 +129,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 	protected function getCalendar($display)
 	{
 		// Initialize some field attributes.
-		$format  = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
+		$format  = $this->format ? $this->format : '%Y-%m-%d';
 		$class   = $this->class ? $this->class : '';
 		$default = $this->element['default'] ? (string) $this->element['default'] : '';
 
@@ -154,7 +154,7 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 			$date   = $this->form->getContainer()->platform->getDate($this->value, 'UTC');
 
 			// If a known filter is given use it.
-			switch (strtoupper((string) $this->element['filter']))
+			switch (strtoupper($this->filter))
 			{
 				case 'SERVER_UTC':
 					// Convert a date to UTC based on the server timezone.
@@ -192,9 +192,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 				$attributes['size'] = $this->size;
 			}
 
-			if ($this->element['maxlength'])
+			if ($this->maxlength)
 			{
-				$attributes['maxlength'] = (int) $this->element['maxlength'];
+				$attributes['maxlength'] = $this->maxlength;
 			}
 
 			if ($this->class)
