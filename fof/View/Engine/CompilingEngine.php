@@ -36,7 +36,7 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 		{
 			return array(
 				'type'    => 'path',
-				'content' => $this->getCached($path),
+				'content' => $this->getCachePath($path),
 			);
 		}
 
@@ -49,7 +49,7 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 		{
 			return array(
 				'type'    => 'path',
-				'content' => $this->getCached($cachePath),
+				'content' => $cachePath,
 			);
 		}
 
