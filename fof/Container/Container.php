@@ -14,6 +14,7 @@ use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
 use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
 use FOF30\TransparentAuthentication\TransparentAuthentication as TransparentAuth;
+use FOF30\View\Compiler\Blade;
 use JDatabaseDriver;
 use JSession;
 
@@ -51,6 +52,7 @@ defined('_JEXEC') or die;
  * @property  string                                   $factoryClass       The fully qualified class name or slug (basic, switch) of the MVC Factory object, default is FOF30\Factory\BasicFactory.
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
+ * @property-read  \FOF30\View\Compiler\Blade          $blade              The Blade view template compiler engine
  * @property-read  \JDatabaseDriver                    $db                 The database connection object
  * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The component's dispatcher
  * @property-read  \FOF30\Factory\FactoryInterface     $factory            The MVC object factory
@@ -346,6 +348,15 @@ class Container extends ContainerBase
 				}
 
 				return new $class($c);
+			};
+		}
+
+		// Blade view template compiler service
+		if (!isset($this['blade']))
+		{
+			$this['blade'] = function (Container $c)
+			{
+				return new Blade();
 			};
 		}
 

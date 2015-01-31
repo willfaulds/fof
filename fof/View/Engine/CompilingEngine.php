@@ -8,6 +8,7 @@
 namespace FOF30\View\Engine;
 
 use FOF30\Utils\Buffer;
+use FOF30\View\Compiler\CompilerInterface;
 use FOF30\View\Exception\PossiblySuhosin;
 
 defined('_JEXEC') or die;
@@ -17,6 +18,9 @@ defined('_JEXEC') or die;
  */
 abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 {
+	/** @var  CompilerInterface  The compiler used by this engine */
+	protected $compiler = null;
+
 	/**
 	 * Get the evaluated contents of the view template.
 	 *
@@ -36,7 +40,7 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 			);
 		}
 
-		// Not cached. Compile it and cache it.
+		// Not cached or caching not really allowed. Compile it and cache it.
 		$content = $this->compile($path, $forceParams);
 		$cachePath = $this->putToCache($path, $content);
 
@@ -75,7 +79,10 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 	 *
 	 * @return  string  The template compiled to executable PHP
 	 */
-	abstract protected function compile($path, array $forceParams = array());
+	protected function compile($path, array $forceParams = array())
+	{
+		return $this->compiler->compile($path, $forceParams);
+	}
 
 	protected function getIdentifier($path)
 	{
@@ -95,6 +102,11 @@ abstract class CompilingEngine extends AbstractEngine implements EngineInterface
 
 	protected function isCached($path)
 	{
+		if (!$this->compiler->isCacheable())
+		{
+			return false;
+		}
+
 		$cachePath = $this->getCachePath($path);
 
 		if (!file_exists($cachePath))
