@@ -146,8 +146,8 @@ class View
 	 * @var    array
 	 */
 	protected $viewEngineMap = array(
-		'.blade.php' => 'FOF30\\View\\Engine\\PhpEngine',
 		'.php'       => 'FOF30\\View\\Engine\\BladeEngine',
+		'.blade.php' => 'FOF30\\View\\Engine\\PhpEngine',
 	);
 
 	/**
@@ -675,11 +675,15 @@ class View
 
 		foreach ($uris as $uri)
 		{
-			$result = $this->loadAnyTemplate($uri);
-
-			if (!($result instanceof \Exception))
+			try
 			{
+				$result = $this->loadAnyTemplate($uri);
+
 				break;
+			}
+			catch (\Exception $e)
+			{
+				$result = $e;
 			}
 		}
 
@@ -980,7 +984,7 @@ class View
 	protected function evaluateTemplate(array &$forceParams)
 	{
 		// If the engine returned raw content, return the raw content immediately
-		if ($this->_tempFilePath['type'] = 'raw')
+		if ($this->_tempFilePath['type'] == 'raw')
 		{
 			return $this->_tempFilePath['content'];
 		}
