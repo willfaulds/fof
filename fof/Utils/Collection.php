@@ -17,8 +17,6 @@ use IteratorAggregate;
 
 defined('_JEXEC') or die;
 
-require_once __DIR__ . '/helpers.php';
-
 class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
 	/**

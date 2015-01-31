@@ -9,7 +9,9 @@
 
 if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 {
-	// Register the F0F autoloader
+	// Register utility functions
+	require_once __DIR__ . '/Utils/helpers.php';
+	// Register the FOF autoloader
 	require_once __DIR__ . '/Autoloader/Autoloader.php';
 }
 
