@@ -101,14 +101,14 @@ class View
 	 *
 	 * @var   ViewTemplateFinder
 	 */
-	private $viewFinder = null;
+	protected $viewFinder = null;
 
 	/**
 	 * Used when loading template files to avoid variable scope issues
 	 *
 	 * @var   null
 	 */
-	private $_tempFilePath = null;
+	protected $_tempFilePath = null;
 
 	/**
 	 * Current or most recently performed task.
@@ -692,21 +692,28 @@ class View
 		// Now get the parsed view template path
 		$this->_tempFilePath = $this->getEngine($path)->get($path, $forceParams);
 
+		return $this->evaluateTemplate($forceParams);
+	}
+
+	/**
+	 * Evaluates the template described in the _tempFilePath property
+	 *
+	 * @param   array  $forceParams  Forced parameters
+	 *
+	 * @return string
+	 * @throws \Exception
+	 */
+	protected function evaluateTemplate(array &$forceParams)
+	{
 		// If the engine returned raw content, return the raw content immediately
 		if ($this->_tempFilePath['type'] = 'raw')
 		{
 			return $this->_tempFilePath['content'];
 		}
 
-		unset($uri);
-		unset($layoutTemplate);
-		unset($extraPaths);
-		unset($path);
-
-		if (!empty($forceParams))
+		if (substr($this->_tempFilePath['content'], 0, 4) == 'raw|')
 		{
-			extract($forceParams);
-			unset($forceParams);
+			return substr($this->_tempFilePath['content'], 4);
 		}
 
 		$obLevel = ob_get_level();
@@ -718,7 +725,7 @@ class View
 		// an exception is thrown. This prevents any partial views from leaking.
 		try
 		{
-			include $this->_tempFilePath['content'];
+			$this->includeTemplateFile($forceParams);
 		}
 		catch (\Exception $e)
 		{
@@ -726,6 +733,25 @@ class View
 		}
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * This method makes sure the current scope isn't polluted with variables when including a view template
+	 *
+	 * @param   array   $forceParams  Forced parameters
+	 *
+	 * @return  void
+	 */
+	private function includeTemplateFile(array &$forceParams)
+	{
+		// Extract forced parameters
+		if (!empty($forceParams))
+		{
+			extract($forceParams);
+			unset($forceParams);
+		}
+
+		include $this->_tempFilePath['content'];
 	}
 
 	/**
