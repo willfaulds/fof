@@ -464,6 +464,17 @@ class Container extends ContainerBase
 		}
 
 		// Input Access service
+		if (isset($this['input']) &&
+		    (!(is_object($this['input'])) ||
+		     !($this['input'] instanceof \FOF30\Input\Input) ||
+		     !($this['input'] instanceof \JInput))
+		) {
+			$this['input'] = function (Container $c)
+			{
+				return new \FOF30\Input\Input($c['input']);
+			};
+		}
+
 		if (!isset($this['input']))
 		{
 			$this['input'] = function ()
