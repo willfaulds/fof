@@ -29,11 +29,16 @@ class Filters extends Observer
 		$tableKey = $model->getIdFieldName();
 		$db = $model->getDbo();
 
-		$fields = $model->getTableFields();
+		$fields     = $model->getTableFields();
+		$backlist   = $model->blacklistFilters();
 		$filterZero = $model->getState('_emptynonzero', null);
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{
+			if (in_array($fieldname, $backlist)) {
+				continue;
+			}
+
 			$fieldInfo = (object)array(
 				'name'	=> $fieldname,
 				'type'	=> $fieldmeta->Type,

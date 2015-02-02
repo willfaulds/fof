@@ -121,6 +121,9 @@ class DataModel extends Model implements \JTableInterface
 	/** @var  array  The data to load into a form */
 	protected $_formData = array();
 
+ 	/** @var  array  Shared parameters for behaviors */
+	protected $_behaviorParams = array();
+
 	/**
 	 * The asset key for items in this table. It's usually something in the
 	 * com_example.viewname format. They asset name will be this key appended
@@ -3434,5 +3437,61 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Set a behavior param
+	 *
+	 * @param   string  $name     The name of the param you want to set
+	 * @param   mixed   $value    The value to set
+	 *
+	 * @return  $this   Self, for chaining
+	 */
+	public function setBehaviorParam($name, $value)
+	{
+		$this->_behaviorParams[$name] = $value;
+
+		return $this;
+	}
+
+	/**
+	 * Get a behavior param
+	 *
+	 * @param   string  $name     The name of the param you want to get
+	 * @param   mixed   $default  The default value returned if not set
+	 *
+	 * @return  mixed
+	 */
+	public function getBehaviorParam($name, $default = null)
+	{
+		return isset($this->_behaviorParams[$name]) ? $this->_behaviorParams[$name] : $default;
+	}
+
+	/**
+	 * Set or get the backlisted filters
+	 *
+	 * @param   mixed    $list    A filter or list of filters to backlist. If null return the list of backlisted filter
+	 * @param   boolean  $reset   Reset the blacklist if true
+	 *
+	 * @return  void|array  Return an array of value if $list is null
+	 */
+	public function blacklistFilters($list = null, $reset = false)
+	{
+		if (!isset($list))
+		{
+			return $this->getBehaviorParam('blacklistFilters', array());
+		}
+
+		if (is_string($list))
+		{
+			$list = (array) $list;
+		}
+
+		if (!$reset)
+		{
+			$list = array_unique(array_merge($this->getBehaviorParam('blacklistFilters', array()), $list));
+		}
+
+		$this->setBehaviorParam('blacklistFilters', $list);
 	}
 }
