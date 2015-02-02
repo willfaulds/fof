@@ -31,7 +31,7 @@ class Filters extends Observer
 
 		$fields     = $model->getTableFields();
 		$backlist   = $model->blacklistFilters();
-		$filterZero = $model->getState('_emptynonzero', null);
+		$filterZero = $model->getBehaviorParam('filterZero', null);
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{

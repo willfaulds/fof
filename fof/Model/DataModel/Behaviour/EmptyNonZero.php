@@ -31,6 +31,6 @@ class EmptyNonZero extends Observer
 	 */
 	public function onAfterBuildQuery(&$model, &$query)
 	{
-		$model->setState('_emptynonzero', 1);
+		$model->setBehaviorParam('filterZero', 1);
 	}
 }
