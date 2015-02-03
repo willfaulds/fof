@@ -67,10 +67,21 @@ defined('_JEXEC') or die;
  */
 class Container extends ContainerBase
 {
+
+	/**
+	 * Cache of created container instances
+	 *
+	 * @var   array
+	 */
+	protected static $instances = array();
+
 	/**
 	 * Returns a container instance for a specific component. This method goes through fof.xml to read the default
 	 * configuration values for the container. You are advised to use this unless you have a specific reason for
 	 * instantiating a Container without going through the fof.xml file.
+	 *
+	 * Pass the value 'tempInstance' => true in the $values array to get a temporary instance. Otherwise you will get
+	 * the cached instance of the previously created container.
 	 *
 	 * @param   string  $component  The component you want to get a container for, e.g. com_foobar.
 	 * @param   array   $values     Container configuration overrides you want to apply. Optional.
@@ -79,6 +90,40 @@ class Container extends ContainerBase
 	 * @return \FOF30\Container\Container
 	 */
 	public static function &getInstance($component, array $values = array(), $section = 'auto')
+	{
+		$tempInstance = false;
+
+		if (isset($values['tempInstance']))
+		{
+			$tempInstance = $values['tempInstance'];
+			unset($values['tempInstance']);
+		}
+
+		if ($tempInstance)
+		{
+			return self::makeInstance($component, $values, $section);
+		}
+
+		$signature = md5($component . '@' . $section);
+
+		if (!isset(self::$instances[$signature]))
+		{
+			self::$instances[$signature] = self::makeInstance($component, $values, $section);
+		}
+
+		return self::$instances[$signature];
+	}
+
+	/**
+	 * Returns a temporary container instance for a specific component.
+	 *
+	 * @param   string  $component  The component you want to get a container for, e.g. com_foobar.
+	 * @param   array   $values     Container configuration overrides you want to apply. Optional.
+	 * @param   string  $section    The application section (site, admin) you want to fetch. Any other value results in auto-detection.
+	 *
+	 * @return \FOF30\Container\Container
+	 */
+	protected static function &makeInstance($component, array $values = array(), $section = 'auto')
 	{
 		// Try to auto-detect some defaults
 		$tmpConfig = array_merge($values, array('componentName' => $component));

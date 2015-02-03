@@ -257,7 +257,7 @@ abstract class Relation
 		}
 
 		// The model comes from another component. Create a container and go through its factory.
-		$foreignContainer = Container::getInstance($this->foreignModelComponent);
+		$foreignContainer = Container::getInstance($this->foreignModelComponent, array('tempInstance' => true));
 
 		return $foreignContainer->factory->model($this->foreignModelName, $config);
 	}
