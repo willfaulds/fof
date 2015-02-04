@@ -70,7 +70,7 @@ class Model
 	 *
 	 * state			stdClass|array. The state variables of the Model.
 	 * use_populate		Boolean. When true the model will set its state from populateState() instead of the request.
-	 * ignore_request	Boolean. When true getState will now automatically load state data from the request.
+	 * ignore_request	Boolean. When true getState will not automatically load state data from the request.
 	 *
 	 * @param   Container  $container  The configuration variables to this model
 	 * @param   array      $config     Configuration values for this model
