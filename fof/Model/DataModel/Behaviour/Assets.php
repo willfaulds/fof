@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
  */
 class Assets extends Observer
 {
-	public function onAfterStore(DataModel &$model)
+	public function onAfterSave(DataModel &$model)
 	{
 		if (!$model->hasField('asset_id') || !$model->isAssetsTracked())
 		{
