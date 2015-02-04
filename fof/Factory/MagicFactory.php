@@ -11,10 +11,13 @@ use FOF30\Controller\Controller;
 use FOF30\Factory\Exception\ControllerNotFound;
 use FOF30\Factory\Exception\DispatcherNotFound;
 use FOF30\Factory\Exception\ModelNotFound;
+use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Factory\Magic\DispatcherFactory;
+use FOF30\Factory\Magic\TransparentAuthenticationFactory;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
+use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
 
 defined('_JEXEC') or die;
@@ -129,6 +132,30 @@ class MagicFactory extends BasicFactory implements FactoryInterface
 		{
 			// Not found. Return the magically created Dispatcher
 			$magic = new DispatcherFactory($this->container);
+
+			return $magic->make($config);
+		}
+	}
+
+	/**
+	 * Creates a new TransparentAuthentication handler
+	 *
+	 * @param   array $config The configuration values for the TransparentAuthentication object
+	 *
+	 * @return  TransparentAuthentication
+	 */
+	function transparentAuthentication(array $config = array())
+	{
+		$authClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+
+		try
+		{
+			return $this->createTransparentAuthentication($authClass, $config);
+		}
+		catch (TransparentAuthenticationNotFound $e)
+		{
+			// Not found. Return the magically created TA
+			$magic = new TransparentAuthenticationFactory($this->container);
 
 			return $magic->make($config);
 		}

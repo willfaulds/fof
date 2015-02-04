@@ -158,7 +158,7 @@ class BasicFactory implements FactoryInterface
 		}
 		catch (TransparentAuthenticationNotFound $e)
 		{
-			// Not found. Return the default Dispatcher
+			// Not found. Return the default TA
 			return new TransparentAuthentication($this->container, $config);
 		}
 	}

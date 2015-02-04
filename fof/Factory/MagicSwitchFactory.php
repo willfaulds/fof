@@ -13,10 +13,13 @@ use FOF30\Factory\Exception\ControllerNotFound;
 use FOF30\Factory\Exception\DispatcherNotFound;
 use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
+use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Factory\Magic\DispatcherFactory;
+use FOF30\Factory\Magic\TransparentAuthenticationFactory;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
+use FOF30\TransparentAuthentication\TransparentAuthentication;
 use FOF30\View\View;
 
 defined('_JEXEC') or die;
@@ -150,6 +153,41 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 		{
 			// Not found. Return the magically created Dispatcher
 			$magic = new DispatcherFactory($this->container);
+
+			return $magic->make($config);
+		}
+	}
+
+	/**
+	 * Creates a new TransparentAuthentication
+	 *
+	 * @param   array  $config  The configuration values for the TransparentAuthentication object
+	 *
+	 * @return  TransparentAuthentication
+	 */
+	function transparentAuthentication(array $config = array())
+	{
+		$toolbarClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+
+		try
+		{
+			return $this->createTransparentAuthentication($toolbarClass, $config);
+		}
+		catch (TransparentAuthenticationNotFound $e)
+		{
+			// Not found. Let's go on.
+		}
+
+		$toolbarClass = $this->container->getNamespacePrefix('inverse') . 'TransparentAuthentication\\TransparentAuthentication';
+
+		try
+		{
+			return $this->createTransparentAuthentication($toolbarClass, $config);
+		}
+		catch (TransparentAuthenticationNotFound $e)
+		{
+			// Not found. Return the magically created TransparentAuthentication
+			$magic = new TransparentAuthenticationFactory($this->container);
 
 			return $magic->make($config);
 		}
