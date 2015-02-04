@@ -29,7 +29,7 @@ class ControllerFactory extends BaseFactory
 	{
 		if (empty($name))
 		{
-			throw new ControllerNotFound;
+			throw new ControllerNotFound($name);
 		}
 
 		$defaultConfig = array(
