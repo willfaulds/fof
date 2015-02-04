@@ -46,16 +46,16 @@ class TransparentAuthentication
 	protected $authenticationMethods = array(3, 4, 5);
 
 	/** @var string The username required for the Auth_HTTPBasicAuth_TOTP method */
-	protected $basicAuthUsername = '_AwfAuth';
+	protected $basicAuthUsername = '_fof_auth';
 
 	/** @var string The query parameter for the Auth_QueryString_Plaintext method */
-	protected $queryParam = '_AwfAuthentication';
+	protected $queryParam = '_fofauthentication';
 
 	/** @var string The query parameter for the username in the Auth_SplitQueryString_Plaintext method */
-	protected $queryParamUsername = '_AwfUsername';
+	protected $queryParamUsername = '_fofusername';
 
 	/** @var string The query parameter for the password in the Auth_SplitQueryString_Plaintext method */
-	protected $queryParamPassword = '_AwfPassword';
+	protected $queryParamPassword = '_fofpassword';
 
 	/** @var  bool  Should I log out the user after the dispatcher exits? */
 	protected $logoutOnExit = true;
