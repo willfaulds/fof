@@ -49,7 +49,22 @@ class Models implements DomainInterface
 			$ret['models'][$key]['tablealias'] = $aModel->xpath('tablealias');
 			$ret['models'][$key]['fields'] = array();
 			$ret['models'][$key]['relations'] = array();
+			$ret['models'][$key]['config'] = array();
 
+
+			// Parse configuration
+			$optionData = $aModel->xpath('config/option');
+
+			if (!empty($optionData))
+			{
+				foreach ($optionData as $option)
+				{
+					$k = (string) $option['name'];
+					$ret['models'][$key]['config'][$k] = (string) $option;
+				}
+			}
+
+			// Parse field aliases
 			$fieldData = $aModel->xpath('field');
 
 			if (!empty($fieldData))
@@ -61,6 +76,7 @@ class Models implements DomainInterface
 				}
 			}
 
+			// Parse behaviours
 			$behaviorsData = (string) $aModel->behaviors;
 			$behaviorsMerge = (string) $aModel->behaviors['merge'];
 
@@ -92,6 +108,7 @@ class Models implements DomainInterface
 				}
 			}
 
+			// Parse relations
 			$relationsData = $aModel->xpath('relation');
 
 			if (!empty($relationsData))
@@ -312,4 +329,42 @@ class Models implements DomainInterface
 		return $relations;
 	}
 
+	/**
+	 * Internal method to return the a configuration option for the Model.
+	 *
+	 * @param   string  $model           The view for which we will be fetching a task map
+	 * @param   array   &$configuration  The configuration parameters hash array
+	 * @param   array   $params          Extra options; key 0 defines the option variable we want to fetch
+	 * @param   mixed   $default         Default option; null if not defined
+	 *
+	 * @return  string  The setting for the requested option
+	 */
+	protected function getConfig($model, &$configuration, $params, $default = null)
+	{
+		$ret = $default;
+
+		$config = array();
+
+		if (isset($configuration['models']['*']['config']))
+		{
+			$config = $configuration['models']['*']['config'];
+		}
+
+		if (isset($configuration['models'][$model]['config']))
+		{
+			$config = array_merge($config, $configuration['models'][$model]['config']);
+		}
+
+		if (empty($params) || empty($params[0]))
+		{
+			return $config;
+		}
+
+		if (isset($config[$params[0]]))
+		{
+			$ret = $config[$params[0]];
+		}
+
+		return $ret;
+	}
 }
