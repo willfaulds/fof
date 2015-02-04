@@ -1110,7 +1110,7 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
-		$this->triggerEvent('onAfterBind');
+		$this->triggerEvent('onAfterBind', array($data));
 
 		return $this;
 	}
