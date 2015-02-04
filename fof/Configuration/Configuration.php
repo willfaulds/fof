@@ -98,21 +98,25 @@ class Configuration
 		$order = array_reverse($order);
 		self::$configurations[$this->container->componentName] = array();
 
-		foreach ($order as $area)
+		foreach (array(false, true) as $userConfig)
 		{
-			$config = $this->parseComponentArea($area);
-			self::$configurations[$this->container->componentName] = array_merge_recursive(self::$configurations[$this->container->componentName], $config);
+			foreach ($order as $area)
+			{
+				$config = $this->parseComponentArea($area, $userConfig);
+				self::$configurations[$this->container->componentName] = array_merge_recursive(self::$configurations[$this->container->componentName], $config);
+			}
 		}
 	}
 
 	/**
 	 * Parses the configuration options of a specific component area
 	 *
-	 * @param   string  $area       Which area to parse (frontend, backend, cli)
+	 * @param   string  $area        Which area to parse (frontend, backend, cli)
+	 * @param   bool    $userConfig  When true the user configuration (fof.user.xml) file will be read
 	 *
 	 * @return  array  A hash array with the configuration data
 	 */
-	protected function parseComponentArea($area)
+	protected function parseComponentArea($area, $userConfig = false)
 	{
 		$component = $this->container->componentName;
 
@@ -140,6 +144,11 @@ class Configuration
 
 		// Read the filename if it exists
 		$filename = $path . '/fof.xml';
+
+		if ($userConfig)
+		{
+			$filename = $path . '/fof.user.xml';
+		}
 
 		if (!$filesystem->fileExists($filename) && !file_exists($filename))
 		{
