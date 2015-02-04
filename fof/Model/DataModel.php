@@ -3217,6 +3217,139 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
+	 * Check if a UCM content type exists for this resource, and
+	 * create it if it does not
+	 *
+	 * @param  string  $alias  The content type alias (optional)
+	 *
+	 * @return  null
+	 */
+	public function checkContentType($alias)
+	{
+		$contentType = new \JTableContenttype($this->getDbo());
+
+		if (!$alias)
+		{
+			$alias = $this->getContentType();
+		}
+
+		$aliasParts = explode('.', $alias);
+
+		// Fetch the extension name
+		$component = $aliasParts[0];
+		$component = \JComponentHelper::getComponent($component);
+
+		// Fetch the name using the menu item
+		$query = $this->getDbo()->getQuery(true);
+		$query->select('title')->from('#__menu')->where('component_id = ' . (int) $component->id);
+		$this->getDbo()->setQuery($query);
+		$component_name = \JText::_($this->getDbo()->loadResult());
+
+		$name = $component_name . ' ' . ucfirst($aliasParts[1]);
+
+		// Create a new content type for our resource
+		if (!$contentType->load(array('type_alias' => $alias)))
+		{
+			$contentType->type_title = $name;
+			$contentType->type_alias = $alias;
+			$contentType->table = json_encode(
+				array(
+					'special' => array(
+						'dbtable' => $this->getTableName(),
+						'key'     => $this->getKeyName(),
+						'type'    => $name,
+						'prefix'  => $this->_tablePrefix,
+						'class'   => 'F0FTable',
+						'config'  => 'array()'
+					),
+					'common' => array(
+						'dbtable' => '#__ucm_content',
+						'key' => 'ucm_id',
+						'type' => 'CoreContent',
+						'prefix' => 'JTable',
+						'config' => 'array()'
+					)
+				)
+			);
+
+			$contentType->field_mappings = json_encode(
+				array(
+					'common' => array(
+						0 => array(
+							"core_content_item_id" => $this->getKeyName(),
+							"core_title"           => $this->getUcmCoreAlias('title'),
+							"core_state"           => $this->getUcmCoreAlias('enabled'),
+							"core_alias"           => $this->getUcmCoreAlias('alias'),
+							"core_created_time"    => $this->getUcmCoreAlias('created_on'),
+							"core_modified_time"   => $this->getUcmCoreAlias('created_by'),
+							"core_body"            => $this->getUcmCoreAlias('body'),
+							"core_hits"            => $this->getUcmCoreAlias('hits'),
+							"core_publish_up"      => $this->getUcmCoreAlias('publish_up'),
+							"core_publish_down"    => $this->getUcmCoreAlias('publish_down'),
+							"core_access"          => $this->getUcmCoreAlias('access'),
+							"core_params"          => $this->getUcmCoreAlias('params'),
+							"core_featured"        => $this->getUcmCoreAlias('featured'),
+							"core_metadata"        => $this->getUcmCoreAlias('metadata'),
+							"core_language"        => $this->getUcmCoreAlias('language'),
+							"core_images"          => $this->getUcmCoreAlias('images'),
+							"core_urls"            => $this->getUcmCoreAlias('urls'),
+							"core_version"         => $this->getUcmCoreAlias('version'),
+							"core_ordering"        => $this->getUcmCoreAlias('ordering'),
+							"core_metakey"         => $this->getUcmCoreAlias('metakey'),
+							"core_metadesc"        => $this->getUcmCoreAlias('metadesc'),
+							"core_catid"           => $this->getUcmCoreAlias('cat_id'),
+							"core_xreference"      => $this->getUcmCoreAlias('xreference'),
+							"asset_id"             => $this->getUcmCoreAlias('asset_id')
+						)
+					),
+					'special' => array(
+						0 => array(
+						)
+					)
+				)
+			);
+
+			$ignoreFields = array(
+				$this->getUcmCoreAlias('modified_on', null),
+				$this->getUcmCoreAlias('modified_by', null),
+				$this->getUcmCoreAlias('locked_by', null),
+				$this->getUcmCoreAlias('locked_on', null),
+				$this->getUcmCoreAlias('hits', null),
+				$this->getUcmCoreAlias('version', null)
+			);
+
+			$contentType->content_history_options = json_encode(
+				array(
+					"ignoreChanges" => array_filter($ignoreFields, 'strlen')
+				)
+			);
+
+			$contentType->router = '';
+
+			$contentType->store();
+		}
+	}
+
+	/**
+	 * Utility methods that fetches the column name for the field.
+	 * If it does not exists, returns a "null" string
+	 *
+	 * @param  string  $alias  The alias for the column
+	 * @param  string  $null   What to return if no column exists
+	 *
+	 * @return string The column name
+	 */
+	protected function getUcmCoreAlias($alias, $null = "null")
+	{
+		if (!$this->hasField($alias))
+		{
+			return $null;
+		}
+
+		return $this->getFieldAlias($alias);
+	}
+
+	/**
 	 * Sets the abstract XML form file name
 	 *
 	 * @param   string  $formName  The abstract form file name to set, e.g. "form.default"
