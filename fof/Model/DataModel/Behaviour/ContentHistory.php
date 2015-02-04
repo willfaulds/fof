@@ -27,7 +27,7 @@ class ContentHistory extends Observer
 	 *
 	 * @return  boolean  True to allow saving without an error
 	 */
-	public function onAfterStore(&$model)
+	public function onAfterSave(&$model)
 	{
 		$aliasParts = explode('.', $model->getContentType());
 		$model->checkContentType();
