@@ -764,13 +764,7 @@ class DataModel extends Model implements \JTableInterface
 			$name = $this->aliasFields[$name];
 		}
 
-		$method = Inflector::camelize('get_' . $name . '_attribute');
-
-		if (method_exists($this, $method))
-		{
-			return $this->{$method}();
-		}
-		elseif (!isset($this->recordData[$name]))
+		if (!isset($this->recordData[$name]))
 		{
 			$this->recordData[$name] = $default;
 		}
@@ -793,16 +787,49 @@ class DataModel extends Model implements \JTableInterface
 			$name = $this->aliasFields[$name];
 		}
 
-		$method = Inflector::camelize('set_' . $name . '_attribute');
+		$this->recordData[$name] = $value;
+	}
 
-		if (method_exists($this, $method))
+	/**
+	 * Applies the getSomethingAttribute methods to $this->recordData, converting the database representation of the
+	 * data to the record representation. $this->recordData is directly modified.
+	 *
+	 * @return  void
+	 */
+	protected function databaseDataToRecordData()
+	{
+		foreach ($this->recordData as $name => $value)
 		{
-			$this->{$method}($value);
+			$method = Inflector::camelize('get_' . $name . '_attribute');
+
+			if (method_exists($this, $method))
+			{
+				$this->recordData[$name] = $this->{$method}($value);
+			}
 		}
-		else
+	}
+
+	/**
+	 * Applies the setSomethingAttribute methods to $this->recordData, converting the record representation to database
+	 * representation. It does not modify $this->recordData, it returns a copy of the data array.
+	 *
+	 * @return  array
+	 */
+	protected function recordDataToDatabaseData()
+	{
+		$copy = array_merge($this->recordData);
+
+		foreach ($copy as $name => $value)
 		{
-			$this->recordData[$name] = $value;
+			$method = Inflector::camelize('set_' . $name . '_attribute');
+
+			if (method_exists($this, $method))
+			{
+				$this->recordData[$name] = $this->{$method}($value);
+			}
 		}
+
+		return $copy;
 	}
 
 	/**
@@ -928,8 +955,10 @@ class DataModel extends Model implements \JTableInterface
 			$this->$locked_on = $nullDate;
 		}
 
-		// Insert or update the record
-		$dataObject = (object)$this->recordData;
+		// Insert or update the record. Note that the object we use for insertion / update is the a copy holding
+		// the transformed data.
+		$dataObject = $this->recordDataToDatabaseData();
+		$dataObject = (object)$dataObject;
 
 		if ($isNewRecord)
 		{
@@ -1109,6 +1138,9 @@ class DataModel extends Model implements \JTableInterface
 				}
 			}
 		}
+
+		// Perform data transformation
+		$this->databaseDataToRecordData();
 
 		$this->triggerEvent('onAfterBind', array($data));
 
