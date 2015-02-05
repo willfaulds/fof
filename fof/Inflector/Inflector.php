@@ -169,6 +169,12 @@ abstract class Inflector
 			return self::$_cache['pluralized'][$word];
 		}
 
+		// Check if the noun is already in plural form, i.e. in the singularized cache
+		if (isset(self::$_cache['singularized'][$word]))
+		{
+			return $word;
+		}
+		
 		// Create the plural noun
 		if (in_array($word, self::$_rules['uncountable']))
 		{
@@ -206,6 +212,12 @@ abstract class Inflector
 		if (isset(self::$_cache['singularized'][$word]))
 		{
 			return self::$_cache['singularized'][$word];
+		}
+		
+		// Check if the noun is already in singular form, i.e. in the pluralized cache
+		if (isset(self::$_cache['pluralized'][$word]))
+		{
+			return $word;
 		}
 
 		// Create the singular noun
