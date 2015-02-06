@@ -187,6 +187,46 @@ class Raw extends View implements DataViewInterface
 	}
 
 	/**
+	 * Get the items collection for browse views
+	 *
+	 * @return Collection
+	 */
+	public function getItems()
+	{
+		return $this->items;
+	}
+
+	/**
+	 * Get the item for read, edit, add views
+	 *
+	 * @return DataModel
+	 */
+	public function getItem()
+	{
+		return $this->item;
+	}
+
+	/**
+	 * Get the items count for browse views
+	 *
+	 * @return int
+	 */
+	public function getItemCount()
+	{
+		return $this->itemCount;
+	}
+
+	/**
+	 * Get the Joomla! page parameters
+	 *
+	 * @return \JRegistry
+	 */
+	public function getPageParams()
+	{
+		return $this->pageParams;
+	}
+
+	/**
 	 * Executes before rendering the page for the Browse task.
 	 *
 	 * @return  boolean  Return true to allow rendering of the page
