@@ -2116,8 +2116,8 @@ class DataModel extends Model implements \JTableInterface
 	public function addBehaviour($behaviour)
 	{
 		$prefixes = array(
-			$this->container->componentNamespace . '\\Model\\' . ucfirst($this->getName()) . '\\Behaviour',
-			$this->container->componentNamespace . '\\Model\\DataModel\\Behaviour',
+			$this->container->getNamespacePrefix() . '\\Model\\Behaviour\\' . ucfirst($this->getName()),
+			$this->container->getNamespacePrefix() . '\\Model\\Behaviour',
 			'\\FOF30\\Model\\DataModel\\Behaviour',
 		);
 
