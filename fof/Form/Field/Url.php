@@ -154,16 +154,65 @@ class Url extends \JFormFieldUrl implements FieldInterface
 			$this->value = JText::_($empty_replacement);
 		}
 
-		$html = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
 		if ($show_link)
 		{
-			$html = '<a href="' . $html . '">' .
-				$html . '</a>';
+			if ($this->element['url'])
+			{
+				$link_url = $this->parseFieldTags((string) $this->element['url']);
+			}
+			else
+			{
+				$link_url = $value;
+			}
+
+			$html = '<a href="' . $link_url . '">' .
+				$value . '</a>';
 		}
 
 		return '<span ' . ($id ? $id : '') . 'class="' . $class . '"">' .
 			$html .
 			'</span>';
+	}
+
+	/**
+	 * Replace string with tags that reference fields
+	 *
+	 * @param   string  $text  Text to process
+	 *
+	 * @return  string         Text with tags replace
+	 */
+	protected function parseFieldTags($text)
+	{
+		$ret = $text;
+
+		// Replace [ITEM:ID] in the URL with the item's key value (usually:
+		// the auto-incrementing numeric ID)
+		$keyfield = $this->item->getKeyName();
+		$replace  = $this->item->$keyfield;
+		$ret = str_replace('[ITEM:ID]', $replace, $ret);
+
+		// Replace the [ITEMID] in the URL with the current Itemid parameter
+		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
+
+		// Replace other field variables in the URL
+		$fields = $this->item->getTableFields();
+
+		foreach ($fields as $fielddata)
+		{
+			$fieldname = $fielddata->Field;
+
+			if (empty($fieldname))
+			{
+				$fieldname = $fielddata->column_name;
+			}
+
+			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
+			$replace   = $this->item->$fieldname;
+			$ret  = str_replace($search, $replace, $ret);
+		}
+
+		return $ret;
 	}
 }
