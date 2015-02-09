@@ -32,25 +32,9 @@ class Title extends Text implements FieldInterface
 	public function getRepeatable()
 	{
 		// Initialise
-		$slug_field		= 'slug';
-		$slug_format	= '(%s)';
-		$slug_class		= 'small';
-
-		// Get field parameters
-		if ($this->element['slug_field'])
-		{
-			$slug_field = (string) $this->element['slug_field'];
-		}
-
-		if ($this->element['slug_format'])
-		{
-			$slug_format = (string) $this->element['slug_format'];
-		}
-
-		if ($this->element['slug_class'])
-		{
-			$slug_class = (string) $this->element['slug_class'];
-		}
+		$slug_field  = isset($this->element['slug_field']) ? (string) $this->element['slug_field'] : $this->item->getColumnAlias('slug');
+		$slug_format = $this->element['slug_format'] ? (string) $this->element['slug_format'] : '(%s)';
+		$slug_class  = $this->element['slug_class']  ? (string) $this->element['slug_class']  : 'small';
 
 		// Get the regular display
 		$html = parent::getRepeatable();
