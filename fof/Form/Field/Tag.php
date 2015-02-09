@@ -53,6 +53,42 @@ class Tag extends \JFormFieldTag implements FieldInterface
 	public $item;
 
 	/**
+	 * Method to get certain otherwise inaccessible properties from the form field object.
+	 *
+	 * @param   string  $name  The property name for which to the the value.
+	 *
+	 * @return  mixed  The property value or null.
+	 *
+	 * @since   2.0
+	 */
+	public function __get($name)
+	{
+		switch ($name)
+		{
+			case 'static':
+				if (empty($this->static))
+				{
+					$this->static = $this->getStatic();
+				}
+
+				return $this->static;
+				break;
+
+			case 'repeatable':
+				if (empty($this->repeatable))
+				{
+					$this->repeatable = $this->getRepeatable();
+				}
+
+				return $this->repeatable;
+				break;
+
+			default:
+				return parent::__get($name);
+		}
+	}
+
+	/**
 	 * Method to get a list of tags
 	 *
 	 * @return  array  The field option objects.
@@ -69,7 +105,14 @@ class Tag extends \JFormFieldTag implements FieldInterface
 			->from('#__tags AS a')
 			->join('LEFT', $db->quoteName('#__tags') . ' AS b ON a.lft > b.lft AND a.rgt < b.rgt');
 
-		$item = $this->form->getModel();
+		if ($this->item instanceof DataModel)
+		{
+			$item = $this->item;
+		}
+		else
+		{
+			$item = $this->form->getModel();
+		}
 
 		if ($item instanceof DataModel)
 		{
@@ -95,7 +138,7 @@ class Tag extends \JFormFieldTag implements FieldInterface
 		{
 			// Only item assigned values
 			$values = (array) $this->value;
-            \JArrayHelper::toInteger($values);
+			\JArrayHelper::toInteger($values);
 			$query->where('a.id IN (' . implode(',', $values) . ')');
 		}
 
@@ -116,7 +159,7 @@ class Tag extends \JFormFieldTag implements FieldInterface
 		}
 		elseif (is_array($published))
 		{
-            \JArrayHelper::toInteger($published);
+			\JArrayHelper::toInteger($published);
 			$query->where('a.published IN (' . implode(',', $published) . ')');
 		}
 
@@ -158,7 +201,16 @@ class Tag extends \JFormFieldTag implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		return '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'id' => $this->id
+		);
+
+		return $this->getFieldContents($options);
 	}
 
 	/**
@@ -171,6 +223,54 @@ class Tag extends \JFormFieldTag implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
-		return '';
+		if (isset($this->element['legacy']))
+		{
+			return $this->getInput();
+		}
+
+		$options = array(
+			'class' => $this->id
+		);
+
+		return $this->getFieldContents($options);
+	}
+
+	/**
+	 * Method to get the field input markup.
+	 *
+	 * @param   array   $fieldOptions  Options to be passed into the field
+	 *
+	 * @return  string  The field HTML
+	 */
+	public function getFieldContents(array $fieldOptions = array())
+	{
+		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
+		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
+
+		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
+
+		$options = $this->getOptions();
+
+		$html = '';
+
+		foreach ($options as $option) {
+
+			$html .= '<span>';
+
+			if ($translate == true)
+			{
+				$html .= JText::_($option->text);
+			}
+			else
+			{
+				$html .= $option->text;
+			}
+
+			$html .= '</span>';
+		}
+
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
+			$html .
+			'</span>';
 	}
 }
