@@ -3256,7 +3256,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return  null
 	 */
-	public function checkContentType($alias)
+	public function checkContentType($alias = null)
 	{
 		$contentType = new \JTableContenttype($this->getDbo());
 
