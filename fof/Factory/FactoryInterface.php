@@ -113,4 +113,32 @@ interface FactoryInterface
 	 * @return  mixed
 	 */
 	function viewFinder(View $view, array $config = array());
+
+	/**
+	 * Is scaffolding enabled?
+	 *
+	 * @return boolean
+	 */
+	public function isScaffolding();
+
+	/**
+	 * Set the scaffolding status
+	 *
+	 * @param boolean $scaffolding
+	 */
+	public function setScaffolding($scaffolding);
+
+	/**
+	 * Is saving the scaffolding result to disk enabled?
+	 *
+	 * @return boolean
+	 */
+	public function isSaveScaffolding();
+
+	/**
+	 * Set the status of saving the scaffolding result to disk.
+	 *
+	 * @param boolean $saveScaffolding
+	 */
+	public function setSaveScaffolding($saveScaffolding);
 }

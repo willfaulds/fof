@@ -18,6 +18,7 @@ use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
+use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
 use FOF30\Form\Form;
 use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
@@ -40,6 +41,12 @@ class BasicFactory implements FactoryInterface
 
 	/** @var  bool  Should I look for form files on the other side of the component? */
 	protected $formLookupInOtherSide = false;
+
+	/** @var  bool  Should I enable view scaffolding, i.e. automatic browse, read and add/edit XML form generation when there's no other view template? */
+	protected $scaffolding = false;
+
+	/** @var  bool  When enabled, FOF will commit the scaffolding results to disk. */
+	protected $saveScaffolding = false;
 
 	/**
 	 * Public constructor for the factory object
@@ -197,6 +204,12 @@ class BasicFactory implements FactoryInterface
 
 		if (empty($formFileName))
 		{
+			if ($this->scaffolding)
+			{
+				$scaffolding = new ScaffoldingBuilder($this->container);
+				return $scaffolding->make($source, $viewName);
+			}
+
 			return null;
 		}
 
@@ -254,6 +267,45 @@ class BasicFactory implements FactoryInterface
 		return new ViewTemplateFinder($view, $config);
 	}
 
+	/**
+	 * Is scaffolding enabled?
+	 *
+	 * @return boolean
+	 */
+	public function isScaffolding()
+	{
+		return $this->scaffolding;
+	}
+
+	/**
+	 * Set the scaffolding status
+	 *
+	 * @param boolean $scaffolding
+	 */
+	public function setScaffolding($scaffolding)
+	{
+		$this->scaffolding = boolval($scaffolding);
+	}
+
+	/**
+	 * Is saving the scaffolding result to disk enabled?
+	 *
+	 * @return boolean
+	 */
+	public function isSaveScaffolding()
+	{
+		return $this->saveScaffolding;
+	}
+
+	/**
+	 * Set the status of saving the scaffolding result to disk.
+	 *
+	 * @param boolean $saveScaffolding
+	 */
+	public function setSaveScaffolding($saveScaffolding)
+	{
+		$this->saveScaffolding = boolval($saveScaffolding);
+	}
 
 	/**
 	 * Creates a Controller object
