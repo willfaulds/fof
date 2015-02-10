@@ -98,9 +98,9 @@ class Builder
 		// Create the scaffolding object and build the XML file
 		$className = 'FOF30\\Factory\\Scaffolding\\' . $builderType . 'Erector';
 
-		/** @var ErectorInterface $actualBuilder */
-		$actualBuilder = new $className($this);
-		$actualBuilder->build();
+		/** @var ErectorInterface $erector */
+		$erector = new $className($this, $model, $viewName);
+		$erector->build();
 
 		if ($this->saveScaffolding)
 		{
