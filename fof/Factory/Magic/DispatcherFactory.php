@@ -31,7 +31,12 @@ class DispatcherFactory extends BaseFactory
 		$defaultConfig = $appConfig->get('dispatcher.*');
 		$config = array_merge($defaultConfig, $config);
 
-		$className = '\\FOF30\\Dispatcher\\Dispatcher';
+		$className = $this->container->getNamespacePrefix() . '\\Dispatcher\\DefaultDispatcher';
+
+		if (!class_exists($className, true))
+		{
+			$className = '\\FOF30\\Dispatcher\\Dispatcher';
+		}
 
 		$dispatcher = new $className($this->container, $config);
 

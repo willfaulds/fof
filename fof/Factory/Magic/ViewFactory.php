@@ -46,7 +46,17 @@ class ViewFactory extends BaseFactory
 
 		$config = array_merge($defaultConfig, $config);
 
-		$className = '\\FOF30\\View\\DataView\\' . ucfirst($viewType);
+		$className = $this->container->getNamespacePrefix() . '\\View\\DataView\\Default' . ucfirst($viewType);
+
+		if (!class_exists($className, true))
+		{
+			$className = '\\FOF30\\View\\DataView\\' . ucfirst($viewType);
+		}
+
+		if (!class_exists($className, true))
+		{
+			$className = $this->container->getNamespacePrefix() . '\\View\\DataView\\DefaultHtml';
+		}
 
 		if (!class_exists($className))
 		{

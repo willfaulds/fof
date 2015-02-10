@@ -47,7 +47,14 @@ class ControllerFactory extends BaseFactory
 
 		$config = array_merge($defaultConfig, $config);
 
-		$controller = new DataController($this->container, $config);
+		$className = $this->container->getNamespacePrefix() . '\\Controller\\DefaultDataController';
+
+		if (!class_exists($className, true))
+		{
+			$className = 'FOF30\\Controller\\DataController';
+		}
+
+		$controller = new $className($this->container, $config);
 
 		$taskMap = $config['taskMap'];
 

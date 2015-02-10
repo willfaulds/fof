@@ -31,7 +31,12 @@ class TransparentAuthenticationFactory extends BaseFactory
 		$defaultConfig = $appConfig->get('authentication.*');
 		$config = array_merge($defaultConfig, $config);
 
-		$className = '\\FOF30\\TransparentAuthentication\\TransparentAuthentication';
+		$className = $this->container->getNamespacePrefix() . '\\TransparentAuthentication\\DefaultTransparentAuthentication';
+
+		if (!class_exists($className, true))
+		{
+			$className = '\\FOF30\\TransparentAuthentication\\TransparentAuthentication';
+		}
 
 		$dispatcher = new $className($this->container, $config);
 

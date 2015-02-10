@@ -54,15 +54,30 @@ class ModelFactory extends BaseFactory
 
 		$config = array_merge($defaultConfig, $config);
 
+		// Get the default class names
+		$dataModelClassName = $this->container->getNamespacePrefix() . '\\Model\\DefaultDataModel';
+
+		if (!class_exists($dataModelClassName, true))
+		{
+			$dataModelClassName = '\\FOF30\\Model\\DataModel';
+		}
+
+		$treeModelClassName = $this->container->getNamespacePrefix() . '\\Model\\DefaultTreeModel';
+
+		if (!class_exists($treeModelClassName, true))
+		{
+			$treeModelClassName = '\\FOF30\\Model\\TreeModel';
+		}
+
 		try
 		{
 			// First try creating a TreeModel
-			$model = new TreeModel($this->container, $config);
+			$model = new $treeModelClassName($this->container, $config);
 		}
 		catch (DataModel\Exception\TreeIncompatibleTable $e)
 		{
 			// If the table isn't a nested set, create a regular DataModel
-			$model = new DataModel($this->container, $config);
+			$model = new $dataModelClassName($this->container, $config);
 		}
 
 		return $model;
