@@ -65,13 +65,8 @@ class Builder
 			return null;
 		}
 
-		if (substr($requestedFilename, -4) !== '.xml')
-		{
-			return null;
-		}
-
 		// Get the requested form type
-		$formType = substr($requestedFilename, 5, -4);
+		$formType = substr($requestedFilename, 5);
 
 		// Make sure the requested form type is supported by this builder
 		if (!in_array($formType, array('default', 'form', 'item')))

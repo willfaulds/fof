@@ -207,7 +207,9 @@ class BasicFactory implements FactoryInterface
 			if ($this->scaffolding)
 			{
 				$scaffolding = new ScaffoldingBuilder($this->container);
-				return $scaffolding->make($source, $viewName);
+				$xml = $scaffolding->make($source, $viewName);
+
+				return $this->form($name, $xml, $viewName, $options, $replace, $xpath);
 			}
 
 			return null;

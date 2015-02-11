@@ -66,7 +66,7 @@ class BaseErector implements ErectorInterface
 		$this->model = $model;
 		$this->viewName = $viewName;
 
-		$this->xml = new \SimpleXMLElement('<form></form>');
+		$this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><form></form>');
 	}
 
 	/**
@@ -141,6 +141,11 @@ class BaseErector implements ErectorInterface
 		}
 
 		// Remove parentheses, indicating field options / size (they don't matter in type detection)
+		if (strpos($type, '(') === false)
+		{
+			$type .= '()';
+		}
+
 		list($type, $parameters) = explode('(', $type);
 
 		$detectedType = null;

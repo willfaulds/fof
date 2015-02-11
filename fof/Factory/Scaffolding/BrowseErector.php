@@ -27,9 +27,10 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$this->addString($noRowsKey, 'There are no records to display');
 
 		// Create the attributes of the form's base element
-		$this->xml->addAttribute('show_header', 1);
-		$this->xml->addAttribute('show_filters', 1);
-		$this->xml->addAttribute('show_pagination', 1);
+		$this->xml->addAttribute('type', 'browse');
+		$this->xml->addAttribute('show_header', "1");
+		$this->xml->addAttribute('show_filters', "1");
+		$this->xml->addAttribute('show_pagination', "1");
 		$this->xml->addAttribute('norows_placeholder', $noRowsKey);
 
 		// Create the headerset and fieldset sections of the form file
@@ -68,6 +69,33 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			if ($model->getFieldAlias('access') == $fieldName)
 			{
 				$this->applyAccessLevelField($model, $headerSet, $fieldSet, $fieldName);
+
+				continue;
+			}
+
+			// title => Title
+			if ($model->getFieldAlias('title') == $fieldName)
+			{
+				$this->applyTitleField($model, $headerSet, $fieldSet, $fieldName);
+
+				continue;
+			}
+
+			// slug => Hide if there is a title field as well
+			if ($model->getFieldAlias('slug') == $fieldName)
+			{
+				$titleField = $model->getFieldAlias('title');
+
+				if (array_key_exists($titleField, $allFields))
+				{
+					continue;
+				}
+			}
+
+			// tag => Tag
+			if ($model->getFieldAlias('tag') == $fieldName)
+			{
+				$this->applyTagField($model, $headerSet, $fieldSet, $fieldName);
 
 				continue;
 			}
@@ -244,7 +272,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// Other fields, use getFieldType
-			$typeDef = $this->getFieldType($fieldDefinition->type);
+			$typeDef = $this->getFieldType($fieldDefinition->Type);
 			switch ($typeDef['type'])
 			{
 				case 'Text':
@@ -272,6 +300,8 @@ class BrowseErector extends BaseErector implements ErectorInterface
 					break;
 			}
 		}
+
+		$this->pushResults();
 	}
 
 	/**
@@ -512,6 +542,41 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Relation', array(
 			'sortable' => 'true'
 		));
+	}
+
+	private function applyTagField($model, $headerSet, $fieldSet, $fieldName)
+	{
+		$this->applyFieldOfType($model, $headerSet, $fieldSet, $fieldName, 'Field', 'Tag', array(
+			'sortable' => 'true'
+		));
+	}
+
+	private function applyTitleField($model, \SimpleXMLElement $headerSet, \SimpleXMLElement $fieldSet, $fieldName)
+	{
+		$langDefs = $this->getFieldLabel($fieldName);
+		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
+		$this->addString($langDefs['desc']['key'], $langDefs['desc']['value']);
+
+		$header = $headerSet->addChild('header');
+		$header->addAttribute('name', $fieldName);
+		$header->addAttribute('type', 'Searchable');
+		$header->addAttribute('label', $langDefs['label']['key']);
+
+		if (!empty($headerAttributes))
+		{
+			foreach ($headerAttributes as $k => $v)
+			{
+				$header->addAttribute($k, $v);
+			}
+		}
+
+		$field = $fieldSet->addChild('field');
+		$field->addAttribute('name', $fieldName);
+		$field->addAttribute('type', 'Sortable');
+		$field->addAttribute('label', $langDefs['label']['key']);
+		$field->addAttribute('url', 'index.php?option=' .
+			$this->builder->getContainer()->componentName . '&view=' . Inflector::singularize($this->viewName) . '&id=[ITEM:ID]'
+		);
 	}
 
 	private function applyModelField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName, $modelName)
