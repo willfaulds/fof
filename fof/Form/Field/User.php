@@ -184,7 +184,8 @@ class User extends \JFormFieldUser implements FieldInterface
 
 		if (!$link_url && $this->form->getContainer()->platform->isBackend())
 		{
-				$link_url = 'index.php?option=com_users&task=user.edit&id=[USER:ID]';
+			$link_url = 'index.php?option=com_users&task=user.edit&id=[USER:ID]';
+		}
 		else
 		{
 			// If no link is defined in the front-end, we can't create a

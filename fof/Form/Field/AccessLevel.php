@@ -154,7 +154,7 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 				->from('#__viewlevels AS a')
 				->group('a.id, a.title, a.ordering')
 				->order('a.ordering ASC')
-				->order($query->qn('title') . ' ASC');
+				->order($db->qn('title') . ' ASC');
 
 		// Get the options.
 		$options = $db->setQuery($query)->loadObjectList();

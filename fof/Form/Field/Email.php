@@ -155,6 +155,8 @@ class Email extends \JFormFieldEMail implements FieldInterface
 
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
+		$html = $value;
+
 		if ($show_link)
 		{
 			if ($this->element['url'])

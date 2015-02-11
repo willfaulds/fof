@@ -259,7 +259,7 @@ class Tag extends \JFormFieldTag implements FieldInterface
 
 			if ($translate == true)
 			{
-				$html .= JText::_($option->text);
+				$html .= \JText::_($option->text);
 			}
 			else
 			{

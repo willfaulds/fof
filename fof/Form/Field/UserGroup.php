@@ -160,7 +160,7 @@ class UserGroup extends \JFormFieldUsergroup implements FieldInterface
 				->from('#__usergroups AS a')
 				->group('a.id, a.title')
 				->order('a.id ASC')
-				->order($query->qn('title') . ' ASC');
+				->order($db->qn('title') . ' ASC');
 
 		// Get the options.
 		$options = $db->setQuery($query)->loadObjectList();

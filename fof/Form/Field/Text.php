@@ -136,10 +136,10 @@ class Text extends \JFormFieldText implements FieldInterface
 		// Initialise
 		$class					= $this->class ? $this->class : $this->id;
 		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
-		$format_if_not_empty	= in_array((string) $this->element['format_if_not_empty']), array('true', '1', 'on', 'yes');
-		$parse_value			= in_array((string) $this->element['parse_value']), array('true', '1', 'on', 'yes');
+		$format_if_not_empty	= in_array((string) $this->element['format_if_not_empty'], array('true', '1', 'on', 'yes'));
+		$parse_value			= in_array((string) $this->element['parse_value'], array('true', '1', 'on', 'yes'));
 		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
-		$empty_replacement		= $this->element['empty_replacement'] ? : (string) $this->element['empty_replacement'] : '';
+		$empty_replacement		= $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
 
 
 		if ($link_url && ($this->item instanceof DataModel))

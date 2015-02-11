@@ -129,7 +129,9 @@ class GenericList extends \JFormFieldList implements FieldInterface
 
 		$class = $this->class ? $this->class : '';
 
-		if ($this->element['url'] && ($this->item instanceof DataModel))
+		$link_url = $this->element['url'];
+
+		if ($link_url && ($this->item instanceof DataModel))
 		{
 			$link_url = $this->parseFieldTags($link_url);
 		}
