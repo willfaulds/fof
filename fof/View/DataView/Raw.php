@@ -253,7 +253,7 @@ class Raw extends View implements DataViewInterface
 
 		// Assign items to the view
 		$this->items = $model->get();
-		$this->itemsCount = $model->count();
+		$this->itemCount = $model->count();
 
 		// Pagination
 		$this->pagination = new \JPagination($this->itemCount, $this->lists->limitStart, $this->lists->limit);
