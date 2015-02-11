@@ -167,7 +167,7 @@ class BaseErector implements ErectorInterface
 			case 'smalltext':
 			case 'longtext':
 			case 'mediumtext':
-			$detectedType = 'Editor';
+			$detectedType = 'Text';
 				break;
 
 			case 'date':
@@ -224,7 +224,7 @@ class BaseErector implements ErectorInterface
 				case 'smalltext':
 				case 'longtext':
 				case 'mediumtext':
-					$detectedType = 'Editor';
+					$detectedType = 'Text';
 					break;
 
 				case 'date':

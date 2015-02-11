@@ -125,7 +125,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			}
 
 			// body, introtext, fulltext => Editor
-			if (in_array($lowercaseFieldName, array('body', 'introtext', 'fulltext')))
+			if (in_array($lowercaseFieldName, array('body', 'introtext', 'fulltext', 'description')))
 			{
 				$this->applyEditorField($model, $headerSet, $fieldSet, $fieldName);
 

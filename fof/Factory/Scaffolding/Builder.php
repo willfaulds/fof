@@ -82,8 +82,11 @@ class Builder
 				break;
 
 			case 'form':
-			case 'item':
 				$builderType = 'Form';
+				break;
+
+			case 'item':
+				$builderType = 'Item';
 				break;
 		}
 
