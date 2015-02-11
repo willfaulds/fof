@@ -110,15 +110,15 @@ class BaseErector implements ErectorInterface
 	 */
 	protected function getFieldLabel($fieldName)
 	{
-		$fieldName = strtoupper($fieldName);
+		$fieldNameForKey = strtoupper($fieldName);
 
 		$definition = array(
 			'label' => array(
-				'key' => $this->getLangKeyPrefix() . $fieldName . '_LBL',
+				'key' => $this->getLangKeyPrefix() . $fieldNameForKey . '_LBL',
 				'value' => ucfirst($fieldName),
 			),
 			'desc' => array(
-				'key' => $this->getLangKeyPrefix() . $fieldName . '_DESC',
+				'key' => $this->getLangKeyPrefix() . $fieldNameForKey . '_DESC',
 				'value' => 'Description for ' . ucfirst($fieldName),
 			)
 		);
