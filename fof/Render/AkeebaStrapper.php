@@ -524,16 +524,13 @@ JS;
 
 		\JHtml::_('behavior.multiselect');
 
-		// Joomla! 3.0+ support
-		if (version_compare(JVERSION, '3.0', 'ge'))
-		{
-			\JHtml::_('bootstrap.tooltip');
-			\JHtml::_('dropdown.init');
-			\JHtml::_('formbehavior.chosen', 'select');
-			$view	 = $form->getView();
-			$order	 = $view->escape($view->getLists()->order);
+		\JHtml::_('bootstrap.tooltip');
+		\JHtml::_('dropdown.init');
+		\JHtml::_('formbehavior.chosen', 'select');
+		$view	 = $form->getView();
+		$order	 = $view->escape($view->getLists()->order);
 
-			$html .= <<<HTML
+		$html .= <<<HTML
 <script type="text/javascript">
 	Joomla.orderTable = function() {
 		var table = document.getElementById("sortTable");
@@ -554,11 +551,6 @@ JS;
 </script>
 
 HTML;
-		}
-		else
-		{
-			\JHtml::_('behavior.tooltip');
-		}
 
 		// Getting all header row elements
 		$headerFields = $form->getHeaderset();
@@ -569,46 +561,38 @@ HTML;
 		$show_pagination	 = $form->getAttribute('show_pagination', 1);
 		$norows_placeholder	 = $form->getAttribute('norows_placeholder', '');
 
-		// Joomla! 3.0 sidebar support
+		// Joomla! 3.x sidebar support
+		$form_class = '';
 
-		if (version_compare(JVERSION, '3.0', 'gt'))
+		if ($show_filters)
 		{
-			$form_class = '';
+			\JHtmlSidebar::setAction("index.php?option=" .
+				$this->container->componentName . "&view=" .
+				Inflector::pluralize($form->getView()->getName())
+			);
+		}
 
-			if ($show_filters)
+		// Reorder the fields with ordering first
+		$tmpFields = array();
+		$i = 1;
+
+		foreach ($headerFields as $tmpField)
+		{
+			if ($tmpField instanceof HeaderOrdering)
 			{
-				\JHtmlSidebar::setAction("index.php?option=" .
-				                        $this->container->componentName . "&view=" .
-				                        Inflector::pluralize($form->getView()->getName())
-				);
+				$tmpFields[0] = $tmpField;
 			}
 
-			// Reorder the fields with ordering first
-			$tmpFields = array();
-			$i = 1;
-
-			foreach ($headerFields as $tmpField)
+			else
 			{
-				if ($tmpField instanceof HeaderOrdering)
-				{
-					$tmpFields[0] = $tmpField;
-				}
-
-				else
-				{
-					$tmpFields[$i] = $tmpField;
-				}
-
-				$i++;
+				$tmpFields[$i] = $tmpField;
 			}
 
-			$headerFields = $tmpFields;
-			ksort($headerFields, SORT_NUMERIC);
+			$i++;
 		}
-		else
-		{
-			$form_class = 'class="form-horizontal"';
-		}
+
+		$headerFields = $tmpFields;
+		ksort($headerFields, SORT_NUMERIC);
 
 		// Pre-render the header and filter rows
 		$header_html = '';
@@ -625,13 +609,6 @@ HTML;
 				$options	 = $headerField->options;
 				$sortable	 = $headerField->sortable;
 				$tdwidth	 = $headerField->tdwidth;
-
-				// Under Joomla! < 3.0 we can't have filter-only fields
-
-				if (version_compare(JVERSION, '3.0', 'lt') && empty($header))
-				{
-					continue;
-				}
 
 				// If it's a sortable field, add to the list of sortable fields
 
@@ -658,70 +635,36 @@ HTML;
 					$header_html .= "\t\t\t\t\t</th>" . "\n";
 				}
 
-				if (version_compare(JVERSION, '3.0', 'ge'))
+				if (!empty($filter))
 				{
-					// Joomla! 3.0 or later
-					if (!empty($filter))
-					{
-						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
-						$filter_html .= "\t" . '<label for="title" class="element-invisible">';
-						$filter_html .= \JText::_($headerField->label);
-						$filter_html .= "</label>\n";
-						$filter_html .= "\t$filter\n";
-						$filter_html .= "</div>\n";
+					$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
+					$filter_html .= "\t" . '<label for="title" class="element-invisible">';
+					$filter_html .= \JText::_($headerField->label);
+					$filter_html .= "</label>\n";
+					$filter_html .= "\t$filter\n";
+					$filter_html .= "</div>\n";
 
-						if (!empty($buttons))
-						{
-							$filter_html .= '<div class="btn-group pull-left hidden-phone">' . "\n";
-							$filter_html .= "\t$buttons\n";
-							$filter_html .= '</div>' . "\n";
-						}
-					}
-					elseif (!empty($options))
+					if (!empty($buttons))
 					{
-						$label = $headerField->label;
-
-						\JHtmlSidebar::addFilter(
-							'- ' . \JText::_($label) . ' -', (string) $headerField->name,
-							\JHtml::_(
-								'select.options',
-								$options,
-								'value',
-								'text',
-								$model->getState($headerField->name, ''), true
-							)
-						);
+						$filter_html .= '<div class="btn-group pull-left hidden-phone">' . "\n";
+						$filter_html .= "\t$buttons\n";
+						$filter_html .= '</div>' . "\n";
 					}
 				}
-				else
+				elseif (!empty($options))
 				{
-					// Joomla! 2.5
-					$filter_html .= "\t\t\t\t\t<td>" . "\n";
+					$label = $headerField->label;
 
-					if (!empty($filter))
-					{
-						$filter_html .= "\t\t\t\t\t\t$filter" . "\n";
-
-						if (!empty($buttons))
-						{
-							$filter_html .= '<div class="btn-group hidden-phone">' . "\n";
-							$filter_html .= "\t\t\t\t\t\t$buttons" . "\n";
-							$filter_html .= '</div>' . "\n";
-						}
-					}
-					elseif (!empty($options))
-					{
-						$label		 = $headerField->label;
-						$emptyOption = \JHtml::_('select.option', '', '- ' . \JText::_($label) . ' -');
-						array_unshift($options, $emptyOption);
-						$attribs	 = array(
-							'onchange' => 'document.adminForm.submit();'
-						);
-						$filter		 = \JHtml::_('select.genericlist', $options, $headerField->name, $attribs, 'value', 'text', $headerField->value, false, true);
-						$filter_html .= "\t\t\t\t\t\t$filter" . "\n";
-					}
-
-					$filter_html .= "\t\t\t\t\t</td>" . "\n";
+					\JHtmlSidebar::addFilter(
+						'- ' . \JText::_($label) . ' -', (string) $headerField->name,
+						\JHtml::_(
+							'select.options',
+							$options,
+							'value',
+							'text',
+							$model->getState($headerField->name, ''), true
+						)
+					);
 				}
 			}
 		}
@@ -746,67 +689,64 @@ HTML;
 
 		$html .= '<form action="'.$actionUrl.'" method="post" name="adminForm" id="adminForm" ' . $form_class . '>' . "\n";
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		// Get and output the sidebar, if present
+		$sidebar = \JHtmlSidebar::render();
+
+		if ($show_filters && !empty($sidebar))
 		{
-			// Joomla! 3.0+
-			// Get and output the sidebar, if present
-			$sidebar = \JHtmlSidebar::render();
+			$html .= '<div id="j-sidebar-container" class="span2">' . "\n";
+			$html .= "\t$sidebar\n";
+			$html .= "</div>\n";
+			$html .= '<div id="j-main-container" class="span10">' . "\n";
+		}
+		else
+		{
+			$html .= '<div id="j-main-container">' . "\n";
+		}
 
-			if ($show_filters && !empty($sidebar))
+		// Render header search fields, if the header is enabled
+		$pagination = $form->getView()->getPagination();
+
+		if ($show_header)
+		{
+			$html .= "\t" . '<div id="filter-bar" class="btn-toolbar">' . "\n";
+			$html .= "$filter_html\n";
+
+			if ($show_pagination)
 			{
-				$html .= '<div id="j-sidebar-container" class="span2">' . "\n";
-				$html .= "\t$sidebar\n";
-				$html .= "</div>\n";
-				$html .= '<div id="j-main-container" class="span10">' . "\n";
+				// Render the pagination rows per page selection box, if the pagination is enabled
+				$html .= "\t" . '<div class="btn-group pull-right hidden-phone">' . "\n";
+				$html .= "\t\t" . '<label for="limit" class="element-invisible">' . \JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC') . '</label>' . "\n";
+				$html .= "\t\t" . $pagination->getLimitBox() . "\n";
+				$html .= "\t" . '</div>' . "\n";
 			}
-			else
+
+			if (!empty($sortFields))
 			{
-				$html .= '<div id="j-main-container">' . "\n";
+				// Display the field sort order
+				$asc_sel	 = ($form->getView()->getLists()->order_Dir == 'asc') ? 'selected="selected"' : '';
+				$desc_sel	 = ($form->getView()->getLists()->order_Dir == 'desc') ? 'selected="selected"' : '';
+				$html .= "\t" . '<div class="btn-group pull-right hidden-phone">' . "\n";
+				$html .= "\t\t" . '<label for="directionTable" class="element-invisible">' . \JText::_('JFIELD_ORDERING_DESC') . '</label>' . "\n";
+				$html .= "\t\t" . '<select name="directionTable" id="directionTable" class="input-medium" onchange="Joomla.orderTable()">' . "\n";
+				$html .= "\t\t\t" . '<option value="">' . \JText::_('JFIELD_ORDERING_DESC') . '</option>' . "\n";
+				$html .= "\t\t\t" . '<option value="asc" ' . $asc_sel . '>' . \JText::_('JGLOBAL_ORDER_ASCENDING') . '</option>' . "\n";
+				$html .= "\t\t\t" . '<option value="desc" ' . $desc_sel . '>' . \JText::_('JGLOBAL_ORDER_DESCENDING') . '</option>' . "\n";
+				$html .= "\t\t" . '</select>' . "\n";
+				$html .= "\t" . '</div>' . "\n\n";
+
+				// Display the sort fields
+				$html .= "\t" . '<div class="btn-group pull-right">' . "\n";
+				$html .= "\t\t" . '<label for="sortTable" class="element-invisible">' . \JText::_('JGLOBAL_SORT_BY') . '</label>' . "\n";
+				$html .= "\t\t" . '<select name="sortTable" id="sortTable" class="input-medium" onchange="Joomla.orderTable()">' . "\n";
+				$html .= "\t\t\t" . '<option value="">' . \JText::_('JGLOBAL_SORT_BY') . '</option>' . "\n";
+				$html .= "\t\t\t" . \JHtml::_('select.options', $sortFields, 'value', 'text', $form->getView()->getLists()->order) . "\n";
+				$html .= "\t\t" . '</select>' . "\n";
+				$html .= "\t" . '</div>' . "\n";
 			}
 
-			// Render header search fields, if the header is enabled
-
-			if ($show_header)
-			{
-				$html .= "\t" . '<div id="filter-bar" class="btn-toolbar">' . "\n";
-				$html .= "$filter_html\n";
-
-				if ($show_pagination)
-				{
-					// Render the pagination rows per page selection box, if the pagination is enabled
-					$html .= "\t" . '<div class="btn-group pull-right hidden-phone">' . "\n";
-					$html .= "\t\t" . '<label for="limit" class="element-invisible">' . \JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC') . '</label>' . "\n";
-					$html .= "\t\t" . $form->getView()->getPagination()->getLimitBox() . "\n";
-					$html .= "\t" . '</div>' . "\n";
-				}
-
-				if (!empty($sortFields))
-				{
-					// Display the field sort order
-					$asc_sel	 = ($form->getView()->getLists()->order_Dir == 'asc') ? 'selected="selected"' : '';
-					$desc_sel	 = ($form->getView()->getLists()->order_Dir == 'desc') ? 'selected="selected"' : '';
-					$html .= "\t" . '<div class="btn-group pull-right hidden-phone">' . "\n";
-					$html .= "\t\t" . '<label for="directionTable" class="element-invisible">' . \JText::_('JFIELD_ORDERING_DESC') . '</label>' . "\n";
-					$html .= "\t\t" . '<select name="directionTable" id="directionTable" class="input-medium" onchange="Joomla.orderTable()">' . "\n";
-					$html .= "\t\t\t" . '<option value="">' . \JText::_('JFIELD_ORDERING_DESC') . '</option>' . "\n";
-					$html .= "\t\t\t" . '<option value="asc" ' . $asc_sel . '>' . \JText::_('JGLOBAL_ORDER_ASCENDING') . '</option>' . "\n";
-					$html .= "\t\t\t" . '<option value="desc" ' . $desc_sel . '>' . \JText::_('JGLOBAL_ORDER_DESCENDING') . '</option>' . "\n";
-					$html .= "\t\t" . '</select>' . "\n";
-					$html .= "\t" . '</div>' . "\n\n";
-
-					// Display the sort fields
-					$html .= "\t" . '<div class="btn-group pull-right">' . "\n";
-					$html .= "\t\t" . '<label for="sortTable" class="element-invisible">' . \JText::_('JGLOBAL_SORT_BY') . '</label>' . "\n";
-					$html .= "\t\t" . '<select name="sortTable" id="sortTable" class="input-medium" onchange="Joomla.orderTable()">' . "\n";
-					$html .= "\t\t\t" . '<option value="">' . \JText::_('JGLOBAL_SORT_BY') . '</option>' . "\n";
-					$html .= "\t\t\t" . \JHtml::_('select.options', $sortFields, 'value', 'text', $form->getView()->getLists()->order) . "\n";
-					$html .= "\t\t" . '</select>' . "\n";
-					$html .= "\t" . '</div>' . "\n";
-				}
-
-				$html .= "\t</div>\n\n";
-				$html .= "\t" . '<div class="clearfix"> </div>' . "\n\n";
-			}
+			$html .= "\t</div>\n\n";
+			$html .= "\t" . '<div class="clearfix"> </div>' . "\n\n";
 		}
 
 		// Start the table output
@@ -814,7 +754,7 @@ HTML;
 
 		// Open the table header region if required
 
-		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		if ($show_header)
 		{
 			$html .= "\t\t\t<thead>" . "\n";
 		}
@@ -828,18 +768,9 @@ HTML;
 			$html .= "\t\t\t\t</tr>" . "\n";
 		}
 
-		// Render filter row if enabled
-
-		if ($show_filters && version_compare(JVERSION, '3.0', 'lt'))
-		{
-			$html .= "\t\t\t\t<tr>";
-			$html .= $filter_html;
-			$html .= "\t\t\t\t</tr>";
-		}
-
 		// Close the table header region if required
 
-		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		if ($show_header)
 		{
 			$html .= "\t\t\t</thead>" . "\n";
 		}
@@ -866,29 +797,26 @@ HTML;
 				$fields = $form->getFieldset('items');
 
 				// Reorder the fields to have ordering first
-				if (version_compare(JVERSION, '3.0', 'gt'))
+				$tmpFields = array();
+				$j = 1;
+
+				foreach ($fields as $tmpField)
 				{
-					$tmpFields = array();
-					$j = 1;
-
-					foreach ($fields as $tmpField)
+					if ($tmpField instanceof FieldOrdering)
 					{
-						if ($tmpField instanceof FieldOrdering)
-						{
-							$tmpFields[0] = $tmpField;
-						}
-
-						else
-						{
-							$tmpFields[$j] = $tmpField;
-						}
-
-						$j++;
+						$tmpFields[0] = $tmpField;
 					}
 
-					$fields = $tmpFields;
-					ksort($fields, SORT_NUMERIC);
+					else
+					{
+						$tmpFields[$j] = $tmpField;
+					}
+
+					$j++;
 				}
+
+				$fields = $tmpFields;
+				ksort($fields, SORT_NUMERIC);
 
 				/** @var FieldInterface $field */
 				foreach ($fields as $field)
@@ -912,38 +840,15 @@ HTML;
 
 		$html .= "\t\t\t</tbody>" . "\n";
 
-		// Render the pagination bar, if enabled, on J! 2.5
-		if ($show_pagination && version_compare(JVERSION, '3.0', 'lt'))
-		{
-			$pagination = $form->getView()->getPagination();
-			$html .= "\t\t\t<tfoot>" . "\n";
-			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
-
-			if (($pagination->total > 0))
-			{
-				$html .= $pagination->getListFooter();
-			}
-
-			$html .= "</td></tr>\n";
-			$html .= "\t\t\t</tfoot>" . "\n";
-		}
-
 		// End the table output
 		$html .= "\t\t" . '</table>' . "\n";
 
 		// Render the pagination bar, if enabled, on J! 3.0+
 
-		if ($show_pagination && version_compare(JVERSION, '3.0', 'ge'))
-		{
-			$html .= $form->getView()->getPagination()->getListFooter();
-		}
+		$html .= $pagination->getListFooter();
 
 		// Close the wrapper element div on Joomla! 3.0+
-
-		if (version_compare(JVERSION, '3.0', 'ge'))
-		{
-			$html .= "</div>\n";
-		}
+		$html .= "</div>\n";
 
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $this->container->componentName . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="view" value="' . Inflector::pluralize($form->getView()->getName()) . '" />' . "\n";
@@ -1319,13 +1224,11 @@ HTML;
 
 		if (!empty($tooltip))
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				static $loadedTooltipScript = false;
+			static $loadedTooltipScript = false;
 
-				if (!$loadedTooltipScript)
-				{
-					$js = <<<JS
+			if (!$loadedTooltipScript)
+			{
+				$js = <<<JS
 (function($)
 {
 	$(document).ready(function()
@@ -1334,30 +1237,19 @@ HTML;
 	});
 })(akeeba.jQuery);
 JS;
-					$document = $this->container->platform->getDocument();
+				$document = $this->container->platform->getDocument();
 
-					if ($document instanceof \JDocument)
-					{
-						$document->addScriptDeclaration($js);
-					}
-
-					$loadedTooltipScript = true;
+				if ($document instanceof \JDocument)
+				{
+					$document->addScriptDeclaration($js);
 				}
 
-				$tooltipText = '<strong>' . \JText::_($title) . '</strong><br />' . \JText::_($tooltip);
-
-				$html .= "\t\t\t\t" . '<label class="control-label fof-tooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" data-toggle="fof-tooltip">';
+				$loadedTooltipScript = true;
 			}
-			else
-			{
-				// Joomla! 2.5 has a conflict with the jQueryUI tooltip, therefore we
-				// have to use native Joomla! 2.5 tooltips
-				\JHtml::_('behavior.tooltip');
 
-				$tooltipText = \JText::_($title) . '::' . \JText::_($tooltip);
+			$tooltipText = '<strong>' . \JText::_($title) . '</strong><br />' . \JText::_($tooltip);
 
-				$html .= "\t\t\t\t" . '<label class="control-label hasTip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">';
-			}
+			$html .= "\t\t\t\t" . '<label class="control-label fof-tooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" data-toggle="fof-tooltip">';
 		}
 		else
 		{
