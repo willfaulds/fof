@@ -122,7 +122,7 @@ class Model extends GenericList implements FieldInterface
 		$class					= $this->class ? $this->class : $this->id;
 		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
 		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
-		$empty_replacement		= $this->element['empty_replacement'] ? : (string) $this->element['empty_replacement'] : '';
+		$empty_replacement		= $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
 
 		if ($link_url && ($this->item instanceof DataModel))
 		{

@@ -169,6 +169,16 @@ class Builder
 	}
 
 	/**
+	 * Gets the container this builder belongs to
+	 *
+	 * @return Container
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+	/**
 	 * Save the XML form as a file
 	 *
 	 * @param   string  $requestedFilename  The requested filename, e.g. form.default.xml
