@@ -331,6 +331,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', 'Ordering');
 		$field->addAttribute('label', $langDefs['label']['key']);
+		$field->addAttribute('class', 'input-mini input-sm');
 
 		unset($allFields[$fieldName]);
 	}
