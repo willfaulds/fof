@@ -46,24 +46,6 @@ class InstallScript
 	protected $componentTitle = 'Foobar Component';
 
 	/**
-	 * The list of extra modules and plugins to install on component installation / update and remove on component
-	 * uninstallation.
-	 *
-	 * @var   array
-	 */
-	protected $installation_queue = array(
-		// modules => { (folder) => { (module) => { (position), (published) } }* }*
-		'modules' => array(
-			'admin' => array(),
-			'site'  => array()
-		),
-		// plugins => { (folder) => { (element) => (published) }* }*
-		'plugins' => array(
-			'system' => array(),
-		)
-	);
-
-	/**
 	 * The list of obsolete extra modules and plugins to uninstall on component upgrade / installation.
 	 *
 	 * @var array
@@ -132,34 +114,6 @@ class InstallScript
 	protected $cliSourcePath = 'cli';
 
 	/**
-	 * The path inside your package where FOF is stored
-	 *
-	 * @var   string
-	 */
-	protected $fofSourcePath = 'fof';
-
-	/**
-	 * The path inside your package where Akeeba Strapper is stored
-	 *
-	 * @var   string
-	 */
-	protected $strapperSourcePath = 'strapper';
-
-	/**
-	 * The path inside your package where extra modules are stored
-	 *
-	 * @var   string
-	 */
-	protected $modulesSourcePath = 'modules';
-
-	/**
-	 * The path inside your package where extra plugins are stored
-	 *
-	 * @var   string
-	 */
-	protected $pluginsSourcePath = 'plugins';
-
-	/**
 	 * Is the schemaXmlPath class variable a relative path? If set to true the schemaXmlPath variable contains a path
 	 * relative to the component's back-end directory. If set to false the schemaXmlPath variable contains an absolute
 	 * filesystem path.
@@ -182,14 +136,14 @@ class InstallScript
 	 *
 	 * @var   string
 	 */
-	protected $minimumPHPVersion = '5.3.3';
+	protected $minimumPHPVersion = '5.3.4';
 
 	/**
 	 * The minimum Joomla! version required to install this extension
 	 *
 	 * @var   string
 	 */
-	protected $minimumJoomlaVersion = '2.5.6';
+	protected $minimumJoomlaVersion = '3.2.1';
 
 	/**
 	 * The maximum Joomla! version this extension can be installed on
@@ -307,15 +261,6 @@ class InstallScript
 		);
 		$dbInstaller->updateSchema();
 
-		// Install subextensions
-		$status = $this->installSubextensions($parent);
-
-		// Install FOF
-		$fofInstallationStatus = $this->installFOF($parent);
-
-		// Install Akeeba Straper
-		$strapperInstallationStatus = $this->installStrapper($parent);
-
 		// Make sure menu items are installed
 		$this->_createAdminMenus($parent);
 
@@ -374,10 +319,10 @@ class InstallScript
 		$this->copyCliFiles($parent);
 
 		// Show the post-installation page
-		$this->renderPostInstallation($status, $fofInstallationStatus, $strapperInstallationStatus, $parent);
+		$this->renderPostInstallation($parent);
 
 		// Uninstall obsolete subextensions
-		$uninstall_status = $this->uninstallObsoleteSubextensions($parent);
+		$this->uninstallObsoleteSubextensions($parent);
 
 		// Clear the FOF cache
 		$false = false;
@@ -406,14 +351,13 @@ class InstallScript
 
 		$dbInstaller->removeSchema();
 
-		// Uninstall modules and plugins
-		$status = $this->uninstallSubextensions($parent);
-
 		// Uninstall post-installation messages on Joomla! 3.2 and later
 		$this->uninstallPostInstallationMessages();
 
+		// TODO: Uninstall FOF (decrement usage counter and let it decide for itself if it should be removed)
+
 		// Show the post-uninstallation page
-		$this->renderPostUninstallation($status, $parent);
+		$this->renderPostUninstallation($parent);
 	}
 
 	/**
@@ -440,161 +384,21 @@ class InstallScript
 	}
 
 	/**
-	 * Renders the message after installing or upgrading the component
+	 * Override this method to display a custom component installation message if you so wish
 	 *
-	 * @param   \stdClass                    $status                      Component installation status
-	 * @param   array                        $fofInstallationStatus       FOF installation status
-	 * @param   array                        $strapperInstallationStatus  Akeeba Strapper installation status
-	 * @param   \JInstallerAdapterComponent  $parent                      Parent class calling us
+	 * @param  \JInstallerAdapterComponent  $parent  Parent class calling us
 	 */
-	protected function renderPostInstallation($status, $fofInstallationStatus, $strapperInstallationStatus, $parent)
+	protected function renderPostInstallation($parent)
 	{
-		$rows = 0;
-		?>
-		<table class="adminlist table table-striped" width="100%">
-			<thead>
-			<tr>
-				<th class="title" colspan="2">Extension</th>
-				<th width="30%">Status</th>
-			</tr>
-			</thead>
-			<tfoot>
-			<tr>
-				<td colspan="3"></td>
-			</tr>
-			</tfoot>
-			<tbody>
-			<tr class="row<?php echo($rows++ % 2); ?>">
-				<td class="key" colspan="2"><?php echo $this->componentTitle ?></td>
-				<td><strong style="color: green">Installed</strong></td>
-			</tr>
-			<?php if ($fofInstallationStatus['required']): ?>
-				<tr class="row<?php echo($rows++ % 2); ?>">
-					<td class="key" colspan="2">
-						<strong>Framework on Framework (FOF) <?php echo $fofInstallationStatus['version'] ?></strong>
-						[<?php echo $fofInstallationStatus['date'] ?>]
-					</td>
-					<td><strong>
-							<span
-								style="color: <?php echo $fofInstallationStatus['required'] ? ($fofInstallationStatus['installed'] ? 'green' : 'red') : '#660' ?>; font-weight: bold;">
-		<?php echo $fofInstallationStatus['required'] ? ($fofInstallationStatus['installed'] ? 'Installed' : 'Not Installed') : 'Already up-to-date'; ?>
-							</span>
-						</strong></td>
-				</tr>
-			<?php endif; ?>
-			<?php if ($strapperInstallationStatus['required']): ?>
-				<tr class="row<?php echo($rows++ % 2); ?>">
-					<td class="key" colspan="2">
-						<strong>Akeeba Strapper <?php echo $strapperInstallationStatus['version'] ?></strong>
-						[<?php echo $strapperInstallationStatus['date'] ?>]
-					</td>
-					<td><strong>
-							<span
-								style="color: <?php echo $strapperInstallationStatus['required'] ? ($strapperInstallationStatus['installed'] ? 'green' : 'red') : '#660' ?>; font-weight: bold;">
-				<?php echo $strapperInstallationStatus['required'] ? ($strapperInstallationStatus['installed'] ? 'Installed' : 'Not Installed') : 'Already up-to-date'; ?>
-							</span>
-						</strong></td>
-				</tr>
-			<?php endif; ?>
-			<?php if (count($status->modules)) : ?>
-				<tr>
-					<th>Module</th>
-					<th>Client</th>
-					<th></th>
-				</tr>
-				<?php foreach ($status->modules as $module) : ?>
-					<tr class="row<?php echo($rows++ % 2); ?>">
-						<td class="key"><?php echo $module['name']; ?></td>
-						<td class="key"><?php echo ucfirst($module['client']); ?></td>
-						<td><strong
-								style="color: <?php echo ($module['result']) ? "green" : "red" ?>"><?php echo ($module['result']) ? 'Installed' : 'Not installed'; ?></strong>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			<?php if (count($status->plugins)) : ?>
-				<tr>
-					<th>Plugin</th>
-					<th>Group</th>
-					<th></th>
-				</tr>
-				<?php foreach ($status->plugins as $plugin) : ?>
-					<tr class="row<?php echo($rows++ % 2); ?>">
-						<td class="key"><?php echo ucfirst($plugin['name']); ?></td>
-						<td class="key"><?php echo ucfirst($plugin['group']); ?></td>
-						<td><strong
-								style="color: <?php echo ($plugin['result']) ? "green" : "red" ?>"><?php echo ($plugin['result']) ? 'Installed' : 'Not installed'; ?></strong>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			</tbody>
-		</table>
-	<?php
 	}
 
 	/**
-	 * Renders the message after uninstalling the component
+	 * Override this method to display a custom component uninstallation message if you so wish
 	 *
-	 * @param  \stdClass                    $status  Uninstallation status
 	 * @param  \JInstallerAdapterComponent  $parent  Parent class calling us
 	 */
-	protected function renderPostUninstallation($status, $parent)
+	protected function renderPostUninstallation($parent)
 	{
-		$rows = 1;
-		?>
-		<table class="adminlist table table-striped" width="100%">
-			<thead>
-			<tr>
-				<th class="title" colspan="2"><?php echo JText::_('Extension'); ?></th>
-				<th width="30%"><?php echo JText::_('Status'); ?></th>
-			</tr>
-			</thead>
-			<tfoot>
-			<tr>
-				<td colspan="3"></td>
-			</tr>
-			</tfoot>
-			<tbody>
-			<tr class="row<?php echo($rows++ % 2); ?>">
-				<td class="key" colspan="2"><?php echo $this->componentTitle; ?></td>
-				<td><strong style="color: green">Removed</strong></td>
-			</tr>
-			<?php if (count($status->modules)) : ?>
-				<tr>
-					<th>Module</th>
-					<th>Client</th>
-					<th></th>
-				</tr>
-				<?php foreach ($status->modules as $module) : ?>
-					<tr class="row<?php echo($rows++ % 2); ?>">
-						<td class="key"><?php echo $module['name']; ?></td>
-						<td class="key"><?php echo ucfirst($module['client']); ?></td>
-						<td><strong
-								style="color: <?php echo ($module['result']) ? "green" : "red" ?>"><?php echo ($module['result']) ? 'Removed' : 'Not removed'; ?></strong>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			<?php if (count($status->plugins)) : ?>
-				<tr>
-					<th>Plugin</th>
-					<th>Group</th>
-					<th></th>
-				</tr>
-				<?php foreach ($status->plugins as $plugin) : ?>
-					<tr class="row<?php echo($rows++ % 2); ?>">
-						<td class="key"><?php echo ucfirst($plugin['name']); ?></td>
-						<td class="key"><?php echo ucfirst($plugin['group']); ?></td>
-						<td><strong
-								style="color: <?php echo ($plugin['result']) ? "green" : "red" ?>"><?php echo ($plugin['result']) ? 'Removed' : 'Not removed'; ?></strong>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			</tbody>
-		</table>
-	<?php
 	}
 
 	/**
@@ -776,360 +580,76 @@ class InstallScript
 				}
 			}
 		}
-	}
 
-	/**
-	 * Installs subextensions (modules, plugins) bundled with the main extension
-	 *
-	 * @param   \JInstallerAdapterComponent  $parent
-	 *
-	 * @return  \stdClass  The subextension installation status
-	 */
-	protected function installSubextensions($parent)
-	{
-		$src = $parent->getParent()->getPath('source');
+		// Remove #__menu records for good measure! –– I think this is not necessary and causes the menu item to
+		// disappear on extension update.
+		/**
+		$query = $db->getQuery(true);
+		$query->select('id')
+		->from('#__menu')
+		->where($db->qn('type') . ' = ' . $db->q('component'))
+		->where($db->qn('menutype') . ' = ' . $db->q('main'))
+		->where($db->qn('link') . ' LIKE ' . $db->q('index.php?option=' . $this->componentName));
+		$db->setQuery($query);
 
-		$db = JFactory::getDbo();
-
-		$status = new \JObject();
-		$status->modules = array();
-		$status->plugins = array();
-
-		// Modules installation
-		if (isset($this->installation_queue['modules']) && count($this->installation_queue['modules']))
+		try
 		{
-			foreach ($this->installation_queue['modules'] as $folder => $modules)
-			{
-				if (count($modules))
-				{
-					foreach ($modules as $module => $modulePreferences)
-					{
-						// Install the module
-						if (empty($folder))
-						{
-							$folder = 'site';
-						}
-
-						$path = "$src/" . $this->modulesSourcePath . "/$folder/$module";
-
-						if (!is_dir($path))
-						{
-							$path = "$src/" . $this->modulesSourcePath . "/$folder/mod_$module";
-						}
-
-						if (!is_dir($path))
-						{
-							$path = "$src/" . $this->modulesSourcePath . "/$module";
-						}
-
-						if (!is_dir($path))
-						{
-							$path = "$src/" . $this->modulesSourcePath . "/mod_$module";
-						}
-
-						if (!is_dir($path))
-						{
-							continue;
-						}
-
-						// Was the module already installed?
-						$sql = $db->getQuery(true)
-							->select('COUNT(*)')
-							->from('#__modules')
-							->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
-						$db->setQuery($sql);
-
-						try
-						{
-							$count = $db->loadResult();
-						}
-						catch (Exception $exc)
-						{
-							$count = 0;
-						}
-
-						$installer = new JInstaller;
-						$result = $installer->install($path);
-						$status->modules[] = array(
-							'name'   => 'mod_' . $module,
-							'client' => $folder,
-							'result' => $result
-						);
-
-						// Modify where it's published and its published state
-						if (!$count)
-						{
-							// A. Position and state
-							list($modulePosition, $modulePublished) = $modulePreferences;
-
-							$sql = $db->getQuery(true)
-								->update($db->qn('#__modules'))
-								->set($db->qn('position') . ' = ' . $db->q($modulePosition))
-								->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
-
-							if ($modulePublished)
-							{
-								$sql->set($db->qn('published') . ' = ' . $db->q('1'));
-							}
-
-							$db->setQuery($sql);
-
-							try
-							{
-								$db->execute();
-							}
-							catch (Exception $exc)
-							{
-								// Nothing
-							}
-
-							// B. Change the ordering of back-end modules to 1 + max ordering
-							if ($folder == 'admin')
-							{
-								try
-								{
-									$query = $db->getQuery(true);
-									$query->select('MAX(' . $db->qn('ordering') . ')')
-										->from($db->qn('#__modules'))
-										->where($db->qn('position') . '=' . $db->q($modulePosition));
-									$db->setQuery($query);
-									$position = $db->loadResult();
-									$position++;
-
-									$query = $db->getQuery(true);
-									$query->update($db->qn('#__modules'))
-										->set($db->qn('ordering') . ' = ' . $db->q($position))
-										->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
-									$db->setQuery($query);
-									$db->execute();
-								}
-								catch (Exception $exc)
-								{
-									// Nothing
-								}
-							}
-
-							// C. Link to all pages
-							try
-							{
-								$query = $db->getQuery(true);
-								$query->select('id')->from($db->qn('#__modules'))
-									->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
-								$db->setQuery($query);
-								$moduleid = $db->loadResult();
-
-								$query = $db->getQuery(true);
-								$query->select('*')->from($db->qn('#__modules_menu'))
-									->where($db->qn('moduleid') . ' = ' . $db->q($moduleid));
-								$db->setQuery($query);
-								$assignments = $db->loadObjectList();
-								$isAssigned = !empty($assignments);
-
-								if (!$isAssigned)
-								{
-									$o = (object)array(
-										'moduleid' => $moduleid,
-										'menuid'   => 0
-									);
-									$db->insertObject('#__modules_menu', $o);
-								}
-							}
-							catch (Exception $exc)
-							{
-								// Nothing
-							}
-						}
-					}
-				}
-			}
+		$ids1 = $db->loadColumn();
+		}
+		catch (Exception $exc)
+		{
+		$ids1 = array();
 		}
 
-		// Plugins installation
-		if (isset($this->installation_queue['plugins']) && count($this->installation_queue['plugins']))
+		if (empty($ids1))
 		{
-			foreach ($this->installation_queue['plugins'] as $folder => $plugins)
-			{
-				if (count($plugins))
-				{
-					foreach ($plugins as $plugin => $published)
-					{
-						$path = "$src/" . $this->pluginsSourcePath . "/$folder/$plugin";
-
-						if (!is_dir($path))
-						{
-							$path = "$src/" . $this->pluginsSourcePath . "/$folder/plg_$plugin";
-						}
-
-						if (!is_dir($path))
-						{
-							$path = "$src/" . $this->pluginsSourcePath . "/$plugin";
-						}
-
-						if (!is_dir($path))
-						{
-							$path = "$src/" . $this->pluginsSourcePath . "/plg_$plugin";
-						}
-
-						if (!is_dir($path))
-						{
-							continue;
-						}
-
-						// Was the plugin already installed?
-						$query = $db->getQuery(true)
-							->select('COUNT(*)')
-							->from($db->qn('#__extensions'))
-							->where($db->qn('element') . ' = ' . $db->q($plugin))
-							->where($db->qn('folder') . ' = ' . $db->q($folder));
-						$db->setQuery($query);
-
-						try
-						{
-							$count = $db->loadResult();
-						}
-						catch (Exception $exc)
-						{
-							$count = 0;
-						}
-
-						$installer = new JInstaller;
-						$result = $installer->install($path);
-
-						$status->plugins[] = array('name' => 'plg_' . $plugin, 'group' => $folder, 'result' => $result);
-
-						if ($published && !$count)
-						{
-							$query = $db->getQuery(true)
-								->update($db->qn('#__extensions'))
-								->set($db->qn('enabled') . ' = ' . $db->q('1'))
-								->where($db->qn('element') . ' = ' . $db->q($plugin))
-								->where($db->qn('folder') . ' = ' . $db->q($folder));
-							$db->setQuery($query);
-
-							try
-							{
-								$db->execute();
-							}
-							catch (Exception $exc)
-							{
-								// Nothing
-							}
-						}
-					}
-				}
-			}
+		$ids1 = array();
 		}
 
-		// Clear com_modules and com_plugins cache (needed when we alter module/plugin state)
-		CacheCleaner::clearPluginsAndModulesCache();
+		$query = $db->getQuery(true);
+		$query->select('id')
+		->from('#__menu')
+		->where($db->qn('type') . ' = ' . $db->q('component'))
+		->where($db->qn('menutype') . ' = ' . $db->q('main'))
+		->where($db->qn('link') . ' LIKE ' . $db->q('index.php?option=' . $this->componentName . '&%'));
+		$db->setQuery($query);
 
-		return $status;
-	}
-
-	/**
-	 * Uninstalls subextensions (modules, plugins) bundled with the main extension
-	 *
-	 * @param   \JInstallerAdapterComponent  $parent  The parent object
-	 *
-	 * @return  \stdClass  The subextension uninstallation status
-	 */
-	protected function uninstallSubextensions($parent)
-	{
-		$db = JFactory::getDBO();
-
-		$status = new \stdClass();
-		$status->modules = array();
-		$status->plugins = array();
-
-		$src = $parent->getParent()->getPath('source');
-
-		// Modules uninstallation
-		if (isset($this->installation_queue['modules']) && count($this->installation_queue['modules']))
+		try
 		{
-			foreach ($this->installation_queue['modules'] as $folder => $modules)
-			{
-				if (count($modules))
-				{
-					foreach ($modules as $module => $modulePreferences)
-					{
-						// Find the module ID
-						$sql = $db->getQuery(true)
-							->select($db->qn('extension_id'))
-							->from($db->qn('#__extensions'))
-							->where($db->qn('element') . ' = ' . $db->q('mod_' . $module))
-							->where($db->qn('type') . ' = ' . $db->q('module'));
-						$db->setQuery($sql);
-
-						try
-						{
-							$id = $db->loadResult();
-						}
-						catch (Exception $exc)
-						{
-							$id = 0;
-						}
-
-						// Uninstall the module
-						if ($id)
-						{
-							$installer = new JInstaller;
-							$result = $installer->uninstall('module', $id, 1);
-							$status->modules[] = array(
-								'name'   => 'mod_' . $module,
-								'client' => $folder,
-								'result' => $result
-							);
-						}
-					}
-				}
-			}
+		$ids2 = $db->loadColumn();
+		}
+		catch (Exception $exc)
+		{
+		$ids2 = array();
 		}
 
-		// Plugins uninstallation
-		if (isset($this->installation_queue['plugins']) && count($this->installation_queue['plugins']))
+		if (empty($ids2))
 		{
-			foreach ($this->installation_queue['plugins'] as $folder => $plugins)
-			{
-				if (count($plugins))
-				{
-					foreach ($plugins as $plugin => $published)
-					{
-						$sql = $db->getQuery(true)
-							->select($db->qn('extension_id'))
-							->from($db->qn('#__extensions'))
-							->where($db->qn('type') . ' = ' . $db->q('plugin'))
-							->where($db->qn('element') . ' = ' . $db->q($plugin))
-							->where($db->qn('folder') . ' = ' . $db->q($folder));
-						$db->setQuery($sql);
-
-						try
-						{
-							$id = $db->loadResult();
-						}
-						catch (Exception $exc)
-						{
-							$id = 0;
-						}
-
-						if ($id)
-						{
-							$installer = new JInstaller;
-							$result = $installer->uninstall('plugin', $id, 1);
-							$status->plugins[] = array(
-								'name'   => 'plg_' . $plugin,
-								'group'  => $folder,
-								'result' => $result
-							);
-						}
-					}
-				}
-			}
+		$ids2 = array();
 		}
 
-		// Clear com_modules and com_plugins cache (needed when we alter module/plugin state)
-		CacheCleaner::clearPluginsAndModulesCache();
+		$ids = array_merge($ids1, $ids2);
 
-		return $status;
+		if (!empty($ids))
+		{
+		foreach ($ids as $id)
+		{
+		$query = $db->getQuery(true);
+		$query->delete('#__menu')
+		->where($db->qn('id') . ' = ' . $db->q($id));
+		$db->setQuery($query);
+
+		try
+		{
+		$db->execute();
+		}
+		catch (Exception $exc)
+		{
+		// Nothing
+		}
+		}
+		}
+		/**/
 	}
 
 	/**
@@ -1173,268 +693,9 @@ class InstallScript
 	}
 
 	/**
-	 * Installs FOF if necessary
-	 *
-	 * @param   \JInstallerAdapterComponent  $parent  The parent object
-	 *
-	 * @return  array  The installation status
-	 */
-	protected function installFOF($parent)
-	{
-		// Get the source path
-		$src = $parent->getParent()->getPath('source');
-		$source = $src . '/' . $this->fofSourcePath;
-
-		if (!JFolder::exists($source))
-		{
-			return array(
-				'required'  => false,
-				'installed' => false,
-				'version'   => '0.0.0',
-				'date'      => '2011-01-01',
-			);
-		}
-
-		// Get the target path
-		if (!defined('JPATH_LIBRARIES'))
-		{
-			$target = JPATH_ROOT . '/libraries/fof30';
-		}
-		else
-		{
-			$target = JPATH_LIBRARIES . '/fof30';
-		}
-
-		// Do I have to install FOF?
-		$haveToInstallFOF = false;
-
-		if (!JFolder::exists($target))
-		{
-			// FOF is not installed; install now
-			$haveToInstallFOF = true;
-		}
-		else
-		{
-			// FOF is already installed; check the version
-			$fofVersion = array();
-
-			if (JFile::exists($target . '/version.txt'))
-			{
-				$rawData = @file_get_contents($target . '/version.txt');
-				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-				$info = explode("\n", $rawData);
-				$fofVersion['installed'] = array(
-					'version' => trim($info[0]),
-					'date'    => new JDate(trim($info[1]))
-				);
-			}
-			else
-			{
-				$fofVersion['installed'] = array(
-					'version' => '0.0',
-					'date'    => new JDate('2011-01-01')
-				);
-			}
-
-			$rawData = @file_get_contents($source . '/version.txt');
-			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-			$info = explode("\n", $rawData);
-
-			$fofVersion['package'] = array(
-				'version' => trim($info[0]),
-				'date'    => new JDate(trim($info[1]))
-			);
-
-			$haveToInstallFOF = $fofVersion['package']['date']->toUNIX() > $fofVersion['installed']['date']->toUNIX();
-		}
-
-		$installedFOF = false;
-
-		if ($haveToInstallFOF)
-		{
-			$versionSource = 'package';
-			$installer = new JInstaller;
-			$installedFOF = $installer->install($source);
-		}
-		else
-		{
-			$versionSource = 'installed';
-		}
-
-		if (!isset($fofVersion))
-		{
-			$fofVersion = array();
-
-			if (JFile::exists($target . '/version.txt'))
-			{
-				$rawData = @file_get_contents($source . '/version.txt');
-				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-				$info = explode("\n", $rawData);
-				$fofVersion['installed'] = array(
-					'version' => trim($info[0]),
-					'date'    => new JDate(trim($info[1]))
-				);
-			}
-			else
-			{
-				$fofVersion['installed'] = array(
-					'version' => '0.0',
-					'date'    => new JDate('2011-01-01')
-				);
-			}
-
-			$rawData = @file_get_contents($source . '/version.txt');
-			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-			$info = explode("\n", $rawData);
-
-			$fofVersion['package'] = array(
-				'version' => trim($info[0]),
-				'date'    => new JDate(trim($info[1]))
-			);
-
-			$versionSource = 'installed';
-		}
-
-		if (!($fofVersion[$versionSource]['date'] instanceof JDate))
-		{
-			$fofVersion[$versionSource]['date'] = new JDate();
-		}
-
-		return array(
-			'required'  => $haveToInstallFOF,
-			'installed' => $installedFOF,
-			'version'   => $fofVersion[$versionSource]['version'],
-			'date'      => $fofVersion[$versionSource]['date']->format('Y-m-d'),
-		);
-	}
-
-	/**
-	 * Installs Akeeba Strapper if necessary
-	 *
-	 * @param   \JInstallerAdapterComponent  $parent  The parent object
-	 *
-	 * @return  array  The installation status
-	 */
-	protected function installStrapper($parent)
-	{
-		$src = $parent->getParent()->getPath('source');
-		$source = $src . '/' . $this->strapperSourcePath;
-
-		$target = JPATH_ROOT . '/media/akeeba_strapper';
-
-		if (!JFolder::exists($source))
-		{
-			return array(
-				'required'  => false,
-				'installed' => false,
-				'version'   => '0.0.0',
-				'date'      => '2011-01-01',
-			);
-		}
-
-		$haveToInstallStrapper = false;
-
-		if (!JFolder::exists($target))
-		{
-			$haveToInstallStrapper = true;
-		}
-		else
-		{
-			$strapperVersion = array();
-
-			if (JFile::exists($target . '/version.txt'))
-			{
-				$rawData = @file_get_contents($target . '/version.txt');
-				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-				$info = explode("\n", $rawData);
-				$strapperVersion['installed'] = array(
-					'version' => trim($info[0]),
-					'date'    => new JDate(trim($info[1]))
-				);
-			}
-			else
-			{
-				$strapperVersion['installed'] = array(
-					'version' => '0.0',
-					'date'    => new JDate('2011-01-01')
-				);
-			}
-
-			$rawData = @file_get_contents($source . '/version.txt');
-			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-			$info = explode("\n", $rawData);
-			$strapperVersion['package'] = array(
-				'version' => trim($info[0]),
-				'date'    => new JDate(trim($info[1]))
-			);
-
-			$haveToInstallStrapper = $strapperVersion['package']['date']->toUNIX() > $strapperVersion['installed']['date']->toUNIX();
-		}
-
-		$installedStraper = false;
-
-		if ($haveToInstallStrapper)
-		{
-			$versionSource = 'package';
-			$installer = new JInstaller;
-			$installedStraper = $installer->install($source);
-		}
-		else
-		{
-			$versionSource = 'installed';
-		}
-
-		if (!isset($strapperVersion))
-		{
-			$strapperVersion = array();
-
-			if (JFile::exists($target . '/version.txt'))
-			{
-				$rawData = @file_get_contents($target . '/version.txt');
-				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-				$info = explode("\n", $rawData);
-				$strapperVersion['installed'] = array(
-					'version' => trim($info[0]),
-					'date'    => new JDate(trim($info[1]))
-				);
-			}
-			else
-			{
-				$strapperVersion['installed'] = array(
-					'version' => '0.0',
-					'date'    => new JDate('2011-01-01')
-				);
-			}
-
-			$rawData = @file_get_contents($source . '/version.txt');
-			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
-			$info = explode("\n", $rawData);
-
-			$strapperVersion['package'] = array(
-				'version' => trim($info[0]),
-				'date'    => new JDate(trim($info[1]))
-			);
-
-			$versionSource = 'installed';
-		}
-
-		if (!($strapperVersion[$versionSource]['date'] instanceof JDate))
-		{
-			$strapperVersion[$versionSource]['date'] = new JDate();
-		}
-
-		return array(
-			'required'  => $haveToInstallStrapper,
-			'installed' => $installedStraper,
-			'version'   => $strapperVersion[$versionSource]['version'],
-			'date'      => $strapperVersion[$versionSource]['date']->format('Y-m-d'),
-		);
-	}
-
-	/**
 	 * Uninstalls obsolete subextensions (modules, plugins) bundled with the main extension
 	 *
-	 * @param   \JInstallerAdapterComponent  $parent  The parent object
+	 * @param   \JInstallerAdapterComponent $parent The parent object
 	 *
 	 * @return  \stdClass The subextension uninstallation status
 	 */
@@ -1447,8 +708,6 @@ class InstallScript
 		$status = new \stdClass();
 		$status->modules = array();
 		$status->plugins = array();
-
-		$src = $parent->getParent()->getPath('source');
 
 		// Modules uninstallation
 		if (isset($this->uninstallation_queue['modules']) && count($this->uninstallation_queue['modules']))
@@ -1520,11 +779,11 @@ class InstallScript
 	}
 
 	/**
-	 * @param   \JInstallerAdapterComponent  $parent
+	 * @param \JInstallerAdapterComponent $parent
 	 *
-	 * @return  bool
+	 * @return bool
 	 *
-	 * @throws  Exception  When the Joomla! menu is FUBAR
+	 * @throws Exception When the Joomla! menu is FUBAR
 	 */
 	private function _createAdminMenus($parent)
 	{
@@ -1545,13 +804,6 @@ class InstallScript
 		$db->setQuery($query);
 
 		$componentrow = $db->loadObject();
-
-		// Check if menu items exist
-		if ($componentrow)
-		{
-			// @todo Return if the menu item already exists to save some time
-			//return true;
-		}
 
 		// Let's find the extension id
 		$query->clear()
@@ -1623,6 +875,7 @@ class InstallScript
 			throw new Exception("Your site is broken. There is no root menu item. As a result it is impossible to create menu items. The installation of this component has failed. Please fix your database and retry!", 500);
 		}
 
+		/** @var \SimpleXMLElement $menuElement */
 		if ($menuElement)
 		{
 			$data = array();
@@ -1680,9 +933,9 @@ class InstallScript
 				->where('home = 0');
 
 			$db->setQuery($query);
-			$menu_ids_level1 = $db->loadResult();
+			$menu_ids_level1 = $db->loadColumn();
 
-			if (!$menu_ids_level1)
+			if (empty($menu_ids_level1))
 			{
 				// Oops! Could not get the menu ID. Go back and rollback changes.
 				\JError::raiseWarning(1, $table->getError());
@@ -1746,6 +999,7 @@ class InstallScript
 
 		$parent_id = $table->id;
 
+		/** @var \SimpleXMLElement $child */
 		foreach ($parent->get('manifest')->administration->submenu->menu as $child)
 		{
 			$data = array();
@@ -1833,9 +1087,9 @@ class InstallScript
 	/**
 	 * Make sure the Component menu items are really published!
 	 *
-	 * @param   \JInstallerAdapterComponent  $parent
+	 * @param \JInstallerAdapterComponent $parent
 	 *
-	 * @return  bool
+	 * @return bool
 	 */
 	private function _reallyPublishAdminMenuItems($parent)
 	{
