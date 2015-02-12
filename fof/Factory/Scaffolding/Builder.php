@@ -193,9 +193,28 @@ class Builder
 
 		$targetFilename = $path . '/View/' . $viewName . '/tmpl/' . $requestedFilename;
 
+		$directory = dirname($targetFilename);
+
+		if (!is_dir($directory))
+		{
+			$createdDirectory = @mkdir($directory, 0755, true);
+
+			if (!@$createdDirectory)
+			{
+				\JLoader::import('joomla.filesystem.folder');
+				\JFolder::create($directory, 0755);
+			}
+		}
+
 		$xml = $this->xml->asXML();
 
-		$saveResult = @file_put_contents($targetFilename, $xml);
+		$domDocument = new \DOMDocument('1.0');
+		$domDocument->loadXML($xml);
+		$domDocument->preserveWhiteSpace = false;
+		$domDocument->formatOutput = true;
+		$xml = $domDocument->saveXML();
+
+		$saveResult = @file_put_contents($targetFilename . '.xml', $xml);
 
 		if ($saveResult === false)
 		{
