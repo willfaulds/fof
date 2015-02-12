@@ -284,7 +284,7 @@ class Models implements DomainInterface
 			if (isset($configuration['models'][$model])
 				&& isset($configuration['models'][$model]['behaviorsMerge']))
 			{
-				$merge = boolval($configuration['models'][$model]['behaviorsMerge']);
+				$merge = (bool) $configuration['models'][$model]['behaviorsMerge'];
 			}
 
 			if ($merge)

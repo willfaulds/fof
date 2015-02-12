@@ -289,7 +289,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function setScaffolding($scaffolding)
 	{
-		$this->scaffolding = boolval($scaffolding);
+		$this->scaffolding = (bool) $scaffolding;
 	}
 
 	/**
@@ -309,7 +309,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function setSaveScaffolding($saveScaffolding)
 	{
-		$this->saveScaffolding = boolval($saveScaffolding);
+		$this->saveScaffolding = (bool) $saveScaffolding;
 	}
 
 	/**
