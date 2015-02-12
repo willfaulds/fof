@@ -8,6 +8,7 @@
 namespace FOF30\Container;
 
 use FOF30\Autoloader\Autoloader;
+use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
 use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
@@ -212,6 +213,8 @@ class Container extends ContainerBase
 		$values = array_merge(array(
 			'rendererClass' => '\\FOF30\\Render\\Joomla3',
 			'factoryClass' => '\\FOF30\\Factory\\BasicFactory',
+			'scaffolding' => false,
+			'saveScaffolding' => false,
 		), $values);
 
 		$values = array_merge($values, array(
@@ -222,6 +225,8 @@ class Container extends ContainerBase
 			'thisPath' => $thisPath,
 			'rendererClass' => $appConfig->get('container.rendererClass', $values['rendererClass']),
 			'factoryClass' => $appConfig->get('container.factoryClass', $values['factoryClass']),
+			'scaffolding' => $appConfig->get('container.scaffolding', $values['scaffolding']),
+			'saveScaffolding' => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
 		));
 
 		unset($appConfig);
@@ -376,7 +381,20 @@ class Container extends ContainerBase
 
 				$factoryClass = $c['factoryClass'];
 
-				return new $factoryClass($c);
+				/** @var FactoryInterface $factory */
+				$factory = new $factoryClass($c);
+
+				if (isset($c['scaffolding']))
+				{
+					$factory->setScaffolding($c['scaffolding']);
+				}
+
+				if (isset($c['saveScaffolding']))
+				{
+					$factory->setSaveScaffolding($c['saveScaffolding']);
+				}
+
+				return $factory;
 			};
 		}
 
