@@ -11,9 +11,14 @@ define('_JEXEC', 1);
 // Include the FOF autoloader.
 if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 {
-	echo 'ERROR: FOF Autoloader not found' . PHP_EOL;
+	require_once __DIR__ . '/../fof/Autoloader/Autoloader.php';
 
-	exit(1);
+	if (!class_exists('FOF30\\Autoloader\\Autoloader'))
+	{
+		echo 'ERROR: FOF Autoloader not found' . PHP_EOL;
+
+		exit(1);
+	}
 }
 
 // Tell the FOF autoloader where to load test classes from (very useful for stubs!)
@@ -21,7 +26,7 @@ if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 // \FOF30\Autoloader\Autoloader::getInstance()->addMap('Fakeapp\\', __DIR__ . '/Stubs/Fakeapp');
 
 // Include the Composer autoloader.
-if (false == include __DIR__ . '/../vendor/autoload.php')
+if (false == include_once __DIR__ . '/../vendor/autoload.php')
 {
 	echo 'ERROR: You need to install Composer and run `composer install` on FOF before running the tests.' . PHP_EOL;
 

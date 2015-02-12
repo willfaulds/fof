@@ -16,9 +16,6 @@
             "role": "Lead Developer"
         }
     ],
-    "autoload": {
-        "files": ["fof/include.php"]
-    },
     "version": "3.0.0-dev",
     "require-dev": {
 		"mikey179/vfsStream": "v1.2.0",
