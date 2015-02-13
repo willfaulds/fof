@@ -197,33 +197,6 @@ class PlatformJoomlaTest extends FOFTestCase
 	}
 
 	/**
-	 * @covers FOF30\Platform\Joomla\Platform::getViewTemplatePaths
-	 *
-	 * @dataProvider FOF30\Tests\Platform\PlatformJoomlaProvider::getTestGetViewTemplatePaths
-	 */
-	public function testGetViewTemplatePaths($area, $view, $layout, $tpl, $strict, $expected, $message)
-	{
-		$this->forceApplicationTypeAndResetPlatformCliAdminCache($area);
-
-		$actual = $this->platform->getViewTemplatePaths('com_foobar', $view, $layout, $tpl, $strict);
-
-		// WARNING! There's reason behind the array comparison madness!
-		// assertEquals doesn't work for comparing the actual and expected arrays because getViewTemplatePaths uses
-		// array_unique internally. This preserves the array keys creating an array with, say, array keys of 1, 4 and 6.
-		// However, assertEquals checks BOTH the keys AND the values. The values match, the keys don't, so it fails the
-		// test.
-
-		$countExpected = count($expected);
-
-		$this->assertCount($countExpected, $actual, $message . ' (count doesn\'t match)');
-
-		foreach ($expected as $v)
-		{
-			$this->assertTrue(in_array($v, $actual), $message . " (value $v not found)");
-		}
-	}
-
-	/**
 	 * @covers FOF30\Platform\Joomla\Platform::getTemplate
 	 */
 	public function testGetTemplate()

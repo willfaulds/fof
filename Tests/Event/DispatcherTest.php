@@ -220,7 +220,7 @@ class DispatcherTest extends ApplicationTestCase
 
 	protected function setUp()
 	{
-		$this->object = static::$container->eventDispatcher;
+		$this->object = new Dispatcher(static::$container);
 	}
 
 	protected function tearDown()
@@ -228,4 +228,3 @@ class DispatcherTest extends ApplicationTestCase
 		ReflectionHelper::setValue($this->object, 'instances', array());
 	}
 }
- 
