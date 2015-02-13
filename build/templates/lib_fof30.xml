@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="library" version="2.5" method="upgrade">
+<extension type="library" version="3.2" method="upgrade">
     <name>FOF30</name>
 	<libraryname>fof30</libraryname>
-	<description>Framework-on-Framework (FOF) 3.0 - The rapid component development framework for Joomla!. This package is the next generation version of FOF. Joomla! includes an old version of FOF (2.x) as the official Joomla! RAD Layer. DO NOT UNINSTALL THIS PACKAGE, IT IS *** N O T *** A DUPLICATE OF THE 'FOF' PACKAGE. REMOVING EITHER THE fof OR THE fof30 PACKAGE WILL BREAK YOUR SITE.</description>
+	<description>
+		<![CDATA[
+		Framework-on-Framework (FOF) 3.0 - The rapid component development framework for Joomla!.<br/>
+		<b>WARNING</b>: This is NOT a duplicate of the FOF library already installed with Joomla!. Do NOT uninstall the FOF package, it will break your site. Do NOT uninstall this package either; it is automatically uninstalled when no other extension is using it.
+		]]>
+	</description>
 	<creationDate>##DATE##</creationDate>
 	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
@@ -50,4 +55,7 @@
 		<file>include.php</file>
 		<file>version.txt</file>
 	</files>
+
+	<!-- Installation / uninstallation script file -->
+	<scriptfile>script.fof.php</scriptfile>
 </extension>
