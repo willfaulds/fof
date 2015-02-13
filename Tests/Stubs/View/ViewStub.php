@@ -15,9 +15,6 @@ class ViewStub extends View
 {
     private   $methods = array();
 
-    /**  @var null The container passed in the construct */
-    public    $passedContainer = null;
-
     protected $name   = 'nestedset';
 
     /**
@@ -37,12 +34,6 @@ class ViewStub extends View
         foreach($methods as $method => $function)
         {
             $this->methods[$method] = $function;
-        }
-
-        // We will save the passed container in order to check it later
-        if(is_object($container))
-        {
-            $this->passedContainer = clone $container;
         }
 
         parent::__construct($container, $config);

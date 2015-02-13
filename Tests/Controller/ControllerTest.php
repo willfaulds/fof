@@ -25,6 +25,23 @@ require_once 'ControllerDataprovider.php';
  */
 class ControllerTest extends ApplicationTestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $_SERVER['HTTP_HOST'] = 'www.example.com';
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        if(isset($_SERVER['HTTP_HOST']))
+        {
+            unset($_SERVER['HTTP_HOST']);
+        }
+    }
+
     /**
      * @group           Controller
      * @group           ControllerConstruct
@@ -147,7 +164,7 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::display
      * @dataProvider    ControllerDataprovider::getTestDisplay
      */
-    public function tXestDisplay($test, $check)
+    public function testDisplay($test, $check)
     {
         $msg = 'Controller::display %s - Case: '.$check['case'];
 
@@ -157,6 +174,9 @@ class ControllerTest extends ApplicationTestCase
         $container     = new TestContainer(array(
             'componentName' => 'com_eastwood'
         ));
+
+        $platform = $container->platform;
+        $platform::$template = 'fake_test_template';
 
         $viewMethods = array('setDefaultModel', 'setLayout', 'display');
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', $viewMethods, array($container));
