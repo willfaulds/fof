@@ -81,6 +81,12 @@ class TemplateTest extends FOFTestCase
 		// Restore the JFactory
 		$this->restoreFactoryState();
 
+        // Reset the application template
+        $application = JFactory::getApplication('site');
+        $attribute = new ReflectionProperty($application, 'template');
+        $attribute->setAccessible(TRUE);
+        $attribute->setValue($application, null);
+
 		// Restore the $_SERVER global
 		global $_SERVER;
 		$_SERVER = $this->_stashedServer;
