@@ -20,8 +20,6 @@ class DocumentTest extends FOFTestCase
 
 	/**
 	 * @covers FOF30\Hal\Document::__construct
-	 *
-	 * @return Document
 	 */
 	public function testConstruct()
 	{
@@ -61,22 +59,23 @@ class DocumentTest extends FOFTestCase
 			$this->getObjectAttribute($this->document, '_links') instanceof Links,
 			'Line: ' . __LINE__ . '.'
 		);
-
-		return $this->document;
 	}
 
 	/**
-	 * @depends testConstruct
-	 *
-	 * @param Document $document The HAL document to test
-	 *
 	 * @covers  FOF30\Hal\Document::addLink
-	 *
-	 * @return Document
 	 */
-	public function testAddLink(Document $document)
+	public function testAddLink()
 	{
-		$myDocument = clone $document;
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $myDocument = new Document($data);
 
 		// Make sure we can add links
 		$myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
@@ -88,27 +87,32 @@ class DocumentTest extends FOFTestCase
 			$links['foo'],
 			'Line: ' . __LINE__ . '.'
 		);
-
-		return array($myDocument, $myLink);
 	}
 
 	/**
-	 * @depends testAddLink
-	 *
-	 * @param array $input The document and link to operate on
-	 *
 	 * @covers  FOF30\Hal\Document::addLink
 	 */
-	public function testAddLink_append(array $input)
+	public function testAddLink_append()
 	{
-		list($document, $myLink) = $input;
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
 
-		$myDocument = clone $document;
+        $myDocument = new Document($data);
+        $myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
+        $myDocument->addLink('foo', $myLink);
 
 		// Make sure trying to add links with replace=false adds, doesn't replace, links
 		$myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
 		$myDocument->addLink('foo', $myOtherLink, false);
+
 		$links = $this->getObjectAttribute($myDocument, '_links')->getLinks();
+
 		$this->assertEquals(
 			$myLink,
 			$links['foo'][0],
@@ -119,22 +123,29 @@ class DocumentTest extends FOFTestCase
 			$links['foo'][1],
 			'Line: ' . __LINE__ . '.'
 		);
-
-		return $myDocument;
 	}
 
 	/**
-	 * @depends testAddLink
-	 *
-	 * @param array $input The document and link to operate on
-	 *
 	 * @covers  FOF30\Hal\Document::addLink
 	 */
-	public function testAddLink_replace(array $input)
+	public function testAddLink_replace()
 	{
-		list($document, $myLink) = $input;
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
 
-		$myDocument = clone $document;
+        $myDocument = new Document($data);
+        $myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
+        $myDocument->addLink('foo', $myLink);
+
+        // Make sure trying to add links with replace=false adds, doesn't replace, links
+        $myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
+        $myDocument->addLink('foo', $myOtherLink, false);
 
 		// Make sure trying to add links with replace=false adds, doesn't replace, links
 		$myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
@@ -148,25 +159,34 @@ class DocumentTest extends FOFTestCase
 	}
 
 	/**
-	 * @depends testAddLink
-	 *
-	 * @param array $input The document and link returned by testAddLink
-	 *
 	 * @covers FOF30\Hal\Document::addLinks
-	 *
-	 * @return Document
 	 */
-	public function testAddLinks(array $input)
+	public function testAddLinks()
 	{
-		list($document, $myLink) = $input;
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $myDocument = new Document($data);
+        $myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
+        $myDocument->addLink('foo', $myLink);
+
+        // Make sure trying to add links with replace=false adds, doesn't replace, links
+        $myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
+        $myDocument->addLink('foo', $myOtherLink, false);
 
 		$myLinks = array(
 			new Link('http://www.example.com/foo.json', false, 'foobar1'),
 			new Link('http://www.example.com/bar.json', false, 'foobar2'),
 		);
 
-		$document->addLinks('foo', $myLinks, false);
-		$links = $document->getLinks();
+        $myDocument->addLinks('foo', $myLinks, false);
+		$links = $myDocument->getLinks();
 
 		$this->assertNotEquals(
 			$myLinks,
@@ -174,28 +194,49 @@ class DocumentTest extends FOFTestCase
 			'Line: ' . __LINE__ . '.'
 		);
 
-		$document->addLinks('foo', $myLinks, true);
-		$links = $document->getLinks();
+        $myDocument->addLinks('foo', $myLinks, true);
+		$links = $myDocument->getLinks();
 
 		$this->assertEquals(
 			$myLinks,
 			$links['foo'],
 			'Line: ' . __LINE__ . '.'
 		);
-
-		return $document;
 	}
 
 	/**
-	 * @depends testAddLinks
-	 *
 	 * @covers FOF30\Hal\Document::addData
 	 */
-	public function testAddData_append(Document $document)
+	public function testAddData_append()
 	{
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+        $myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
+        $document->addLink('foo', $myLink);
+
+        // Make sure trying to add links with replace=false adds, doesn't replace, links
+        $myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
+        $document->addLink('foo', $myOtherLink, false);
+
+        $myLinks = array(
+            new Link('http://www.example.com/foo.json', false, 'foobar1'),
+            new Link('http://www.example.com/bar.json', false, 'foobar2'),
+        );
+
+        $document->addLinks('foo', $myLinks, false);
+
 		$extraData = array('newData' => 'something');
 
 		$document->addData($extraData, false);
+
 		$data = $this->getObjectAttribute($document, '_data');
 
 		$this->assertArrayHasKey(
@@ -212,12 +253,34 @@ class DocumentTest extends FOFTestCase
 	}
 
 	/**
-	 * @depends testAddLinks
-	 *
 	 * @covers FOF30\Hal\Document::addData
 	 */
-	public function testAddData_replace(Document $document)
+	public function testAddData_replace()
 	{
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+        $myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
+        $document->addLink('foo', $myLink);
+
+        // Make sure trying to add links with replace=false adds, doesn't replace, links
+        $myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
+        $document->addLink('foo', $myOtherLink, false);
+
+        $myLinks = array(
+            new Link('http://www.example.com/foo.json', false, 'foobar1'),
+            new Link('http://www.example.com/bar.json', false, 'foobar2'),
+        );
+
+        $document->addLinks('foo', $myLinks, false);
+
 		$extraData = array('newData' => 'something');
 
 		$document->addData($extraData, true);
@@ -237,13 +300,34 @@ class DocumentTest extends FOFTestCase
 	}
 
 	/**
-	 * @depends testAddLinks
-	 *
 	 * @covers FOF30\Hal\Document::addData
 	 */
-	public function testAddData_fromScratch(Document $myDocument)
+	public function testAddData_fromScratch()
 	{
-		$document = clone $myDocument;
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+        $myLink = new Link('http://www.example.com/link1.json', false, 'test', null, 'A test link');
+        $document->addLink('foo', $myLink);
+
+        // Make sure trying to add links with replace=false adds, doesn't replace, links
+        $myOtherLink = new Link('http://www.example.com/otherLink.json', false, 'test', null, 'Another test link');
+        $document->addLink('foo', $myOtherLink, false);
+
+        $myLinks = array(
+            new Link('http://www.example.com/foo.json', false, 'foobar1'),
+            new Link('http://www.example.com/bar.json', false, 'foobar2'),
+        );
+
+        $document->addLinks('foo', $myLinks, false);
+
 		ReflectionHelper::setValue($document, '_data', null);
 
 		$extraData = array('newData' => 'something');
@@ -265,16 +349,26 @@ class DocumentTest extends FOFTestCase
 	}
 
 	/**
-	 * @depends testConstruct
-	 *
 	 * @covers FOF30\Hal\Document::addEmbedded
 	 */
-	public function testAddEmbedded(Document $document)
+	public function testAddEmbedded()
 	{
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+
 		$newDocument = new Document(array('newDocData' => 'something something something data'));
 
 		// Add an embedded document
 		$document->addEmbedded('childDoc', $newDocument);
+
 		$embedded = $this->getObjectAttribute($document, '_embedded');
 
 		$this->assertEquals(
@@ -321,18 +415,35 @@ class DocumentTest extends FOFTestCase
 			$embedded['childDoc'],
 			'Line: ' . __LINE__ . '.'
 		);
-
-		return $document;
 	}
 
 	/**
-	 * @depends testAddLink_append
-	 *
 	 * @covers FOF30\Hal\Document::getLinks
 	 */
-	public function testGetLinks(Document $myDocument)
+	public function testGetLinks()
 	{
-		$allLinks = $myDocument->getLinks();
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+        $myLink = new Link('http://www.example.com/foo.json', false, 'test', null, 'A test link');
+        $document->addLink('foo', $myLink);
+
+        // Make sure trying to add links with replace=false adds, doesn't replace, links
+        $myOtherLink = new Link('http://www.example.com/bar.json', false, 'test', null, 'Another test link');
+        $document->addLink('foo', $myOtherLink, false);
+
+        $extraData = array('newData' => 'something');
+
+        $document->addData($extraData, false);
+
+		$allLinks = $document->getLinks();
 
 		$this->assertInternalType(
 			'array',
@@ -346,7 +457,7 @@ class DocumentTest extends FOFTestCase
 			'Line: ' . __LINE__ . '.'
 		);
 
-		$links = $myDocument->getLinks('foo');
+		$links = $document->getLinks('foo');
 
 		$this->assertInternalType(
 			'array',
@@ -390,12 +501,39 @@ class DocumentTest extends FOFTestCase
 	}
 
 	/**
-	 * @depends testAddEmbedded
-	 *
 	 * @covers FOF30\Hal\Document::getEmbedded
 	 */
-	public function testGetEmbedded(Document $document)
+	public function testGetEmbedded()
 	{
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+
+        $newDocument = new Document(array('newDocData' => 'something something something data'));
+
+        // Add an embedded document
+        $document->addEmbedded('childDoc', $newDocument);
+
+        $embedded = $this->getObjectAttribute($document, '_embedded');
+
+        $this->assertEquals(
+            $newDocument,
+            $embedded['childDoc'],
+            'Line: ' . __LINE__ . '.'
+        );
+
+        // Append another embedded document
+        $otherDocument = new Document(array('otherDocData' => 'other data'));
+        $document->addEmbedded('childDoc', $otherDocument, true);
+
+
 		$allEmbedded = $this->getObjectAttribute($document, '_embedded');
 		$testEmbedded = $document->getEmbedded();
 
@@ -415,12 +553,21 @@ class DocumentTest extends FOFTestCase
 	}
 
 	/**
-	 * @depends testConstruct
-	 *
 	 * @covers FOF30\Hal\Document::getData
 	 */
-	public function testGetData(Document $document)
+	public function testGetData()
 	{
+        $data = array(
+            'test1'     => 'one',
+            'test2'     => 'two',
+            'testArray' => array(
+                'testUno' => 'uno',
+                'testDue' => 'Due',
+            )
+        );
+
+        $document = new Document($data);
+
 		$realData = $this->getObjectAttribute($document, '_data');
 		$data = $document->getData();
 
@@ -477,4 +624,3 @@ class DocumentTest extends FOFTestCase
 		);
 	}
 }
- 
