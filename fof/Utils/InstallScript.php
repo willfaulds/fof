@@ -253,6 +253,9 @@ class InstallScript
 	 */
 	public function postflight($type, $parent)
 	{
+		// Add ourselves to the list of extensions depending on FOF30
+		$this->addDependency('fof30', $this->componentName);
+
 		// Install or update database
 		// Uninstall database
 		$dbInstaller = new Installer(JFactory::getDbo(),
@@ -354,7 +357,8 @@ class InstallScript
 		// Uninstall post-installation messages on Joomla! 3.2 and later
 		$this->uninstallPostInstallationMessages();
 
-		// TODO: Uninstall FOF (decrement usage counter and let it decide for itself if it should be removed)
+		// Remove ourselves from the list of extensions depending on FOF30
+		$this->removeDependency('fof30', $this->componentName);
 
 		// Show the post-uninstallation page
 		$this->renderPostUninstallation($parent);
