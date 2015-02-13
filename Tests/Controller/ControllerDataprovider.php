@@ -229,7 +229,11 @@ class ControllerDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'getModel'  => new \FOF30\Tests\Stubs\Model\ModelStub(new \FOF30\Tests\Helpers\TestContainer()),
+                    'getModel'  => new \FOF30\Tests\Stubs\Model\ModelStub(
+                                        new \FOF30\Tests\Helpers\TestContainer(array(
+                                            'componentName' => 'com_eastwood')
+                                        )
+                                    ),
                     'task'      => 'foobar',
                     'doTask'    => 'foobar',
                     'layout'    => 'dummy'

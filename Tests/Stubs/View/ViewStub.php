@@ -29,9 +29,10 @@ class ViewStub extends View
      * )
      *
      * @param           $container
+     * @param array     $config
      * @param array     $methods
      */
-    public function __construct(Container $container, array $methods = array())
+    public function __construct(Container $container, array $config = array(), array $methods = array())
     {
         foreach($methods as $method => $function)
         {
@@ -44,7 +45,7 @@ class ViewStub extends View
             $this->passedContainer = clone $container;
         }
 
-        parent::__construct($container);
+        parent::__construct($container, $config);
     }
 
     public function __call($method, $args)

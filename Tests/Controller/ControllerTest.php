@@ -28,7 +28,7 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerConstruct
-     * @covers          Awf\Mvc\Controller::__construct
+     * @covers          FOF30\Controller\Controller::__construct
      * @dataProvider    ControllerDataprovider::getTest__construct
      */
     public function test__construct($test, $check)
@@ -62,14 +62,11 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerConstruct
-     * @covers          Awf\Mvc\Controller::__construct
+     * @covers          FOF30\Controller\Controller::__construct
      */
     public function test__constructTaskMap()
     {
-        $container  = new TestContainer(array(
-            'componentName' => 'com_eastwood'
-        ));
-        $controller = new ControllerStub($container);
+        $controller = new ControllerStub(static::$container);
 
         $tasks = ReflectionHelper::getValue($controller, 'taskMap');
 
@@ -90,7 +87,7 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerExecute
-     * @covers          Awf\Mvc\Controller::execute
+     * @covers          FOF30\Controller\Controller::execute
      * @dataProvider    ControllerDataprovider::getTestExecute
      */
     public function testExecute($test, $check)
@@ -99,10 +96,8 @@ class ControllerTest extends ApplicationTestCase
         $before     = 0;
         $task       = 0;
         $after      = 0;
-        $container  = new TestContainer(array(
-            'componentName' => 'com_eastwood'
-        ));
-        $controller = new ControllerStub($container, array(
+
+        $controller = new ControllerStub(static::$container, array(), array(
             'onBeforeDummy' => function() use (&$before, $test){
                 $before++;
                 return $test['mock']['before'];
@@ -133,16 +128,13 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerExecute
-     * @covers          Awf\Mvc\Controller::execute
+     * @covers          FOF30\Controller\Controller::execute
      */
     public function testExecuteException()
     {
-        $this->setExpectedException('Exception');
+        $this->setExpectedException('FOF30\Controller\Exception\TaskNotFound');
 
-        $container  = new TestContainer(array(
-            'componentName' => 'com_eastwood'
-        ));
-        $controller = new ControllerStub($container);
+        $controller = new ControllerStub(static::$container);
 
         ReflectionHelper::setValue($controller, 'taskMap', array());
 
@@ -152,10 +144,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerDisplay
-     * @covers          Awf\Mvc\Controller::display
+     * @covers          FOF30\Controller\Controller::display
      * @dataProvider    ControllerDataprovider::getTestDisplay
      */
-    public function testDisplay($test, $check)
+    public function tXestDisplay($test, $check)
     {
         $msg = 'Controller::display %s - Case: '.$check['case'];
 
@@ -166,8 +158,8 @@ class ControllerTest extends ApplicationTestCase
             'componentName' => 'com_eastwood'
         ));
 
-        $view = $this->getMock('\\Awf\\Tests\\Stubs\\Mvc\\ViewStub', array('setDefaultModel', 'setLayout', 'display'), array($container));
-        $view->expects($this->any())->method('display')->willReturn(null);
+        $viewMethods = array('setDefaultModel', 'setLayout', 'display');
+        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', $viewMethods, array($container));
         $view->expects($this->any())->method('setDefaultModel')->willReturnCallback(
             function($model) use (&$modelCounter){
                 $modelCounter++;
@@ -180,7 +172,7 @@ class ControllerTest extends ApplicationTestCase
             }
         );
 
-        $controller = $this->getMock('\\Awf\\Tests\\Stubs\\Mvc\\ControllerStub', array('getView', 'getModel'), array($container));
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('getView', 'getModel'), array($container));
         $controller->expects($this->any())->method('getModel')->willReturn($test['mock']['getModel']);
         $controller->expects($this->any())->method('getView')->willReturn($view);
 
@@ -200,10 +192,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerGetModel
-     * @covers          Awf\Mvc\Controller::getModel
+     * @covers          FOF30\Controller\Controller::getModel
      * @dataProvider    ControllerDataprovider::getTestGetModel
      */
-    public function testGetModel($test, $check)
+    public function tXestGetModel($test, $check)
     {
         $msg        = 'Controller::getModel %s - Case: '.$check['case'];
         $container  = new TestContainer(array(
@@ -226,10 +218,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerGetView
-     * @covers          Awf\Mvc\Controller::getView
+     * @covers          FOF30\Controller\Controller::getView
      * @dataProvider    ControllerDataprovider::getTestGetView
      */
-    public function testGetView($test, $check)
+    public function tXestGetView($test, $check)
     {
         $msg        = 'Controller::getView %s - Case: '.$check['case'];
         $container  = new TestContainer(array(
@@ -255,9 +247,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerSetViewName
-     * @covers          Awf\Mvc\Controller::setViewName
+     * @covers          FOF30\Controller\Controller::setViewName
      */
-    public function testSetViewName()
+    public function tXestSetViewName()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -272,9 +264,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerSetModelName
-     * @covers          Awf\Mvc\Controller::setModelName
+     * @covers          FOF30\Controller\Controller::setModelName
      */
-    public function testSetModelName()
+    public function tXestSetModelName()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -289,9 +281,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerSetModel
-     * @covers          Awf\Mvc\Controller::setModel
+     * @covers          FOF30\Controller\Controller::setModel
      */
-    public function testSetModel()
+    public function tXestSetModel()
     {
         $model      = new ModelStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -310,9 +302,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerSetView
-     * @covers          Awf\Mvc\Controller::setView
+     * @covers          FOF30\Controller\Controller::setView
      */
-    public function testSetView()
+    public function tXestSetView()
     {
         $view       = new ViewStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -331,9 +323,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerGetTask
-     * @covers          Awf\Mvc\Controller::getTask
+     * @covers          FOF30\Controller\Controller::getTask
      */
-    public function testGetTask()
+    public function tXestGetTask()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -348,9 +340,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerGetTasks
-     * @covers          Awf\Mvc\Controller::getTasks
+     * @covers          FOF30\Controller\Controller::getTasks
      */
-    public function testGetTasks()
+    public function tXestGetTasks()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -365,10 +357,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerRedirect
-     * @covers          Awf\Mvc\Controller::redirect
+     * @covers          FOF30\Controller\Controller::redirect
      * @dataProvider    ControllerDataprovider::getTestRedirect
      */
-    public function testRedirect($test, $check)
+    public function tXestRedirect($test, $check)
     {
         $msg        = 'Controller::redirect %s - Case: '.$check['case'];
         $controller = new ControllerStub(new TestContainer(array(
@@ -405,9 +397,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerRegisterDefaultTask
-     * @covers          Awf\Mvc\Controller::registerDefaultTask
+     * @covers          FOF30\Controller\Controller::registerDefaultTask
      */
-    public function testRegisterDefaultTask()
+    public function tXestRegisterDefaultTask()
     {
         // In this test I just want to check the result, since I'll test the registerTask in another test
         $container  = new TestContainer(array(
@@ -422,10 +414,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerRegisterTask
-     * @covers          Awf\Mvc\Controller::registerTask
+     * @covers          FOF30\Controller\Controller::registerTask
      * @dataProvider    ControllerDataprovider::getTestRegisterTask
      */
-    public function testRegisterTask($test, $check)
+    public function tXestRegisterTask($test, $check)
     {
         $msg        = 'Controller::registerDefaultTask %s - Case: '.$check['case'];
         $container  = new TestContainer(array(
@@ -454,9 +446,9 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerUnregisterTask
-     * @covers          Awf\Mvc\Controller::unregisterTask
+     * @covers          FOF30\Controller\Controller::unregisterTask
      */
-    public function testUnregisterTask()
+    public function tXestUnregisterTask()
     {
         $msg        = 'Controller::unregisterDefaultTask %s';
         $container  = new TestContainer(array(
@@ -477,10 +469,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerSetMessage
-     * @covers          Awf\Mvc\Controller::setMessage
+     * @covers          FOF30\Controller\Controller::setMessage
      * @dataProvider    ControllerDataprovider::getTestSetMessage
      */
-    public function testSetMessage($test, $check)
+    public function tXestSetMessage($test, $check)
     {
         $msg        = 'Controller::setMessage %s - Case: '.$check['case'];
         $controller = new ControllerStub(new TestContainer(array(
@@ -509,10 +501,10 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerSetRedirect
-     * @covers          Awf\Mvc\Controller::setRedirect
+     * @covers          FOF30\Controller\Controller::setRedirect
      * @dataProvider    ControllerDataprovider::getTestSetRedirect
      */
-    public function testSetRedirect($test, $check)
+    public function tXestSetRedirect($test, $check)
     {
         $msg        = 'Controller::setRedirect %s - Case: '.$check['case'];
         $controller = new ControllerStub(new TestContainer(array(
