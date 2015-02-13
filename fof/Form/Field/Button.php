@@ -120,14 +120,18 @@ class Button extends Text implements FieldInterface
 		else
 			$type = 'button';
 
-		$text    = $this->element['text'] ? (string) $this->element['text'] : '';
-		$class   = $this->class ? $this->class : '';
-		$icon    = $this->element['icon'] ? '<span class="icon ' . (string) $this->element['icon'] . '"></span>' : '';
-		$onclick = $this->onclick ? 'onclick="' . $this->onclick . '"' : '';
-		$url     = $this->element['url'] ? 'href="' . $this->parseFieldTags((string) $this->element['url']) . '"' : '';
-		$title   = $this->element['title'] ? 'title="' . JText::_((string) $this->element['title']) . '"' : '';
+		$text     = $this->element['text'] ? (string) $this->element['text'] : '';
+		$class    = $this->class ? $this->class : '';
+		$icon     = $this->element['icon'] ? '<span class="icon ' . (string) $this->element['icon'] . '"></span>' : '';
+		$onclick  = $this->onclick ? 'onclick="' . $this->onclick . '"' : '';
+		$url      = $this->element['url'] ? 'href="' . $this->parseFieldTags((string) $this->element['url']) . '"' : '';
+		$title    = $this->element['title'] ? 'title="' . JText::_((string) $this->element['title']) . '"' : '';
+		$useValue = in_array((string) $this->element['use_value'], array('true', '1', 'on', 'yes'));
 
-		$this->value = JText::_($text);
+		if (!$useValue)
+		{
+			$this->value = JText::_($text);
+		}
 
 		return '<' . $type . ' id="' . $this->id . '" class="btn ' . $class . '" ' .
 			$onclick . $url . $title . '>' .
