@@ -11,8 +11,8 @@ use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Utils\String;
 
 /**
- * @covers  FOF30\Utls\String::<protected>
- * @covers  FOF30\Utls\String::<private>
+ * @covers  FOF30\Utils\String::<protected>
+ * @covers  FOF30\Utils\String::<private>
  */
 class StringTest extends FOFTestCase
 {

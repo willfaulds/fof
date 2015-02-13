@@ -25,6 +25,7 @@
 
 /Tests/environments/3.3/cache/
 /Tests/environments/3.3/templates/fake_test_template
+/Tests/coverage
 /Tests/config.php
 
 /vendor/*
