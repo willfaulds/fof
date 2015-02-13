@@ -17,22 +17,22 @@ use FOF30\Tests\Helpers\FOFTestCase;
  */
 class InstallerTest extends FOFTestCase
 {
-	public static function setUpBeforeClass()
+	public function setUp()
 	{
-		parent::setUpBeforeClass();
+		parent::setUp();
 
 		// Make sure the #__foobar_example table does not exist before running the tests
 		$db = static::$container->db;
 		$db->dropTable('#__foobar_example', true);
 	}
 
-	public static function tearDownAfterClass()
+	public function tearDown()
 	{
 		// Make sure the #__foobar_example table does not exist after running the tests
 		$db = static::$container->db;
 		$db->dropTable('#__foobar_example', true);
 
-		parent::tearDownAfterClass();
+		parent::tearDown();
 	}
 
 	/**
@@ -71,6 +71,9 @@ class InstallerTest extends FOFTestCase
 	public function testInsertDataUsingEqualsChecks()
 	{
 		$db = static::$container->db;
+
+        // Be sure the table exists
+        $this->createTable();
 
 		$installer = new Installer($db, __DIR__ . '/../_data/installer');
 		$installer->setForcedFile(__DIR__ . '/../_data/installer/test_equals.xml');
@@ -138,6 +141,8 @@ class InstallerTest extends FOFTestCase
 	{
 		$db = static::$container->db;
 
+        $this->createTable();
+
 		$installer = new Installer($db, __DIR__ . '/../_data/installer');
 		$installer->setForcedFile(__DIR__ . '/../_data/installer/test_type.xml');
 		$installer->updateSchema();
@@ -193,6 +198,9 @@ class InstallerTest extends FOFTestCase
 	public function testRemoveSchema()
 	{
 		$db = static::$container->db;
+
+        $this->createTable();
+
 		$tables = $db->setQuery('SHOW TABLES')->loadColumn();
 		$prefix = $db->getPrefix();
 		$this->assertTrue(in_array($prefix . 'foobar_example', $tables), 'The table must exist before testing starts');
@@ -204,4 +212,18 @@ class InstallerTest extends FOFTestCase
 		$prefix = $db->getPrefix();
 		$this->assertFalse(in_array($prefix . 'foobar_example', $tables), 'The table must not exist after running removeSchema');
 	}
+
+    private function createTable()
+    {
+        $db = static::$container->db;
+
+        $create = "CREATE TABLE IF NOT EXISTS `#__foobar_example` (
+        `example_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+        `description` varchar(255) NOT NULL,
+        `text` longtext,
+    PRIMARY KEY (`example_id`)
+    ) DEFAULT CHARACTER SET utf8;";
+
+        $db->setQuery($create)->execute();
+    }
 }
