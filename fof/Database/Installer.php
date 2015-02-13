@@ -24,6 +24,9 @@ class Installer
 	/** @var  string  Force a specific **absolute** file path for the XML schema file */
 	private $forcedFile = null;
 
+    /** @var array Internal cache for table list  */
+    protected static $allTables = array();
+
 	/**
 	 * Public constructor
 	 *
@@ -393,16 +396,14 @@ class Installer
 	 */
 	protected function conditionMet($table, SimpleXMLElement $node)
 	{
-		static $allTables = null;
-
-		if (empty($allTables))
+		if (empty(static::$allTables))
 		{
-			$allTables = $this->db->getTableList();
+            static::$allTables = $this->db->getTableList();
 		}
 
 		// Does the table exist?
 		$tableNormal = $this->db->replacePrefix($table);
-		$tableExists = in_array($tableNormal, $allTables);
+		$tableExists = in_array($tableNormal, static::$allTables);
 
 		// Initialise
 		$condition = false;

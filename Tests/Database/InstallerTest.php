@@ -10,6 +10,7 @@ namespace FOF30\Tests\Database;
 
 use FOF30\Database\Installer;
 use FOF30\Tests\Helpers\FOFTestCase;
+use FOF30\Tests\Helpers\ReflectionHelper;
 
 /**
  * @covers  FOF30\Database\Installer::<protected>
@@ -52,6 +53,8 @@ class InstallerTest extends FOFTestCase
 		$this->assertFalse(in_array($prefix . 'foobar_example', $tables), 'The table must not exist before testing starts');
 
 		$installer = new Installer($db, __DIR__ . '/../_data/installer/pick_right');
+        ReflectionHelper::setValue($installer, 'allTables', array());
+
 		$installer->updateSchema();
 
 		$tables = $db->setQuery('SHOW TABLES')->loadColumn();
