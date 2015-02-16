@@ -80,7 +80,7 @@ class ModelStub extends Model
             return call_user_func_array($func, array());
         }
 
-        return $this->name;
+        return parent::getName();
     }
 
     /**

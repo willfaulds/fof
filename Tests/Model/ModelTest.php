@@ -43,10 +43,44 @@ class ModelTest extends FOFTestCase
         $state     = ReflectionHelper::getValue($model, 'state');
         $populate  = ReflectionHelper::getValue($model, '_state_set');
         $ignore    = ReflectionHelper::getValue($model, '_ignoreRequest');
+        $name      = ReflectionHelper::getValue($model, 'name');
 
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to get the correct name'));
         $this->assertEquals($check['state'], $state, sprintf($msg, 'Failed to set the internal state object'));
         $this->assertEquals($check['populate'], $populate, sprintf($msg, 'Failed to set the internal state marker'));
         $this->assertEquals($check['ignore'], $ignore, sprintf($msg, 'Failed to set the internal state marker'));
+    }
+
+    /**
+     * @group           Model
+     * @group           ModelGetName
+     * @covers          FOF30\Model\Model::getName
+     */
+    public function testGetName()
+    {
+        $model = new ModelStub(static::$container);
+
+        ReflectionHelper::setValue($model, 'name', null);
+
+        $name = $model->getName();
+
+        $this->assertEquals('ModelStub', $name, 'Model::getName Failed to fetch the correct model name');
+    }
+
+    /**
+     * @group           Model
+     * @group           ModelGetTask
+     * @covers          FOF30\Model\Model::getName
+     */
+    public function testGetNameException()
+    {
+        $this->setExpectedException('FOF30\Model\Exception\CannotGetName');
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('getState'), array(static::$container));
+
+        ReflectionHelper::setValue($model, 'name', null);
+
+        $model->getName();
     }
 
     /**

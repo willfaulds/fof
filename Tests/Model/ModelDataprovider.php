@@ -9,10 +9,26 @@ class ModelDataprovider
                 'config'     => array()
             ),
             array(
-                'case'       => 'Container not passed, state is not set in the mvc_config, no populate, no ignore',
+                'case'       => 'State is not set in the config, no populate, no ignore',
                 'state'      => (object) array(),
                 'populate'   => false,
-                'ignore'     => false
+                'ignore'     => false,
+                'name'       => 'nestedset'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config'     => array(
+                    'name' => 'mocked'
+                )
+            ),
+            array(
+                'case'       => 'State is not set in the config, no populate, no ignore',
+                'state'      => (object) array(),
+                'populate'   => false,
+                'ignore'     => false,
+                'name'       => 'mocked'
             )
         );
 
@@ -25,12 +41,13 @@ class ModelDataprovider
                 )
             ),
             array(
-                'case'       => 'Passed container, state is set in the mvc_config (array), no populate, no ignore',
+                'case'       => 'State is set in the config (array), no populate, no ignore',
                 'state'      => (object) array(
                     'dummy' => 'test'
                 ),
                 'populate'   => false,
-                'ignore'     => false
+                'ignore'     => false,
+                'name'       => 'nestedset'
             )
         );
 
@@ -41,10 +58,11 @@ class ModelDataprovider
                 )
             ),
             array(
-                'case'       => 'Passed container, state is set in the mvc_config (string - wrong), no populate, no ignore',
+                'case'       => 'State is set in the config (string - wrong), no populate, no ignore',
                 'state'      => (object) array(),
                 'populate'   => false,
-                'ignore'     => false
+                'ignore'     => false,
+                'name'       => 'nestedset'
             )
         );
 
@@ -57,12 +75,13 @@ class ModelDataprovider
                 )
             ),
             array(
-                'case'       => 'Passed container, state is set in the mvc_config (object), no populate, no ignore',
+                'case'       => 'State is set in the config (object), no populate, no ignore',
                 'state'      => (object) array(
                     'dummy' => 'test'
                 ),
                 'populate'   => false,
-                'ignore'     => false
+                'ignore'     => false,
+                'name'       => 'nestedset'
             )
         );
 
@@ -77,12 +96,13 @@ class ModelDataprovider
                 )
             ),
             array(
-                'case'       => 'Passed container, state is set in the mvc_config (object), with populate and ignore',
+                'case'       => 'State is set in the config (object), with populate and ignore',
                 'state'      => (object) array(
                     'dummy' => 'test'
                 ),
                 'populate'   => true,
-                'ignore'     => true
+                'ignore'     => true,
+                'name'       => 'nestedset'
             )
         );
 
@@ -97,12 +117,13 @@ class ModelDataprovider
                 )
             ),
             array(
-                'case'       => 'Passed container, state is set in the mvc_config (object), with populate and ignore (they are set to false)',
+                'case'       => 'State is set in the config (object), with populate and ignore (they are set to false)',
                 'state'      => (object) array(
                     'dummy' => 'test'
                 ),
                 'populate'   => false,
-                'ignore'     => false
+                'ignore'     => false,
+                'name'       => 'nestedset'
             )
         );
 
