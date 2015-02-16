@@ -410,6 +410,38 @@ class ControllerTest extends ApplicationTestCase
     /**
      * @group           Controller
      * @group           ControllerGetTask
+     * @covers          FOF30\Controller\Controller::getName
+     */
+    public function testGetName()
+    {
+        $controller = new ControllerStub(static::$container);
+
+        ReflectionHelper::setValue($controller, 'name', null);
+
+        $name = $controller->getName();
+
+        $this->assertEquals('ControllerStub', $name, 'Controller::getName Failed to fetch the correct controller name');
+    }
+
+    /**
+     * @group           Controller
+     * @group           ControllerGetTask
+     * @covers          FOF30\Controller\Controller::getName
+     */
+    public function testGetNameException()
+    {
+        $this->setExpectedException('FOF30\Controller\Exception\CannotGetName');
+
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('registerTask'), array(static::$container));
+
+        ReflectionHelper::setValue($controller, 'name', null);
+
+        $controller->getName();
+    }
+
+    /**
+     * @group           Controller
+     * @group           ControllerGetTask
      * @covers          FOF30\Controller\Controller::getTask
      */
     public function testGetTask()
