@@ -121,6 +121,16 @@ class BasicFactory implements FactoryInterface
 	{
 		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
+		try
+		{
+			return $this->createView($viewClass, $config);
+		}
+		catch (ViewNotFound $e)
+		{
+		}
+
+		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst(Inflector::singularize($viewName)) . '\\' . ucfirst($viewType);
+
 		return $this->createView($viewClass, $config);
 	}
 
