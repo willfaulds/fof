@@ -126,7 +126,7 @@ class Relation extends GenericList
 		$relation  = Inflector::pluralize((string) $this->element['name']);
 
 		/** @var DataModel $model */
-		$model = $this->form->getContainer()->factory->model($view)->setIgnoreRequest(true)->savestate(false);;
+		$model = $this->form->getContainer()->factory->model($relation)->setIgnoreRequest(true)->savestate(false);
 
 		$key   = $model->getIdFieldName();
 		$value = $model->getFieldAlias($value_field);
@@ -138,6 +138,7 @@ class Relation extends GenericList
 
 		if ($id = $this->form->getModel()->getId())
 		{
+			$model     = $this->form->getContainer()->factory->model($view)->setIgnoreRequest(true)->savestate(false);
 			$relations = $model->getRelations()->getRelation($relation)->getData();
 
 			foreach ($relations as $item)
