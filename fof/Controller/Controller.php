@@ -544,9 +544,7 @@ class Controller
 				$config['modelClearInput'] = true;
 			}
 
-			// Get the model's class name
-			$modelNameForClass = empty($name) ? $this->modelName : ucfirst($name);
-			$this->modelInstances[$modelName] = $this->container->factory->model($modelNameForClass, $config);
+			$this->modelInstances[$modelName] = $this->container->factory->model(ucfirst($modelName), $config);
 		}
 
 		return $this->modelInstances[$modelName];
