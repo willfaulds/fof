@@ -72,8 +72,15 @@ class ControllerTest extends ApplicationTestCase
         $controller->__construct($container, $test['config']);
 
         $layout = ReflectionHelper::getValue($controller, 'layout');
+        $name   = ReflectionHelper::getValue($controller, 'name');
+        $autoRoute = ReflectionHelper::getValue($controller, 'autoRouting');
+        $csrf      = ReflectionHelper::getValue($controller, 'csrfProtection');
 
         $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to set the name'));
+        $this->assertEquals($check['autoroute'], $autoRoute, sprintf($msg, 'Failed to set the autoRouting'));
+        $this->assertEquals($check['csrf'], $csrf, sprintf($msg, 'Failed to set the CSRF protection'));
+
     }
 
     /**

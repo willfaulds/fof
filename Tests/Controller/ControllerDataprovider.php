@@ -14,7 +14,10 @@ class ControllerDataprovider
                 'defaultTask' => 'main',
                 'layout'      => null,
                 'viewName'    => false,
-                'modelName'   => false
+                'modelName'   => false,
+                'name'        => 'dummycontroller',
+                'autoroute'   => 0,
+                'csrf'        => 2
             )
         );
 
@@ -25,7 +28,10 @@ class ControllerDataprovider
                     'viewName'  => 'dummy',
                     'modelName' => 'dummy',
                     'default_view' => 'foobar',
-                    'default_task' => 'dummy'
+                    'default_task' => 'dummy',
+                    'name'         => 'dummycontroller',
+                    'autoRouting'  => 1,
+                    'csrfProtection' => 1
                 )
             ),
             array(
@@ -33,7 +39,10 @@ class ControllerDataprovider
                 'defaultTask' => 'dummy',
                 'layout'      => 'foobar',
                 'viewName'    => 'dummy',
-                'modelName'   => 'dummy'
+                'modelName'   => 'dummy',
+                'name'        => 'dummycontroller',
+                'autoroute'   => 1,
+                'csrf'        => 1
             )
         );
 
