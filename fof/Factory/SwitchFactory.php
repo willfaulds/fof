@@ -85,7 +85,15 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
 	public function model($viewName, array $config = array())
 	{
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+		try
+		{
+			return parent::model($viewName, $config);
+		}
+		catch (ModelNotFound $e)
+		{
+		}
+
+		$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst($viewName);
 
 		try
 		{
@@ -93,7 +101,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		}
 		catch (ModelNotFound $e)
 		{
-			$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst($viewName);
+			$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst(Inflector::singularize($viewName));
 
 			return $this->createModel($modelClass, $config);
 		}

@@ -95,6 +95,16 @@ class BasicFactory implements FactoryInterface
 	{
 		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
 
+		try
+		{
+			return $this->createModel($modelClass, $config);
+		}
+		catch (ModelNotFound $e)
+		{
+		}
+
+		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst(Inflector::singularize($viewName));
+
 		return $this->createModel($modelClass, $config);
 	}
 
