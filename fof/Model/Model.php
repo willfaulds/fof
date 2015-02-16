@@ -85,6 +85,9 @@ class Model
 			$this->name = $config['name'];
 		}
 
+		// If $config['name'] is not set, auto-detect the model's name
+		$this->name = $this->getName();
+
 		// Set the model state
 		if (array_key_exists('state', $config))
 		{
