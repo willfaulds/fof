@@ -200,12 +200,14 @@ class Controller
 
 	/**
 	 * Public constructor of the Controller class. You can pass the following variables in the $config array:
-	 * name          string  The name of the Controller. Default: auto detect from the class name
-	 * default_task  string  The task to use when none is specified. Default: main
-	 * viewName      string  The view name. Default: the same as the controller name
-	 * modelName     string  The model name. Default: the same as the controller name
-	 * viewConfig    array   The configuration overrides for the View.
-	 * modelConfig   array   The configuration overrides for the Model.
+	 * name            string  The name of the Controller. Default: auto detect from the class name
+	 * default_task    string  The task to use when none is specified. Default: main
+	 * autoRouting     int     See the autoRouting property
+	 * csrfProtection  int     See the csrfProtection property
+	 * viewName        string  The view name. Default: the same as the controller name
+	 * modelName       string  The model name. Default: the same as the controller name
+	 * viewConfig      array   The configuration overrides for the View.
+	 * modelConfig     array   The configuration overrides for the Model.
 	 *
 	 * @param   Container  $container  The application container
 	 * @param   array      $config     The configuration array
@@ -256,7 +258,7 @@ class Controller
 		$this->layout = $this->input->getCmd('layout', null);
 
 		// If the default task is set, register it as such
-		if (array_key_exists('default_task', $config))
+		if (array_key_exists('default_task', $config) && !empty($config['default_task']))
 		{
 			$this->registerDefaultTask($config['default_task']);
 		}
@@ -269,14 +271,26 @@ class Controller
 		$this->config = $config;
 
 		// Set any model/view name overrides
-		if (array_key_exists('viewName', $config))
+		if (array_key_exists('viewName', $config) && !empty($config['viewName']))
 		{
 			$this->setViewName($config['viewName']);
 		}
 
-		if (array_key_exists('modelName', $config))
+		if (array_key_exists('modelName', $config) && !empty($config['modelName']))
 		{
 			$this->setModelName($config['modelName']);
+		}
+
+		// Apply the autoRouting preference
+		if (array_key_exists('autoRouting', $config))
+		{
+			$this->autoRouting = (int)$config['autoRouting'];
+		}
+
+		// Apply the csrfProtection preference
+		if (array_key_exists('csrfProtection', $config))
+		{
+			$this->csrfProtection = (int)$config['csrfProtection'];
 		}
 	}
 
