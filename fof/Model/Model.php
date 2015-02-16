@@ -171,14 +171,25 @@ class Model
 		// Get the savestate status
 		$value = $this->internal_getState($key);
 
-		if (is_null($value) && !$this->_ignoreRequest)
+        // Value is not found in the internal state
+		if (is_null($value))
 		{
-			$value = $this->container->platform->getUserStateFromRequest($key, $key, $this->input, $value, 'none', $this->_savestate);
+            // Can I fetch it from the request?
+            if(!$this->_ignoreRequest)
+            {
+                $value = $this->container->platform->getUserStateFromRequest($key, $key, $this->input, $value, 'none', $this->_savestate);
 
-			if (is_null($value))
-			{
-				return $default;
-			}
+                // Did I get any useful value from the request?
+                if (is_null($value))
+                {
+                    return $default;
+                }
+            }
+            // Nope! Let's return the default value
+            else
+            {
+                return $default;
+            }
 		}
 
 		if (strtoupper($filter_type) == 'RAW')

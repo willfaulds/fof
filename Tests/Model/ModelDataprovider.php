@@ -130,6 +130,121 @@ class ModelDataprovider
         return $data;
     }
 
+    public static function getTestGetState()
+    {
+        $data[] = array(
+            array(
+                'config'  => array(),
+                'key'     => '',
+                'default' => 'default',
+                'filter'  => 'raw',
+                'mock' => array(
+                    'getUserState' => 'user state',
+                    'ignore'       => false
+                )
+            ),
+            array(
+                'case'   => 'No key passed',
+                'result' => new stdClass()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config'  => array(
+                    'state' => array(
+                        'foobar' => 'internal state'
+                    )
+                ),
+                'key'     => 'foobar',
+                'default' => 'default',
+                'filter'  => 'raw',
+                'mock' => array(
+                    'getUserState' => 'user state',
+                    'ignore'       => false,
+                )
+            ),
+            array(
+                'case'   => 'Requesting a key, got it from the internal state',
+                'result' => 'internal state'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config'  => array(),
+                'key'     => 'foobar',
+                'default' => 'default',
+                'filter'  => 'raw',
+                'mock' => array(
+                    'getUserState' => 'user state',
+                    'ignore'       => false
+                )
+            ),
+            array(
+                'case'   => 'Requesting a key, got it form the request',
+                'result' => 'user state'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config'  => array(),
+                'key'     => 'foobar',
+                'default' => 'default',
+                'filter'  => 'raw',
+                'mock' => array(
+                    'getUserState' => null,
+                    'ignore'       => false
+                )
+            ),
+            array(
+                'case'   => 'Requesting a key, the request was empty',
+                'result' => 'default'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config'  => array(),
+                'key'     => 'foobar',
+                'default' => 'default',
+                'filter'  => 'raw',
+                'mock' => array(
+                    'getUserState' => 'user state',
+                    'ignore'       => true
+                )
+            ),
+            array(
+                'case'   => 'Requesting a key, not found in the internal state, ignore flag is on',
+                'result' => 'default'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config'  => array(
+                    'state' => array(
+                        'foobar' => 'internal state'
+                    )
+                ),
+                'key'     => 'foobar',
+                'default' => 'default',
+                'filter'  => 'int',
+                'mock' => array(
+                    'getUserState' => 'user state',
+                    'ignore'       => false,
+                )
+            ),
+            array(
+                'case'   => 'Requesting a key, got it from the internal state, int filter applied',
+                'result' => 0
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestSetState()
     {
         $data[] = array(

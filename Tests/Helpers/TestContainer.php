@@ -17,10 +17,13 @@ class TestContainer extends Container
 {
 	public function __construct(array $values = array())
 	{
-		$values['platform'] = function(Container $c)
-		{
-			return new TestJoomlaPlatform($c);
-		};
+        if(!isset($values['platform']))
+        {
+            $values['platform'] = function(Container $c)
+            {
+                return new TestJoomlaPlatform($c);
+            };
+        }
 
 		return parent::__construct($values);
 	}

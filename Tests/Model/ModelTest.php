@@ -85,6 +85,33 @@ class ModelTest extends FOFTestCase
 
     /**
      * @group           Model
+     * @group           ModelGetState
+     * @covers          FOF30\Model\Model::getState
+     * @dataProvider    ModelDataprovider::getTestGetState
+     */
+    public function testGetState($test, $check)
+    {
+        $msg       = 'Model::getState %s - Case: '.$check['case'];
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'platform'      => new ClosureHelper(array(
+                'getUserStateFromRequest' => function() use ($test){
+                    return $test['mock']['getUserState'];
+                }
+            ))
+        ));
+
+        $model = new ModelStub($container, $test['config']);
+
+        ReflectionHelper::setValue($model, '_ignoreRequest', $test['mock']['ignore']);
+
+        $result = $model->getState($test['key'], $test['default'], $test['filter']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           Model
      * @group           ModelGetHash
      * @covers          FOF30\Model\Model::getHash
      */
