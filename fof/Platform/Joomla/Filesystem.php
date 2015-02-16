@@ -139,7 +139,14 @@ class Filesystem extends BaseFilesystem
 	 */
 	public function folderExists($path)
 	{
-		return \JFolder::exists($path);
+		try
+		{
+			return \JFolder::exists($path);
+		}
+		catch (\Exception $e)
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -158,6 +165,22 @@ class Filesystem extends BaseFilesystem
 	public function folderFiles($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
 								$excludefilter = array('^\..*', '.*~'), $naturalSort = false)
 	{
+		// JFolder throws idiotic errors if the path is not a folder
+		try
+		{
+			$path = \JPath::clean($path);
+		}
+		catch (\Exception $e)
+		{
+			return array();
+		}
+
+		if (!@is_dir($path))
+		{
+			return array();
+		}
+
+		// Now call JFolder
 		return \JFolder::files($path, $filter, $recurse, $full, $exclude, $excludefilter, $naturalSort);
 	}
 
@@ -176,6 +199,22 @@ class Filesystem extends BaseFilesystem
 	public function folderFolders($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
 								  $excludefilter = array('^\..*'))
 	{
+		// JFolder throws idiotic errors if the path is not a folder
+		try
+		{
+			$path = \JPath::clean($path);
+		}
+		catch (\Exception $e)
+		{
+			return array();
+		}
+
+		if (!@is_dir($path))
+		{
+			return array();
+		}
+
+		// Now call JFolder
 		return \JFolder::folders($path, $filter, $recurse, $full, $exclude, $excludefilter);
 	}
 
