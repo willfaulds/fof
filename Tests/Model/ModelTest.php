@@ -154,10 +154,24 @@ class ModelTest extends FOFTestCase
 
     /**
      * @group           Model
+     * @group           ModelGetContainer
+     * @covers          FOF30\Model\Model::getContainer
+     */
+    public function testGetContainer()
+    {
+        $model = new ModelStub(static::$container);
+
+        $container = $model->getContainer();
+
+        $this->assertSame(static::$container, $container, 'Model::getContainer Failed to return the same container');
+    }
+
+    /**
+     * @group           Model
      * @group           Model__get
      * @covers          FOF30\Model\Model::__get
      */
-    public function tXest__get()
+    public function test__get()
     {
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('getState'), array(static::$container));
         $model->expects($this->once())->method('getState')->with($this->equalTo('foo'))->willReturn('bar');
@@ -165,6 +179,27 @@ class ModelTest extends FOFTestCase
         $result = $model->foo;
 
         $this->assertEquals('bar', $result, 'Model::__get Returned the wrong value');
+    }
+
+    /**
+     * @group           Model
+     * @group           Model__get
+     * @covers          FOF30\Model\Model::__get
+     */
+    public function test__getInput()
+    {
+        $input = new Input();
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'input' => $input
+        ));
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\ModelStub', array('getState'), array($container));
+        $model->expects($this->never())->method('getState');
+
+        $result = $model->input;
+
+        $this->assertSame($input, $result, 'Model::__get Returned the wrong value when asking for the input object');
     }
 
     /**
