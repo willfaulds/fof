@@ -75,6 +75,11 @@ class Autoloader
 	 */
 	public function addMap($prefix, $paths, $prepend = false)
 	{
+		if ($prefix)
+		{
+			$prefix = ltrim($prefix, '\\');
+		}
+
 		if (!$prefix)
 		{
 			// Register directories for the root namespace.
@@ -149,6 +154,11 @@ class Autoloader
 	 */
 	public function setMap($prefix, $paths)
 	{
+		if ($prefix)
+		{
+			$prefix = ltrim($prefix, '\\');
+		}
+
 		if (!$prefix)
 		{
 			$this->fallbackDirs = (array)$paths;
