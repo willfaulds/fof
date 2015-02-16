@@ -295,7 +295,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerSetViewName
      * @covers          FOF30\Controller\Controller::setViewName
      */
-    public function tXestSetViewName()
+    public function testSetViewName()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -312,7 +312,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerSetModelName
      * @covers          FOF30\Controller\Controller::setModelName
      */
-    public function tXestSetModelName()
+    public function testSetModelName()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -329,7 +329,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerSetModel
      * @covers          FOF30\Controller\Controller::setModel
      */
-    public function tXestSetModel()
+    public function testSetModel()
     {
         $model      = new ModelStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -350,7 +350,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerSetView
      * @covers          FOF30\Controller\Controller::setView
      */
-    public function tXestSetView()
+    public function testSetView()
     {
         $view       = new ViewStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -371,7 +371,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerGetTask
      * @covers          FOF30\Controller\Controller::getTask
      */
-    public function tXestGetTask()
+    public function testGetTask()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -388,7 +388,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerGetTasks
      * @covers          FOF30\Controller\Controller::getTasks
      */
-    public function tXestGetTasks()
+    public function testGetTasks()
     {
         $controller = new ControllerStub(new TestContainer(array(
             'componentName' => 'com_eastwood'
@@ -445,16 +445,16 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerRegisterDefaultTask
      * @covers          FOF30\Controller\Controller::registerDefaultTask
      */
-    public function tXestRegisterDefaultTask()
+    public function testRegisterDefaultTask()
     {
         // In this test I just want to check the result, since I'll test the registerTask in another test
         $container  = new TestContainer(array(
             'componentName' => 'com_eastwood'
         ));
-        $controller = $this->getMock('\\Awf\\Tests\\Stubs\\Mvc\\ControllerStub', array('registerTask'), array($container));
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\ControllerStub', array('registerTask'), array($container));
         $result     = $controller->registerDefaultTask('dummy');
 
-        $this->assertInstanceOf('\\Awf\\Mvc\\Controller', $result, 'Controller::registerDefaultTask should return an instance of itself');
+        $this->assertInstanceOf('\\FOF30\\Controller\\Controller', $result, 'Controller::registerDefaultTask should return an instance of itself');
     }
 
     /**
