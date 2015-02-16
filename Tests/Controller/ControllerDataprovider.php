@@ -258,16 +258,19 @@ class ControllerDataprovider
             array(
                 'name' => 'foobar',
                 'config' => array(),
+                'constructConfig' => array(),
                 'mock' => array(
                     'view' => null,
                     'modelName' => null,
-                    'instances' => array()
+                    'instances' => array(),
+                    'getModel'  => true
                 )
             ),
             array(
-                'case'   => 'Name passed, model not cached, internal reference are empty',
-                'result' => '\\Fakeapp\\Model\\Foobar',
-                'config' => array(
+                'case'      => 'Name passed, model not cached, internal reference are empty',
+                'result'    => true,
+                'modelName' => 'Foobar',
+                'config'    => array(
                     'modelTemporaryInstance' => false,
                     'modelClearState'        => true,
                     'modelClearInput'        => true
@@ -279,15 +282,46 @@ class ControllerDataprovider
             array(
                 'name' => 'foobar',
                 'config' => array('foo' => 'bar'),
+                'constructConfig' => array(),
                 'mock' => array(
                     'view' => null,
                     'modelName' => null,
-                    'instances' => array()
+                    'instances' => array(),
+                    'getModel'  => 'mocked'
                 )
             ),
             array(
                 'case'   => 'Name and config passed, model not cached, internal reference are empty',
-                'result' => '\\Fakeapp\\Model\\Foobar',
+                'result' => 'mocked',
+                'modelName' => 'Foobar',
+                'config' => array(
+                    'foo' => 'bar',
+                    'modelTemporaryInstance' => false,
+                    'modelClearState'        => true,
+                    'modelClearInput'        => true
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(
+                    'modelConfig' => array(
+                        'foo' => 'bar')
+                ),
+                'mock' => array(
+                    'view' => null,
+                    'modelName' => null,
+                    'instances' => array(),
+                    'getModel'  => 'mocked'
+                )
+            ),
+            array(
+                'case'   => 'Name and config passed (in the constructor), model not cached, internal reference are empty',
+                'result' => 'mocked',
+                'modelName' => 'Foobar',
                 'config' => array(
                     'foo' => 'bar',
                     'modelTemporaryInstance' => false,
@@ -301,15 +335,18 @@ class ControllerDataprovider
             array(
                 'name' => null,
                 'config' => array(),
+                'constructConfig' => array(),
                 'mock' => array(
                     'view' => null,
                     'modelName' => 'foobar',
-                    'instances' => array()
+                    'instances' => array(),
+                    'getModel'  => true
                 )
             ),
             array(
                 'case'   => 'Name not passed, model not cached, using modelName property',
-                'result' => '\\Fakeapp\\Model\\Foobar',
+                'result' => true,
+                'modelName' => 'Foobar',
                 'config' => array(
                     'modelTemporaryInstance' => true
                 )
@@ -320,15 +357,18 @@ class ControllerDataprovider
             array(
                 'name' => null,
                 'config' => array(),
+                'constructConfig' => array(),
                 'mock' => array(
                     'view' => 'foobar',
                     'modelName' => null,
-                    'instances' => array()
+                    'instances' => array(),
+                    'getModel'  => 'mocked'
                 )
             ),
             array(
                 'case'   => 'Name not passed, model not cached, using view property',
-                'result' => '\\Fakeapp\\Model\\Foobar',
+                'result' => 'mocked',
+                'modelName' => 'Foobar',
                 'config' => array(
                     'modelTemporaryInstance' => true
                 )
@@ -337,20 +377,21 @@ class ControllerDataprovider
 
         $data[] = array(
             array(
-                'name' => 'foobar',
+                'name'   => 'foobar',
                 'config' => array(),
-                'mock' => array(
+                'constructConfig' => array(),
+                'mock'   => array(
                     'view' => null,
                     'modelName' => null,
-                    'instances' => array(
-                        'foobar' => new \FOF30\Tests\Stubs\Model\ModelStub(new \FOF30\Tests\Helpers\TestContainer())
-                    )
+                    'instances' => array('foobar' => 'cached'),
+                    'getModel'  => true
                 )
             ),
             array(
                 'case'   => 'Name passed, fetching the model from the cache',
-                'result' => '\\Awf\\Tests\\Stubs\\Mvc\\ModelStub',
-                'config' => null
+                'result' => 'cached',
+                'modelName' => '',
+                'config'    => array()
             )
         );
 

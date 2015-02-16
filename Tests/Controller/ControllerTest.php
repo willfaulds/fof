@@ -215,13 +215,25 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::getModel
      * @dataProvider    ControllerDataprovider::getTestGetModel
      */
-    public function tXestGetModel($test, $check)
+    public function testGetModel($test, $check)
     {
-        $msg        = 'Controller::getModel %s - Case: '.$check['case'];
+        $msg          = 'Controller::getModel %s - Case: '.$check['case'];
+        $passedModel  = '';
+        $passedConfig = array();
+
         $container  = new TestContainer(array(
-            'componentName' => 'com_eastwood'
+            'componentName' => 'com_fakeapp',
+            'factory'       => new ClosureHelper(array(
+                'model' => function($self, $modelName, $config) use ($test, &$passedModel, &$passedConfig){
+                    $passedModel  = $modelName;
+                    $passedConfig = $config;
+
+                    return $test['mock']['getModel'];
+                }
+            ))
         ));
-        $controller = new ControllerStub($container);
+
+        $controller = new ControllerStub($container, $test['constructConfig']);
 
         ReflectionHelper::setValue($controller, 'modelName', $test['mock']['modelName']);
         ReflectionHelper::setValue($controller, 'view', $test['mock']['view']);
@@ -229,10 +241,9 @@ class ControllerTest extends ApplicationTestCase
 
         $result = $controller->getModel($test['name'], $test['config']);
 
-        $config = $result->passedContainer['mvc_config'];
-
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Created the wrong model'));
-        $this->assertEquals($check['config'], $config, sprintf($msg, 'Passed configuration was not considered'));
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['modelName'], $passedModel, sprintf($msg, 'Created the wrong model name'));
+        $this->assertEquals($check['config'], $passedConfig, sprintf($msg, 'Passed the wrong config'));
     }
 
     /**
