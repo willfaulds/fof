@@ -110,6 +110,40 @@ class ControllerTest extends ApplicationTestCase
 
     /**
      * @group           Controller
+     * @group           ControllerConstruct
+     * @covers          FOF30\Controller\Controller::__get
+     * @dataProvider    ControllerDataprovider::getTest__get
+     */
+    public function test__get($test, $check)
+    {
+        $msg = 'Controller::__get %s - Case: '.$check['case'];
+
+        $input = new Input();
+
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'input'         => $input
+        ));
+
+        $controller = new ControllerStub($container);
+
+        $property = $test['method'];
+
+        // Suppress the error, so I can check the code executed AFTER the warning
+        $result = @$controller->$property;
+
+        if($check['result'])
+        {
+            $this->assertSame($input, $result, sprintf($msg, 'Returned the wrong result'));
+        }
+        else
+        {
+            $this->assertNull($result, sprintf($msg, 'Returned the wrong result'));
+        }
+    }
+
+    /**
+     * @group           Controller
      * @group           ControllerExecute
      * @covers          FOF30\Controller\Controller::execute
      * @dataProvider    ControllerDataprovider::getTestExecute

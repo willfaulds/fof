@@ -49,6 +49,31 @@ class ControllerDataprovider
         return $data;
     }
 
+    public static function getTest__get()
+    {
+        $data[]= array(
+            array(
+                'method' => 'input'
+            ),
+            array(
+                'case'   => 'Requesting the input object from the container',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'method' => 'wrong'
+            ),
+            array(
+                'case'   => 'Requesting a non-existing method',
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestExecute()
     {
         $data[] = array(
