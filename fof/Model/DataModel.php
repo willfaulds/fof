@@ -385,7 +385,7 @@ class DataModel extends Model implements \JTableInterface
 		// Do I have a list of relations?
 		if (isset($config['relations']) && is_array($config['relations']))
 		{
-			foreach ($config['relations'] as $name => $relConfig)
+			foreach ($config['relations'] as $relConfig)
 			{
 				if (!is_array($relConfig))
 				{
@@ -404,7 +404,7 @@ class DataModel extends Model implements \JTableInterface
 
 				$relConfig = array_merge($defaultRelConfig, $relConfig);
 
-				$this->relationManager->addRelation($name, $relConfig['type'], $relConfig['foreignModelClass'],
+				$this->relationManager->addRelation($relConfig['itemName'], $relConfig['type'], $relConfig['foreignModelClass'],
 					$relConfig['localKey'], $relConfig['foreignKey'], $relConfig['pivotTable'],
 					$relConfig['pivotLocalKey'], $relConfig['pivotForeignKey']);
 			}
