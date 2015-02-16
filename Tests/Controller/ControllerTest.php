@@ -406,7 +406,7 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::redirect
      * @dataProvider    ControllerDataprovider::getTestRedirect
      */
-    public function tXestRedirect($test, $check)
+    public function testRedirect($test, $check)
     {
         $msg        = 'Controller::redirect %s - Case: '.$check['case'];
         $controller = new ControllerStub(new TestContainer(array(
@@ -422,12 +422,20 @@ class ControllerTest extends ApplicationTestCase
         ReflectionHelper::setValue($controller, 'redirect', $test['mock']['redirect']);
 
         // Let's save current app istances, I'll have to restore them later
-        $oldinstances = ReflectionHelper::getValue('\\Awf\\Application\\Application', 'instances');
-        ReflectionHelper::setValue('\\Awf\\Application\\Application', 'instances', array('tests' => $fakeapp));
+        if(is_object(\JFactory::$application))
+        {
+            $oldapp = clone \JFactory::$application;
+        }
+        else
+        {
+            $oldapp = \JFactory::$application;
+        }
+
+        \JFactory::$application = $fakeapp;
 
         $result = $controller->redirect();
 
-        ReflectionHelper::setValue('\\Awf\\Application\\Application', 'instances', $oldinstances);
+        \JFactory::$application = $oldapp;
 
         // If the redirection has been invoked, I have to nullify the result. In the real world I would be immediatly
         // redirected to another page.
@@ -463,7 +471,7 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::registerTask
      * @dataProvider    ControllerDataprovider::getTestRegisterTask
      */
-    public function tXestRegisterTask($test, $check)
+    public function testRegisterTask($test, $check)
     {
         $msg        = 'Controller::registerDefaultTask %s - Case: '.$check['case'];
         $container  = new TestContainer(array(
@@ -477,7 +485,7 @@ class ControllerTest extends ApplicationTestCase
 
         $taskMap = ReflectionHelper::getValue($controller, 'taskMap');
 
-        $this->assertInstanceOf('\\Awf\\Mvc\\Controller', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Controller\\Controller', $result, sprintf($msg, 'Should return an instance of itself'));
 
         if($check['register'])
         {
@@ -494,7 +502,7 @@ class ControllerTest extends ApplicationTestCase
      * @group           ControllerUnregisterTask
      * @covers          FOF30\Controller\Controller::unregisterTask
      */
-    public function tXestUnregisterTask()
+    public function testUnregisterTask()
     {
         $msg        = 'Controller::unregisterDefaultTask %s';
         $container  = new TestContainer(array(
@@ -508,7 +516,7 @@ class ControllerTest extends ApplicationTestCase
 
         $taskMap = ReflectionHelper::getValue($controller, 'taskMap');
 
-        $this->assertInstanceOf('\\Awf\\Mvc\\Controller', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Controller\\Controller', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertArrayNotHasKey('foo', $taskMap, sprintf($msg, 'Should remove the task form the mapping'));
     }
 
@@ -518,7 +526,7 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::setMessage
      * @dataProvider    ControllerDataprovider::getTestSetMessage
      */
-    public function tXestSetMessage($test, $check)
+    public function testSetMessage($test, $check)
     {
         $msg        = 'Controller::setMessage %s - Case: '.$check['case'];
         $controller = new ControllerStub(new TestContainer(array(
@@ -550,7 +558,7 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::setRedirect
      * @dataProvider    ControllerDataprovider::getTestSetRedirect
      */
-    public function tXestSetRedirect($test, $check)
+    public function testSetRedirect($test, $check)
     {
         $msg        = 'Controller::setRedirect %s - Case: '.$check['case'];
         $controller = new ControllerStub(new TestContainer(array(
@@ -565,7 +573,7 @@ class ControllerTest extends ApplicationTestCase
         $message  = ReflectionHelper::getValue($controller, 'message');
         $type     = ReflectionHelper::getValue($controller, 'messageType');
 
-        $this->assertInstanceOf('\\Awf\\Mvc\\Controller', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Controller\\Controller', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertEquals($check['redirect'], $redirect, sprintf($msg, 'Did not set the redirect url correctly'));
         $this->assertEquals($check['message'], $message, sprintf($msg, 'Did not set the message correctly'));
         $this->assertEquals($check['type'], $type, sprintf($msg, 'Did not set the message type correctly'));

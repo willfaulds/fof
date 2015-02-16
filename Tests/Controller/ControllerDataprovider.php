@@ -619,7 +619,7 @@ class ControllerDataprovider
         $data[] = array(
             array(
                 'task'   => 'dummy',
-                'method' => 'Foobar',
+                'method' => 'foobar',
                 'mock'   => array(
                     'methods' => array('foobar')
                 )
@@ -633,7 +633,7 @@ class ControllerDataprovider
         $data[] = array(
             array(
                 'task'   => 'dummy',
-                'method' => 'Foobar',
+                'method' => 'foobar',
                 'mock'   => array(
                     'methods' => array()
                 )
