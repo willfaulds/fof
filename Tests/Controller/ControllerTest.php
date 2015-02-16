@@ -252,16 +252,31 @@ class ControllerTest extends ApplicationTestCase
      * @covers          FOF30\Controller\Controller::getView
      * @dataProvider    ControllerDataprovider::getTestGetView
      */
-    public function tXestGetView($test, $check)
+    public function testGetView($test, $check)
     {
         $msg        = 'Controller::getView %s - Case: '.$check['case'];
+        $arguments  = array(
+            'name'   => '',
+            'type'   => '',
+            'config' => array()
+        );
+
         $container  = new TestContainer(array(
             'componentName' => 'com_eastwood',
             'input' => new Input(array(
                 'format' => $test['mock']['format']
+            )),
+            'factory'  => new ClosureHelper(array(
+                'view' => function($self, $viewName, $type, $config) use ($test, &$arguments){
+                    $arguments['name'] = $viewName;
+                    $arguments['type'] = $type;
+                    $arguments['config'] = $config;
+
+                    return $test['mock']['getView'];
+                }
             ))
         ));
-        $controller = new ControllerStub($container);
+        $controller = new ControllerStub($container, $test['constructConfig']);
 
         ReflectionHelper::setValue($controller, 'viewName', $test['mock']['viewName']);
         ReflectionHelper::setValue($controller, 'view', $test['mock']['view']);
@@ -269,10 +284,10 @@ class ControllerTest extends ApplicationTestCase
 
         $result = $controller->getView($test['name'], $test['config']);
 
-        $config = $result->passedContainer['mvc_config'];
-
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Created the wrong view'));
-        $this->assertEquals($check['config'], $config, sprintf($msg, 'Passed configuration was not considered'));
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Created the wrong view'));
+        $this->assertEquals($check['viewName'], $arguments['name'], sprintf($msg, 'Created the wrong view name'));
+        $this->assertEquals($check['type'], $arguments['type'], sprintf($msg, 'Created the wrong view type'));
+        $this->assertEquals($check['config'], $arguments['config'], sprintf($msg, 'Passed the wrong config'));
     }
 
     /**
