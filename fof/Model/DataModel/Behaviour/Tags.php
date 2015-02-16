@@ -23,9 +23,9 @@ class Tags extends Observer
 	/**
 	 * The event which runs after binding data to the table
 	 *
-	 * @param   DataModel    &$model  The table which calls this event
+	 * @param   DataModel    &$model  The model which calls this event
 	 * @param   object|array &$src    The data to bind
-	 * @param    array       $options The options of the table
+	 * @param   array        $options The options of the table
 	 *
 	 * @return  boolean  True on success
 	 */
@@ -59,7 +59,7 @@ class Tags extends Observer
 	/**
 	 * The event which runs before storing (saving) data to the database
 	 *
-	 * @param   DataModel &$model      The table which calls this event
+	 * @param   DataModel &$model      The model which calls this event
 	 * @param   boolean   $updateNulls Should nulls be saved as nulls (true) or just skipped over (false)?
 	 *
 	 * @return  boolean  True to allow saving
@@ -81,7 +81,7 @@ class Tags extends Observer
 	/**
 	 * The event which runs after deleting a record
 	 *
-	 * @param   DataModel &$model The table which calls this event
+	 * @param   DataModel &$model The model which calls this event
 	 * @param   integer   $oid    The PK value of the record which was deleted
 	 *
 	 * @return  boolean  True to allow the deletion without errors
@@ -99,5 +99,29 @@ class Tags extends Observer
 				throw new \Exception('Error deleting Tags');
 			}
 		}
+	}
+
+	/**
+	 * This event runs after publishing a record in a model
+	 *
+	 * @param   DataModel  &$model  The model which calls this event
+	 *
+	 * @return  void
+	 */
+	public function onAfterPublish(&$model)
+	{
+		$model->updateUcmContent();
+	}
+
+	/**
+	 * This event runs after unpublishing a record in a model
+	 *
+	 * @param   DataModel  &$model  The model which calls this event
+	 *
+	 * @return  void
+	 */
+	public function onAfterUnpublish(&$model)
+	{
+		$model->updateUcmContent();
 	}
 }

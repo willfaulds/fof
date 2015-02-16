@@ -3659,4 +3659,24 @@ class DataModel extends Model implements \JTableInterface
 
 		$this->setBehaviorParam('blacklistFilters', $list);
 	}
+
+	public function updateUcmContent()
+	{
+		// Process the tags
+		$data  = $this->getData();
+		$alias = $this->getContentType();
+		$ucmContentTable = \JTable::getInstance('Corecontent');
+
+		$ucm = new \JUcmContent($this, $alias);
+		$ucmData = $data ? $ucm->mapData($data) : $ucm->ucmData;
+
+		$primaryId = $ucm->getPrimaryKey($ucmData['common']['core_type_id'], $ucmData['common']['core_content_item_id']);
+		$result = $ucmContentTable->load($primaryId);
+		$result = $result && $ucmContentTable->bind($ucmData['common']);
+		$result = $result && $ucmContentTable->check();
+		$result = $result && $ucmContentTable->store();
+		$ucmId = $ucmContentTable->core_content_id;
+
+		return $result;
+	}
 }
