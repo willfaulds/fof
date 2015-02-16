@@ -509,7 +509,7 @@ class DataController extends Controller
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+			$url = !empty($customURL) ? $customURL : 'index.php?&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 			$this->setRedirect($url, $e->getMessage(), 'error');
 
 			return;
@@ -571,7 +571,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix();
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -613,7 +613,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -648,7 +648,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -674,7 +674,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::singularize($this->view) . '&task=add' . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::singularize($this->view) . '&task=add' . $this->getItemidURLSuffix();
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -707,7 +707,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 		$this->setRedirect($url);
 	}
 
@@ -747,7 +747,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -795,7 +795,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -843,7 +843,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -891,7 +891,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -967,7 +967,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url    = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url    = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		$this->setRedirect($url, $msg, $type);
 	}
@@ -1008,7 +1008,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1056,7 +1056,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1104,7 +1104,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix());
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1201,11 +1201,11 @@ class DataController extends Controller
 			}
 			elseif ($id != 0)
 			{
-				$url = \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix());
+				$url = 'index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=edit&id=' . $id . $this->getItemidURLSuffix();
 			}
 			else
 			{
-				$url = \JRoute::_('index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=add' . $this->getItemidURLSuffix());
+				$url = 'index.php?option=' . $this->container->componentName . '&view=' . $this->view . '&task=add' . $this->getItemidURLSuffix();
 			}
 
 			$this->setRedirect($url, $error, 'error');

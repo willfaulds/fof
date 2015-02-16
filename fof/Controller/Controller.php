@@ -40,6 +40,18 @@ class Controller
 	protected $doTask;
 
 	/**
+	 * Bit mask to enable routing through JRoute on redirects. The value can be:
+	 *
+	 * 0 = never
+	 * 1 = frontend only
+	 * 2 = backend  only
+	 * 3 = always
+	 *
+	 * @var    int
+	 */
+	protected $autoRouting = 0;
+
+	/**
 	 * Redirect message.
 	 *
 	 * @var    string
@@ -758,7 +770,31 @@ class Controller
 	 */
 	public function setRedirect($url, $msg = null, $type = null)
 	{
+		// If we're parsing a non-SEF URL decide whether to use JRoute or not
+		if (strpos($url, 'index.php') === 0)
+		{
+			$isAdmin = $this->container->platform->isBackend();
+			$auto = false;
+
+			if (($this->autoRouting == 2 || $this->autoRouting == 3) && $isAdmin)
+			{
+				$auto = true;
+			}
+
+			if (($this->autoRouting == 1 || $this->autoRouting == 3) && !$isAdmin)
+			{
+				$auto = true;
+			}
+
+			if ($auto)
+			{
+				$url = \JRoute::_($url, false);
+			}
+		}
+
+		// Set the redirection
 		$this->redirect = $url;
+
 		if ($msg !== null)
 		{
 			// Controller may have set this directly
@@ -766,15 +802,13 @@ class Controller
 		}
 
 		// Ensure the type is not overwritten by a previous call to setMessage.
-		if (empty($type))
+		if (empty($this->messageType))
 		{
-			if (empty($this->messageType))
-			{
-				$this->messageType = 'info';
-			}
+			$this->messageType = 'info';
 		}
+
 		// If the type is explicitly set, set it.
-		else
+		if (!empty($type))
 		{
 			$this->messageType = $type;
 		}
