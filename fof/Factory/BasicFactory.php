@@ -70,6 +70,16 @@ class BasicFactory implements FactoryInterface
 	{
 		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($viewName);
 
+		try
+		{
+			return $this->createController($controllerClass, $config);
+		}
+		catch (ControllerNotFound $e)
+		{
+		}
+
+		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst(Inflector::singularize($viewName));
+
 		return $this->createController($controllerClass, $config);
 	}
 

@@ -16,6 +16,7 @@ use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
+use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -51,7 +52,15 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
 	public function controller($viewName, array $config = array())
 	{
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($viewName);
+		try
+		{
+			return parent::controller($viewName, $config);
+		}
+		catch (ControllerNotFound $e)
+		{
+		}
+
+		$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst($viewName);
 
 		try
 		{
@@ -59,10 +68,11 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		}
 		catch (ControllerNotFound $e)
 		{
-			$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst($viewName);
-
-			return $this->createController($controllerClass, $config);
 		}
+
+		$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst(Inflector::singularize($viewName));
+
+		return $this->createController($controllerClass, $config);
 	}
 
 	/**
