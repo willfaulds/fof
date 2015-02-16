@@ -84,11 +84,6 @@ class Model
 		{
 			$this->name = $config['name'];
 		}
-        else
-        {
-            // If $config['name'] is not set, auto-detect the model's name
-            $this->name = $this->getName();
-        }
 
 		// Set the model state
 		if (array_key_exists('state', $config))
@@ -175,7 +170,7 @@ class Model
 		if (is_null($value))
 		{
             // Can I fetch it from the request?
-            if(!$this->_ignoreRequest)
+            if (!$this->_ignoreRequest)
             {
                 $value = $this->container->platform->getUserStateFromRequest($key, $key, $this->input, $value, 'none', $this->_savestate);
 
