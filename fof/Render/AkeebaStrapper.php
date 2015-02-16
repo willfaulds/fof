@@ -1079,14 +1079,15 @@ HTML;
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
 	 *
 	 * @param   \stdClass  &$fieldset   The fieldset to render
-	 * @param   Form   &$form       The form to render
+	 * @param   Form       &$form       The form to render
 	 * @param   DataModel  $model       The model providing our data
-	 * @param   string    $formType    The form type e.g. 'edit' or 'read'
-	 * @param   boolean   $showHeader  Should I render the fieldset's header?
+	 * @param   string     $formType    The form type e.g. 'edit' or 'read'
+	 * @param   boolean    $showHeader  Should I render the fieldset's header?
+	 * @param   string     $innerHtml   Render inner tab if set
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 */
-	public function renderFieldset(\stdClass &$fieldset, Form &$form, DataModel $model, $formType, $showHeader = true)
+	public function renderFieldset(\stdClass &$fieldset, Form &$form, DataModel $model, $formType, $showHeader = true, &$innerHtml = null)
 	{
 		$html = '';
 
