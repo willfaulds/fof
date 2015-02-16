@@ -37,16 +37,17 @@ class ModelStub extends Model
      * )
      *
      * @param           $container
+     * @param array     $config
      * @param array     $methods
      */
-    public function __construct(Container $container, array $methods = array())
+    public function __construct(Container $container, array $config = array(), array $methods = array())
     {
         foreach($methods as $method => $function)
         {
             $this->methods[$method] = $function;
         }
 
-        parent::__construct($container);
+        parent::__construct($container, $config);
     }
 
     public function __call($method, $args)
