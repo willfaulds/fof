@@ -582,6 +582,31 @@ class ViewDataprovider
         return $data;
     }
 
+    public static function getTestDoneRendering()
+    {
+        $data[] = array(
+            array(
+                'counter' => 0
+            ),
+            array(
+                'case' => 'Internal counter is 0',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'counter' => 10
+            ),
+            array(
+                'case' => 'Internal counter is not 0',
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestSetLayout()
     {
         $data[] = array(

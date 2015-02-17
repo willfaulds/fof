@@ -345,6 +345,54 @@ class ViewTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\View\View::incrementRender
+     */
+    public function testIncrementRender()
+    {
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'renderCount', 10);
+
+        $view->incrementRender();
+
+        $counter = ReflectionHelper::getValue($view, 'renderCount');
+
+        $this->assertEquals(11, $counter, 'View::incrementRender Failed to increment the internal counter');
+    }
+
+    /**
+     * @covers          FOF30\View\View::decrementRender
+     */
+    public function testDecrementRender()
+    {
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'renderCount', 10);
+
+        $view->decrementRender();
+
+        $counter = ReflectionHelper::getValue($view, 'renderCount');
+
+        $this->assertEquals(9, $counter, 'View::decrementRender Failed to increment the internal counter');
+    }
+
+    /**
+     * @covers          FOF30\View\View::doneRendering
+     * @dataProvider    ViewDataprovider::getTestDoneRendering
+     */
+    public function testDoneRendering($test, $check)
+    {
+        $msg  = 'View::doneRendering %s - Case: '.$check['case'];
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'renderCount', $test['counter']);
+
+        $result = $view->doneRendering();
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
      * @group           View
      * @group           ViewGetLayout
      * @covers          FOF30\View\View::getLayout
@@ -407,5 +455,100 @@ class ViewTest extends FOFTestCase
         $newContainer = $view->getContainer();
 
         $this->assertSame(static::$container, $newContainer, 'View::getContainer Failed to return the passed container');
+    }
+
+    /**
+     * @covers          FOF30\View\View::getTask
+     */
+    public function testGetTask()
+    {
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'task', 'foobar');
+
+        $this->assertEquals('foobar', $view->getTask(), 'View::getTask Failed to return the task');
+    }
+
+    /**
+     * @covers          FOF30\View\View::setTask
+     */
+    public function testSetTask()
+    {
+        $view = new ViewStub(static::$container);
+
+        $result = $view->setTask('foobar');
+
+        $task = ReflectionHelper::getValue($view, 'task');
+
+        $this->assertEquals('foobar', $task, 'View::setTask Failed to set the task');
+        $this->assertInstanceOf('FOF30\View\View', $result, 'View::setTask Should return an instance of itself');
+    }
+
+    /**
+     * @covers          FOF30\View\View::getDoTask
+     */
+    public function testGetDoTask()
+    {
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'doTask', 'foobar');
+
+        $this->assertEquals('foobar', $view->getDoTask(), 'View::getDoTask Failed to return the doTask');
+    }
+
+    /**
+     * @covers          FOF30\View\View::setDoTask
+     */
+    public function testSetDoTask()
+    {
+        $view = new ViewStub(static::$container);
+
+        $result = $view->setDoTask('foobar');
+
+        $task = ReflectionHelper::getValue($view, 'doTask');
+
+        $this->assertEquals('foobar', $task, 'View::setDoTask Failed to set the task');
+        $this->assertInstanceOf('FOF30\View\View', $result, 'View::setDoTask Should return an instance of itself');
+    }
+
+    /**
+     * @covers          FOF30\View\View::setPreRender
+     */
+    public function testSetPreRender()
+    {
+        $view = new ViewStub(static::$container);
+        $view->setPreRender(true);
+
+        $value = ReflectionHelper::getValue($view, 'doPreRender');
+
+        $this->assertSame(true, $value, 'View::setPreRender Failed to set the preRender flag');
+    }
+
+    /**
+     * @covers          FOF30\View\View::setPostRender
+     */
+    public function testSetPostRender()
+    {
+        $view = new ViewStub(static::$container);
+        $view->setPostRender(true);
+
+        $value = ReflectionHelper::getValue($view, 'doPostRender');
+
+        $this->assertSame(true, $value, 'View::setPostRender Failed to set the postRender flag');
+    }
+
+    /**
+     * @covers          FOF30\View\View::alias
+     */
+    public function testAlias()
+    {
+        $view = new ViewStub(static::$container);
+
+        $view->alias('viewTemplate', 'alias');
+
+        $aliases = ReflectionHelper::getValue($view, 'viewTemplateAliases');
+
+        $this->assertArrayHasKey('alias', $aliases, 'View::alias Failed to set the template alias');
+        $this->assertEquals('viewTemplate', $aliases['alias'], 'View::alias Failed to set the template alias');
     }
 }
