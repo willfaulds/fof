@@ -169,18 +169,17 @@ class ViewTest extends FOFTestCase
      * @covers          FOF30\View\View::display
      * @dataProvider    ViewDataprovider::getTestDisplay
      */
-    public function tXestDisplay($test, $check)
+    public function testDisplay($test, $check)
     {
         $msg     = 'View::display %s - Case: '.$check['case'];
-        $before  = array('counter' => 0, 'tpl' => null);
-        $after   = array('counter' => 0, 'tpl' => null);
+        $before  = array('counter' => 0);
+        $after   = array('counter' => 0);
         $methods = array();
 
         if(isset($test['mock']['before']))
         {
-            $methods['onBeforeDummy'] = function($self, $tpl) use($test, &$before){
+            $methods['onBeforeDummy'] = function($self) use($test, &$before){
                 $before['counter']++;
-                $before['tpl'] = $tpl;
 
                 return $test['mock']['before'];
             };
@@ -188,9 +187,8 @@ class ViewTest extends FOFTestCase
 
         if(isset($test['mock']['after']))
         {
-            $methods['onAfterDummy'] = function($self, $tpl) use($test, &$after){
+            $methods['onAfterDummy'] = function($self) use($test, &$after){
                 $after['counter']++;
-                $after['tpl'] = $tpl;
 
                 return $test['mock']['after'];
             };
@@ -204,7 +202,7 @@ class ViewTest extends FOFTestCase
         }
         else
         {
-            $this->setExpectedException('Exception', '', $check['exception']);
+            $this->setExpectedException($check['exception']);
         }
 
         // Do I really invoke the load method?

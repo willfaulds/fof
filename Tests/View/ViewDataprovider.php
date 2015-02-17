@@ -255,8 +255,8 @@ class ViewDataprovider
                 'tpl'       => null,
                 'exception' => false,
                 'load'      => true,
-                'before'    => array('counter' => 0, 'tpl' => null),
-                'after'     => array('counter' => 0, 'tpl' => null),
+                'before'    => array('counter' => 0),
+                'after'     => array('counter' => 0),
             )
         );
 
@@ -277,8 +277,8 @@ class ViewDataprovider
                 'tpl'       => 'test',
                 'exception' => false,
                 'load'      => true,
-                'before'    => array('counter' => 0, 'tpl' => null),
-                'after'     => array('counter' => 0, 'tpl' => null),
+                'before'    => array('counter' => 0),
+                'after'     => array('counter' => 0),
             )
         );
 
@@ -288,19 +288,19 @@ class ViewDataprovider
                 'mock' => array(
                     'doTask' => 'Dummy',
                     'before' => true,
-                    'after'  => 'test-after',
+                    'after'  => true,
                     'output' => 'test'
                 ),
                 'tpl' => 'test'
             ),
             array(
                 'case'      => 'With template, before/after methods are correctly called',
-                'output'    => 'test-after',
+                'output'    => 'test',
                 'tpl'       => 'test',
                 'exception' => false,
                 'load'      => true,
-                'before'    => array('counter' => 1, 'tpl' => 'test'),
-                'after'     => array('counter' => 1, 'tpl' => 'test'),
+                'before'    => array('counter' => 1),
+                'after'     => array('counter' => 1),
             )
         );
 
@@ -319,10 +319,10 @@ class ViewDataprovider
                 'case'      => 'No template, before returns false',
                 'output'    => null,
                 'tpl'       => null,
-                'exception' => 403,
+                'exception' => 'FOF30\View\Exception\AccessForbidden',
                 'load'      => false,
-                'before'    => array('counter' => 1, 'tpl' => null),
-                'after'     => array('counter' => 0, 'tpl' => null),
+                'before'    => array('counter' => 1),
+                'after'     => array('counter' => 0),
             )
         );
 
@@ -341,10 +341,10 @@ class ViewDataprovider
                 'case'      => 'No template, after returns false',
                 'output'    => null,
                 'tpl'       => null,
-                'exception' => 403,
+                'exception' => 'FOF30\View\Exception\AccessForbidden',
                 'load'      => true,
-                'before'    => array('counter' => 1, 'tpl' => null),
-                'after'     => array('counter' => 1, 'tpl' => null),
+                'before'    => array('counter' => 1),
+                'after'     => array('counter' => 1),
             )
         );
 
@@ -363,10 +363,10 @@ class ViewDataprovider
                 'case'      => 'No template, loadTemplate returns an exception',
                 'output'    => null,
                 'tpl'       => null,
-                'exception' => 500,
+                'exception' => '\Exception',
                 'load'      => true,
-                'before'    => array('counter' => 0, 'tpl' => null),
-                'after'     => array('counter' => 0, 'tpl' => null),
+                'before'    => array('counter' => 0),
+                'after'     => array('counter' => 0),
             )
         );
 
