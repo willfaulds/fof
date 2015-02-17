@@ -164,89 +164,72 @@ class ViewDataprovider
         $data[] = array(
             array(
                 'name' => 'foobar',
-                'config' => array(),
-                'mock' => array(
-                    'name' => null,
-                    'defaultModel' => null,
-                    'instances' => array()
-                )
-            ),
-            array(
-                'case'   => 'Name passed, model not cached, internal reference are empty',
-                'result' => '\\Fakeapp\\Model\\Foobar',
-                'config' => array()
-            )
-        );
-
-        $data[] = array(
-            array(
-                'name' => 'foobar',
-                'config' => array('foo' => 'bar'),
-                'mock' => array(
-                    'name' => null,
-                    'defaultModel' => null,
-                    'instances' => array()
-                )
-            ),
-            array(
-                'case'   => 'Name and config passed, model not cached, internal reference are empty',
-                'result' => '\\Fakeapp\\Model\\Foobar',
-                'config' => array(
-                    'foo' => 'bar'
-                )
-            )
-        );
-
-        $data[] = array(
-            array(
-                'name' => null,
-                'config' => array(),
-                'mock' => array(
-                    'name' => null,
-                    'defaultModel' => 'foobar',
-                    'instances' => array()
-                )
-            ),
-            array(
-                'case'   => 'Name not passed, model not cached, using modelName property',
-                'result' => '\\Fakeapp\\Model\\Foobar',
-                'config' => array()
-            )
-        );
-
-        $data[] = array(
-            array(
-                'name' => null,
-                'config' => array(),
-                'mock' => array(
-                    'name' => 'foobar',
-                    'defaultModel' => null,
-                    'instances' => array()
-                )
-            ),
-            array(
-                'case'   => 'Name not passed, model not cached, using view property',
-                'result' => '\\Fakeapp\\Model\\Foobar',
-                'config' => array()
-            )
-        );
-
-        $data[] = array(
-            array(
-                'name' => 'foobar',
-                'config' => array(),
                 'mock' => array(
                     'name' => null,
                     'defaultModel' => null,
                     'instances' => array(
-                        'foobar' => new \Awf\Tests\Stubs\Mvc\ModelStub()
+                        'foobar' => 'test'
                     )
                 )
             ),
             array(
-                'case'   => 'Name passed, fetching the model from the cache',
-                'result' => '\\Awf\\Tests\\Stubs\\Mvc\\ModelStub',
-                'config' => null
+                'case'   => 'Name passed',
+                'result' => 'test',
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => null,
+                'mock' => array(
+                    'name' => 'foobar',
+                    'defaultModel' => null,
+                    'instances' => array(
+                        'foobar' => 'test'
+                    )
+                )
+            ),
+            array(
+                'case'   => 'Using the view name',
+                'result' => 'test',
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => null,
+                'mock' => array(
+                    'name' => null,
+                    'defaultModel' => 'foobar',
+                    'instances' => array(
+                        'foobar' => 'test'
+                    )
+                )
+            ),
+            array(
+                'case'   => 'Using the default model name',
+                'result' => 'test',
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'wrong',
+                'mock' => array(
+                    'name' => null,
+                    'defaultModel' => null,
+                    'instances' => array(
+                        'foobar' => 'test'
+                    )
+                )
+            ),
+            array(
+                'case'   => 'Model not found',
+                'result' => '',
+                'exception' => true
             )
         );
 

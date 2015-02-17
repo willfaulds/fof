@@ -95,21 +95,23 @@ class ViewTest extends FOFTestCase
      * @covers          FOF30\View\View::getModel
      * @dataProvider    ViewDataprovider::getTestGetModel
      */
-    public function tXestGetModel($test, $check)
+    public function testGetModel($test, $check)
     {
-        $msg        = 'View::getModel %s - Case: '.$check['case'];
-        $controller = new ViewStub(static::$container);
+        $msg  = 'View::getModel %s - Case: '.$check['case'];
+        $view = new ViewStub(static::$container);
 
-        ReflectionHelper::setValue($controller, 'defaultModel', $test['mock']['defaultModel']);
-        ReflectionHelper::setValue($controller, 'name', $test['mock']['name']);
-        ReflectionHelper::setValue($controller, 'modelInstances', $test['mock']['instances']);
+        ReflectionHelper::setValue($view, 'defaultModel', $test['mock']['defaultModel']);
+        ReflectionHelper::setValue($view, 'name', $test['mock']['name']);
+        ReflectionHelper::setValue($view, 'modelInstances', $test['mock']['instances']);
 
-        $result = $controller->getModel($test['name'], $test['config']);
+        if($check['exception'])
+        {
+            $this->setExpectedException('FOF30\View\Exception\ModelNotFound');
+        }
 
-        $config = $result->passedContainer['mvc_config'];
+        $result = $view->getModel($test['name']);
 
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Created the wrong model'));
-        $this->assertEquals($check['config'], $config, sprintf($msg, 'Passed configuration was not considered'));
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Created the wrong model'));
     }
 
     /**
