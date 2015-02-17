@@ -910,6 +910,7 @@ HTML;
 
 		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
+			\JHtml::_('behavior.core');
 			\JHTML::_('jquery.framework', true);
 			\JHTML::_('behavior.formvalidation');
 			$class = ' form-validate';

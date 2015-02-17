@@ -111,6 +111,7 @@ class Toolbar
 				if (!$platform->isCli())
 				{
 					// Load the core Javascript
+					\JHtml::_('behavior.core');
 					\JHtml::_('jquery.framework', true);
 				}
 			}
