@@ -69,6 +69,10 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 			return;
 		}
 
+		\JHtml::_('behavior.core');
+		\JHTML::_('jquery.framework', true);
+
+
 		// Wrap output in various classes
 		$version = new \JVersion;
 		$versionParts = explode('.', $version->RELEASE);
@@ -910,8 +914,6 @@ HTML;
 
 		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
-			\JHtml::_('behavior.core');
-			\JHTML::_('jquery.framework', true);
 			\JHTML::_('behavior.formvalidation');
 			$class = ' form-validate';
 			$this->loadValidationScript($form);

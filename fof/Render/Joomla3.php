@@ -54,6 +54,9 @@ class Joomla3 extends AkeebaStrapper
 			return;
 		}
 
+		\JHtml::_('behavior.core');
+		\JHTML::_('jquery.framework', true);
+
 		// Wrap output in various classes
 		$version = new \JVersion;
 		$versionParts = explode('.', $version->RELEASE);
