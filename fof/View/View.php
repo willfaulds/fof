@@ -940,6 +940,7 @@ class View
 	 *
 	 * @param  string  $section
 	 * @param  string  $default
+     *
 	 * @return string
 	 */
 	public function yieldContent($section, $default = '')
@@ -973,7 +974,10 @@ class View
 	 */
 	public function flushSectionsIfDoneRendering()
 	{
-		if ($this->doneRendering()) $this->flushSections();
+		if ($this->doneRendering())
+        {
+            $this->flushSections();
+        }
 	}
 
 	/**

@@ -430,6 +430,77 @@ class ViewTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\View\View::startSection
+     * @dataProvider    ViewDataprovider::getTestStartSection
+     */
+    public function testStartSection($test, $check)
+    {
+        $msg  = 'View::startSection %s - Case: '.$check['case'];
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'sections', $test['mock']['sections']);
+
+        $view->startSection($test['section'], $test['content']);
+
+        // I have to turn off output buffering since it's started inside the startSection method
+        if($check['closeBuffer'])
+        {
+            @ob_end_clean();
+        }
+
+        $sections = ReflectionHelper::getValue($view, 'sections');
+        $stack    = ReflectionHelper::getValue($view, 'sectionStack');
+
+        $this->assertEquals($check['sections'], $sections, sprintf($msg, 'Failed to set the sections array'));
+        $this->assertEquals($check['stack'], $stack, sprintf($msg, 'Failed to set the section stack'));
+    }
+
+    /**
+     * @covers          FOF30\View\View::yieldContent
+     * @dataProvider    ViewDataprovider::getTestYieldContent
+     */
+    public function testYieldContent($test, $check)
+    {
+        $msg  = 'View::yieldContent %s - Case: '.$check['case'];
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'sections', $test['mock']['sections']);
+
+        $result = $view->yieldContent($test['section'], $test['default']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @covers          FOF30\View\View::flushSections
+     */
+    public function testFlushSections()
+    {
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'sections', array(1,2,3));
+        ReflectionHelper::setValue($view, 'sectionStack', array(1,2,3));
+
+        $view->flushSections();
+
+        $this->assertEmpty(ReflectionHelper::getValue($view, 'sections'), 'View::flushSections Failed to flush the sections');
+        $this->assertEmpty(ReflectionHelper::getValue($view, 'sectionStack'), 'View::flushSections Failed to flush the section stack');
+    }
+
+    /**
+     * @covers          FOF30\View\View::flushSectionsIfDoneRendering
+     * @dataProvider    ViewDataprovider::getTestFlushSectionsIfDoneRendering
+     */
+    public function testFlushSectionsIfDoneRendering($test, $check)
+    {
+        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('doneRendering', 'flushSections'), array(static::$container));
+        $view->expects($this->any())->method('doneRendering')->willReturn($test['mock']['done']);
+        $view->expects($check['flush'] ? $this->once() : $this->never())->method('flushSections');
+
+        $view->flushSectionsIfDoneRendering();
+    }
+
+    /**
      * @group           View
      * @group           ViewGetLayoutTemplate
      * @covers          FOF30\View\View::getLayoutTemplate

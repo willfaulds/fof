@@ -582,6 +582,33 @@ class ViewDataprovider
         return $data;
     }
 
+    public static function getTestFlushSectionsIfDoneRendering()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'done' => false
+                )
+            ),
+            array(
+                'flush' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'done' => true
+                )
+            ),
+            array(
+                'flush' => true
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestDoneRendering()
     {
         $data[] = array(
@@ -651,6 +678,120 @@ class ViewDataprovider
                 'result' => null,
                 'layout' => 'bar',
                 'tmpl'   => 'foo'
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestStartSection()
+    {
+        $data[] = array(
+            array(
+                'section' => 'foobar',
+                'content' => '',
+                'mock' => array(
+                    'sections' => array()
+                )
+            ),
+            array(
+                'case' => 'Starting a new section with empty contents',
+                'stack' => array('foobar'),
+                'sections' => array(),
+                'closeBuffer' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'section' => 'foobar',
+                'content' => 'dummy content',
+                'mock' => array(
+                    'sections' => array()
+                )
+            ),
+            array(
+                'case' => "Adding contents to a section and it's not in the sections array",
+                'stack' => array(),
+                'sections' => array(
+                    'foobar' => 'dummy content'
+                ),
+                'closeBuffer' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'section' => 'foobar',
+                'content' => 'dummy content',
+                'mock' => array(
+                    'sections' => array(
+                        'foobar' => 'old content'
+                    )
+                )
+            ),
+            array(
+                'case' => "Adding contents to a section that's in the sections array",
+                'stack' => array(),
+                'sections' => array(
+                    'foobar' => 'old content'
+                ),
+                'closeBuffer' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'section' => 'foobar',
+                'content' => 'dummy content',
+                'mock' => array(
+                    'sections' => array(
+                        'foobar' => '@parent old content'
+                    )
+                )
+            ),
+            array(
+                'case' => "Adding contents to a section that's in the sections array, using the @parent keyword",
+                'stack' => array(),
+                'sections' => array(
+                    'foobar' => 'dummy content old content'
+                ),
+                'closeBuffer' => false
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestYieldContent()
+    {
+        $data[] = array(
+            array(
+                'section' => 'wrong',
+                'default' => '@parent Lorem ipsum',
+                'mock' => array(
+                    'sections' => array()
+                )
+            ),
+            array(
+                'case' => 'Section not set, using the default',
+                'result' => ' Lorem ipsum'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'section' => 'present',
+                'default' => '@parent Lorem ipsum',
+                'mock' => array(
+                    'sections' => array(
+                        'present' => '@parent Found'
+                    )
+                )
+            ),
+            array(
+                'case' => 'Section set',
+                'result' => ' Found'
             )
         );
 
