@@ -52,7 +52,8 @@ class Form extends Html implements DataViewInterface
 		{
 			@ob_start();
 			$this->preRender();
-			$preRenderResult = @ob_end_clean();
+			$preRenderResult = @ob_get_contents();
+			@ob_end_clean();
 		}
 
 		try
@@ -114,4 +115,4 @@ class Form extends Html implements DataViewInterface
 
 		return $html;
 	}
-} 
+}
