@@ -56,14 +56,14 @@ class ModelFactory extends BaseFactory
 		$config = array_merge($defaultConfig, $config);
 
 		// Get the default class names
-		$dataModelClassName = $this->container->getNamespacePrefix() . '\\Model\\DefaultDataModel';
+		$dataModelClassName = $this->container->getNamespacePrefix() . 'Model\\DefaultDataModel';
 
 		if (!class_exists($dataModelClassName, true))
 		{
 			$dataModelClassName = '\\FOF30\\Model\\DataModel';
 		}
 
-		$treeModelClassName = $this->container->getNamespacePrefix() . '\\Model\\DefaultTreeModel';
+		$treeModelClassName = $this->container->getNamespacePrefix() . 'Model\\DefaultTreeModel';
 
 		if (!class_exists($treeModelClassName, true))
 		{

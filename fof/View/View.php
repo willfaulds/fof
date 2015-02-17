@@ -1115,7 +1115,7 @@ class View
 	public function loadHelper($helperClass = null)
 	{
 		// Get the helper class name
-		$className = '\\' . $this->container->getNamespacePrefix() . '\\Helper\\' . ucfirst($helperClass);
+		$className = '\\' . $this->container->getNamespacePrefix() . 'Helper\\' . ucfirst($helperClass);
 
 		// This trick autoloads the helper class. We can't instantiate it as
 		// helpers are (supposed to be) abstract classes with static method

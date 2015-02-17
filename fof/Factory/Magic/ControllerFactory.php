@@ -52,7 +52,7 @@ class ControllerFactory extends BaseFactory
 
 		$config = array_merge($defaultConfig, $config);
 
-		$className = $this->container->getNamespacePrefix() . '\\Controller\\DefaultDataController';
+		$className = $this->container->getNamespacePrefix() . 'Controller\\DefaultDataController';
 
 		if (!class_exists($className, true))
 		{
