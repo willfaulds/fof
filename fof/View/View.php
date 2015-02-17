@@ -584,6 +584,15 @@ class View
 			throw new AccessForbidden;
 		}
 
+		$preRenderResult = '';
+
+		if ($this->doPreRender)
+		{
+			@ob_start();
+			$this->preRender();
+			$preRenderResult = @ob_end_clean();
+		}
+
 		$templateResult = $this->loadTemplate($tpl);
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
@@ -598,22 +607,15 @@ class View
 		{
 			throw $templateResult;
 		}
-		else
+
+		echo $preRenderResult . $templateResult;
+
+		if ($this->doPostRender)
 		{
-			if ($this->doPreRender)
-			{
-				$this->preRender();
-			}
-
-			echo $templateResult;
-
-			if ($this->doPostRender)
-			{
-				$this->postRender();
-			}
-
-			return true;
+			$this->postRender();
 		}
+
+		return true;
 	}
 
 	/**

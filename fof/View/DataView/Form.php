@@ -46,6 +46,15 @@ class Form extends Html implements DataViewInterface
 			throw new AccessForbidden;
 		}
 
+		$preRenderResult = '';
+
+		if ($this->doPreRender)
+		{
+			@ob_start();
+			$this->preRender();
+			$preRenderResult = @ob_end_clean();
+		}
+
 		try
 		{
 			$templateResult = $this->loadTemplate($tpl);
@@ -67,22 +76,15 @@ class Form extends Html implements DataViewInterface
 		{
 			throw $templateResult;
 		}
-		else
+
+		echo $preRenderResult . $templateResult;
+
+		if ($this->doPostRender)
 		{
-			if ($this->doPreRender)
-			{
-				$this->preRender();
-			}
-
-			echo $templateResult;
-
-			if ($this->doPostRender)
-			{
-				$this->postRender();
-			}
-
-			return true;
+			$this->postRender();
 		}
+
+		return true;
 	}
 
 	/**
