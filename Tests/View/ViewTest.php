@@ -259,7 +259,10 @@ class ViewTest extends FOFTestCase
             };
         }
 
-        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadTemplate'), array(static::$container, array(), $methods));
+        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadTemplate', 'preRender'), array(static::$container, array(), $methods));
+        $view->expects($this->any())->method('preRender')->willReturnCallback(function() use($test){
+            echo $test['mock']['pre'];
+        });
 
         if($check['exception'] === false)
         {
@@ -281,6 +284,7 @@ class ViewTest extends FOFTestCase
         }
 
         ReflectionHelper::setValue($view, 'doTask', $test['mock']['doTask']);
+        ReflectionHelper::setValue($view, 'doPreRender', $test['mock']['doPreRender']);
 
         $result = $view->display($test['tpl']);
 

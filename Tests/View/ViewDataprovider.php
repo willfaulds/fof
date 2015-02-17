@@ -268,6 +268,8 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'doTask' => 'Foobar',
+                    'doPreRender' => false,
+                    'pre'    => '',
                     'before' => null,
                     'after'  => null,
                     'output' => 'test'
@@ -290,6 +292,8 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'doTask' => 'Foobar',
+                    'doPreRender' => false,
+                    'pre'    => '',
                     'before' => null,
                     'after'  => null,
                     'output' => 'test'
@@ -312,6 +316,8 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'doTask' => 'Dummy',
+                    'doPreRender' => false,
+                    'pre'    => '',
                     'before' => true,
                     'after'  => true,
                     'output' => 'test'
@@ -334,6 +340,8 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'doTask' => 'Dummy',
+                    'doPreRender' => false,
+                    'pre'    => '',
                     'before' => false,
                     'after'  => true,
                     'output' => 'test'
@@ -356,6 +364,8 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'doTask' => 'Dummy',
+                    'doPreRender' => false,
+                    'pre'    => '',
                     'before' => true,
                     'after'  => false,
                     'output' => 'test'
@@ -378,6 +388,8 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'doTask' => 'Foobar',
+                    'doPreRender' => false,
+                    'pre'    => '',
                     'before' => null,
                     'after'  => null,
                     'output' => new \Exception('', 500)
@@ -389,6 +401,54 @@ class ViewDataprovider
                 'output'    => null,
                 'tpl'       => null,
                 'exception' => '\Exception',
+                'load'      => true,
+                'before'    => array('counter' => 0),
+                'after'     => array('counter' => 0),
+            )
+        );
+
+        // doPreRender is false, preRender return something
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'doTask' => 'Foobar',
+                    'doPreRender' => false,
+                    'pre'    => 'pre-render',
+                    'before' => null,
+                    'after'  => null,
+                    'output' => 'test'
+                ),
+                'tpl' => null
+            ),
+            array(
+                'case'      => 'No template, everything is going smooth',
+                'output'    => 'test',
+                'tpl'       => null,
+                'exception' => false,
+                'load'      => true,
+                'before'    => array('counter' => 0),
+                'after'     => array('counter' => 0),
+            )
+        );
+
+        // doPreRender is true, preRender return something
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'doTask' => 'Foobar',
+                    'doPreRender' => true,
+                    'pre'    => 'pre-render ',
+                    'before' => null,
+                    'after'  => null,
+                    'output' => 'test'
+                ),
+                'tpl' => null
+            ),
+            array(
+                'case'      => 'No template, everything is going smooth',
+                'output'    => 'pre-render test',
+                'tpl'       => null,
+                'exception' => false,
                 'load'      => true,
                 'before'    => array('counter' => 0),
                 'after'     => array('counter' => 0),
