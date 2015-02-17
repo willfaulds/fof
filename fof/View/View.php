@@ -590,7 +590,8 @@ class View
 		{
 			@ob_start();
 			$this->preRender();
-			$preRenderResult = @ob_end_clean();
+			$preRenderResult = @ob_get_contents();
+            @ob_end_clean();
 		}
 
 		$templateResult = $this->loadTemplate($tpl);
