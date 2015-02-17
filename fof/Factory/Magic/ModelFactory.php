@@ -34,6 +34,7 @@ class ModelFactory extends BaseFactory
 		}
 
 		$appConfig = $this->container->appConfig;
+		$name = ucfirst($name);
 
 		$defaultConfig = array(
 			'name'             => $name,

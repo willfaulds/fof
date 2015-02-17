@@ -175,7 +175,7 @@ class Toolbar
 		$view = Inflector::pluralize($view);
 
 		// If there is a fof.xml toolbar configuration use it and return
-		$toolbarConfig = $this->container->appConfig->get('models.' . $view . '.toolbar.' . $task);
+		$toolbarConfig = $this->container->appConfig->get('models.' . ucfirst($view) . '.toolbar.' . $task);
 
 		if (!empty($toolbarConfig) && $this->useConfigurationFile)
 		{

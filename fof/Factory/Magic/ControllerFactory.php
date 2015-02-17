@@ -20,8 +20,8 @@ class ControllerFactory extends BaseFactory
 	/**
 	 * Create a new object instance
 	 *
-	 * @param   string  $name    The name of the class we're making
-	 * @param   array   $config  The config parameters which override the fof.xml information
+	 * @param   string $name   The name of the class we're making
+	 * @param   array  $config The config parameters which override the fof.xml information
 	 *
 	 * @return  DataController  A new DataController object
 	 */
@@ -32,19 +32,22 @@ class ControllerFactory extends BaseFactory
 			throw new ControllerNotFound($name);
 		}
 
+		$appConfig = $this->container->appConfig;
+		$name      = ucfirst($name);
+
 		$defaultConfig = array(
 			'name'           => $name,
-			'default_task'   => $this->container->appConfig->get("views.$name.config.default_task", 'main'),
-			'autoRouting'    => $this->container->appConfig->get("views.$name.config.autoRouting", 1),
-			'csrfProtection' => $this->container->appConfig->get("views.$name.config.csrfProtection", 2),
-			'viewName'       => $this->container->appConfig->get("views.$name.config.viewName", null),
-			'modelName'      => $this->container->appConfig->get("views.$name.config.modelName", null),
-			'taskPrivileges' => $this->container->appConfig->get("views.$name.acl"),
-			'cacheableTasks' => $this->container->appConfig->get("views.$name.config.cacheableTasks", array(
+			'default_task'   => $appConfig->get("views.$name.config.default_task", 'main'),
+			'autoRouting'    => $appConfig->get("views.$name.config.autoRouting", 1),
+			'csrfProtection' => $appConfig->get("views.$name.config.csrfProtection", 2),
+			'viewName'       => $appConfig->get("views.$name.config.viewName", null),
+			'modelName'      => $appConfig->get("views.$name.config.modelName", null),
+			'taskPrivileges' => $appConfig->get("views.$name.acl"),
+			'cacheableTasks' => $appConfig->get("views.$name.config.cacheableTasks", array(
 				'browse',
 				'read'
 			)),
-			'taskMap'        => $this->container->appConfig->get("views.$name.taskmap"),
+			'taskMap'        => $appConfig->get("views.$name.taskmap"),
 		);
 
 		$config = array_merge($defaultConfig, $config);
