@@ -7,6 +7,7 @@
 
 namespace FOF30\Tests\View;
 
+use FOF30\Input\Input;
 use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
@@ -42,6 +43,39 @@ class ViewTest extends FOFTestCase
         if(isset($_SERVER['HTTP_HOST']))
         {
             unset($_SERVER['HTTP_HOST']);
+        }
+    }
+
+    /**
+     * @group           View
+     * @covers          FOF30\View\View::__get
+     * @dataProvider    ViewDataprovider::getTest__get
+     */
+    public function test__get($test, $check)
+    {
+        $msg = 'View::__get %s - Case: '.$check['case'];
+
+        $input = new Input();
+
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'input'         => $input
+        ));
+
+        $view = new ViewStub($container);
+
+        $property = $test['method'];
+
+        // Suppress the error, so I can check the code executed AFTER the warning
+        $result = @$view->$property;
+
+        if($check['result'])
+        {
+            $this->assertSame($input, $result, sprintf($msg, 'Returned the wrong result'));
+        }
+        else
+        {
+            $this->assertNull($result, sprintf($msg, 'Returned the wrong result'));
         }
     }
 
