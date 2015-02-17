@@ -62,6 +62,11 @@ class ViewStub extends View
     {
         if(isset($this->methods['getName']))
         {
+            if($this->methods['getName'] == 'parent')
+            {
+                return parent::getName();
+            }
+
             $func = $this->methods['getName'];
 
             return call_user_func_array($func, array());

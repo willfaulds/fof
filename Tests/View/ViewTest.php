@@ -7,6 +7,7 @@
 
 namespace FOF30\Tests\View;
 
+use Fakeapp\Admin\View\Foobar\Html;
 use FOF30\Input\Input;
 use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
@@ -77,6 +78,35 @@ class ViewTest extends FOFTestCase
         {
             $this->assertNull($result, sprintf($msg, 'Returned the wrong result'));
         }
+    }
+
+    /**
+     * @covers          FOF30\View\View::getName
+     */
+    public function testGetName()
+    {
+        $view = new Html(static::$container);
+
+        ReflectionHelper::setValue($view, 'name', null);
+
+        $name = $view->getName();
+
+        $this->assertEquals('Foobar', $name, 'View::getName Failed to fetch the correct view name');
+    }
+
+    /**
+     * @covers          FOF30\View\View::getName
+     */
+    public function testGetNameException()
+    {
+        $this->setExpectedException('FOF30\View\Exception\CannotGetName');
+
+        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('escape'),
+            array(static::$container, array(), array('getName' => 'parent')));
+
+        ReflectionHelper::setValue($view, 'name', null);
+
+        $view->getName();
     }
 
     /**
