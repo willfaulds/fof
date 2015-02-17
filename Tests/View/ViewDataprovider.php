@@ -378,15 +378,17 @@ class ViewDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'layout' => 'foobar',
-                    'any'    => array('test')
+                    'layout'     => 'foobar',
+                    'any'        => array('test'),
+                    'viewFinder' => array('first uri')
                 ),
                 'tpl'    => null,
                 'strict' => false
             ),
             array(
                 'case'   => 'No template, no strict, we immediatly have a result',
-                'result' => 'test'
+                'result' => 'test',
+                'exception' => false
             )
         );
 
@@ -394,14 +396,16 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'layout' => 'foobar',
-                    'any'    => array('throw', 'throw', 'throw', 'throw', 'throw', 'throw')
+                    'any'    => array('throw', 'throw', 'throw', 'throw', 'throw', 'throw'),
+                    'viewFinder' => array('first uri', 'second uri')
                 ),
                 'tpl'    => null,
                 'strict' => false
             ),
             array(
                 'case'   => 'No template, no strict, we immediatly throw an exception',
-                'result' => new \Exception()
+                'result' => new \Exception(),
+                'exception' => true
             )
         );
 
@@ -409,14 +413,16 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'layout' => 'foobar',
-                    'any'    => array(new \Exception(), new \Exception(), new \Exception(), new \Exception(), new \Exception(), new \Exception())
+                    'any'    => array(new \Exception(), new \Exception(), new \Exception(), new \Exception(), new \Exception(), new \Exception()),
+                    'viewFinder' => array('first uri', 'second uri')
                 ),
                 'tpl'    => null,
                 'strict' => false
             ),
             array(
                 'case'   => 'No template, no strict, we immediatly return an exception',
-                'result' => new \Exception()
+                'result' => '',
+                'exception' => true
             )
         );
 
@@ -424,14 +430,16 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'layout' => 'foobar',
-                    'any'    => array('throw', 'test')
+                    'any'    => array('throw', 'test'),
+                    'viewFinder' => array('first uri', 'second uri')
                 ),
                 'tpl'    => null,
                 'strict' => false
             ),
             array(
                 'case'   => 'No template, no strict, we have a result after throwing some exceptions',
-                'result' => 'test'
+                'result' => 'test',
+                'exception' => false
             )
         );
 
@@ -439,14 +447,16 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'layout' => 'foobar',
-                    'any'    => array(new \Exception(), 'test')
+                    'any'    => array(new \Exception(), 'test'),
+                    'viewFinder' => array('first uri', 'second uri')
                 ),
                 'tpl'    => null,
-                'strict' => false
+                'strict' => true
             ),
             array(
-                'case'   => 'No template, no strict, we have a result after returning some exceptions',
-                'result' => 'test'
+                'case'   => 'No template, no strict, loadAny returns an exception',
+                'result' => 'test',
+                'exception' => true
             )
         );
 
@@ -454,14 +464,16 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'layout' => 'foobar',
-                    'any'    => array('test')
+                    'any'    => array('test'),
+                    'viewFinder' => array('first uri')
                 ),
                 'tpl'    => 'dummy',
                 'strict' => false
             ),
             array(
                 'case'   => 'With template, no strict, we immediatly have a result',
-                'result' => 'test'
+                'result' => 'test',
+                'exception' => false
             )
         );
 
@@ -469,14 +481,16 @@ class ViewDataprovider
             array(
                 'mock' => array(
                     'layout' => 'foobar',
-                    'any'    => array('test')
+                    'any'    => array('test'),
+                    'viewFinder' => array('first uri')
                 ),
                 'tpl'    => 'dummy',
                 'strict' => true
             ),
             array(
                 'case'   => 'With template and strict, we immediatly have a result',
-                'result' => 'test'
+                'result' => 'test',
+                'exception' => false
             )
         );
 

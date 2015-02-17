@@ -7,6 +7,7 @@
 
 namespace FOF30\Tests\View;
 
+use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
@@ -238,7 +239,7 @@ class ViewTest extends FOFTestCase
      * @covers          FOF30\View\View::loadTemplate
      * @dataProvider    ViewDataprovider::getTestLoadTemplate
      */
-    public function tXestLoadTemplate($test, $check)
+    public function testLoadTemplate($test, $check)
     {
         $msg = 'View::loadTemplate %s - Case: '.$check['case'];
 
@@ -256,6 +257,19 @@ class ViewTest extends FOFTestCase
                 return $result;
             }
         );
+
+        $viewFinder = new ClosureHelper(array(
+            'getViewTemplateUris' => function() use ($test){
+                return $test['mock']['viewFinder'];
+            }
+        ));
+
+        ReflectionHelper::setValue($view, 'viewFinder', $viewFinder);
+
+        if($check['exception'])
+        {
+            $this->setExpectedException('\Exception');
+        }
 
         $result = $view->loadTemplate($test['tpl'], $test['strict']);
 
