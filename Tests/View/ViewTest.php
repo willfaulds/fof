@@ -385,6 +385,53 @@ class ViewTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\View\View::loadAnyTemplate
+     * @dataProvider    ViewDataprovider::getTestLoadAnyTemplate
+     */
+    public function testLoadAnyTemplate($test, $check)
+    {
+        $msg = 'View::loadAnyTemplate %s - Case: '.$check['case'];
+        $checkUriPath = array();
+
+        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub',
+            array('getEngine', 'incrementRender', 'decrementRender', 'flushSectionsIfDoneRendering'),
+            array(static::$container));
+
+        $view->expects($this->any())->method('getEngine')->willReturn(new ClosureHelper(array(
+            'get' => function() use($test){
+                return $test['mock']['engineGet'];
+            }
+        )));
+
+        $viewFinder = new ClosureHelper(array(
+            'resolveUriToPath' => function($self, $uri, $layout, $extra) use($test, &$checkUriPath){
+                $checkUriPath['uri']   = $uri;
+                $checkUriPath['extra'] = $extra;
+                return null;
+            }
+        ));
+
+        ReflectionHelper::setValue($view, 'viewTemplateAliases', $test['mock']['alias']);
+        ReflectionHelper::setValue($view, 'viewFinder', $viewFinder);
+
+        if($test['mock']['path'])
+        {
+            $view->path = $test['mock']['path'];
+        }
+
+        if($test['mock']['_path'])
+        {
+            $view->_path = $test['mock']['_path'];
+        }
+
+        $result = $view->loadAnyTemplate($test['uri'], $test['forceParams'], $test['callback']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['uri'], $checkUriPath['uri'], sprintf($msg, 'Failed to set the correct URI'));
+        $this->assertEquals($check['extra'], $checkUriPath['extra'], sprintf($msg, 'Failed to set the correct extra paths'));
+    }
+
+    /**
      * @covers          FOF30\View\View::incrementRender
      */
     public function testIncrementRender()

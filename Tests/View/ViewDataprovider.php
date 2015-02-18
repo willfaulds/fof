@@ -680,6 +680,153 @@ class ViewDataprovider
         return $data;
     }
 
+    public static function getTestLoadAnyTemplate()
+    {
+        $data[] = array(
+            array(
+                'uri'         => 'admin:com_fakeapp/foobar/default',
+                'forceParams' => array(),
+                'callback'    => null,
+                'mock'        => array(
+                    'alias'     => array(),
+                    'engineGet' => array(
+                        'type'    => 'raw',
+                        'content' => 'test'
+                    ),
+                    'path'      => '',
+                    '_path'     => ''
+                )
+            ),
+            array(
+                'case' => 'No callback, no alias, raw engine',
+                'result' => 'test',
+                'uri' => 'admin:com_fakeapp/foobar/default',
+                'extra' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'uri'         => 'admin:com_fakeapp/foobar/default',
+                'forceParams' => array(),
+                'callback'    => null,
+                'mock'        => array(
+                    'alias'     => array(),
+                    'engineGet' => array(
+                        'type'    => 'raw',
+                        'content' => 'test'
+                    ),
+                    'path'      => array('template' => 'extra/path'),
+                    '_path'     => ''
+                )
+            ),
+            array(
+                'case' => 'Using extra paths - 1',
+                'result' => 'test',
+                'uri' => 'admin:com_fakeapp/foobar/default',
+                'extra' => 'extra/path'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'uri'         => 'admin:com_fakeapp/foobar/default',
+                'forceParams' => array(),
+                'callback'    => null,
+                'mock'        => array(
+                    'alias'     => array(),
+                    'engineGet' => array(
+                        'type'    => 'raw',
+                        'content' => 'test'
+                    ),
+                    'path'      => '',
+                    '_path'     => array('template' => 'extra/path2')
+                )
+            ),
+            array(
+                'case' => 'Using extra paths - 2',
+                'result' => 'test',
+                'uri' => 'admin:com_fakeapp/foobar/default',
+                'extra' => 'extra/path2'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'uri'         => 'admin:com_fakeapp/foobar/default',
+                'forceParams' => array(),
+                'callback'    => function($view, $contents){
+                    return 'callback';
+                },
+                'mock'        => array(
+                    'alias'     => array(
+                        'admin:com_fakeapp/foobar/default' => 'admin:com_fakeapp/alias/default'
+                    ),
+                    'engineGet' => array(
+                        'type'    => 'raw',
+                        'content' => 'test'
+                    ),
+                    'path'      => '',
+                    '_path'     => ''
+                )
+            ),
+            array(
+                'case' => 'Using URI alias and callback',
+                'result' => 'callback',
+                'uri' => 'admin:com_fakeapp/alias/default',
+                'extra' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'uri'         => 'admin:com_fakeapp/foobar/default',
+                'forceParams' => array(),
+                'callback'    => null,
+                'mock'        => array(
+                    'alias'     => array(),
+                    'engineGet' => array(
+                        'type'    => '.php',
+                        'content' => 'raw|test'
+                    ),
+                    'path'      => '',
+                    '_path'     => ''
+                )
+            ),
+            array(
+                'case' => 'Using layout file with raw data',
+                'result' => 'test',
+                'uri' => 'admin:com_fakeapp/foobar/default',
+                'extra' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'uri'         => 'admin:com_fakeapp/foobar/default',
+                'forceParams' => array(),
+                'callback'    => null,
+                'mock'        => array(
+                    'alias'     => array(),
+                    'engineGet' => array(
+                        'type'    => '.php',
+                        'content' => JPATH_TESTS.'/Stubs/Fakeapp/Admin/View/Foobar/tmpl/default.php'
+                    ),
+                    'path'      => '',
+                    '_path'     => ''
+                )
+            ),
+            array(
+                'case' => 'Actually including a layout file',
+                'result' => 'Layout text',
+                'uri' => 'admin:com_fakeapp/foobar/default',
+                'extra' => array()
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestFlushSectionsIfDoneRendering()
     {
         $data[] = array(
