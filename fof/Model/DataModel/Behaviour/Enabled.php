@@ -21,7 +21,7 @@ defined('_JEXEC') or die;
 class Enabled extends Observer
 {
 	/**
-	 * This event runs after we have built the query used to fetch a record
+	 * This event runs before we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
 	 * @param   DataModel      &$model The model which calls this event
@@ -29,7 +29,7 @@ class Enabled extends Observer
 	 *
 	 * @return  void
 	 */
-	public function onAfterBuildQuery(&$model, &$query)
+	public function onBeforeBuildQuery(&$model, &$query)
 	{
 		// Make sure the field actually exists
 		if (!$model->hasField('enabled'))

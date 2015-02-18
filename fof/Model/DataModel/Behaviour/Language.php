@@ -25,7 +25,7 @@ class Language extends Observer
 	 * This event runs before we have built the query used to fetch a record
 	 * list in a model. It is used to blacklist the language filter
 	 *
-	 * @param   F0FModel        &$model  The model which calls this event
+	 * @param   DataModel       &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The model which calls this event
 	 *
 	 * @return  void
@@ -36,19 +36,7 @@ class Language extends Observer
 		{
 			$model->blacklistFilters('language');
 		}
-	}
 
-	/**
-	 * This event runs after we have built the query used to fetch a record
-	 * list in a model. It is used to apply automatic query filters.
-	 *
-	 * @param   DataModel      &$model The model which calls this event
-	 * @param   JDatabaseQuery &$query The query we are manipulating
-	 *
-	 * @return  void
-	 */
-	public function onAfterBuildQuery(&$model, &$query)
-	{
 		$platform = $model->getContainer()->platform;
 
 		// Make sure the field actually exists
