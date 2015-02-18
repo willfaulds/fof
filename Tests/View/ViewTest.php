@@ -48,6 +48,46 @@ class ViewTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\View\View::__construct
+     * @dataProvider    ViewDataprovider::getTest__construct
+     */
+    public function test__construct($test, $check)
+    {
+        $msg = 'View::__construct %s - Case: '.$check['case'];
+
+        $container = new TestContainer(array(
+            'componentName'	=> 'com_fakeapp',
+            'platform'      => new ClosureHelper(array(
+                'getTemplate' => function(){
+                    return 'fake_test_template';
+                },
+                'runPlugins' => function() use($test){
+                    return $test['mock']['plugins'];
+                },
+                'URIbase' => function(){
+                    return 'www.example.com';
+                }
+            ))
+        ));
+
+        $view = new ViewStub($container, $test['config']);
+
+        $name           = ReflectionHelper::getValue($view, 'name');
+        $layout         = ReflectionHelper::getValue($view, 'layout');
+        $layoutTemplate = ReflectionHelper::getValue($view, 'layoutTemplate');
+        $templatePaths  = ReflectionHelper::getValue($view, 'templatePaths');
+        $baseurl        = ReflectionHelper::getValue($view, 'baseurl');
+        $engines        = ReflectionHelper::getValue($view, 'viewEngineMap');
+
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to set the name'));
+        $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
+        $this->assertEquals($check['layoutTemplate'], $layoutTemplate, sprintf($msg, 'Failed to set the layoutTemplate'));
+        $this->assertEquals($check['templatePaths'], $templatePaths, sprintf($msg, 'Failed to set the templatePaths'));
+        $this->assertEquals($check['baseurl'], $baseurl, sprintf($msg, 'Failed to set the baseurl'));
+        $this->assertEquals($check['engines'], $engines, sprintf($msg, 'Failed to set the viewEngineMap'));
+    }
+
+    /**
      * @group           View
      * @covers          FOF30\View\View::__get
      * @dataProvider    ViewDataprovider::getTest__get

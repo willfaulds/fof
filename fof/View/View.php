@@ -27,6 +27,8 @@ defined('_JEXEC') or die;
  */
 class View
 {
+    public $baseurl = null;
+
 	/**
 	 * The name of the view
 	 *
@@ -231,30 +233,6 @@ class View
 			$this->setLayout($this->config['layout']);
 		}
 
-		$templatePath = JPATH_THEMES;
-		$fallback = $templatePath . '/' . $this->container->platform->getTemplate() . '/html/' . $this->container->componentName . '/' . $this->name;
-		$this->addTemplatePath($fallback);
-
-		// Get extra directories through event dispatchers
-		$extraPathsResults = $this->container->platform->runPlugins('onGetViewTemplatePaths', array(
-			$this->container->componentName,
-			$this->getName()
-		));
-
-		if (is_array($extraPathsResults) && !empty($extraPathsResults))
-		{
-			foreach ($extraPathsResults as $somePaths)
-			{
-				if (!empty($somePaths))
-				{
-					foreach ($somePaths as $aPath)
-					{
-						$this->addTemplatePath($aPath);
-					}
-				}
-			}
-		}
-
 		// Apply the viewEngineMap
 		if (isset($config['viewEngineMap']))
 		{
@@ -304,7 +282,7 @@ class View
 	 *
 	 * @return  mixed|null
 	 */
-	function __get($name)
+	public function __get($name)
 	{
 		// Handle $this->input
 		if ($name == 'input')

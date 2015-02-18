@@ -2,6 +2,104 @@
 
 class ViewDataprovider
 {
+    public static function getTest__construct()
+    {
+        $data[] = array(
+            array(
+                'config' => array(),
+                'mock'   => array(
+                    'plugins' => array()
+                )
+            ),
+            array(
+                'case' => 'Empty configuration, plugins do not add any path',
+                'name' => 'nestedset',
+                'layout' => 'default',
+                'layoutTemplate' => '_',
+                'templatePaths' => array(
+                    JPATH_THEMES.'/fake_test_template/html/com_fakeapp/nestedset/',
+                    JPATH_SITE.'/components/com_fakeapp/View/Nestedset/tmpl/'
+                ),
+                'baseurl' => 'www.example.com',
+                'engines' => array(
+                    '.php' => 'FOF30\View\Engine\BladeEngine',
+                    '.blade.php' => 'FOF30\View\Engine\PhpEngine'
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config' => array(
+                    'name' => 'ConfigName',
+                    'template_path' => 'config/path',
+                    'layout' => 'foo:bar',
+                    'viewEngineMap' => array(
+                        'test' => 'testEngine'
+                    )
+                ),
+                'mock'   => array(
+                    'plugins' => array(
+                        array('plugin/path')
+                    )
+                )
+            ),
+            array(
+                'case' => 'Values in configuration, plugins do add some paths',
+                'name' => 'ConfigName',
+                'layout' => 'bar',
+                'layoutTemplate' => 'foo',
+                'templatePaths' => array(
+                    'plugin/path/',
+                    JPATH_THEMES.'/fake_test_template/html/com_fakeapp/ConfigName/',
+                    'config/path/'
+                ),
+                'baseurl' => 'www.example.com',
+                'engines' => array(
+                    '.php' => 'FOF30\View\Engine\BladeEngine',
+                    '.blade.php' => 'FOF30\View\Engine\PhpEngine',
+                    'test' => 'testEngine'
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'config' => array(
+                    'name' => 'ConfigName',
+                    'template_path' => 'config/path',
+                    'layout' => 'foo:bar',
+                    'viewEngineMap' => 'test => testEngine, test2 => test2Engine'
+                ),
+                'mock'   => array(
+                    'plugins' => array(
+                        array('plugin/path')
+                    )
+                )
+            ),
+            array(
+                'case' => 'Values in configuration (view engines are a string), plugins do add some paths',
+                'name' => 'ConfigName',
+                'layout' => 'bar',
+                'layoutTemplate' => 'foo',
+                'templatePaths' => array(
+                    'plugin/path/',
+                    JPATH_THEMES.'/fake_test_template/html/com_fakeapp/ConfigName/',
+                    'config/path/'
+                ),
+                'baseurl' => 'www.example.com',
+                'engines' => array(
+                    '.php' => 'FOF30\View\Engine\BladeEngine',
+                    '.blade.php' => 'FOF30\View\Engine\PhpEngine',
+                    'test' => 'testEngine',
+                    'test2' => 'test2Engine'
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTest__get()
     {
         $data[]= array(
