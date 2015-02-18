@@ -125,7 +125,7 @@ class Models implements DomainInterface
 
 					$modelClass    = (string) $relationData['foreignModelClass'];
 					$localKey      = (string) $relationData['localKey'];
-					$remoteKey     = (string) $relationData['remoteKey'];
+					$foreignKey    = (string) $relationData['foreignKey'];
 					$pivotTable    = (string) $relationData['pivotTable'];
 					$ourPivotKey   = (string) $relationData['pivotLocalKey'];
 					$theirPivotKey = (string) $relationData['pivotForeignKey'];
@@ -135,7 +135,7 @@ class Models implements DomainInterface
 						'itemName'          => $itemName,
 						'foreignModelClass' => empty($modelClass) ? null : $modelClass,
 						'localKey'          => empty($localKey) ? null : $localKey,
-						'remoteKey'         => empty($remoteKey) ? null : $remoteKey,
+						'foreignKey'        => empty($foreignKey) ? null : $foreignKey,
 					);
 
 					if (!empty($ourPivotKey) || !empty($theirPivotKey) || !empty($pivotTable))
