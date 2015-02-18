@@ -76,7 +76,11 @@ class Relation extends GenericList
 				$html .= '<a href="' . $url . '">';
 			}
 
-			$value = $relation->get($relation->getColumnAlias($value_field));
+			if (!isset($this->valueField))
+			{
+				$this->valueField = $relation->getFieldAlias($value_field);
+			}
+			$value = $relation->{$this->valueField};
 
 			// Get the (optionally formatted) value
 			if (!empty($empty_replacement) && empty($value))
