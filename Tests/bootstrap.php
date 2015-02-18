@@ -21,6 +21,8 @@ if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 	}
 }
 
+require_once __DIR__ . '/../fof/Utils/helpers.php';
+
 // Tell the FOF autoloader where to load test classes from (very useful for stubs!)
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Tests\\', __DIR__);
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('Fakeapp\\', __DIR__ . '/Stubs/Fakeapp');

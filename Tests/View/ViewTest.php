@@ -480,6 +480,28 @@ class ViewTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\View\View::renderEach
+     * @dataProvider    ViewDataprovider::getTestRenderEach
+     */
+    public function testRenderEach($test, $check)
+    {
+        $msg = 'View::renderEach %s - Case: '.$check['case'];
+
+        $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub',
+            array('loadAnyTemplate'),
+            array(static::$container));
+
+        $view->expects($check['loadAny'] ? $this->atLeastOnce() : $this->never())->method('loadAnyTemplate')
+            ->willReturnCallback(function() use(&$test) {
+                return array_shift($test['mock']['loadAny']);
+        });
+
+        $result = $view->renderEach('admin:com_fakeapp/foobar/default', $test['data'], 'item', $test['empty']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
      * @group           View
      * @group           ViewGetLayout
      * @covers          FOF30\View\View::getLayout

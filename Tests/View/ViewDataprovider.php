@@ -879,6 +879,56 @@ class ViewDataprovider
         return $data;
     }
 
+    public static function getTestRenderEach()
+    {
+        $data[] = array(
+            array(
+                'data'  => array(1,2),
+                'empty' => 'raw|',
+                'mock'  => array(
+                    'loadAny' => array('first ', 'second')
+                )
+            ),
+            array(
+                'case'    => 'Data not empty',
+                'result'  => 'first second',
+                'loadAny' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'data'  => array(),
+                'empty' => 'raw|default data',
+                'mock'  => array(
+                    'loadAny' => array('first ', 'second')
+                )
+            ),
+            array(
+                'case'    => 'Empty data',
+                'result'  => 'default data',
+                'loadAny' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'data'  => array(),
+                'empty' => 'admin:com_fakeapp/foobar/empty',
+                'mock'  => array(
+                    'loadAny' => array('default data from layout')
+                )
+            ),
+            array(
+                'case'    => 'Empty data, loading a layout',
+                'result'  => 'default data from layout',
+                'loadAny' => true
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestSetLayout()
     {
         $data[] = array(
