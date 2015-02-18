@@ -12,6 +12,7 @@ use FOF30\Model\Model;
 use FOF30\View\Engine\EngineInterface;
 use FOF30\View\Exception\AccessForbidden;
 use FOF30\View\Exception\CannotGetName;
+use FOF30\View\Exception\EmptyStack;
 use FOF30\View\Exception\ModelNotFound;
 use FOF30\View\Exception\UnrecognisedExtension;
 
@@ -883,6 +884,14 @@ class View
 	 */
 	public function stopSection($overwrite = false)
 	{
+        if(empty($this->sectionStack))
+        {
+            // Let's close the output buffering
+            ob_get_clean();
+
+            throw new EmptyStack();
+        }
+
 		$last = array_pop($this->sectionStack);
 
 		if ($overwrite)
@@ -904,6 +913,14 @@ class View
 	 */
 	public function appendSection()
 	{
+        if(empty($this->sectionStack))
+        {
+            // Let's close the output buffering
+            ob_get_clean();
+
+            throw new EmptyStack();
+        }
+
 		$last = array_pop($this->sectionStack);
 
 		if (isset($this->sections[$last]))

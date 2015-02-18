@@ -763,6 +763,102 @@ class ViewDataprovider
         return $data;
     }
 
+    public static function getTestStopSection()
+    {
+        $data[] = array(
+            array(
+                'overwrite' => false,
+                'contents'  => 'test content',
+                'mock' => array(
+                    'stack' => array('foobar'),
+                    'sections' => array(
+                        'foobar' => 'old content'
+                    )
+                )
+            ),
+            array(
+                'case'     => 'Not overwriting the section, current section has no @parent tag',
+                'result'   => 'foobar',
+                'contents' => 'old content'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'overwrite' => false,
+                'contents'  => 'test content',
+                'mock' => array(
+                    'stack' => array('foobar'),
+                    'sections' => array(
+                        'foobar' => 'old content @parent'
+                    )
+                )
+            ),
+            array(
+                'case'     => 'Not overwriting the section, current section has the @parent tag',
+                'result'   => 'foobar',
+                'contents' => 'old content test content'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'overwrite' => true,
+                'contents'  => 'test content',
+                'mock' => array(
+                    'stack' => array('foobar'),
+                    'sections' => array(
+                        'foobar' => 'old content'
+                    )
+                )
+            ),
+            array(
+                'case'     => 'Overwriting the section',
+                'result'   => 'foobar',
+                'contents' => 'test content'
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestAppendSection()
+    {
+        $data[] = array(
+            array(
+                'contents'  => 'test content',
+                'mock' => array(
+                    'stack' => array('foobar'),
+                    'sections' => array()
+                )
+            ),
+            array(
+                'case'     => 'Section already does not exist',
+                'result'   => 'foobar',
+                'contents' => 'test content'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'contents'  => ' test content',
+                'mock' => array(
+                    'stack' => array('foobar'),
+                    'sections' => array(
+                        'foobar' => 'old content'
+                    )
+                )
+            ),
+            array(
+                'case'     => 'Section already exists',
+                'result'   => 'foobar',
+                'contents' => 'old content test content'
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestYieldContent()
     {
         $data[] = array(

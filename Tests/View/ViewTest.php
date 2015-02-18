@@ -456,6 +456,90 @@ class ViewTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\View\View::stopSection
+     * @dataProvider    ViewDataprovider::getTestStopSection
+     */
+    public function testStopSection($test, $check)
+    {
+        $msg = 'View::stopSection %s - Case: '.$check['case'];
+
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'sectionStack', $test['mock']['stack']);
+        ReflectionHelper::setValue($view, 'sections', $test['mock']['sections']);
+
+        // I have to start the output buffering, since it will be stopped inside the function
+        @ob_start();
+
+        echo $test['contents'];
+
+        $result = $view->stopSection($test['overwrite']);
+
+        $sections = ReflectionHelper::getValue($view, 'sections');
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertArrayHasKey($result, $sections, sprintf($msg, 'Failed to create the section'));
+        $this->assertEquals($check['contents'], $sections[$result], sprintf($msg, 'Wrong section content'));
+    }
+
+    /**
+     * @covers          FOF30\View\View::stopSection
+     */
+    public function testStopSectionException()
+    {
+        $this->setExpectedException('FOF30\View\Exception\EmptyStack');
+
+        // I have to start the output buffering, since it will be stopped inside the function
+        @ob_start();
+
+        $view = new ViewStub(static::$container);
+
+         $view->stopSection();
+    }
+
+    /**
+     * @covers          FOF30\View\View::appendSection
+     * @dataProvider    ViewDataprovider::getTestAppendSection
+     */
+    public function testAppendSection($test, $check)
+    {
+        $msg = 'View::appendSection %s - Case: '.$check['case'];
+
+        $view = new ViewStub(static::$container);
+
+        ReflectionHelper::setValue($view, 'sectionStack', $test['mock']['stack']);
+        ReflectionHelper::setValue($view, 'sections', $test['mock']['sections']);
+
+        // I have to start the output buffering, since it will be stopped inside the function
+        @ob_start();
+
+        echo $test['contents'];
+
+        $result = $view->appendSection();
+
+        $sections = ReflectionHelper::getValue($view, 'sections');
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertArrayHasKey($result, $sections, sprintf($msg, 'Failed to create the section'));
+        $this->assertEquals($check['contents'], $sections[$result], sprintf($msg, 'Wrong section content'));
+    }
+
+    /**
+     * @covers          FOF30\View\View::appendSection
+     */
+    public function testAppendSectionException()
+    {
+        $this->setExpectedException('FOF30\View\Exception\EmptyStack');
+
+        // I have to start the output buffering, since it will be stopped inside the function
+        @ob_start();
+
+        $view = new ViewStub(static::$container);
+
+        $view->appendSection();
+    }
+
+    /**
      * @covers          FOF30\View\View::yieldContent
      * @dataProvider    ViewDataprovider::getTestYieldContent
      */
