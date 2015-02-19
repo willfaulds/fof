@@ -43,22 +43,17 @@ class DataModelStub extends DataModel
      * )
      *
      * @param           $container
+     * @param array     $config
      * @param array     $methods
      */
-    public function __construct(Container $container = null, array $methods = array())
+    public function __construct(Container $container = null, array $config = array(), array $methods = array())
     {
         foreach($methods as $method => $function)
         {
             $this->methods[$method] = $function;
         }
 
-        // We will save the passed container in order to check it later
-        if(is_object($container))
-        {
-            $this->passedContainer = clone $container;
-        }
-
-        parent::__construct($container);
+        parent::__construct($container, $config);
     }
 
     public function __call($method, $args)

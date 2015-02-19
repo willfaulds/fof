@@ -762,7 +762,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => null,
                 'type' => null
             )
@@ -794,7 +794,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in publish',
                 'type' => 'error'
             )
@@ -815,7 +815,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => null,
                 'type' => null
             )
@@ -847,7 +847,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in unpublish',
                 'type' => 'error'
             )
@@ -868,7 +868,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => null,
                 'type' => null
             )
@@ -900,7 +900,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in archive',
                 'type' => 'error'
             )
@@ -921,7 +921,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => null,
                 'type' => null
             )
@@ -953,7 +953,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in trash',
                 'type' => 'error'
             )

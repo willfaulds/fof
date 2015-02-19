@@ -431,20 +431,21 @@ class DataControllertest extends FOFTestCase
      * @covers          FOF30\Controller\DataController::publish
      * @dataProvider    DataControllerDataprovider::getTestPublish
      */
-    public function tXestPublish($test, $check)
+    public function testPublish($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('publish'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('publish'), array($container, $config));
         $model->expects($this->any())->method('publish')->willReturnCallback(
             function() use (&$test)
             {
@@ -461,10 +462,8 @@ class DataControllertest extends FOFTestCase
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -472,25 +471,24 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerUnpublish
      * @covers          FOF30\Controller\DataController::unpublish
      * @dataProvider    DataControllerDataprovider::getTestUnpublish
      */
-    public function tXestUnpublish($test, $check)
+    public function testUnpublish($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('unpublish'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unpublish'), array($container, $config));
         $model->expects($this->any())->method('unpublish')->willReturnCallback(
             function() use (&$test)
             {
@@ -507,10 +505,8 @@ class DataControllertest extends FOFTestCase
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -518,25 +514,24 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerArchive
      * @covers          FOF30\Controller\DataController::archive
      * @dataProvider    DataControllerDataprovider::getTestArchive
      */
-    public function tXestArchive($test, $check)
+    public function testArchive($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('archive'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('archive'), array($container, $config));
         $model->expects($this->any())->method('archive')->willReturnCallback(
             function() use (&$test)
             {
@@ -553,10 +548,8 @@ class DataControllertest extends FOFTestCase
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -564,25 +557,24 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerTrash
      * @covers          FOF30\Controller\DataController::trash
      * @dataProvider    DataControllerDataprovider::getTestTrash
      */
-    public function tXestTrash($test, $check)
+    public function testTrash($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('trash'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('trash'), array($container, $config));
         $model->expects($this->any())->method('trash')->willReturnCallback(
             function() use (&$test)
             {
@@ -599,10 +591,8 @@ class DataControllertest extends FOFTestCase
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
