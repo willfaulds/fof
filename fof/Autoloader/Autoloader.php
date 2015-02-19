@@ -89,6 +89,8 @@ class Autoloader
 					(array)$paths,
 					$this->fallbackDirs
 				);
+
+				$this->fallbackDirs = array_unique($this->fallbackDirs);
 			}
 			else
 			{
@@ -96,6 +98,8 @@ class Autoloader
 					$this->fallbackDirs,
 					(array)$paths
 				);
+
+				$this->fallbackDirs = array_unique($this->fallbackDirs);
 			}
 		}
 		elseif (!isset($this->prefixDirs[$prefix]))
@@ -116,6 +120,8 @@ class Autoloader
 				(array)$paths,
 				$this->prefixDirs[$prefix]
 			);
+
+			$this->prefixDirs[$prefix] = array_unique($this->prefixDirs[$prefix]);
 		}
 		else
 		{
@@ -124,6 +130,8 @@ class Autoloader
 				$this->prefixDirs[$prefix],
 				(array)$paths
 			);
+
+			$this->prefixDirs[$prefix] = array_unique($this->prefixDirs[$prefix]);
 		}
 
 		return $this;
