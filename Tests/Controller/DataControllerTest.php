@@ -3,8 +3,10 @@
 namespace FOF30\Tests\DataController;
 
 use FOF30\Input\Input;
+use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Controller\DataControllerStub;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
@@ -66,19 +68,43 @@ class DataControllertest extends FOFTestCase
      * @covers          FOF30\Controller\DataController::browse
      * @dataProvider    DataControllerDataprovider::getTestBrowse
      */
-    public function tXestBrowse($test, $check)
+    public function testBrowse($test, $check)
     {
-        $input = $this->getMock('\\FOF30\\Input\\Input', array('set'), array($test['mock']['input']));
-        $input->expects($check['set'] ? $this->once() : $this->never())->method('set')->with($this->equalTo('savestate'), $this->equalTo(true));
+        $msg = 'DataController::browse %s - Case: '.$check['case'];
 
-        $container = new Container(array(
+        $checker = array();
+        $input = new Input($test['mock']['input']);
+
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => $input
         ));
 
-        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('display'), array($container));
-        $controller->expects($this->any())->method('display')->willReturn(null);
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('display', 'getModel'), array($container));
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
+
+        $controller->expects($this->any())->method('getModel')->willReturn(new ClosureHelper(array(
+            'savestate' => function($self, $state) use(&$checker){
+                $checker['savestate'] = $state;
+            },
+            'setFormName' => function($self, $formName) use(&$checker){
+                $checker['setFormName'] = $formName;
+            },
+            'getForm' => function() use($test){
+                return $test['mock']['getForm'];
+            }
+        )));
+
+        ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
+        ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
 
         $controller->browse();
+
+        $hasForm = ReflectionHelper::getValue($controller, 'hasForm');
+
+        $this->assertEquals($check['savestate'], $checker['savestate'], sprintf($msg, 'Failed to correctly set the savestate'));
+        $this->assertEquals($check['formName'], $checker['setFormName'], sprintf($msg, 'Failed to correctly set the form name'));
+        $this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set hasForm'));
     }
 
     /**
@@ -89,8 +115,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestRead($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'mvc_config' => array(
                 'autoChecks'  => false,
                 'idFieldName' => 'dbtest_nestedset_id',
@@ -128,8 +154,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestAdd($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'mvc_config' => array(
                 'autoChecks'  => false,
                 'idFieldName' => 'dbtest_nestedset_id',
@@ -159,8 +185,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestEdit($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -215,8 +241,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestApply($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'id' => $test['mock']['id'],
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
@@ -240,8 +266,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestCopy($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -302,8 +328,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestSave($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -332,8 +358,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestSavenew($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -362,8 +388,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestCancel($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -396,8 +422,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestPublish($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -442,8 +468,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestUnpublish($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -488,8 +514,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestArchive($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -534,8 +560,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestTrash($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -584,8 +610,8 @@ class DataControllertest extends FOFTestCase
     {
         $msg = 'DataController::saveorder %s - Case: '.$check['case'];
 
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'order'     => $test['ordering'],
                 'returnurl' => $test['returnurl'] ? base64_encode($test['returnurl']) : '',
@@ -624,8 +650,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestOrderdown($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -672,8 +698,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestOrderup($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -720,8 +746,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestRemove($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
@@ -782,8 +808,8 @@ class DataControllertest extends FOFTestCase
      */
     public function tXestGetModel($test, $check)
     {
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'mvc_config' => array(
                 'autoChecks'  => false,
                 'idFieldName' => 'id',
@@ -813,8 +839,8 @@ class DataControllertest extends FOFTestCase
     {
         $msg = 'DataController::getIDsFromRequest %s - Case: '.$check['case'];
 
-        $container = new Container(array(
-            'db' => self::$driver,
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'cid' => $test['mock']['cid'],
                 'id'  => $test['mock']['id'],

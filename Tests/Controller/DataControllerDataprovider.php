@@ -78,43 +78,61 @@ class DataControllerDataprovider
 
     public static function getTestBrowse()
     {
-        // Don't want any state saving
         $data[]= array(
             array(
                 'mock' => array(
+                    'getForm' => false,
+                    'cache' => array('browse', 'read'),
+                    'layout' => null,
                     'input' => array(
                         'savestate' => 0
                     )
                 )
             ),
             array(
-                'set' => false
+                'case' => "Don't want any state saving",
+                'display' => true,
+                'savestate' => 0,
+                'formName' => 'form.default',
+                'hasForm' => false
             )
         );
 
-        // I asked for saving the state
         $data[]= array(
             array(
                 'mock' => array(
+                    'getForm' => true,
+                    'cache' => array('read'),
+                    'layout' => 'foobar',
                     'input' => array(
                         'savestate' => -999
                     )
                 )
             ),
             array(
-                'set' => true
+                'case' => "State saved, with layout and form, task not in the cache",
+                'display' => false,
+                'savestate' => true,
+                'formName' => 'form.foobar',
+                'hasForm' => true
             )
         );
 
-        // Variable not set, by default I save the state
         $data[]= array(
             array(
                 'mock' => array(
+                    'getForm' => false,
+                    'cache' => array('browse', 'read'),
+                    'layout' => null,
                     'input' => array()
                 )
             ),
             array(
-                'set' => true
+                'case' => "Variable not set, by default I save the stater",
+                'display' => true,
+                'savestate' => true,
+                'formName' => 'form.default',
+                'hasForm' => false
             )
         );
 
