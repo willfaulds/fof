@@ -635,7 +635,7 @@ class Form extends JForm
 		// Get the prefixes for namespaced classes (FOF3 way)
 		$namespacedPrefixes = array(
 			$this->container->getNamespacePrefix(),
-			'FOF30',
+			'FOF30\\',
 		);
 
 		// Get the prefixes for non-namespaced classes (FOF2 and Joomla! way)
@@ -653,7 +653,7 @@ class Form extends JForm
 		// First try to find the namespaced class
 		foreach ($namespacedPrefixes as $prefix)
 		{
-			$class = $prefix . '\\Form\\' . ucfirst($entity) . '\\' . ucfirst($type);
+			$class = $prefix . 'Form\\' . ucfirst($entity) . '\\' . ucfirst($type);
 
 			if (class_exists($class, true))
 			{
