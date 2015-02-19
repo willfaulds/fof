@@ -1506,7 +1506,7 @@ class DataModel extends Model implements \JTableInterface
 			$limit = $this->getState('limit', 0);
 		}
 
-		$dataCollection = DataCollection::make($this->getItemsArray($limitstart, $limit));
+		$dataCollection = DataCollection::make($this->getItemsArray($limitstart, $limit, $overrideLimits));
 
 		$this->eagerLoad($dataCollection, null);
 
@@ -1516,16 +1516,16 @@ class DataModel extends Model implements \JTableInterface
 	/**
 	 * Returns a raw array of DataModel instances based on your currently set Model state
 	 *
-	 * @param   integer $limitstart How many items from the start to skip (0 = do not skip)
-	 * @param   integer $limit      How many items to return (0 = all)
+	 * @param   integer  $limitstart      How many items from the start to skip (0 = do not skip)
+	 * @param   integer  $limit           How many items to return (0 = all)
+	 * @param   bool     $overrideLimits  Set to true to override limitstart, limit and ordering
 	 *
 	 * @return  array  Array of DataModel objects
 	 */
-	public function &getItemsArray($limitstart = 0, $limit = 0)
+	public function &getItemsArray($limitstart = 0, $limit = 0, $overrideLimits = false)
 	{
 		$limitstart = max($limitstart, 0);
 		$limit = max($limit, 0);
-		$overrideLimits = ($limitstart == 0) && ($limit == 0);
 
 		$query = $this->buildQuery($overrideLimits);
 
