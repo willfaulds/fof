@@ -151,34 +151,55 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerAdd
      * @covers          FOF30\Controller\DataController::add
      * @dataProvider    DataControllerDataprovider::getTestAdd
      */
-    public function tXestAdd($test, $check)
+    public function testAdd($test, $check)
     {
+        $msg = 'DataController::add %s - Case: '.$check['case'];
+        $sessionMock = array();
+
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            'session'       => new ClosureHelper(array(
+                'set' => function($self, $key, $value, $namespace) use(&$sessionMock){
+                    $sessionMock[$namespace.'.'.$key] = $value;
+                },
+                'get' => function($self, $key, $default, $namespace) use(&$sessionMock){
+                    $key = $namespace.'.'.$key;
+
+                    if(isset($sessionMock[$key])){
+                        return $sessionMock[$key];
+                    }
+
+                    return $default;
+                }
+            ))
         ));
 
-        $container->segment->setFlash('fakeapp_dummycontrollers', $test['mock']['flash']);
+        $container->session->set('dummycontrollers.savedata', $test['mock']['session'], 'com_fakeapp');
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('reset', 'bind'), array($container));
-        $model->expects($this->any())->method('reset')->willReturn(null);
-        $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')
-            ->with($check['bind'])->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'bind', 'getForm', 'setFormName'), array(), '', false);
+        $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->with($check['bind']);
+        $model->expects($this->any())->method('setFormName')->with($this->equalTo($check['formName']));
+        $model->expects($this->any())->method('getForm')->willReturn($test['mock']['getForm']);
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'display'), array($container));
         $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($this->any())->method('display')->willReturn(null);
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
+
+        ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
+        ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
 
         $controller->add();
+
+        $layout  = ReflectionHelper::getValue($controller, 'layout');
+        $hasForm = ReflectionHelper::getValue($controller, 'hasForm');
+        $sessionData = static::$container->session->get('dummycontrollers.savedata', null, 'com_fakeapp');
+
+        $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
+        $this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
+        $this->assertNull($sessionData, sprintf($msg, 'Failed to wipe session data'));
     }
 
     /**

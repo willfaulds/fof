@@ -275,22 +275,38 @@ class DataControllerDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'flash' => ''
+                    'session' => '',
+                    'getForm' => false,
+                    'layout'  => '',
+                    'cache'   => array('browse', 'read')
                 )
             ),
             array(
-                'bind' => ''
+                'case'     => 'No data in the session, no layout, no cache, no form',
+                'display'  => false,
+                'bind'     => '',
+                'formName' => 'form.form',
+                'layout'   => 'form',
+                'hasForm'  => false
             )
         );
 
         $data[] = array(
             array(
                 'mock' => array(
-                    'flash' => array('foo' => 'bar')
+                    'session' => array('foo' => 'bar'),
+                    'getForm' => true,
+                    'layout'  => 'test',
+                    'cache'   => array('browse', 'read', 'add')
                 )
             ),
             array(
-                'bind' => array('foo' => 'bar')
+                'case'     => 'Data in the session, with layout, cache and form',
+                'display'  => true,
+                'bind'     => array('foo' => 'bar'),
+                'formName' => 'form.test',
+                'layout'   => 'test',
+                'hasForm'  => true
             )
         );
 
