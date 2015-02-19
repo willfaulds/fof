@@ -609,8 +609,8 @@ class DataControllerDataprovider
             ),
             array(
                 'redirect' => true,
-                'url' => 'http://www.example.com/index.php?view=dummycontrollers',
-                'msg' => 'FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
+                'url' => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg' => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
             )
         );
 
@@ -625,7 +625,7 @@ class DataControllerDataprovider
             array(
                 'redirect' => true,
                 'url' => 'http://www.example.com/index.php?view=custom',
-                'msg' => 'FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
+                'msg' => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
             )
         );
 

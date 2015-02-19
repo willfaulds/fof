@@ -351,29 +351,21 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerSave
      * @covers          FOF30\Controller\DataController::save
      * @dataProvider    DataControllerDataprovider::getTestSave
      */
-    public function tXestSave($test, $check)
+    public function testSave($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            ))
         ));
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'applySave', 'setRedirect'), array($container));
-        $controller->expects($this->once())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->once())->method('applySave')->willReturn($test['mock']['apply']);
-        $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')->willReturn(null)
+        $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')
             ->with($this->equalTo($check['url']), $this->equalTo($check['msg']))
         ;
 
