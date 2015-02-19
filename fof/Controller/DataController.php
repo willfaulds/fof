@@ -668,7 +668,7 @@ class DataController extends Controller
 			return;
 		}
 
-		$textKey = $this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_SAVED';
+		$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_SAVED');
 
 		if ($customURL = $this->input->getBase64('returnurl', ''))
 		{

@@ -659,8 +659,8 @@ class DataControllerDataprovider
             ),
             array(
                 'redirect' => true,
-                'url' => 'http://www.example.com/index.php?view=dummycontroller&task=add',
-                'msg' => 'FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
+                'url' => 'index.php?option=com_fakeapp&view=dummycontroller&task=add',
+                'msg' => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
             )
         );
 
@@ -675,7 +675,7 @@ class DataControllerDataprovider
             array(
                 'redirect' => true,
                 'url' => 'http://www.example.com/index.php?view=custom',
-                'msg' => 'FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
+                'msg' => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_SAVED'
             )
         );
 
@@ -703,6 +703,7 @@ class DataControllerDataprovider
         $data[] = array(
             array(
                 'mock' => array(
+                    'session'   => array('foo' => 'bar'),
                     'returnurl' => '',
                     'getId'     => 3,
                     'ids'       => array()
@@ -710,7 +711,7 @@ class DataControllerDataprovider
             ),
             array(
                 'getFromReq' => false,
-                'url'        => 'http://www.example.com/index.php?view=dummycontrollers'
+                'url'        => 'index.php?option=com_fakeapp&view=dummycontrollers'
             )
         );
 
@@ -718,6 +719,7 @@ class DataControllerDataprovider
         $data[] = array(
             array(
                 'mock' => array(
+                    'session'   => null,
                     'returnurl' => '',
                     'getId'     => null,
                     'ids'       => array(3)
@@ -725,7 +727,7 @@ class DataControllerDataprovider
             ),
             array(
                 'getFromReq' => true,
-                'url'        => 'http://www.example.com/index.php?view=dummycontrollers'
+                'url'        => 'index.php?option=com_fakeapp&view=dummycontrollers'
             )
         );
 
@@ -733,6 +735,7 @@ class DataControllerDataprovider
         $data[] = array(
             array(
                 'mock' => array(
+                    'session'   => null,
                     'returnurl' => 'http://www.example.com/index.php?view=custom',
                     'getId'     => 3,
                     'ids'       => array()

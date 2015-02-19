@@ -373,29 +373,21 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerSavenew
      * @covers          FOF30\Controller\DataController::savenew
      * @dataProvider    DataControllerDataprovider::getTestSavenew
      */
-    public function tXestSavenew($test, $check)
+    public function testSavenew($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            ))
         ));
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'applySave', 'setRedirect'), array($container));
-        $controller->expects($this->once())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->once())->method('applySave')->willReturn($test['mock']['apply']);
-        $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')->willReturn(null)
+        $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')
             ->with($this->equalTo($check['url']), $this->equalTo($check['msg']))
         ;
 
@@ -403,42 +395,39 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerCancel
      * @covers          FOF30\Controller\DataController::cancel
      * @dataProvider    DataControllerDataprovider::getTestCancel
      */
-    public function tXestCancel($test, $check)
+    public function testCancel($test, $check)
     {
+        $sessionMock['com_fakeapp.dummycontroller.savedata'] = $test['mock']['session'];
+
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            'session'       => new ClosureHelper(array(
+                'set' => function($self, $key, $value, $namespace) use(&$sessionMock){
+                    $sessionMock[$namespace.'.'.$key] = $value;
+                }
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('unlock', 'getId'), array($container));
-        $model->expects($this->once())->method('getId')->willReturn($test['mock']['getId']);
-        $model->expects($this->once())->method('unlock')->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unlock', 'getId'), array($container), '', false);
+        $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null)->with($this->equalTo($check['url']));
+        $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']));
 
-        // In this test we can't check if data has been removed from the Session, since I'll have to mock the entire framework
-        // my pc, myself and probably the entire universe
         $controller->cancel();
+
+        $this->assertNull($sessionMock['com_fakeapp.dummycontrollers.savedata'], 'DataController::cancel Failed to clear the session');
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerPublish
      * @covers          FOF30\Controller\DataController::publish
      * @dataProvider    DataControllerDataprovider::getTestPublish
      */
