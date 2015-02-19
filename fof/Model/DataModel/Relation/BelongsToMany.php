@@ -262,6 +262,13 @@ class BelongsToMany extends Relation
 
 			$this->foreignKeyMap[$localKey] = $foreignKeys;
 
+			// If there are no foreign keys (no foreign items assigned to our item) we return false which then causes
+			// the relation to return null, marking the lack of data.
+			if (empty($foreignKeys))
+			{
+				return false;
+			}
+
 			$foreignModel->where($this->foreignKey, 'in', $this->foreignKeyMap[$localKey]);
 		}
 
