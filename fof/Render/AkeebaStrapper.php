@@ -827,7 +827,7 @@ HTML;
 				{
 					$field->rowid	 = $i;
 					$field->item	 = $item;
-					$labelClass = $field->labelClass ? $field->labelClass : $field->labelclass; // TODO Joomla! 2.5/3.x use different case for the same name
+					$labelClass		 = $field->labelclass;
 					$class			 = $labelClass ? 'class ="' . $labelClass . '"' : '';
 					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . "\n";
 				}
