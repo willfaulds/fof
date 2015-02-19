@@ -537,8 +537,8 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
-                'msg'  => 'FAKEAPP_LBL_DUMMYCONTROLLER_COPIED',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'  => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_COPIED',
                 'type' => null
             )
         );
@@ -555,7 +555,7 @@ class DataControllerDataprovider
             ),
             array(
                 'url'  => 'http://www.example.com/index.php?view=custom',
-                'msg'  => 'FAKEAPP_LBL_DUMMYCONTROLLER_COPIED',
+                'msg'  => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_COPIED',
                 'type' => null
             )
         );
@@ -571,7 +571,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in copy',
                 'type' => 'error'
             )
@@ -588,7 +588,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in find',
                 'type' => 'error'
             )

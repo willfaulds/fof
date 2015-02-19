@@ -298,26 +298,19 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerCopy
      * @covers          FOF30\Controller\DataController::copy
      * @dataProvider    DataControllerDataprovider::getTestCopy
      */
-    public function tXestCopy($test, $check)
+    public function testCopy($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('find', 'copy'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'copy'), array($container), '', false);
         $model->expects($this->any())->method('find')->willReturnCallback(
             function() use (&$test)
             {
@@ -349,10 +342,8 @@ class DataControllertest extends FOFTestCase
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
