@@ -105,6 +105,7 @@ class DataController extends Controller
 			if (!is_array($config['cacheableTasks']))
 			{
 				$config['cacheableTasks'] = explode(',', $config['cacheableTasks']);
+                $config['cacheableTasks'] = array_map('trim', $config['cacheableTasks']);
 			}
 
 			$this->cacheableTasks = $config['cacheableTasks'];

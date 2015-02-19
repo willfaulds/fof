@@ -42,7 +42,7 @@ class DataControllerDataprovider
             array(
                 'model' => 'custom',
                 'view'  => 'foobar',
-                'cache' => array('foo', 'bar'),
+                'cache' => 'foo, bar',
                 'privileges' => array('foo' => 'core.foo.bar')
             ),
             array(
