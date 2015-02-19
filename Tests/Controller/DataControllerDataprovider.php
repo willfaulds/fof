@@ -315,91 +315,159 @@ class DataControllerDataprovider
 
     public static function getTestEdit()
     {
-        // Getting the id from the model, no layout, no data in the session, everything works fine
         $data[] = array(
             array(
                 'mock' => array(
                     'returnurl' => '',
-                    'flash' => null,
+                    'session' => null,
                     'getId' => true ,
                     'lock'  => true,
-                    'layout'=> ''
+                    'layout'=> '',
+                    'getForm' => false,
+                    'cache'   => array('browse', 'read')
                 )
             ),
             array(
+                'case'       => 'Getting the id from the model, no layout, no data in the session, everything works fine',
+                'bind'       => false,
+                'getFromReq' => false,
+                'redirect'   => false,
+                'url'        => '',
+                'msg'        => '',
+                'display'    => false,
+                'layout'     => 'form',
+                'formName'   => 'form.form',
+                'hasForm'    => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'returnurl' => '',
+                    'session' => null,
+                    'getId' => true ,
+                    'lock'  => true,
+                    'layout'=> '',
+                    'getForm' => false,
+                    'cache'   => array('browse', 'read', 'edit')
+                )
+            ),
+            array(
+                'case'       => 'Task is cached',
                 'bind'       => false,
                 'getFromReq' => false,
                 'redirect'   => false,
                 'url'        => '',
                 'msg'        => '',
                 'display'    => true,
-                'layout'     => 'form'
+                'layout'     => 'form',
+                'formName'   => 'form.form',
+                'hasForm'    => false
             )
         );
 
-        // Getting the id from the request, with layout, fetch data from the session, everything works fine
         $data[] = array(
             array(
                 'mock' => array(
                     'returnurl' => '',
-                    'flash' => array('foo' => 'bar'),
+                    'session' => array('foo' => 'bar'),
                     'getId' => false ,
                     'lock'  => true,
-                    'layout'=> 'custom'
+                    'layout'=> 'custom',
+                    'getForm' => false,
+                    'cache'   => array('browse', 'read')
                 )
             ),
             array(
+                'case'       => 'Getting the id from the request, with layout, fetch data from the session, everything works fine',
                 'bind'       => array('foo' => 'bar'),
                 'getFromReq' => true,
                 'redirect'   => false,
                 'url'        => '',
                 'msg'        => '',
-                'display'    => true,
-                'layout'     => 'custom'
+                'display'    => false,
+                'layout'     => 'custom',
+                'formName'   => 'form.custom',
+                'hasForm'    => false
             )
         );
 
-        // Lock throws an error, no custom url
         $data[] = array(
             array(
                 'mock' => array(
                     'returnurl' => '',
-                    'flash' => null,
-                    'getId' => true ,
-                    'lock'  => 'throw',
-                    'layout'=> ''
+                    'session' => array('foo' => 'bar'),
+                    'getId' => false ,
+                    'lock'  => true,
+                    'layout'=> 'custom',
+                    'getForm' => true,
+                    'cache'   => array('browse', 'read')
                 )
             ),
             array(
-                'bind'       => false,
-                'getFromReq' => false,
-                'redirect'   => true,
-                'url'        => 'http://www.example.com/index.php?view=dummycontrollers',
-                'msg'        => 'Exception thrown while locking',
+                'case'       => 'We have a form',
+                'bind'       => array('foo' => 'bar'),
+                'getFromReq' => true,
+                'redirect'   => false,
+                'url'        => '',
+                'msg'        => '',
                 'display'    => false,
-                'layout'     => ''
+                'layout'     => 'custom',
+                'formName'   => 'form.custom',
+                'hasForm'    => true
             )
         );
 
-        // Lock throws an error, custom url set
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'returnurl' => '',
+                    'session' => null,
+                    'getId' => true ,
+                    'lock'  => 'throw',
+                    'layout'=> '',
+                    'getForm' => false,
+                    'cache'   => array('browse', 'read')
+                )
+            ),
+            array(
+                'case'       => 'Lock throws an error, no custom url',
+                'bind'       => false,
+                'getFromReq' => false,
+                'redirect'   => true,
+                'url'        => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'        => 'Exception thrown while locking',
+                'display'    => false,
+                'layout'     => '',
+                'formName'   => '',
+                'hasForm'    => false
+            )
+        );
+
         $data[] = array(
             array(
                 'mock' => array(
                     'returnurl' => 'http://www.example.com/index.php?view=custom',
-                    'flash' => null,
+                    'session' => null,
                     'getId' => true ,
                     'lock'  => 'throw',
-                    'layout'=> ''
+                    'layout'=> '',
+                    'getForm' => false,
+                    'cache'   => array('browse', 'read')
                 )
             ),
             array(
+                'case'       => 'Lock throws an error, custom url set',
                 'bind'       => false,
                 'getFromReq' => false,
                 'redirect'   => true,
                 'url'        => 'http://www.example.com/index.php?view=custom',
                 'msg'        => 'Exception thrown while locking',
                 'display'    => false,
-                'layout'     => ''
+                'layout'     => '',
+                'formName'   => '',
+                'hasForm'    => false
             )
         );
 

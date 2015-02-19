@@ -510,7 +510,7 @@ class DataController extends Controller
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : 'index.php?&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName.'&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
 			$this->setRedirect($url, $e->getMessage(), 'error');
 
 			return;

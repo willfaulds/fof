@@ -195,7 +195,7 @@ class DataControllertest extends FOFTestCase
 
         $layout  = ReflectionHelper::getValue($controller, 'layout');
         $hasForm = ReflectionHelper::getValue($controller, 'hasForm');
-        $sessionData = static::$container->session->get('dummycontrollers.savedata', null, 'com_fakeapp');
+        $sessionData = $container->session->get('dummycontrollers.savedata', null, 'com_fakeapp');
 
         $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
         $this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
@@ -203,28 +203,38 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerEdit
      * @covers          FOF30\Controller\DataController::edit
      * @dataProvider    DataControllerDataprovider::getTestEdit
      */
-    public function tXestEdit($test, $check)
+    public function testEdit($test, $check)
     {
+        $msg = 'DataController::edit %s - Case: '.$check['case'];
+        $sessionMock = array();
+
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
             )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            'session'       => new ClosureHelper(array(
+                'set' => function($self, $key, $value, $namespace) use(&$sessionMock){
+                    $sessionMock[$namespace.'.'.$key] = $value;
+                },
+                'get' => function($self, $key, $default, $namespace) use(&$sessionMock){
+                    $key = $namespace.'.'.$key;
+
+                    if(isset($sessionMock[$key])){
+                        return $sessionMock[$key];
+                    }
+
+                    return $default;
+                }
+            ))
         ));
 
-        $container->segment->setFlash('fakeapp_dummycontrollers', $test['mock']['flash']);
+        $container->session->set('dummycontrollers.savedata', $test['mock']['session'], 'com_fakeapp');
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('getId', 'lock', 'bind'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'lock', 'bind', 'setFormName', 'getForm'), array(), '', false);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
 
         $method = $model->expects($this->any())->method('lock');
@@ -238,24 +248,31 @@ class DataControllertest extends FOFTestCase
             $method->willReturn(null);
         }
 
-        $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')
-                ->with($check['bind'])->willReturn(null);
+        $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->with($this->equalTo($check['bind']));
+        $model->expects($this->any())->method('setFormName')->with($this->equalTo($check['formName']));
+        $model->expects($this->any())->method('getForm')->willReturn($test['mock']['getForm']);
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub',
             array('getModel', 'getIDsFromRequest', 'setRedirect', 'display'), array($container));
 
         $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn(null);
+        $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest');
         $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')
-            ->willReturn(null)->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo('error'));
-        $controller->expects($check['display'] ? $this->once() : $this->never())->method('display')->willReturn(null);
+            ->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo('error'));
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
 
         ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
+        ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
 
         $controller->edit();
 
-        $layout = ReflectionHelper::getValue($controller, 'layout');
-        $this->assertEquals($check['layout'], $layout, 'DataController::edit failed to set the layout');
+        $layout  = ReflectionHelper::getValue($controller, 'layout');
+        $hasForm = ReflectionHelper::getValue($controller, 'hasForm');
+        $sessionData = $container->session->get('dummycontrollers.savedata', null, 'com_fakeapp');
+
+        $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
+        $this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
+        $this->assertNull($sessionData, sprintf($msg, 'Failed to wipe session data'));
     }
 
     /**
