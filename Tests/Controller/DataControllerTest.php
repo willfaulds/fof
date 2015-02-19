@@ -276,12 +276,10 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerApply
      * @covers          FOF30\Controller\DataController::apply
      * @dataProvider    DataControllerDataprovider::getTestApply
      */
-    public function tXestApply($test, $check)
+    public function testApply($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
@@ -292,10 +290,9 @@ class DataControllertest extends FOFTestCase
         ));
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'applySave', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('applySave')->willReturn($test['mock']['apply']);
         $controller->expects($check['redirect'] ? $this->once() : $this->never())->method('setRedirect')
-            ->willReturn(null)->with($this->equalTo($check['url']), $this->equalTo($check['msg']));
+            ->with($this->equalTo($check['url']), $this->equalTo($check['msg']));
 
         $controller->apply();
     }
