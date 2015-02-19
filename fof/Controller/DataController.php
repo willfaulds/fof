@@ -404,7 +404,7 @@ class DataController extends Controller
 
 			if ($model->getId() != reset($ids))
 			{
-				$key = $this->container->componentName . '_ERR_' . $model->getName() . '_NOTFOUND';
+				$key = strtoupper($this->container->componentName . '_ERR_' . $model->getName() . '_NOTFOUND');
 				throw new ItemNotFound(\JText::_($key), 404);
 			}
 		}

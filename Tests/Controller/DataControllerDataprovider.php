@@ -141,93 +141,129 @@ class DataControllerDataprovider
 
     public static function getTestRead()
     {
-        // Getting the id from the model, using the default layout
         $data[] = array(
             array(
                 'mock' => array(
                     'getId'  => array(3, null),
                     'ids'    => 0,
-                    'layout' => ''
+                    'layout' => '',
+                    'getForm' => false,
+                    'cache' => array('browse', 'read')
                 )
             ),
             array(
-                'getIdCount'   => 1,
+                'case'         => 'Getting the id from the model, using the default layout',
                 'getIdFromReq' => 0,
-                'display'      => 1,
+                'display'      => true,
                 'exception'    => false,
-                'layout'       => 'item'
+                'layout'       => 'item',
+                'hasForm'      => false,
+                'setForm'      => 'form.item'
             )
         );
 
-        // Getting the id from the model, using a custom layout
         $data[] = array(
             array(
                 'mock' => array(
                     'getId'  => array(3, null),
                     'ids'    => 0,
-                    'layout' => 'custom'
+                    'layout' => '',
+                    'getForm' => false,
+                    'cache' => array('browse')
                 )
             ),
             array(
-                'getIdCount'   => 1,
+                'case'         => 'Getting the id from the model, using the default layout, task is not cacheable',
                 'getIdFromReq' => 0,
-                'display'      => 1,
+                'display'      => false,
                 'exception'    => false,
-                'layout'       => 'custom'
+                'layout'       => 'item',
+                'hasForm'      => false,
+                'setForm'      => 'form.item'
             )
         );
 
-        // Getting the id from the request, using the default layout
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'getId'  => array(3, null),
+                    'ids'    => 0,
+                    'layout' => 'custom',
+                    'getForm' => true,
+                    'cache' => array('browse', 'read')
+                )
+            ),
+            array(
+                'case'         => 'Getting the id from the model, using a custom layout, with form',
+                'getIdFromReq' => 0,
+                'display'      => true,
+                'exception'    => false,
+                'layout'       => 'custom',
+                'hasForm'      => true,
+                'setForm'      => 'form.custom'
+            )
+        );
+
         $data[] = array(
             array(
                 'mock' => array(
                     'getId'  => array(false, 3),
                     'ids'    => array(3),
-                    'layout' => ''
+                    'layout' => '',
+                    'getForm' => false,
+                    'cache' => array('browse', 'read')
                 )
             ),
             array(
-                'getIdCount'   => 2,
+                'case'         => 'Getting the id from the request, using the default layout',
                 'getIdFromReq' => 1,
-                'display'      => 1,
+                'display'      => true,
                 'exception'    => false,
-                'layout'       => 'item'
+                'layout'       => 'item',
+                'hasForm'      => false,
+                'setForm'      => 'form.item'
             )
         );
 
-        // Getting the id from the request, something wrong happens - part 1
         $data[] = array(
             array(
                 'mock' => array(
                     'getId'  => array(false, 3),
                     'ids'    => array(),
-                    'layout' => ''
+                    'layout' => '',
+                    'getForm' => false,
+                    'cache' => array('browse', 'read')
                 )
             ),
             array(
-                'getIdCount'   => 2,
+                'case'         => 'Getting the id from the request, something wrong happens - part 1',
                 'getIdFromReq' => 1,
-                'display'      => 0,
+                'display'      => true,
                 'exception'    => true,
-                'layout'       => 'item'
+                'layout'       => 'item',
+                'hasForm'      => false,
+                'setForm'      => 'form.item'
             )
         );
 
-        // Getting the id from the request, something wrong happens - part 2
         $data[] = array(
             array(
                 'mock' => array(
                     'getId'  => array(false, false),
                     'ids'    => array(3),
-                    'layout' => ''
+                    'layout' => '',
+                    'getForm' => false,
+                    'cache' => array('browse', 'read')
                 )
             ),
             array(
-                'getIdCount'   => 2,
+                'case'         => 'Getting the id from the request, something wrong happens - part 2',
                 'getIdFromReq' => 1,
-                'display'      => 0,
+                'display'      => true,
                 'exception'    => true,
-                'layout'       => 'item'
+                'layout'       => 'item',
+                'hasForm'      => false,
+                'setForm'      => 'form.item'
             )
         );
 

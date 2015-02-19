@@ -108,42 +108,46 @@ class DataControllertest extends FOFTestCase
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerRead
      * @covers          FOF30\Controller\DataController::read
      * @dataProvider    DataControllerDataprovider::getTestRead
      */
-    public function tXestRead($test, $check)
+    public function testRead($test, $check)
     {
-        $container = new TestContainer(array(
-            'componentName' => 'com_fakeapp',
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $msg     = 'DataController::read %s - Case: '.$check['case'];
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('getId'), array($container));
-        $model->expects($this->exactly($check['getIdCount']))->method('getId')->willReturnOnConsecutiveCalls($test['mock']['getId'][0], $test['mock']['getId'][1]);
+        $modelMethods = array('getId', 'getForm', 'setFormName');
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', $modelMethods, array(), '', false);
 
-        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'getIDsFromRequest', 'display'), array($container));
+        $model->expects($this->any())->method('getId')->willReturnCallback(function() use (&$test){
+            return array_shift($test['mock']['getId']);
+        });
+
+        $model->expects($this->any())->method('getForm')->willReturn($test['mock']['getForm']);
+        $model->expects($this->any())->method('setFormName')->with($check['setForm']);
+
+
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'getIDsFromRequest', 'display'), array(static::$container));
         $controller->expects($this->any())->method('getModel')->willReturn($model);
-        $controller->expects($check['getIdFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($check['display'] ? $this->once() : $this->never())->method('display')->willReturn(null);
+        $controller->expects($this->any())->method('getIDsFromRequest')
+            ->willReturn($test['mock']['ids']);
 
-        ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['display']));
 
         if($check['exception'])
         {
-            $this->setExpectedException('Exception', 'FAKEAPP_ERR_NESTEDSET_NOTFOUND');
+            $this->setExpectedException('FOF30\Controller\Exception\ItemNotFound', 'COM_FAKEAPP_ERR_NESTEDSET_NOTFOUND');
         }
+
+        ReflectionHelper::setValue($controller, 'layout', $test['mock']['layout']);
+        ReflectionHelper::setValue($controller, 'cacheableTasks', $test['mock']['cache']);
 
         $controller->read();
 
-        $layout = ReflectionHelper::getValue($controller, 'layout');
+        $layout  = ReflectionHelper::getValue($controller, 'layout');
+        $hasForm = ReflectionHelper::getValue($controller, 'hasForm');
 
-        $this->assertEquals($check['layout'], $layout, 'DataController::read failed to set the layout');
+        $this->assertEquals($check['layout'], $layout, sprintf($msg, 'Failed to set the layout'));
+        $this->assertEquals($check['hasForm'], $hasForm, sprintf($msg, 'Failed to set the hasForm flag'));
     }
 
     /**
