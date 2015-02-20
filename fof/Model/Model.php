@@ -175,7 +175,7 @@ class Model
             // Can I fetch it from the request?
             if (!$this->_ignoreRequest)
             {
-                $value = $this->container->platform->getUserStateFromRequest($key, $key, $this->input, $value, 'none', $this->_savestate);
+                $value = $this->container->platform->getUserStateFromRequest($this->getHash() . $key, $key, $this->input, $value, 'none', $this->_savestate);
 
                 // Did I get any useful value from the request?
                 if (is_null($value))
