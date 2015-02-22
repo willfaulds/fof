@@ -671,6 +671,14 @@ class Toolbar
 	}
 
 	/**
+	 * @param boolean $renderFrontendButtons
+	 */
+	public function setRenderFrontendButtons($renderFrontendButtons)
+	{
+		$this->renderFrontendButtons = $renderFrontendButtons;
+	}
+
+	/**
 	 * Return the front-end submenu rendering flag
 	 *
 	 * @return  boolean
@@ -678,6 +686,14 @@ class Toolbar
 	public function getRenderFrontendSubmenu()
 	{
 		return $this->renderFrontendSubmenu;
+	}
+
+	/**
+	 * @param boolean $renderFrontendSubmenu
+	 */
+	public function setRenderFrontendSubmenu($renderFrontendSubmenu)
+	{
+		$this->renderFrontendSubmenu = $renderFrontendSubmenu;
 	}
 
 	/**
