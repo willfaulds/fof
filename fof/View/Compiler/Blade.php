@@ -660,6 +660,17 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the route statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileRoute($expression)
+	{
+		return "<?php echo \JRoute::_($expression); ?>";
+	}
+
+	/**
 	 * Register a custom Blade compiler.
 	 *
 	 * @param  callable  $compiler
