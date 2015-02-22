@@ -111,7 +111,7 @@ class MagicFactory extends BasicFactory implements FactoryInterface
 
 		$defaultConfig = array(
 			'useConfigurationFile'  => true,
-			'renderFrontEndButtons' => in_array($appConfig->get("views.*.config.renderFrontEndButtons"), array(true, 'true', 'yes', 'on', 1)),
+			'renderFrontendButtons' => in_array($appConfig->get("views.*.config.renderFrontendButtons"), array(true, 'true', 'yes', 'on', 1)),
 			'renderFrontendSubmenu' => in_array($appConfig->get("views.*.config.renderFrontendSubmenu"), array(true, 'true', 'yes', 'on', 1)),
 		);
 
