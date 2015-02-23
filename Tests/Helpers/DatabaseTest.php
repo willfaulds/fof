@@ -7,86 +7,10 @@
 
 namespace FOF30\Tests\Helpers;
 
-use FOF30\Tests\Helpers\TestHelper;
-use FOF30\Tests\Stubs\Fakeapp\Container as FakeContainer;
-use JDatabaseDriver;
+use FOF30\Container\Container;
 
 abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 {
-	/** @var FakeContainer A container suitable for unit testing */
-	public static $container = null;
-
-	/**
-	 * @var    JDatabaseDriver  The active database driver being used for the tests.
-	 * @since  1.0
-	 */
-	protected static $driver;
-
-	public function __construct($name = null, array $data = array(), $dataName = '')
-	{
-		parent::__construct($name, $data, $dataName);
-
-		// We can't use setUpBeforeClass or setUp because PHPUnit will not run these methods before
-		// getting the data from the data provider of each test :(
-
-		ReflectionHelper::setValue('\\Awf\\Application\\Application', 'instances', array());
-
-		// TODO Convince the autoloader about our default app and its container
-	}
-
-	/**
-	 * This method is called before the first test of this test class is run.
-	 *
-	 * @return  void
-	 *
-	 * @since   1.0
-	 */
-	public static function setUpBeforeClass()
-	{
-		// We always want the default database test case to use an SQLite memory database.
-		$options = array(
-			'driver' => 'sqlite',
-			'database' => ':memory:',
-			'prefix' => 'fof_'
-		);
-
-		try
-		{
-			// Attempt to instantiate the driver.
-			self::$driver = JDatabaseDriver::getInstance($options);
-
-			// Create a new PDO instance for an SQLite memory database and load the test schema into it.
-			$pdo = new \PDO('sqlite::memory:');
-
-			$pdo->exec(file_get_contents(__DIR__ . '/../Stubs/schema/ddl.sql'));
-
-			// Set the PDO instance to the driver using reflection.
-			TestHelper::setValue(self::$driver, 'connection', $pdo);
-		}
-		catch (\RuntimeException $e)
-		{
-			self::$driver = null;
-		}
-
-		// If for some reason an exception object was returned set our database object to null.
-		if (self::$driver instanceof \Exception)
-		{
-			self::$driver = null;
-		}
-	}
-
-	/**
-	 * This method is called after the last test of this test class is run.
-	 *
-	 * @return  void
-	 *
-	 * @since   1.0
-	 */
-	public static function tearDownAfterClass()
-	{
-		self::$driver = null;
-	}
-
 	/**
 	 * Assigns mock callbacks to methods.
 	 *
@@ -149,27 +73,43 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function getConnection()
 	{
-		if (!is_null(self::$driver))
-		{
-			return $this->createDefaultDBConnection(self::$driver->getConnection(), ':memory:');
-		}
-		else
-		{
-			return null;
-		}
+        static $connection;
+
+        if(!$connection)
+        {
+            // Let's use the config file of our guinea pig
+            require_once JPATH_BASE.'/configuration.php';
+
+            $config = new \JConfig();
+
+            // P.A. Test database prefix is fixed with jos_ so we can setup common tables
+            $options = array (
+                'driver'	=> ((isset ($config)) && ($config->dbtype != 'mysqli')) ? $config->dbtype : 'mysql',
+                'host' 		=> isset ($config) ? $config->host : '127.0.0.1',
+                'user' 		=> isset ($config) ? $config->user : 'utuser',
+                'password' 	=> isset ($config) ? $config->password : 'ut1234',
+                'database' 	=> isset ($config) ? $config->db : 'joomla_ut',
+                'prefix' 	=> 'jos_'
+            );
+
+            $pdo = new \PDO($options['driver'].':host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
+            $connection = $this->createDefaultDBConnection($pdo, $options['database']);
+        }
+
+        return $connection;
 	}
 
-	/**
-	 * Gets the data set to be loaded into the database during setup
-	 *
-	 * @return  \PHPUnit_Extensions_Database_DataSet_XmlDataSet
-	 *
-	 * @since   1.0
-	 */
-	protected function getDataSet()
-	{
-		return $this->createXMLDataSet(__DIR__ . '/Stubs/empty.xml');
-	}
+    /**
+     * Gets the data set to be loaded into the database during setup
+     *
+     * @return  \PHPUnit_Extensions_Database_DataSet_XmlDataSet
+     *
+     * @since   1.0
+     */
+    protected function getDataSet()
+    {
+        return $this->createXMLDataSet(__DIR__ . '/../Stubs/schema/database.xml');
+    }
 
 	/**
 	 * Returns the database operation executed in test setup.
@@ -180,45 +120,34 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function getSetUpOperation()
 	{
-		// Required given the use of InnoDB contraints.
-		return new \PHPUnit_Extensions_Database_Operation_Composite(
-			array(
-				\PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL(),
-				\PHPUnit_Extensions_Database_Operation_Factory::INSERT()
-			)
-		);
+        // At the moment we can safely TRUNCATE tables, since we're not using InnoDB tables nor foreign keys
+        // However if we ever need them, we can use our InsertOperation and TruncateOperation to suppress foreign keys
+        return new \PHPUnit_Extensions_Database_Operation_Composite(
+            array(
+                \PHPUnit_Extensions_Database_Operation_Factory::TRUNCATE(),
+                \PHPUnit_Extensions_Database_Operation_Factory::INSERT()
+            )
+        );
 	}
 
-	/**
-	 * Returns the database operation executed in test cleanup.
-	 *
-	 * @return  \PHPUnit_Extensions_Database_Operation_Factory
-	 *
-	 * @since   1.0
-	 */
-	protected function getTearDownOperation()
-	{
-		// Required given the use of InnoDB contraints.
-		return \PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
-	}
+    /** @var Container A container suitable for unit testing */
+    public static $container = null;
 
-	/**
-	 * Sets up the fixture.
-	 *
-	 * This method is called before a test is executed.
-	 *
-	 * @return  void
-	 *
-	 * @since   1.0
-	 */
-	protected function setUp()
-	{
-		if (empty(static::$driver))
-		{
-			$this->markTestSkipped('There is no database driver.');
-		}
+    public static function setUpBeforeClass()
+    {
+        self::rebuildContainer();
+    }
 
-		parent::setUp();
-	}
+    public static function tearDownAfterClass()
+    {
+        static::$container = null;
+    }
 
-} 
+    public static function rebuildContainer()
+    {
+        static::$container = null;
+        static::$container = new TestContainer(array(
+            'componentName'	=> 'com_fakeapp',
+        ));
+    }
+}
