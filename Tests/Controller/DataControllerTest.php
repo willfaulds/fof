@@ -4,7 +4,7 @@ namespace FOF30\Tests\DataController;
 
 use FOF30\Input\Input;
 use FOF30\Tests\Helpers\ClosureHelper;
-use FOF30\Tests\Helpers\FOFTestCase;
+use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Controller\DataControllerStub;
@@ -17,7 +17,7 @@ require_once 'DataControllerDataprovider.php';
  * @covers      FOF30\Controller\DataController::<private>
  * @package     FOF30\Tests\DataController
  */
-class DataControllertest extends FOFTestCase
+class DataControllertest extends DatabaseTest
 {
     /**
      * @covers          FOF30\Controller\DataController::__construct
@@ -602,12 +602,10 @@ class DataControllertest extends FOFTestCase
     /**
      * The best way to test with method is to run it and check vs the database
      *
-     * @group           DataController
-     * @group           DataControllerSaveorder
      * @covers          FOF30\Controller\DataController::saveorder
      * @dataProvider    DataControllerDataprovider::getTestsaveorder
      */
-    public function tXestSaveorder($test, $check)
+    public function testSaveorder($test, $check)
     {
         $msg = 'DataController::saveorder %s - Case: '.$check['case'];
 
@@ -616,27 +614,28 @@ class DataControllertest extends FOFTestCase
             'input' => new Input(array(
                 'order'     => $test['ordering'],
                 'returnurl' => $test['returnurl'] ? base64_encode($test['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => $test['table']
-            )
+            ))
         ));
 
-        $model      = new DataModelStub($container);
+        $config = array(
+            'idFieldName' => $test['id'],
+            'tableName'   => $test['table']
+        );
+
+        $model      = new DataModelStub($container, $config);
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null)
+        $controller->expects($this->once())->method('setRedirect')
             ->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
         $controller->saveorder();
 
-        $db = self::$driver;
+        $db = self::$container->db;
 
         $query = $db->getQuery(true)
-                    ->select('id')
-                    ->from($db->qn('#__dbtest_extended'))
+                    ->select('foftest_foobar_id')
+                    ->from($db->qn('#__foftest_foobars'))
                     ->order($db->qn('ordering').' ASC');
         $rows = $db->setQuery($query)->loadColumn();
 

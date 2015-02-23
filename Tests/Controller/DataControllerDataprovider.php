@@ -968,17 +968,18 @@ class DataControllerDataprovider
             array(
                 'ordering'  => array(3,1,2,4),
                 'returnurl' => '',
-                'table'     => '#__dbtest_extended',
+                'id'        => 'foftest_foobar_id',
+                'table'     => '#__foftest_foobars',
                 'mock' => array(
                     'ids' => array(1,2,3,4)
                 )
             ),
             array(
                 'case' => 'No custom redirect set',
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => null,
                 'type' => null,
-                'rows' => array(2,3,1,4)
+                'rows' => array(2,3,1,4,5)
             )
         );
 
@@ -986,7 +987,8 @@ class DataControllerDataprovider
             array(
                 'ordering'  => array(3,1,2,4),
                 'returnurl' => 'http://www.example.com/index.php?view=custom',
-                'table'     => '#__dbtest_extended',
+                'id'        => 'foftest_foobar_id',
+                'table'     => '#__foftest_foobars',
                 'mock' => array(
                     'ids' => array(1,2,3,4)
                 )
@@ -996,7 +998,7 @@ class DataControllerDataprovider
                 'url'  => 'http://www.example.com/index.php?view=custom',
                 'msg'  => null,
                 'type' => null,
-                'rows' => array(2,3,1,4)
+                'rows' => array(2,3,1,4,5)
             )
         );
 
@@ -1004,17 +1006,18 @@ class DataControllerDataprovider
             array(
                 'ordering'  => array(3,1,2,4),
                 'returnurl' => '',
-                'table'     => '#__dbtest',
+                'id'        => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'mock' => array(
                     'ids' => array(1,2,3,4)
                 )
             ),
             array(
                 'case' => 'Table with no ordering support',
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
-                'msg'  => '#__dbtest does not support ordering.',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'  => '#__foftest_bares does not support ordering.',
                 'type' => 'error',
-                'rows' => array(1,2,3,4)
+                'rows' => array(1,2,3,4,5)
             )
         );
 
