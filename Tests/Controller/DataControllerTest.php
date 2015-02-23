@@ -791,32 +791,32 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerGetModel
      * @covers          FOF30\Controller\DataController::getModel
      * @dataProvider    DataControllerDataprovider::getTestGetModel
      */
-    public function tXestGetModel($test, $check)
+    public function testGetModel($test, $check)
     {
         $container = new TestContainer(array(
-            'componentName' => 'com_fakeapp',
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
+            'componentName' => 'com_fakeapp'
         ));
+
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
         $controller = new DataControllerStub($container);
 
+        ReflectionHelper::setValue($controller, 'modelName', $test['mock']['modelname']);
+
         if($check['exception'])
         {
-            $this->setExpectedException('Exception');
+            $this->setExpectedException('FOF30\Controller\Exception\NotADataModel');
         }
 
-        $model = $controller->getModel($test['model']);
+        $model = $controller->getModel($test['name'], $config);
 
-        $this->assertInstanceOf('\\FOF30\\Controller\\DataModel', $model, 'DataController::getModel should return a DataModel');
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $model, 'DataController::getModel should return a DataModel');
     }
 
     /**

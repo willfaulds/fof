@@ -1255,7 +1255,10 @@ class DataControllerDataprovider
     {
         $data[] = array(
             array(
-                'model' => 'datafoobars'
+                'name' => 'datafoobars',
+                'mock' => array(
+                    'modelname' => null
+                )
             ),
             array(
                 'exception' => false
@@ -1264,7 +1267,22 @@ class DataControllerDataprovider
 
         $data[] = array(
             array(
-                'model' => null
+                'name' => null,
+                'mock' => array(
+                    'modelname' => 'datafoobars'
+                )
+            ),
+            array(
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => null,
+                'mock' => array(
+                    'modelname' => 'foobar'
+                )
             ),
             array(
                 'exception' => true
