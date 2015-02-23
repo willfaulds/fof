@@ -820,12 +820,10 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerGetIDsFromRequest
      * @covers          FOF30\Controller\DataController::getIDsFromRequest
      * @dataProvider    DataControllerDataprovider::getTestGetIDsFromRequest
      */
-    public function tXestGetIDsFromRequest($test, $check)
+    public function testGetIDsFromRequest($test, $check)
     {
         $msg = 'DataController::getIDsFromRequest %s - Case: '.$check['case'];
 
@@ -834,16 +832,16 @@ class DataControllertest extends DatabaseTest
             'input' => new Input(array(
                 'cid' => $test['mock']['cid'],
                 'id'  => $test['mock']['id'],
-                'dbtest_nestedset_id' => $test['mock']['kid']
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+                'foftest_foobar_id' => $test['mock']['kid']
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('find'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find'), array($container, $config));
         $model->expects($check['load'] ? $this->once() : $this->never())->method('find')->with($check['loadid']);
 
         $controller = new DataControllerStub($container);
