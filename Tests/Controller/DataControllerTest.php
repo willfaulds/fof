@@ -643,26 +643,24 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerOrderdown
      * @covers          FOF30\Controller\DataController::orderdown
      * @dataProvider    DataControllerDataprovider::getTestOrderdown
      */
-    public function tXestOrderdown($test, $check)
+    public function testOrderdown($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('move', 'getId'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('move', 'getId'), array($container, $config));
         $model->expects($this->once())->method('getId')->willReturn($test['mock']['getId']);
         $model->expects($this->any())->method('move')->willReturnCallback(
             function() use (&$test)
@@ -680,10 +678,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -691,26 +687,24 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
-     * @group           DataController
-     * @group           DataControllerOrderup
      * @covers          FOF30\Controller\DataController::orderup
      * @dataProvider    DataControllerDataprovider::getTestOrderup
      */
-    public function tXestOrderup($test, $check)
+    public function testOrderup($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('move', 'getId'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('move', 'getId'), array($container, $config));
         $model->expects($this->once())->method('getId')->willReturn($test['mock']['getId']);
         $model->expects($this->any())->method('move')->willReturnCallback(
             function() use (&$test)
@@ -728,10 +722,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($check['getFromReq'] ? $this->once() : $this->never())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 
@@ -744,21 +736,21 @@ class DataControllertest extends DatabaseTest
      * @covers          FOF30\Controller\DataController::remove
      * @dataProvider    DataControllerDataprovider::getTestRemove
      */
-    public function tXestRemove($test, $check)
+    public function testRemove($test, $check)
     {
         $container = new TestContainer(array(
             'componentName' => 'com_fakeapp',
             'input' => new Input(array(
                 'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
-            )),
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
+            ))
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataModelStub', array('find', 'delete'), array($container));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'delete'), array($container, $config));
         $model->expects($this->any())->method('find')->willReturnCallback(
             function() use (&$test)
             {
@@ -790,10 +782,8 @@ class DataControllertest extends DatabaseTest
         );
 
         $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
-        $controller->expects($this->any())->method('csrfProtection')->willReturn(null);
         $controller->expects($this->any())->method('getModel')->willReturn($model);
         $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
-        $controller->expects($this->once())->method('setRedirect')->willReturn(null);
 
         $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
 

@@ -1113,7 +1113,7 @@ class DataController extends Controller
 		}
 		else
 		{
-			$textKey = $this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_DELETED';
+			$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_DELETED');
 			$this->setRedirect($url, \JText::_($textKey));
 		}
 	}

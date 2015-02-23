@@ -1037,7 +1037,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'getFromReq' => false,
                 'msg'  => null,
                 'type' => null
@@ -1055,7 +1055,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'getFromReq' => true,
                 'msg'  => null,
                 'type' => null
@@ -1091,7 +1091,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'getFromReq' => false,
                 'msg'  => 'Exception in move',
                 'type' => 'error'
@@ -1114,7 +1114,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'getFromReq' => false,
                 'msg'  => null,
                 'type' => null
@@ -1132,7 +1132,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'getFromReq' => true,
                 'msg'  => null,
                 'type' => null
@@ -1168,7 +1168,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'getFromReq' => false,
                 'msg'  => 'Exception in move',
                 'type' => 'error'
@@ -1191,8 +1191,8 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
-                'msg'  => 'FAKEAPP_LBL_DUMMYCONTROLLER_DELETED',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'  => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_DELETED',
                 'type' => null
             )
         );
@@ -1209,7 +1209,7 @@ class DataControllerDataprovider
             ),
             array(
                 'url'  => 'http://www.example.com/index.php?view=custom',
-                'msg'  => 'FAKEAPP_LBL_DUMMYCONTROLLER_DELETED',
+                'msg'  => 'COM_FAKEAPP_LBL_DUMMYCONTROLLER_DELETED',
                 'type' => null
             )
         );
@@ -1225,7 +1225,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in delete',
                 'type' => 'error'
             )
@@ -1242,7 +1242,7 @@ class DataControllerDataprovider
                 )
             ),
             array(
-                'url'  => 'http://www.example.com/index.php?view=dummycontrollers',
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
                 'msg'  => 'Exception in find',
                 'type' => 'error'
             )
