@@ -23,6 +23,8 @@ require_once 'GenericDataprovider.php';
 class DataModelGenericTest extends DatabaseTest
 {
     /**
+     * @group           DataModel
+     * @group           DataModelGetTableFields
      * @covers          FOF30\Model\DataModel::getTableFields
      * @dataProvider    DataModelGenericDataprovider::getTestGetTableFields
      */
@@ -75,6 +77,8 @@ class DataModelGenericTest extends DatabaseTest
     }
 
     /**
+     * @group           DataModel
+     * @group           DataModelGetDbo
      * @covers          FOF30\Model\DataModel::getDbo
      * @dataProvider    DataModelGenericDataprovider::getTestGetDbo
      */
@@ -121,38 +125,25 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::setFieldValue
      * @dataProvider    DataModelGenericDataprovider::getTestSetFieldValue
      */
-    public function tXestSetFieldValue($test, $check)
+    public function testSetFieldValue($test, $check)
     {
         $msg = 'DataModel::setFieldValue %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
 
         ReflectionHelper::setValue($model, 'aliasFields', $test['mock']['alias']);
 
         $model->setFieldValue($test['name'], $test['value']);
 
         $data  = ReflectionHelper::getValue($model, 'recordData');
-        $count = isset($model->methodCounter[$check['method']]) ? $model->methodCounter[$check['method']] : 0;
 
-        if($check['set'])
-        {
-            $this->assertArrayHasKey($check['key'], $data, sprintf($msg, ''));
-            $this->assertEquals($check['value'], $data[$check['key']], sprintf($msg, ''));
-        }
-        else
-        {
-            $this->assertArrayNotHasKey($check['key'], $data, sprintf($msg, ''));
-        }
-
-        $this->assertEquals($check['count'], $count, sprintf($msg, 'Called the magic setter the wrong amount of times'));
+        $this->assertArrayHasKey($check['key'], $data, sprintf($msg, ''));
+        $this->assertEquals($check['value'], $data[$check['key']], sprintf($msg, ''));
     }
 
     /**
@@ -161,22 +152,19 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::reset
      * @dataProvider    DataModelGenericDataprovider::getTestReset
      */
-    public function tXestReset($test, $check)
+    public function testReset($test, $check)
     {
         $msg = 'DataModel::reset %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => $test['table']
-            )
-        ));
+        $config = array(
+            'idFieldName' => $test['table_id'],
+            'tableName'   => $test['table']
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
 
         $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('resetRelations'), array($model));
-        $relation->expects($check['resetRelations'] ? $this->once() : $this->never())->method('resetRelations')->willReturn(null);
+        $relation->expects($check['resetRelations'] ? $this->once() : $this->never())->method('resetRelations');
 
         ReflectionHelper::setValue($model, 'relationManager', $relation);
         ReflectionHelper::setValue($model, 'recordData', $test['mock']['recordData']);

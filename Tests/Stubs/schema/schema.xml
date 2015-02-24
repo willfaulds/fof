@@ -184,7 +184,6 @@ CREATE TABLE `jos_foftest_nestedsets` (
       ]]></query>
     </action>
 
-    <!--  -->
     <action table="jos_foftest_nestedbares" canfail="0">
       <query><![CDATA[
 DROP TABLE IF EXISTS `jos_foftest_nestedbares`;
@@ -202,5 +201,21 @@ CREATE TABLE `jos_foftest_nestedbares` (
 ) DEFAULT CHARSET=utf8;
       ]]></query>
     </action>
+
+    <action table="jos_foftest_defaults" canfail="0">
+      <query><![CDATA[
+DROP TABLE IF EXISTS `jos_foftest_defaults`;
+      ]]></query>
+      <query><![CDATA[
+CREATE TABLE `jos_foftest_defaults` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL DEFAULT 'dummy',
+  `start_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+)ENGINE=MEMORY DEFAULT CHARSET=utf8;
+      ]]></query>
+    </action>
+
   </sql>
 </schema>

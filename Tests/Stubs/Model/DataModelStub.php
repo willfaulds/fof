@@ -411,17 +411,6 @@ class DataModelStub extends DataModel
     /**
      * Method invoked by setFieldValue to set the value of an attribute
      *
-     * @see     DataModel::setFieldValue
-     * @param   $value
-     */
-    public function SetDummyAttribute($value)
-    {
-        $this->methodCounter['SetDummyAttribute']++;
-    }
-
-    /**
-     * Method invoked by setFieldValue to set the value of an attribute
-     *
      * @see     DataModel::getFieldValue
      */
     public function GetDummyAttribute()

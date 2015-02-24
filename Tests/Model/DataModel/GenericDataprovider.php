@@ -283,10 +283,7 @@ class DataModelGenericDataprovider
                 'value' => 'bar'
             ),
             array(
-                'case'  => 'Setting a method, no alias nor specific setter',
-                'method' => 'SetFooAttribute',
-                'count' => 0,
-                'set'   => true,
+                'case'  => 'Setting a method, no alias',
                 'key'   => 'foo',
                 'value' => 'bar'
             )
@@ -303,70 +300,9 @@ class DataModelGenericDataprovider
                 'value' => 'bar'
             ),
             array(
-                'case'  => 'Setting a method, with alias and no specific setter',
-                'method' => 'SetFooAttribute',
-                'count' => 0,
-                'set'   => true,
+                'case'  => 'Setting a method, with alias',
                 'key'   => 'test',
                 'value' => 'bar'
-            )
-        );
-
-        $data[] = array(
-            array(
-                'mock' => array(
-                    'alias' => array()
-                ),
-                'name'  => 'dummy',
-                'value' => 'bar'
-            ),
-            array(
-                'case'  => 'Setting a method, no alias and with a specific setter',
-                'method' => 'SetDummyAttribute',
-                'count' => 1,
-                'set'   => false,
-                'key'   => '',
-                'value' => ''
-            )
-        );
-
-        $data[] = array(
-            array(
-                'mock' => array(
-                    'alias' => array(
-                        'dummy' => 'foo'
-                    )
-                ),
-                'name'  => 'dummy',
-                'value' => 'bar'
-            ),
-            array(
-                'case'  => 'Setting a method, method with a specific setter AND a different alias',
-                'method' => 'SetFooAttribute',
-                'count' => 0,
-                'set'   => true,
-                'key'   => 'foo',
-                'value' => 'bar'
-            )
-        );
-
-        $data[] = array(
-            array(
-                'mock' => array(
-                    'alias' => array(
-                        'foo' => 'dummy'
-                    )
-                ),
-                'name'  => 'foo',
-                'value' => 'bar'
-            ),
-            array(
-                'case'  => 'Setting a method, with an alias pointing to a specific setter',
-                'method' => 'SetDummyAttribute',
-                'count' => 1,
-                'set'   => false,
-                'key'   => '',
-                'value' => ''
             )
         );
 
@@ -378,11 +314,12 @@ class DataModelGenericDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'recordData'      => array('id' => null, 'title' => null, 'start_date' => null, 'description' => null),
+                    'recordData'      => array('foftest_bare_id' => null, 'title' => null),
                     'eagerRelations'  => array(),
                     'relationFilters' => array()
                 ),
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'default'   => true,
                 'relations' => false
             ),
@@ -391,10 +328,8 @@ class DataModelGenericDataprovider
                 'resetRelations' => false,
                 'eager'          => array(),
                 'data'           => array(
-                    'id'          => null,
-                    'title'       => null,
-                    'start_date'  => null,
-                    'description' => null
+                    'foftest_bare_id'  => null,
+                    'title'            => null
                 )
             )
         );
@@ -402,11 +337,12 @@ class DataModelGenericDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'recordData'      => array('id' => null, 'title' => null, 'start_date' => null, 'description' => null, 'foobar' => 'test'),
+                    'recordData'      => array('foftest_bare_id' => null, 'title' => null),
                     'eagerRelations'  => array(),
                     'relationFilters' => array()
                 ),
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'default'   => true,
                 'relations' => false
             ),
@@ -415,10 +351,8 @@ class DataModelGenericDataprovider
                 'resetRelations' => false,
                 'eager'          => array(),
                 'data'           => array(
-                    'id'          => null,
-                    'title'       => null,
-                    'start_date'  => null,
-                    'description' => null
+                    'foftest_bare_id'  => null,
+                    'title'            => null
                 )
             )
         );
@@ -426,11 +360,12 @@ class DataModelGenericDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'recordData'      => array('id' => null, 'title' => null, 'start_date' => null, 'description' => null),
+                    'recordData'      => array('foftest_bare_id' => null, 'title' => null),
                     'eagerRelations'  => array(),
                     'relationFilters' => array()
                 ),
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'default'   => false,
                 'relations' => false
             ),
@@ -439,10 +374,8 @@ class DataModelGenericDataprovider
                 'resetRelations' => false,
                 'eager'          => array(),
                 'data'           => array(
-                    'id'          => null,
-                    'title'       => null,
-                    'start_date'  => null,
-                    'description' => null
+                    'foftest_bare_id'  => null,
+                    'title'            => null
                 )
             )
         );
@@ -454,7 +387,8 @@ class DataModelGenericDataprovider
                     'eagerRelations'  => array(),
                     'relationFilters' => array()
                 ),
-                'table'     => '#__dbtest_defaults',
+                'table_id'  => 'id',
+                'table'     => '#__foftest_defaults',
                 'default'   => true,
                 'relations' => false
             ),
@@ -478,7 +412,8 @@ class DataModelGenericDataprovider
                     'eagerRelations'  => array(),
                     'relationFilters' => array()
                 ),
-                'table'     => '#__dbtest_defaults',
+                'table_id'  => 'id',
+                'table'     => '#__foftest_defaults',
                 'default'   => false,
                 'relations' => false
             ),
@@ -502,7 +437,8 @@ class DataModelGenericDataprovider
                     'eagerRelations'  => array('foo' => 'bar'),
                     'relationFilters' => array('dummy')
                 ),
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'default'   => true,
                 'relations' => false
             ),
@@ -511,10 +447,8 @@ class DataModelGenericDataprovider
                 'resetRelations' => false,
                 'eager'          => array('foo' => 'bar'),
                 'data'           => array(
-                    'id'          => null,
-                    'title'       => null,
-                    'start_date'  => null,
-                    'description' => null
+                    'foftest_bare_id'  => null,
+                    'title'            => null
                 )
             )
         );
@@ -526,7 +460,8 @@ class DataModelGenericDataprovider
                     'eagerRelations'  => array('foo' => 'bar'),
                     'relationFilters' => array('dummy')
                 ),
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'default'   => true,
                 'relations' => true
             ),
@@ -535,10 +470,8 @@ class DataModelGenericDataprovider
                 'resetRelations' => true,
                 'eager'          => array(),
                 'data'           => array(
-                    'id'          => null,
-                    'title'       => null,
-                    'start_date'  => null,
-                    'description' => null
+                    'foftest_bare_id'  => null,
+                    'title'            => null
                 )
             )
         );
