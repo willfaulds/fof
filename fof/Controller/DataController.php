@@ -84,7 +84,7 @@ class DataController extends Controller
 	 * @param   Container  $container  The application container
 	 * @param   array      $config     The configuration array
 	 */
-	public function __construct(Container $container = null, array $config = array())
+	public function __construct(Container $container, array $config = array())
 	{
 		parent::__construct($container, $config);
 

@@ -894,4 +894,31 @@ class DataControllertest extends DatabaseTest
 
         $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
     }
+
+    /**
+     * @covers          FOF30\Controller\DataController::getItemidURLSuffix
+     * @dataProvider    DataControllerDataprovider::getTestGetItemidURLSuffix
+     */
+    public function testGetItemidURLSuffix($test, $check)
+    {
+        $msg = 'DataController::getItemidURLSuffix %s - Case: '.$check['case'];
+
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'platform' => new ClosureHelper(array(
+                'isFrontend' => function() use ($test){
+                    return $test['mock']['frontend'];
+                }
+            )),
+            'input' => new Input(array(
+                'Itemid' => $test['mock']['itemid']
+            ))
+        ));
+
+        $controller = new DataControllerStub($container);
+
+        $result = $controller->getItemidURLSuffix();
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
+    }
 }

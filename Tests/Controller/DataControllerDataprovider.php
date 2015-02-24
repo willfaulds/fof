@@ -1585,4 +1585,61 @@ class DataControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestGetItemidURLSuffix()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'frontend' => false,
+                    'itemid'   => 0
+                )
+            ),
+            array(
+                'case'   => 'Backend, not Itemid set',
+                'result' => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'frontend' => false,
+                    'itemid'   => 130
+                )
+            ),
+            array(
+                'case'   => 'Backend, with Itemid set',
+                'result' => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'frontend' => true,
+                    'itemid'   => 0
+                )
+            ),
+            array(
+                'case'   => 'Frontend, not Itemid set',
+                'result' => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'frontend' => true,
+                    'itemid'   => 130
+                )
+            ),
+            array(
+                'case'   => 'Frontend, with Itemid set',
+                'result' => '&Itemid=130'
+            )
+        );
+
+        return $data;
+    }
 }
