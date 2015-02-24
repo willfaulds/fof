@@ -487,14 +487,12 @@ class DataModelGenericDataprovider
                     'alias' => array()
                 ),
                 'find'     => 1,
-                'property' => 'id',
+                'property' => 'foftest_foobar_id',
                 'default'  => null
             ),
             array(
                 'case'   => 'Getting a property that exists',
-                'method' => 'GetIdAttribute',
-                'result' => 1,
-                'count'  => 0
+                'result' => 1
             )
         );
 
@@ -504,14 +502,12 @@ class DataModelGenericDataprovider
                     'alias' => array()
                 ),
                 'find'     => null,
-                'property' => 'id',
+                'property' => 'foftest_foobar_id',
                 'default'  => null
             ),
             array(
                 'case'   => 'Getting a property that exists, record not loaded',
-                'method' => 'GetIdAttribute',
-                'result' => null,
-                'count'  => 0
+                'result' => null
             )
         );
 
@@ -526,9 +522,7 @@ class DataModelGenericDataprovider
             ),
             array(
                 'case'   => 'Getting a property that does not exist',
-                'method' => 'GetFoobarAttribute',
-                'result' => 'test',
-                'count'  => 0
+                'result' => 'test'
             )
         );
 
@@ -545,26 +539,7 @@ class DataModelGenericDataprovider
             ),
             array(
                 'case'   => 'Getting a property that exists using an alias',
-                'method' => 'GetTitleAttribute',
-                'result' => 'Testing',
-                'count'  => 0
-            )
-        );
-
-        $data[] = array(
-            array(
-                'mock' => array(
-                    'alias' => array()
-                ),
-                'find'     => 1,
-                'property' => 'dummy',
-                'default'  => null
-            ),
-            array(
-                'case'   => 'Getting a property that has a specific getter',
-                'method' => 'GetDummyAttribute',
-                'result' => null,
-                'count'  => 1
+                'result' => 'Guinea Pig row'
             )
         );
 
@@ -576,12 +551,12 @@ class DataModelGenericDataprovider
         $data[] = array(
             array(
                 'mock' => array(
-                    'getAlias' => 'id',
+                    'getAlias' => 'foftest_foobar_id',
                     'fields'   => array(
-                        'id' => 'dummy'
+                        'foftest_foobar_id' => 'dummy'
                     )
                 ),
-                'field' => 'id'
+                'field' => 'foftest_foobar_id'
             ),
             array(
                 'case'   => 'Field exists, no alias',
@@ -594,7 +569,7 @@ class DataModelGenericDataprovider
                 'mock' => array(
                     'getAlias' => 'nothere',
                     'fields'   => array(
-                        'id' => 'dummy'
+                        'foftest_foobar_id' => 'dummy'
                     )
                 ),
                 'field' => 'nothere'
@@ -610,10 +585,10 @@ class DataModelGenericDataprovider
                 'mock' => array(
                     'getAlias' => 'foobar',
                     'fields'   => array(
-                        'id' => 'dummy'
+                        'foftest_foobar_id' => 'dummy'
                     )
                 ),
-                'field' => 'id'
+                'field' => 'foftest_foobar_id'
             ),
             array(
                 'case'   => 'Field does no exists, has an alias',
@@ -629,7 +604,7 @@ class DataModelGenericDataprovider
                         'foobar' => 'dummy'
                     )
                 ),
-                'field' => 'id'
+                'field' => 'foftest_foobar_id'
             ),
             array(
                 'case'   => 'Field exists, has an alias',
@@ -732,7 +707,7 @@ class DataModelGenericDataprovider
                 'case' => 'No limits override, no additional query, no order field or direction',
                 'filter' => true,
                 'where'  => array(),
-                'order'  => array('`id` ASC')
+                'order'  => array('`foftest_bare_id` ASC')
             )
         );
 
@@ -764,7 +739,7 @@ class DataModelGenericDataprovider
                 'case' => 'No limits override, no additional query or direction, with (unknown) order field',
                 'filter' => true,
                 'where'  => array(),
-                'order'  => array('`id` ASC')
+                'order'  => array('`foftest_bare_id` ASC')
             )
         );
 

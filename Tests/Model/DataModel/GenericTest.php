@@ -189,19 +189,16 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::getFieldValue
      * @dataProvider    DataModelGenericDataprovider::getTestGetFieldValue
      */
-    public function tXestGetFieldValue($test, $check)
+    public function testGetFieldValue($test, $check)
     {
         $msg = 'DataModel::getFieldValue %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
 
         ReflectionHelper::setValue($model, 'aliasFields', $test['mock']['alias']);
 
@@ -212,10 +209,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $result = $model->getFieldValue($test['property'], $test['default']);
 
-        $count = isset($model->methodCounter[$check['method']]) ? $model->methodCounter[$check['method']] : 0;
-
         $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
-        $this->assertEquals($check['count'], $count, sprintf($msg, 'Invoked the specific getter method a wrong amount of times'));
     }
 
     /**
@@ -224,19 +218,16 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::hasField
      * @dataProvider    DataModelGenericDataprovider::getTestHasField
      */
-    public function tXestHasField($test, $check)
+    public function testHasField($test, $check)
     {
         $msg = 'DataModel::hasField %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldAlias'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldAlias'), array(self::$container, $config));
         $model->expects($this->any())->method('getFieldAlias')->willReturn($test['mock']['getAlias']);
 
         ReflectionHelper::setValue($model, 'knownFields', $test['mock']['fields']);
@@ -252,19 +243,16 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::getFieldAlias
      * @dataProvider    DataModelGenericDataprovider::getTestGetFieldAlias
      */
-    public function tXestGetFieldAlias($test, $check)
+    public function testGetFieldAlias($test, $check)
     {
         $msg = 'DataModel::getFieldAlias %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
 
         ReflectionHelper::setValue($model, 'aliasFields', $test['mock']['alias']);
 
@@ -278,22 +266,19 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelGetData
      * @covers          FOF30\Model\DataModel::getData
      */
-    public function tXestGetData()
+    public function testGetData()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
         $model->find(1);
 
         $result = $model->getData();
 
-        $check = array('id' => 1, 'title' => 'Testing', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one');
+        $check = array('foftest_bare_id' => 1, 'title' => 'First Row');
 
         $this->assertEquals($check, $result, 'DataModel::getData Returned the wrong result');
     }
@@ -304,23 +289,20 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::chunk
      * @dataProvider    DataModelGenericDataprovider::getTestChunk
      */
-    public function tXestChunk($test, $check)
+    public function testChunk($test, $check)
     {
         $msg     = 'DataModel::chunk %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         $fakeGet = new ClosureHelper(array(
             'transform' => function(){}
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('count', 'get'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('count', 'get'), array(self::$container, $config));
         $model->expects($this->once())->method('count')->willReturn($test['mock']['count']);
         $model->expects($this->exactly($check['get']))->method('get')->willReturn($fakeGet);
 
@@ -334,18 +316,15 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelCount
      * @covers          FOF30\Model\DataModel::count
      */
-    public function tXestCount()
+    public function testCount()
     {
-        $db     = self::$driver;
+        $db     = \JFactory::getDbo();
         $after  = 0;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         // I am passing those methods so I can double check if the method is really called
         $methods = array(
@@ -354,21 +333,21 @@ class DataModelGenericTest extends DatabaseTest
             }
         );
 
-        $mockedQuery = $db->getQuery(true)->select('*')->from('#__dbtest');
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('buildQuery'), array($container, $methods));
+        $mockedQuery = $db->getQuery(true)->select('*')->from('#__foftest_bares');
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('buildQuery'), array(static::$container, $config, $methods));
         $model->expects($this->any())->method('buildQuery')->willReturn($mockedQuery);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array($container));
+        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
         $dispatcher->expects($this->once())->method('trigger')->withConsecutive(
-            array($this->equalTo('buildCountQuery'))
+            array($this->equalTo('onBuildCountQuery'))
         );
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
 
         $result = $model->count();
 
-        $query = $db->getQuery(true)->select('COUNT(*)')->from('#__dbtest');
+        $query = $db->getQuery(true)->select('COUNT(*)')->from('#__foftest_bares');
         $count = $db->setQuery($query)->loadResult();
 
         $this->assertEquals($count, $result, 'DataModel::count Failed to return the right amount of rows');
@@ -380,7 +359,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::buildQuery
      * @dataProvider    DataModelGenericDataprovider::getTestBuildQuery
      */
-    public function tXestBuildQuery($test, $check)
+    public function testBuildQuery($test, $check)
     {
         // Please note that if you try to debug this test, you'll get a "Couldn't fetch mysqli_result" error
         // That's harmless and appears in debug only, you might want to suppress exception thowing
@@ -390,13 +369,10 @@ class DataModelGenericTest extends DatabaseTest
         $after  = 0;
         $msg    = 'DataModel::buildQuery %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         // I am passing those methods so I can double check if the method is really called
         $methods = array(
@@ -408,7 +384,7 @@ class DataModelGenericTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array($container, $methods));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState'), array(static::$container, $config, $methods));
         $model->expects($check['filter'] ? $this->exactly(2) : $this->never())->method('getState')->willReturnCallback(
             function($state, $default) use ($test)
             {
@@ -432,7 +408,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array($container));
+        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeBuildQuery')),
             array($this->equalTo('onAfterBuildQuery'))
@@ -448,10 +424,10 @@ class DataModelGenericTest extends DatabaseTest
         $where  = $query->where ? $query->where->getElements() : array();
         $order  = $query->order ? $query->order->getElements() : array();
 
-        $this->assertInstanceOf('\\FOF30\\Database\\Query', $query, sprintf($msg, 'Should return an instance of FOF30\\Database\\Query'));
+        $this->assertInstanceOf('\\JDatabaseQuery', $query, sprintf($msg, 'Should return an instance of JDatabaseQuery'));
 
         $this->assertEquals(array('*'), $select, sprintf($msg, 'Wrong SELECT clause'));
-        $this->assertEquals(array('#__dbtest'), $table, sprintf($msg, 'Wrong FROM clause'));
+        $this->assertEquals(array('#__foftest_bares'), $table, sprintf($msg, 'Wrong FROM clause'));
         $this->assertEquals($check['where'], $where, sprintf($msg, 'Wrong WHERE clause'));
         $this->assertEquals($check['order'], $order, sprintf($msg, 'Wrong ORDER BY clause'));
     }
