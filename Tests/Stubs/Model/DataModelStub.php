@@ -46,7 +46,7 @@ class DataModelStub extends DataModel
      * @param array     $config
      * @param array     $methods
      */
-    public function __construct(Container $container = null, array $config = array(), array $methods = array())
+    public function __construct(Container $container, array $config = array(), array $methods = array())
     {
         foreach($methods as $method => $function)
         {

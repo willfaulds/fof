@@ -17,6 +17,11 @@ class TestContainer extends Container
 {
 	public function __construct(array $values = array())
 	{
+        if(!isset($values['componentName']))
+        {
+            $values['componentName'] = 'com_fakeapp';
+        }
+
         if(!isset($values['platform']))
         {
             $values['platform'] = function(Container $c)
