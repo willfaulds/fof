@@ -26,19 +26,16 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::getTableFields
      * @dataProvider    DataModelGenericDataprovider::getTestGetTableFields
      */
-    public function tXestGetTableFields($test, $check)
+    public function testGetTableFields($test, $check)
     {
         $msg = 'DataModel::getTableFields %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'componentName' => 'com_fakeapp',
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
 
         // Mocking the whole database it's simply too hard. We will play with the cache and we won't get 100% code coverage
         if($test['mock']['tables'] !== null)
@@ -89,7 +86,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $msg       = 'DataModel::setFieldValue %s - Case: '.$check['case'];
         $dbcounter = 0;
-        $selfDb    = clone \JFactory::getDbo();
+        $selfDb    = \JFactory::getDbo();
 
         $config = array(
             'idFieldName' => 'foftest_foobar_id',
@@ -114,7 +111,7 @@ class DataModelGenericTest extends DatabaseTest
 
         $db = $model->getDbo();
 
-        $this->assertInstanceOf('\\FOF30\\Database\\Driver', $db, sprintf($msg, 'Should return an instance of Driver'));
+        $this->assertInstanceOf('JDatabaseDriver', $db, sprintf($msg, 'Should return an instance of Driver'));
         $this->assertEquals($check['dbCounter'], $dbcounter, sprintf($msg, ''));
     }
 

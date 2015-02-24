@@ -10,14 +10,14 @@ class DataModelGenericDataprovider
                     'tables'     => null,
                     'tableName'  => null
                 ),
-                'table' => '#__dbtest'
+                'table' => '#__foftest_bares'
             ),
             array(
                 'case' => 'Table exists, abstract name, loaded cache',
                 'result' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
-                        'Type' => 'int(10) unsigned',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
+                        'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
                         'Key' => 'PRI',
@@ -28,33 +28,11 @@ class DataModelGenericDataprovider
                     ),
                     'title' => (object) array(
                         'Field' => 'title',
-                        'Type' => 'varchar(50)',
+                        'Type' => 'varchar(100)',
                         'Collation' => 'utf8_general_ci',
                         'Null' => 'NO',
                         'Key' => null,
                         'Default' =>null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'start_date' => (object) array(
-                        'Field' => 'start_date',
-                        'Type' => 'datetime',
-                        'Collation' => null,
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'description' => (object) array(
-                        'Field' => 'description',
-                        'Type' => 'varchar(255)',
-                        'Collation' => 'utf8_general_ci',
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
                         'Extra' => null,
                         'Privileges' => 'select,insert,update,references',
                         'Comment' => null
@@ -67,16 +45,16 @@ class DataModelGenericDataprovider
             array(
                 'mock' => array(
                     'tables'     => null,
-                    'tableName'  => '#__dbtest'
+                    'tableName'  => '#__foftest_bares'
                 ),
                 'table' => null
             ),
             array(
                 'case' => 'Table exists, abstract name, loaded cache, table name got from the object',
                 'result' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
-                        'Type' => 'int(10) unsigned',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
+                        'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
                         'Key' => 'PRI',
@@ -87,33 +65,11 @@ class DataModelGenericDataprovider
                     ),
                     'title' => (object) array(
                         'Field' => 'title',
-                        'Type' => 'varchar(50)',
+                        'Type' => 'varchar(100)',
                         'Collation' => 'utf8_general_ci',
                         'Null' => 'NO',
                         'Key' => null,
                         'Default' =>null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'start_date' => (object) array(
-                        'Field' => 'start_date',
-                        'Type' => 'datetime',
-                        'Collation' => null,
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'description' => (object) array(
-                        'Field' => 'description',
-                        'Type' => 'varchar(255)',
-                        'Collation' => 'utf8_general_ci',
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
                         'Extra' => null,
                         'Privileges' => 'select,insert,update,references',
                         'Comment' => null
@@ -142,14 +98,14 @@ class DataModelGenericDataprovider
                     'tables'     => null,
                     'tableName'  => null
                 ),
-                'table' => 'awf_dbtest'
+                'table' => 'jos_foftest_bares'
             ),
             array(
                 'case' => 'Table exists, actual name, loaded cache',
                 'result' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
-                        'Type' => 'int(10) unsigned',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
+                        'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
                         'Key' => 'PRI',
@@ -160,33 +116,11 @@ class DataModelGenericDataprovider
                     ),
                     'title' => (object) array(
                         'Field' => 'title',
-                        'Type' => 'varchar(50)',
+                        'Type' => 'varchar(100)',
                         'Collation' => 'utf8_general_ci',
                         'Null' => 'NO',
                         'Key' => null,
                         'Default' =>null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'start_date' => (object) array(
-                        'Field' => 'start_date',
-                        'Type' => 'datetime',
-                        'Collation' => null,
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'description' => (object) array(
-                        'Field' => 'description',
-                        'Type' => 'varchar(255)',
-                        'Collation' => 'utf8_general_ci',
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
                         'Extra' => null,
                         'Privileges' => 'select,insert,update,references',
                         'Comment' => null
@@ -201,14 +135,14 @@ class DataModelGenericDataprovider
                     'tables'     => 'nuke',
                     'tableName'  => null
                 ),
-                'table' => '#__dbtest'
+                'table' => '#__foftest_bares'
             ),
             array(
                 'case' => 'Table exists, abstract name, clean cache',
                 'result' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
-                        'Type' => 'int(10) unsigned',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
+                        'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
                         'Key' => 'PRI',
@@ -219,33 +153,11 @@ class DataModelGenericDataprovider
                     ),
                     'title' => (object) array(
                         'Field' => 'title',
-                        'Type' => 'varchar(50)',
+                        'Type' => 'varchar(100)',
                         'Collation' => 'utf8_general_ci',
                         'Null' => 'NO',
                         'Key' => null,
                         'Default' =>null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'start_date' => (object) array(
-                        'Field' => 'start_date',
-                        'Type' => 'datetime',
-                        'Collation' => null,
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'description' => (object) array(
-                        'Field' => 'description',
-                        'Type' => 'varchar(255)',
-                        'Collation' => 'utf8_general_ci',
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
                         'Extra' => null,
                         'Privileges' => 'select,insert,update,references',
                         'Comment' => null
@@ -258,18 +170,18 @@ class DataModelGenericDataprovider
             array(
                 'mock' => array(
                     'tables'     => array(
-                        '#__dbtest' => 'unset'
+                        '#__foftest_bares' => 'unset'
                     ),
                     'tableName'  => null
                 ),
-                'table' => '#__dbtest'
+                'table' => '#__foftest_bares'
             ),
             array(
                 'case' => 'Table exists, abstract name, table not inside the cache',
                 'result' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
-                        'Type' => 'int(10) unsigned',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
+                        'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
                         'Key' => 'PRI',
@@ -280,33 +192,11 @@ class DataModelGenericDataprovider
                     ),
                     'title' => (object) array(
                         'Field' => 'title',
-                        'Type' => 'varchar(50)',
+                        'Type' => 'varchar(100)',
                         'Collation' => 'utf8_general_ci',
                         'Null' => 'NO',
                         'Key' => null,
                         'Default' =>null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'start_date' => (object) array(
-                        'Field' => 'start_date',
-                        'Type' => 'datetime',
-                        'Collation' => null,
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'description' => (object) array(
-                        'Field' => 'description',
-                        'Type' => 'varchar(255)',
-                        'Collation' => 'utf8_general_ci',
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
                         'Extra' => null,
                         'Privileges' => 'select,insert,update,references',
                         'Comment' => null
@@ -319,18 +209,18 @@ class DataModelGenericDataprovider
             array(
                 'mock' => array(
                     'tables'     => array(
-                        '#__dbtest' => false
+                        '#__foftest_bares' => false
                     ),
                     'tableName'  => null
                 ),
-                'table' => '#__dbtest'
+                'table' => '#__foftest_bares'
             ),
             array(
                 'case' => 'Table exists, abstract name, table had a false value inside the cache',
                 'result' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
-                        'Type' => 'int(10) unsigned',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
+                        'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
                         'Key' => 'PRI',
@@ -341,33 +231,11 @@ class DataModelGenericDataprovider
                     ),
                     'title' => (object) array(
                         'Field' => 'title',
-                        'Type' => 'varchar(50)',
+                        'Type' => 'varchar(100)',
                         'Collation' => 'utf8_general_ci',
                         'Null' => 'NO',
                         'Key' => null,
                         'Default' =>null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'start_date' => (object) array(
-                        'Field' => 'start_date',
-                        'Type' => 'datetime',
-                        'Collation' => null,
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
-                        'Extra' => null,
-                        'Privileges' => 'select,insert,update,references',
-                        'Comment' => null
-                    ),
-                    'description' => (object) array(
-                        'Field' => 'description',
-                        'Type' => 'varchar(255)',
-                        'Collation' => 'utf8_general_ci',
-                        'Null' => 'NO',
-                        'Key' => null,
-                        'Default' => null,
                         'Extra' => null,
                         'Privileges' => 'select,insert,update,references',
                         'Comment' => null
