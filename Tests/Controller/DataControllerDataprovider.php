@@ -101,6 +101,245 @@ class DataControllerDataprovider
         return $data;
     }
 
+    public static function getTestGetView()
+    {
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, name passed, view not cached, internal reference are empty',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'html',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => true
+                )
+            ),
+            array(
+                'case'   => 'The controller has a form',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'form',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => 'html',
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, name passed, view not cached, internal reference are empty',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'html',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => null,
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => 'foobar',
+                    'instances' => array(),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, name not passed, fetched from the viewName property',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'html',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => null,
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => 'foobar',
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, name not passed, fetched from the view property',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'html',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => 'json',
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating JSON view, name passed, view not cached, internal reference are empty',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'json',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => 'json',
+                    'getView'   => 'mocked',
+                    'hasForm'   => true
+                )
+            ),
+            array(
+                'case'   => 'The controller has a form, but this is a JSON view',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'json',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array('foobar' => 'cached'),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, fetched from the cache',
+                'result' => 'cached',
+                'viewName' => '',
+                'type'     => '',
+                'config' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array('foo' => 'bar'),
+                'constructConfig' => array(),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, name and config passed, view not cached, internal reference are empty',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'html',
+                'config' => array('foo' => 'bar')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+                'config' => array(),
+                'constructConfig' => array(
+                    'viewConfig' => array(
+                        'foo' => 'bar'
+                    )
+                ),
+                'mock' => array(
+                    'view' => null,
+                    'viewName' => null,
+                    'instances' => array(),
+                    'format'    => null,
+                    'getView'   => 'mocked',
+                    'hasForm'   => false
+                )
+            ),
+            array(
+                'case'   => 'Creating HTML view, name and config passed (in constructor), view not cached, internal reference are empty',
+                'result' => 'mocked',
+                'viewName' => 'foobar',
+                'type'     => 'html',
+                'config' => array('foo' => 'bar')
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestBrowse()
     {
         $data[]= array(

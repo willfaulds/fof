@@ -82,6 +82,49 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
+     * @covers          FOF30\Controller\DataController::getView
+     * @dataProvider    DataControllerDataprovider::getTestGetView
+     */
+    public function testGetView($test, $check)
+    {
+        $msg        = 'DataController::getView %s - Case: '.$check['case'];
+        $arguments  = array(
+            'name'   => '',
+            'type'   => '',
+            'config' => array()
+        );
+
+        $container  = new TestContainer(array(
+            'componentName' => 'com_eastwood',
+            'input' => new Input(array(
+                'format' => $test['mock']['format']
+            )),
+            'factory'  => new ClosureHelper(array(
+                'view' => function($self, $viewName, $type, $config) use ($test, &$arguments){
+                    $arguments['name'] = $viewName;
+                    $arguments['type'] = $type;
+                    $arguments['config'] = $config;
+
+                    return $test['mock']['getView'];
+                }
+            ))
+        ));
+        $controller = new DataControllerStub($container, $test['constructConfig']);
+
+        ReflectionHelper::setValue($controller, 'viewName', $test['mock']['viewName']);
+        ReflectionHelper::setValue($controller, 'view', $test['mock']['view']);
+        ReflectionHelper::setValue($controller, 'viewInstances', $test['mock']['instances']);
+        ReflectionHelper::setValue($controller, 'hasForm', $test['mock']['hasForm']);
+
+        $result = $controller->getView($test['name'], $test['config']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Created the wrong view'));
+        $this->assertEquals($check['viewName'], $arguments['name'], sprintf($msg, 'Created the wrong view name'));
+        $this->assertEquals($check['type'], $arguments['type'], sprintf($msg, 'Created the wrong view type'));
+        $this->assertEquals($check['config'], $arguments['config'], sprintf($msg, 'Passed the wrong config'));
+    }
+
+    /**
      * @group           DataController
      * @group           DataControllerBrowse
      * @covers          FOF30\Controller\DataController::browse
