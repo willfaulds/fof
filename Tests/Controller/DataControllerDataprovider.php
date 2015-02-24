@@ -1500,4 +1500,89 @@ class DataControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestLoadHistory()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'version'   => 1,
+                    'returnurl' => '',
+                    'history'   => '',
+                    'checkACL'  => true
+                )
+            ),
+            array(
+                'case'       => 'Everything is going smooth',
+                'version_id' => 1,
+                'alias'      => 'com_fakeapp.dummycontroller',
+                'url'        => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'        => 'JLIB_APPLICATION_SUCCESS_LOAD_HISTORY',
+                'type'       => null,
+                'result'     => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'version'   => 1,
+                    'returnurl' => 'www.example.com',
+                    'history'   => '',
+                    'checkACL'  => true
+                )
+            ),
+            array(
+                'case'       => 'Everything is going smooth, custom redirect',
+                'version_id' => 1,
+                'alias'      => 'com_fakeapp.dummycontroller',
+                'url'        => 'www.example.com',
+                'msg'        => 'JLIB_APPLICATION_SUCCESS_LOAD_HISTORY',
+                'type'       => null,
+                'result'     => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'version'   => 1,
+                    'returnurl' => '',
+                    'history'   => 'exception',
+                    'checkACL'  => true
+                )
+            ),
+            array(
+                'case'       => 'Load history throws an error',
+                'version_id' => 1,
+                'alias'      => 'com_fakeapp.dummycontroller',
+                'url'        => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'        => 'Load history error',
+                'type'       => 'error',
+                'result'     => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'version'   => 1,
+                    'returnurl' => '',
+                    'history'   => '',
+                    'checkACL'  => false
+                )
+            ),
+            array(
+                'case'       => 'Check ACL returns false',
+                'version_id' => 1,
+                'alias'      => 'com_fakeapp.dummycontroller',
+                'url'        => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'        => 'JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED',
+                'type'       => 'error',
+                'result'     => false
+            )
+        );
+
+        return $data;
+    }
 }

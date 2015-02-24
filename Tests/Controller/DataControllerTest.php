@@ -850,4 +850,48 @@ class DataControllertest extends DatabaseTest
 
         $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
     }
+
+    /**
+     * @covers          FOF30\Controller\DataController::loadHistory
+     * @dataProvider    DataControllerDataprovider::getTestLoadHistory
+     */
+    public function testLoadHistory($test, $check)
+    {
+        $msg = 'DataController::loadhistory %s - Case: '.$check['case'];
+
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'input' => new Input(array(
+                'version_id' => $test['mock']['version'],
+                'returnurl'  => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : ''
+            ))
+        ));
+
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('loadhistory', 'store', 'lock', 'unlock', 'getState'), array($container, $config));
+        $model->expects($this->any())->method('loadhistory')->willReturnCallback(function() use ($test){
+            if($test['mock']['history'] == 'exception'){
+                throw new \Exception('Load history error');
+            }
+        })
+            ->with($this->equalTo($check['version_id']), $this->equalTo($check['alias']));
+
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getModel', 'checkACL', 'setRedirect'), array($container));
+        $controller->expects($this->any())->method('getModel')->willReturn($model);
+        $controller->expects($this->any())->method('setRedirect')->with(
+            $this->equalTo($check['url']),
+            $this->equalTo($check['msg']),
+            $this->equalTo($check['type'])
+        );
+
+        $controller->expects($this->any())->method('checkACL')->willReturn($test['mock']['checkACL']);
+
+        $result = $controller->loadhistory();
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
 }

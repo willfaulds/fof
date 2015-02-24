@@ -1301,9 +1301,21 @@ class DataController extends Controller
 	public function loadhistory()
 	{
 		$model = $this->getModel();
-		$historyId = $this->input->get('version_id', null, 'integer');
 		$model->lock();
-		$alias = $this->container->componentName . '.' . $this->view;
+
+        $historyId = $this->input->get('version_id', null, 'integer');
+		$alias     = $this->container->componentName . '.' . $this->view;
+        $returnUrl = 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+
+        if ($customURL = $this->input->getBase64('returnurl', ''))
+        {
+            $customURL = base64_decode($customURL);
+        }
+
+        if(!empty($customURL))
+        {
+            $returnUrl = $customURL;
+        }
 
 		try
 		{
@@ -1311,10 +1323,8 @@ class DataController extends Controller
 		}
 		catch (\Exception $e)
 		{
-			$this->setMessage($e->getMessage(), 'error');
-
-			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
-			$this->setRedirect($url);
+			$this->setRedirect($returnUrl, $e->getMessage(), 'error');
+            $model->unlock();
 
 			return false;
 		}
@@ -1322,20 +1332,14 @@ class DataController extends Controller
 		// Access check.
 		if (!$this->checkACL('@loadhistory'))
 		{
-			$this->setMessage(\JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
-
-			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
-			$this->setRedirect($url);
+			$this->setRedirect($returnUrl, \JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'), 'error');
 			$model->unlock();
 
 			return false;
 		}
 
 		$model->store();
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
-		$this->setRedirect($url);
-
-		$this->setMessage(\JText::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
+		$this->setRedirect($returnUrl, \JText::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
 
 		return true;
 	}
