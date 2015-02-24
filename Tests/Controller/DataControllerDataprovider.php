@@ -76,6 +76,31 @@ class DataControllerDataprovider
         return $data;
     }
 
+    public static function getTestExecute()
+    {
+        // Default task, the controller should detect the correct one
+        $data[] = array(
+            array(
+                'task' => 'default'
+            ),
+            array(
+                'getCrud' => true,
+            )
+        );
+
+        // Task passed
+        $data[] = array(
+            array(
+                'task' => 'read'
+            ),
+            array(
+                'getCrud' => false,
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestBrowse()
     {
         $data[]= array(

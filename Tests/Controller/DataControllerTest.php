@@ -2,6 +2,7 @@
 
 namespace FOF30\Tests\DataController;
 
+use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Input\Input;
 use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\DatabaseTest;
@@ -60,6 +61,24 @@ class DataControllertest extends DatabaseTest
         $this->assertEquals($check['view'], $viewName, sprintf($msg, 'Failed to set the correct viewName'));
         $this->assertEquals($check['cache'], $cache, sprintf($msg, 'Failed to set the correct task cache'));
         $this->assertEquals($check['privileges'], $privileges, sprintf($msg, 'Failed to set the correct task privileges'));
+    }
+
+    /**
+     * @covers          FOF30\Controller\DataController::execute
+     * @dataProvider    DataControllerDataprovider::getTestExecute
+     */
+    public function testExecute($test, $check)
+    {
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('getCrudTask', 'read'), array(self::$container));
+        $controller->expects($check['getCrud'] ? $this->once() : $this->never())->method('getCrudTask')->willReturn('read');
+
+        try{
+            $controller->execute($test['task']);
+        }
+        catch(ModelNotFound $e)
+        {
+            // I don't care if I can't find the model, I'm just checking if the correct task is invoked
+        }
     }
 
     /**
