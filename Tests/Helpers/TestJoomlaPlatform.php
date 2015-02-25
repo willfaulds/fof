@@ -29,6 +29,19 @@ class TestJoomlaPlatform extends PlatformJoomla
 	/** @var array|null The platform base directories to return */
 	public static $baseDirs = null;
 
+    /** @var object|null The current user */
+    public static $user = null;
+
+    public function getUser($id = null)
+    {
+        if(isset(static::$user))
+        {
+            return static::$user;
+        }
+
+        return parent::getUser($id);
+    }
+
 	/**
 	 * Main function to detect if we're running in a CLI environment and we're admin. This method is designed to lie.
 	 *

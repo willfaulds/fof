@@ -13,7 +13,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => 1,
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'relations' => null,
                 'data'      => array('title' => 'foobar'),
                 'ordering'  => '',
@@ -25,7 +26,7 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'id'          => 1,
-                'row'         => (object) array('id' => 1, 'title' => 'foobar', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one'),
+                'row'         => (object) array('foftest_bare_id' => 1, 'title' => 'foobar'),
                 'created_on'  => false,
                 'modified_on' => false
             )
@@ -40,7 +41,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => 1,
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'relations' => null,
                 'data'      => null,
                 'ordering'  => '',
@@ -52,7 +54,7 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'id'          => 1,
-                'row'         => (object) array('id' => 1, 'title' => 'foobar', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one'),
+                'row'         => (object) array('foftest_bare_id' => 1, 'title' => 'foobar'),
                 'created_on'  => false,
                 'modified_on' => false
             )
@@ -67,7 +69,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => 1,
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'relations' => null,
                 'data'      => null,
                 'ordering'  => '',
@@ -79,7 +82,7 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'id'          => 1,
-                'row'         => (object) array('id' => 1, 'title' => 'foobar', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one'),
+                'row'         => (object) array('foftest_bare_id' => 1, 'title' => 'foobar'),
                 'created_on'  => false,
                 'modified_on' => false
             )
@@ -94,7 +97,8 @@ class DataModelCrudDataprovider
                     'blankId'    => true
                 ),
                 'id'        => 1,
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'relations' => null,
                 'data'      => null,
                 'ordering'  => '',
@@ -106,7 +110,7 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'id'          => 'max',
-                'row'         => (object) array('title' => 'Testing', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one'),
+                'row'         => (object) array('title' => 'First Row'),
                 'created_on'  => false,
                 'modified_on' => false
             )
@@ -121,7 +125,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => null,
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'relations' => null,
                 'data'      => array('title' => 'foobar'),
                 'ordering'  => '',
@@ -133,7 +138,7 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'id'          => 'max',
-                'row'         => (object) array('title' => 'foobar', 'start_date' => '0000-00-00 00:00:00', 'description' => ''),
+                'row'         => (object) array('title' => 'foobar'),
                 'created_on'  => false,
                 'modified_on' => false
             )
@@ -148,7 +153,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => null,
-                'table'     => '#__dbtest',
+                'table_id'  => 'foftest_bare_id',
+                'table'     => '#__foftest_bares',
                 'relations' => null,
                 'data'      => null,
                 'ordering'  => '',
@@ -160,7 +166,7 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'id'          => 'max',
-                'row'         => (object) array('title' => 'foobar', 'start_date' => '0000-00-00 00:00:00', 'description' => ''),
+                'row'         => (object) array('title' => 'foobar'),
                 'created_on'  => false,
                 'modified_on' => false
             )
@@ -175,7 +181,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => 1,
-                'table'     => '#__dbtest_extended',
+                'table_id'  => 'foftest_foobar_id',
+                'table'     => '#__foftest_foobars',
                 'relations' => null,
                 'data'      => array('title' => 'foobar'),
                 'ordering'  => '',
@@ -187,9 +194,22 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'id'          => 1,
-                'row'         => (object) array('id' => 1, 'title' => 'foobar', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one',
-                    'ordering' => 1, 'enabled' => 0, 'locked_on' => '0000-00-00 00:00:00', 'locked_by' => 0,
-                    'created_by' => 0, 'modified_by' => 99, 'created_on' => '0000-00-00 00:00:00'),
+                'row'         => (object) array(
+                    'foftest_foobar_id' => 1,
+                    'title' => 'foobar',
+                    // Slug is not updated since we are moking the dispatcher events
+                    'slug' => 'guinea-pig-row',
+                    'enabled' => 1,
+                    'ordering' => 1,
+                    'hits' => 0,
+                    'asset_id' => 0,
+                    'access' => 2,
+                    'locked_on' => '0000-00-00 00:00:00',
+                    'locked_by' => 0,
+                    'created_by' => 42,
+                    'modified_by' => 99,
+                    'created_on' => '0000-00-00 00:00:00'
+                ),
                 'created_on'  => false,
                 'modified_on' => true
             )
@@ -204,7 +224,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => 1,
-                'table'     => '#__dbtest_extended',
+                'table_id'  => 'foftest_foobar_id',
+                'table'     => '#__foftest_foobars',
                 'relations' => null,
                 'data'      => array('title' => 'foobar'),
                 'ordering'  => 'ordering',
@@ -216,9 +237,22 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeUpdate' => 1, 'onAfterUpdate' => 1, 'onAfterSave' => 1),
                 'id'          => 1,
-                'row'         => (object) array('id' => 1, 'title' => 'foobar', 'start_date' => '1980-04-18 00:00:00', 'description' => 'one',
-                    'ordering' => 1, 'enabled' => 0, 'locked_on' => '0000-00-00 00:00:00', 'locked_by' => 0,
-                    'created_by' => 0, 'modified_by' => 99, 'created_on' => '0000-00-00 00:00:00'),
+                'row'         => (object) array(
+                    'foftest_foobar_id' => 1,
+                    'title' => 'foobar',
+                    // Slug is not updated since we are moking the dispatcher events
+                    'slug' => 'guinea-pig-row',
+                    'enabled' => 1,
+                    'ordering' => 1,
+                    'hits' => 0,
+                    'asset_id' => 0,
+                    'access' => 2,
+                    'locked_on' => '0000-00-00 00:00:00',
+                    'locked_by' => 0,
+                    'created_by' => 42,
+                    'modified_by' => 99,
+                    'created_on' => '0000-00-00 00:00:00'
+                ),
                 'created_on'  => false,
                 'modified_on' => true
             )
@@ -233,7 +267,8 @@ class DataModelCrudDataprovider
                     'blankId'    => false
                 ),
                 'id'        => null,
-                'table'     => '#__dbtest_extended',
+                'table_id'  => 'foftest_foobar_id',
+                'table'     => '#__foftest_foobars',
                 'relations' => null,
                 'data'      => array('title' => 'foobar'),
                 'ordering'  => '',
@@ -245,9 +280,21 @@ class DataModelCrudDataprovider
                 'modelEvents' => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'dispEvents'  => array('onBeforeSave' => 1, 'onBeforeCreate' => 1, 'onAfterCreate' => 1, 'onAfterSave' => 1),
                 'id'          => 'max',
-                'row'         => (object) array('title' => 'foobar', 'start_date' => '0000-00-00 00:00:00', 'description' => '',
-                    'ordering' => 0, 'enabled' => 0, 'locked_on' => '0000-00-00 00:00:00', 'locked_by' => 0,
-                    'created_by' => 99, 'modified_by' => 0, 'modified_on' => '0000-00-00 00:00:00'),
+                'row'         => (object) array(
+                    'title' => 'foobar',
+                    // Slug is not updated since we are moking the dispatcher events
+                    'slug' => '',
+                    'enabled' => 0,
+                    'ordering' => 0,
+                    'hits' => 0,
+                    'asset_id' => 0,
+                    'access' => 0,
+                    'locked_on' => '0000-00-00 00:00:00',
+                    'locked_by' => 0,
+                    'created_by' => 99,
+                    'modified_by' => 0,
+                    'modified_on' => '0000-00-00 00:00:00'
+                ),
                 'created_on'  => true,
                 'modified_on' => false
             )

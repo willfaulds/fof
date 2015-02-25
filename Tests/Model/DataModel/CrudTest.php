@@ -17,8 +17,8 @@ use FOF30\Tests\Helpers\DatabaseTest;
 require_once 'CrudDataprovider.php';
 
 /**
- * @covers      FOF30\Mvc\DataModel::<protected>
- * @covers      FOF30\Mvc\DataModel::<private>
+ * @covers      FOF30\Model\DataModel::<protected>
+ * @covers      FOF30\Model\DataModel::<private>
  * @package     FOF30\Tests\DataModel
  */
 class DataModelCrudTest extends DatabaseTest
@@ -26,38 +26,28 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelSave
-     * @covers          FOF30\Mvc\DataModel::save
+     * @covers          FOF30\Model\DataModel::save
      * @dataProvider    DataModelCrudDataprovider::getTestSave
      */
-    public function tXestSave($test, $check)
+    public function testSave($test, $check)
     {
         //\PHPUnit_Framework_Error_Warning::$enabled = false;
 
-        $db          = self::$driver;
+        $db          = \JFactory::getDbo();
         $msg         = 'DataModel::save %s - Case: '.$check['case'];
         $events      = array('onBeforeSave'  => 0, 'onAfterSave'  => 0, 'onBeforeCreate'  => 0, 'onAfterCreate'  => 0, 'onBeforeUpdate'  => 0, 'onAfterUpdate'  => 0);
         $dispEvents  = $events;
         $modelEvents = $events;
 
         // I need to fake the user id, since in CLI I don't have one
-        $fakeUserManager = new ClosureHelper(array(
-            'getUser' => function() {
-                return new ClosureHelper(array(
-                    'getId' => function(){
-                        return 99;
-                    }
-                ));
-            }
-        ));
+        $container = new TestContainer();
+        $platform  = $container->platform;
+        $platform::$user = (object)array('id' => 99);
 
-        $container = new TestContainer(array(
-            'db'          => self::$driver,
-            'userManager' => $fakeUserManager,
-            'mvc_config'  => array(
-                'idFieldName' => 'id',
-                'tableName'   => $test['table']
-            )
-        ));
+        $config = array(
+            'idFieldName' => $test['table_id'],
+            'tableName'   => $test['table']
+        );
 
         $methods = array(
             'onBeforeSave' => function() use (&$modelEvents){
@@ -80,10 +70,8 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('check', 'reorder'), array($container, $methods));
-        $model->expects($this->any())->method('check')->willReturn(null);
-        $model->expects($check['reorder'] ? $this->once() : $this->never())->method('reorder')->with($this->equalTo($check['reorder']))
-            ->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('check', 'reorder'), array($container, $config, $methods));
+        $model->expects($check['reorder'] ? $this->once() : $this->never())->method('reorder')->with($this->equalTo($check['reorder']));
 
         $dispatcher = $model->getBehavioursDispatcher();
 
@@ -92,7 +80,8 @@ class DataModelCrudTest extends DatabaseTest
         new ObserverClosure($dispatcher, array(
             'onBeforeSave' => function(&$subject, &$data) use ($test, &$dispEvents){
                 if($test['mock']['blankId']){
-                    $subject->id = null;
+                    $id = $test['table_id'];
+                    $subject->$id = null;
                 }
 
                 if(!is_null($test['mock']['dataSave'])){
@@ -141,7 +130,7 @@ class DataModelCrudTest extends DatabaseTest
         if($check['id'] == 'max')
         {
             $query = $db->getQuery(true)
-                ->select('MAX(id)')
+                ->select('MAX('.$test['table_id'].')')
                 ->from($test['table']);
             $checkid = $db->setQuery($query)->loadResult();
         }
@@ -150,7 +139,7 @@ class DataModelCrudTest extends DatabaseTest
             $checkid = $check['id'];
         }
 
-        $query = $db->getQuery(true)->select('*')->from($test['table'])->where('id = '.$checkid);
+        $query = $db->getQuery(true)->select('*')->from($test['table'])->where($test['table_id'].' = '.$checkid);
         $row   = $db->setQuery($query)->loadObject();
 
         // If the model has "time columns" I can only check if they are not null
@@ -179,7 +168,7 @@ class DataModelCrudTest extends DatabaseTest
         $check['modelEvents'] = array_merge($events, $check['modelEvents']);
         $check['dispEvents']  = array_merge($events, $check['dispEvents']);
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertEquals($check['modelEvents'], $modelEvents, sprintf($msg, 'Failed to invoke model events'));
         $this->assertEquals($check['dispEvents'], $dispEvents, sprintf($msg, 'Failed to invoke dispatcher events'));
         $this->assertEquals($check['row'], $row, sprintf($msg, 'Failed to correctly save the data into the db'));
@@ -188,7 +177,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelBind
-     * @covers          FOF30\Mvc\DataModel::bind
+     * @covers          FOF30\Model\DataModel::bind
      * @dataProvider    DataModelCrudDataprovider::getTestBind
      */
     public function tXestBind($test, $check)
@@ -204,7 +193,7 @@ class DataModelCrudTest extends DatabaseTest
             )
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('setFieldValue'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue'), array($container));
         $model->expects($this->any())->method('setFieldValue')->willReturnCallback(
             function($key, $value) use (&$checkBind){
                 $checkBind[$key] = $value;
@@ -228,14 +217,14 @@ class DataModelCrudTest extends DatabaseTest
 
         $result = $model->bind($test['data'], $test['ignore']);
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertEquals($check['bind'], $checkBind, sprintf($msg, 'Failed to bind the data to the model'));
     }
 
     /**
      * @group           DataModel
      * @group           DataModelBind
-     * @covers          FOF30\Mvc\DataModel::bind
+     * @covers          FOF30\Model\DataModel::bind
      * @dataProvider    DataModelCrudDataprovider::getTestBindException
      */
     public function tXestBindException($test)
@@ -258,7 +247,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelCheck
-     * @covers          FOF30\Mvc\DataModel::check
+     * @covers          FOF30\Model\DataModel::check
      * @dataProvider    DataModelCrudDataprovider::getTestCheck
      */
     public function tXestCheck($test, $check)
@@ -289,13 +278,13 @@ class DataModelCrudTest extends DatabaseTest
 
         $result = $model->check();
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
     }
 
     /**
      * @group           DataModel
      * @group           DataModelCopy
-     * @covers          FOF30\Mvc\DataModel::copy
+     * @covers          FOF30\Model\DataModel::copy
      */
     public function tXestCopy()
     {
@@ -308,7 +297,7 @@ class DataModelCrudTest extends DatabaseTest
             )
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('save'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array($container));
         $model->expects($this->any())->method('save')->willReturn(null);
 
         $model->find(2);
@@ -322,7 +311,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelDelete
-     * @covers          FOF30\Mvc\DataModel::delete
+     * @covers          FOF30\Model\DataModel::delete
      * @dataProvider    DataModelCrudDataprovider::getTestDelete
      */
     public function tXestDelete($test, $check)
@@ -338,7 +327,7 @@ class DataModelCrudTest extends DatabaseTest
             )
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('trash', 'forceDelete'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('trash', 'forceDelete'), array($container));
         $model->expects($check['trash'] ? $this->once() : $this->never())->method('trash')->willReturnSelf();
         $model->expects($check['force'] ? $this->once() : $this->never())->method('forceDelete')->willReturnSelf();
 
@@ -346,13 +335,13 @@ class DataModelCrudTest extends DatabaseTest
 
         $result = $model->delete($test['id']);
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
     }
 
     /**
      * @group           DataModel
      * @group           DataModelFindOrFail
-     * @covers          FOF30\Mvc\DataModel::findOrFail
+     * @covers          FOF30\Model\DataModel::findOrFail
      * @dataProvider    DataModelCrudDataprovider::getTestFindOrFail
      */
     public function tXestFindOrFail($test, $check)
@@ -368,7 +357,7 @@ class DataModelCrudTest extends DatabaseTest
             )
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('find', 'getId'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'getId'), array($container));
         $model->expects($this->any())->method('find')->willReturn(null);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
 
@@ -379,13 +368,13 @@ class DataModelCrudTest extends DatabaseTest
 
         $result = $model->findOrFail($test['keys']);
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
     }
 
     /**
      * @group           DataModel
      * @group           DataModelFind
-     * @covers          FOF30\Mvc\DataModel::find
+     * @covers          FOF30\Model\DataModel::find
      * @dataProvider    DataModelCrudDataprovider::getTestFind
      */
     public function tXestFind($test, $check)
@@ -416,7 +405,7 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('reset', 'getId', 'bind'), array($container, $methods));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'getId', 'bind'), array($container, $methods));
         $model->expects($this->any())->method('reset')->willReturn(null);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->willReturn(null);
@@ -445,7 +434,7 @@ class DataModelCrudTest extends DatabaseTest
 
         $result = $model->find($test['keys']);
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertEquals(1, $before, sprintf($msg, 'Failed to invoke the onBefore method'));
         $this->assertEquals(1, $beforeDisp, sprintf($msg, 'Failed to invoke the onBefore event'));
         $this->assertEquals(1, $after, sprintf($msg, 'Failed to invoke the onAfter method'));
@@ -455,7 +444,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelForceDelete
-     * @covers          FOF30\Mvc\DataModel::forceDelete
+     * @covers          FOF30\Model\DataModel::forceDelete
      * @dataProvider    DataModelCrudDataprovider::getTestForceDelete
      */
     public function tXestForceDelete($test, $check)
@@ -482,7 +471,7 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('getId', 'findOrFail', 'reset'), array($container, $methods));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'findOrFail', 'reset'), array($container, $methods));
         $model->expects($this->once())->method('reset')->willReturn(null);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
@@ -498,7 +487,7 @@ class DataModelCrudTest extends DatabaseTest
 
         $result = $model->delete($test['id']);
 
-        $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
+        $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertEquals(1, $before, sprintf($msg, 'Failed to call the onBefore method'));
         $this->assertEquals(1, $after, sprintf($msg, 'Failed to call the onAfter method'));
 
@@ -517,7 +506,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelForceDelete
-     * @covers          FOF30\Mvc\DataModel::forceDelete
+     * @covers          FOF30\Model\DataModel::forceDelete
      */
     public function tXestForceDeleteException()
     {
@@ -532,7 +521,7 @@ class DataModelCrudTest extends DatabaseTest
 
         $model = new DataModelStub($container);
 
-        $this->setExpectedException('FOF30\Mvc\DataModel\Exception\RecordNotLoaded');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RecordNotLoaded');
 
         $model->forceDelete();
     }
@@ -540,7 +529,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelFirstOrCreate
-     * @covers          FOF30\Mvc\DataModel::firstOrCreate
+     * @covers          FOF30\Model\DataModel::firstOrCreate
      * @dataProvider    DataModelCrudDataprovider::getTestFirstOrCreate
      */
     public function tXestFirstOrCreate($test, $check)
@@ -562,7 +551,7 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('get', 'create'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'create'), array($container));
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
         $model->expects($check['create'] ? $this->once() : $this->never())->method('create')->willReturn(null);
 
@@ -570,7 +559,7 @@ class DataModelCrudTest extends DatabaseTest
 
         if($check['result'] == 'object')
         {
-            $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Returned the wrong value'));
+            $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Returned the wrong value'));
         }
         else
         {
@@ -581,7 +570,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelCreate
-     * @covers          FOF30\Mvc\DataModel::create
+     * @covers          FOF30\Model\DataModel::create
      */
     public function tXestCreate()
     {
@@ -594,7 +583,7 @@ class DataModelCrudTest extends DatabaseTest
             )
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('reset', 'bind', 'save'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'bind', 'save'), array($container));
         $model->expects($this->once())->method('reset')->willReturnSelf();
         $model->expects($this->once())->method('bind')->willReturnSelf();
         $model->expects($this->once())->method('save')->willReturnSelf();
@@ -605,7 +594,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelFirstOrFail
-     * @covers          FOF30\Mvc\DataModel::firstOrFail
+     * @covers          FOF30\Model\DataModel::firstOrFail
      * @dataProvider    DataModelCrudDataprovider::getTestFirstOrFail
      */
     public function tXestFirstOrFail($test, $check)
@@ -627,7 +616,7 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('get'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get'), array($container));
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
 
         if($check['exception'])
@@ -643,7 +632,7 @@ class DataModelCrudTest extends DatabaseTest
     /**
      * @group           DataModel
      * @group           DataModelFirstOrNew
-     * @covers          FOF30\Mvc\DataModel::firstOrNew
+     * @covers          FOF30\Model\DataModel::firstOrNew
      * @dataProvider    DataModelCrudDataprovider::getTestFirstOrNew
      */
     public function tXestFirstOrNew($test, $check)
@@ -664,7 +653,7 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Mvc\\DataModelStub', array('get', 'reset'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'reset'), array($container));
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset')->willReturn(null);
 
@@ -672,7 +661,7 @@ class DataModelCrudTest extends DatabaseTest
 
         if($check['result'] == 'object')
         {
-            $this->assertInstanceOf('\\FOF30\\Mvc\\DataModel', $result, sprintf($msg, 'Returned the wrong value'));
+            $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Returned the wrong value'));
         }
         else
         {
