@@ -561,7 +561,7 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelGetBehavioursDispatcher
      * @covers          FOF30\Model\DataModel::getBehavioursDispatcher
      */
-    public function tXestGetBehavioursDispatcher()
+    public function testGetBehavioursDispatcher()
     {
         $config = array(
             'idFieldName' => 'foftest_bare_id',
@@ -582,7 +582,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::orderBy
      * @dataProvider    DataModelGenericDataprovider::getTestOrderBy
      */
-    public function tXestOrderBy($test, $check)
+    public function testOrderBy($test, $check)
     {
         $msg    = 'DataModel::orderBy %s - Case: '.$check['case'];
 
@@ -592,7 +592,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
-        $model->expects($this->exactly(2))->method('setState')->willReturn(null)->withConsecutive(
+        $model->expects($this->exactly(2))->method('setState')->withConsecutive(
             array($this->equalTo('filter_order'), $this->equalTo($check['field'])),
             array($this->equalTo('filter_order_Dir'), $this->equalTo($check['dir']))
         );
@@ -608,7 +608,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::skip
      * @dataProvider    DataModelGenericDataprovider::getTestSkip
      */
-    public function tXestSkip($test, $check)
+    public function testSkip($test, $check)
     {
         $msg = 'DataModel::skip %s - Case: '.$check['case'];
 
@@ -618,7 +618,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
-        $model->expects($this->once())->method('setState')->willReturn(null)->with($this->equalTo('limitstart'), $this->equalTo($check['limitstart']));
+        $model->expects($this->once())->method('setState')->with($this->equalTo('limitstart'), $this->equalTo($check['limitstart']));
 
         $result = $model->skip($test['limitstart']);
 
@@ -631,7 +631,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::take
      * @dataProvider    DataModelGenericDataprovider::getTestTake
      */
-    public function tXestTake($test, $check)
+    public function testTake($test, $check)
     {
         $msg = 'DataModel::take %s - Case: '.$check['case'];
 
@@ -641,7 +641,7 @@ class DataModelGenericTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
-        $model->expects($this->once())->method('setState')->willReturn(null)->with($this->equalTo('limit'), $this->equalTo($check['limit']));
+        $model->expects($this->once())->method('setState')->with($this->equalTo('limit'), $this->equalTo($check['limit']));
 
         $result = $model->take($test['limit']);
 
@@ -653,7 +653,7 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelToArray
      * @covers          FOF30\Model\DataModel::toArray
      */
-    public function tXestToarray()
+    public function testToarray()
     {
         $config = array(
             'idFieldName' => 'foftest_bare_id',
@@ -666,10 +666,8 @@ class DataModelGenericTest extends DatabaseTest
         $result = $model->toArray();
 
         $check = array(
-            'id' => 1,
-            'title' => 'Testing',
-            'start_date' => '1980-04-18 00:00:00',
-            'description' => 'one'
+            'foftest_bare_id' => 1,
+            'title' => 'First Row'
         );
 
         $this->assertEquals($check, $result, 'DataModel::toArray Failed to return the array format');
@@ -681,7 +679,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::toJson
      * @dataProvider    DataModelGenericDataprovider::getTestToJson
      */
-    public function tXestToJson($test)
+    public function testToJson($test)
     {
         $config = array(
             'idFieldName' => 'foftest_bare_id',
@@ -694,10 +692,8 @@ class DataModelGenericTest extends DatabaseTest
         $result = $model->toJSon($test['pretty']);
 
         $check = array(
-            'id' => '1',
-            'title' => 'Testing',
-            'start_date' => '1980-04-18 00:00:00',
-            'description' => 'one'
+            'foftest_bare_id' => '1',
+            'title' => 'First Row'
         );
 
         if (defined('JSON_PRETTY_PRINT'))
