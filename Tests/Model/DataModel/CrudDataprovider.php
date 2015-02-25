@@ -599,7 +599,7 @@ class DataModelCrudDataprovider
             array(
                 'mock' => array(
                     'id'       => '',
-                    'state_id' => null,
+                    'state_id' => 0,
                     'keys'     => null
                 ),
                 'keys' => 1
@@ -629,7 +629,7 @@ class DataModelCrudDataprovider
             array(
                 'mock' => array(
                     'id'       => 1,
-                    'state_id' => null,
+                    'state_id' => 0,
                     'keys'     => null
                 ),
                 'keys' => ''
@@ -644,7 +644,7 @@ class DataModelCrudDataprovider
             array(
                 'mock' => array(
                     'id'       => null,
-                    'state_id' => null,
+                    'state_id' => 0,
                     'keys'     => 1
                 ),
                 'keys' => ''
@@ -659,7 +659,7 @@ class DataModelCrudDataprovider
             array(
                 'mock' => array(
                     'id'       => null,
-                    'state_id' => null,
+                    'state_id' => 0,
                     'keys'     => null
                 ),
                 'keys' => null
@@ -674,29 +674,11 @@ class DataModelCrudDataprovider
             array(
                 'mock' => array(
                     'id'       => null,
-                    'state_id' => null,
+                    'state_id' => 0,
                     'keys'     => null
                 ),
                 'keys' => array(
-                    'title' => 'Testing'
-                )
-            ),
-            array(
-                'case' => 'Passing an indexed array',
-                'bind' => true
-            )
-        );
-
-        $data[] = array(
-            array(
-                'mock' => array(
-                    'id'       => null,
-                    'state_id' => null,
-                    'keys'     => null
-                ),
-                'keys' => array(
-                    'title' => 'Testing',
-                    'description' => 'one'
+                    'title' => 'First Row'
                 )
             ),
             array(

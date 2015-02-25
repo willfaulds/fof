@@ -278,19 +278,14 @@ class DataModelCrudTest extends DatabaseTest
      * @group           DataModelCopy
      * @covers          FOF30\Model\DataModel::copy
      */
-    public function tXestCopy()
+    public function testCopy()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array($container));
-        $model->expects($this->any())->method('save')->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
 
         $model->find(2);
         $model->copy();
@@ -306,20 +301,16 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::delete
      * @dataProvider    DataModelCrudDataprovider::getTestDelete
      */
-    public function tXestDelete($test, $check)
+    public function testDelete($test, $check)
     {
         $msg = 'DataModel::delete %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('trash', 'forceDelete'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('trash', 'forceDelete'), array(static::$container, $config));
         $model->expects($check['trash'] ? $this->once() : $this->never())->method('trash')->willReturnSelf();
         $model->expects($check['force'] ? $this->once() : $this->never())->method('forceDelete')->willReturnSelf();
 
@@ -336,26 +327,22 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::findOrFail
      * @dataProvider    DataModelCrudDataprovider::getTestFindOrFail
      */
-    public function tXestFindOrFail($test, $check)
+    public function testFindOrFail($test, $check)
     {
         $msg    = 'DataModel::findOrFail %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'getId'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('find', 'getId'), array(static::$container, $config));
         $model->expects($this->any())->method('find')->willReturn(null);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
 
         if($check['exception'])
         {
-            $this->setExpectedException('RuntimeException');
+            $this->setExpectedException('FOF30\Model\DataModel\Exception\RecordNotLoaded');
         }
 
         $result = $model->findOrFail($test['keys']);
@@ -369,7 +356,7 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::find
      * @dataProvider    DataModelCrudDataprovider::getTestFind
      */
-    public function tXestFind($test, $check)
+    public function testFind($test, $check)
     {
         //\PHPUnit_Framework_Error_Warning::$enabled = false;
 
@@ -379,13 +366,10 @@ class DataModelCrudTest extends DatabaseTest
         $after  = 0;
         $msg    = 'DataModel::find %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         // I am passing those methods so I can double check if the method is really called
         $methods = array(
@@ -397,8 +381,7 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'getId', 'bind'), array($container, $methods));
-        $model->expects($this->any())->method('reset')->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'getId', 'bind'), array(static::$container, $config, $methods));
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['bind'] ? $this->once() : $this->never())->method('bind')->willReturn(null);
 
@@ -439,19 +422,16 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::forceDelete
      * @dataProvider    DataModelCrudDataprovider::getTestForceDelete
      */
-    public function tXestForceDelete($test, $check)
+    public function testForceDelete($test, $check)
     {
         $before = 0;
         $after  = 0;
         $msg    = 'DataModel::forceDelete %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         // I am passing those methods so I can double check if the method is really called
         $methods = array(
@@ -463,13 +443,13 @@ class DataModelCrudTest extends DatabaseTest
             }
         );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'findOrFail', 'reset'), array($container, $methods));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'findOrFail', 'reset'), array(static::$container, $config, $methods));
         $model->expects($this->once())->method('reset')->willReturn(null);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['id']);
         $model->expects($check['find'] ? $this->once() : $this->never())->method('findOrFail')->willReturn(null);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array($container));
+        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
         $dispatcher->expects($this->exactly(2))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeDelete')),
             array($this->equalTo('onAfterDelete'))
@@ -484,15 +464,15 @@ class DataModelCrudTest extends DatabaseTest
         $this->assertEquals(1, $after, sprintf($msg, 'Failed to call the onAfter method'));
 
         // Now let's check if the record was really deleted
-        $db = self::$driver;
+        $db = \JFactory::getDbo();
 
         $query = $db->getQuery(true)
             ->select('COUNT(*)')
-            ->from($db->qn('#__dbtest'))
-            ->where($db->qn('id').' = '.$db->q($check['id']));
+            ->from($db->qn('#__foftest_bares'))
+            ->where($db->qn('foftest_bare_id').' = '.$db->q($check['id']));
         $count = $db->setQuery($query)->loadResult();
 
-        $this->assertEquals(0, $count, sprintf($msg, ''));
+        $this->assertEquals(0, $count, sprintf($msg, 'Failed to actually delete the record in the database'));
     }
 
     /**
@@ -500,18 +480,14 @@ class DataModelCrudTest extends DatabaseTest
      * @group           DataModelForceDelete
      * @covers          FOF30\Model\DataModel::forceDelete
      */
-    public function tXestForceDeleteException()
+    public function testForceDeleteException()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $this->setExpectedException('FOF30\Model\DataModel\Exception\RecordNotLoaded');
 
