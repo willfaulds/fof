@@ -180,27 +180,24 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::bind
      * @dataProvider    DataModelCrudDataprovider::getTestBind
      */
-    public function tXestBind($test, $check)
+    public function testBind($test, $check)
     {
         $msg       = 'DataModel::bind %s - Case: '.$check['case'];
         $checkBind = array();
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => $test['tableid'],
+            'tableName'   => $test['table']
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue'), array(static::$container, $config));
         $model->expects($this->any())->method('setFieldValue')->willReturnCallback(
             function($key, $value) use (&$checkBind){
                 $checkBind[$key] = $value;
             }
         );
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array($container));
+        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
         $dispatcher->expects($this->exactly($check['dispatcher']))->method('trigger')->withConsecutive(
             array($this->equalTo('onBeforeBind')),
             array($this->equalTo('onAfterBind'))
@@ -227,19 +224,16 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::bind
      * @dataProvider    DataModelCrudDataprovider::getTestBindException
      */
-    public function tXestBindException($test)
+    public function testBindException($test)
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $model->bind($test['data']);
     }
@@ -250,19 +244,17 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::check
      * @dataProvider    DataModelCrudDataprovider::getTestCheck
      */
-    public function tXestCheck($test, $check)
+    public function testCheck($test, $check)
     {
         $msg = 'DataModel::check %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => $test['table']
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getForm'), array(static::$container, $config));
+        $model->expects($this->any())->method('getForm')->willReturn(false);
 
         ReflectionHelper::setValue($model, 'autoChecks', $test['mock']['auto']);
 

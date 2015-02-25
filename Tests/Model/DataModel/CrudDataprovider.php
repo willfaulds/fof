@@ -311,15 +311,17 @@ class DataModelCrudDataprovider
                     'beforeDisp' => null
                 ),
                 'data' => array(
-                    'id' => 1,
+                    'foftest_bare_id' => 1,
                     'title' => 'test'
                 ),
-                'ignore' => array()
+                'ignore'  => array(),
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares'
             ),
             array(
                 'case' => 'Data array contains properties that exists',
                 'dispatcher' => 2,
-                'bind' => array('id' => 1, 'title' => 'test')
+                'bind' => array('foftest_bare_id' => 1, 'title' => 'test')
             )
         );
 
@@ -329,15 +331,17 @@ class DataModelCrudDataprovider
                     'beforeDisp' => null
                 ),
                 'data' => array(
-                    'id' => 1,
+                    'foftest_bare_id' => 1,
                     'title' => 'test'
                 ),
-                'ignore' => array('title')
+                'ignore' => array('title'),
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares'
             ),
             array(
                 'case' => 'Data array contains properties that exists, ignoring some of them (array format)',
                 'dispatcher' => 2,
-                'bind' => array('id' => 1)
+                'bind' => array('foftest_bare_id' => 1)
             )
         );
 
@@ -347,16 +351,18 @@ class DataModelCrudDataprovider
                     'beforeDisp' => null
                 ),
                 'data' => array(
-                    'id' => 1,
+                    'foftest_foobar_id' => 1,
                     'title' => 'test',
-                    'description' => 'test'
+                    'enabled' => 1
                 ),
-                'ignore' => 'title description'
+                'ignore' => 'title enabled',
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars'
             ),
             array(
                 'case' => 'Data array contains properties that exists, ignoring some of them (string format)',
                 'dispatcher' => 2,
-                'bind' => array('id' => 1)
+                'bind' => array('foftest_foobar_id' => 1)
             )
         );
 
@@ -366,16 +372,18 @@ class DataModelCrudDataprovider
                     'beforeDisp' => null
                 ),
                 'data' => array(
-                    'id' => 1,
+                    'foftest_bare_id' => 1,
                     'title' => 'test',
                     'foobar' => 'foo'
                 ),
-                'ignore' => array()
+                'ignore' => array(),
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares'
             ),
             array(
                 'case' => 'Trying to bind a property that does not exist',
                 'dispatcher' => 2,
-                'bind' => array('id' => 1, 'title' => 'test')
+                'bind' => array('foftest_bare_id' => 1, 'title' => 'test')
             )
         );
 
@@ -383,17 +391,19 @@ class DataModelCrudDataprovider
             array(
                 'mock' => array(
                     'beforeDisp' => array(
-                        'id' => 1,
+                        'foftest_bare_id' => 1,
                         'title' => 'test',
                     )
                 ),
                 'data' => null,
-                'ignore' => array()
+                'ignore' => array(),
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares'
             ),
             array(
                 'case' => 'Passing invalid data, however the onBeforeBind converts it to a valid one',
                 'dispatcher' => 2,
-                'bind' => array('id' => 1, 'title' => 'test')
+                'bind' => array('foftest_bare_id' => 1, 'title' => 'test')
             )
         );
 
@@ -436,7 +446,6 @@ class DataModelCrudDataprovider
                 'mock' => array(
                     'auto' => false
                 ),
-                'table' => '#__dbtest',
                 'load'  => null
             ),
             array(
@@ -450,7 +459,6 @@ class DataModelCrudDataprovider
                 'mock' => array(
                     'auto' => true
                 ),
-                'table' => '#__dbtest',
                 'load'  => 1
             ),
             array(
@@ -464,12 +472,11 @@ class DataModelCrudDataprovider
                 'mock' => array(
                     'auto' => true
                 ),
-                'table' => '#__dbtest',
                 'load'  => null
             ),
             array(
                 'case' => 'Check failed',
-                'exception' => 'FAKEAPP_NESTEDSET_ERR_TITLE_EMPTY'
+                'exception' => 'COM_FAKEAPP_NESTEDSET_ERR_TITLE_EMPTY'
             )
         );
 

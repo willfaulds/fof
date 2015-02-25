@@ -1162,9 +1162,12 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Create a slug if there is a title and an empty slug
-		if ($this->hasField('title') && $this->hasField('slug') && !$this->slug)
+        $slugField  = $this->getFieldAlias('slug');
+        $titleField = $this->getFieldValue('title');
+
+		if ($this->hasField('title') && $this->hasField('slug') && !$this->$slugField)
 		{
-			$this->slug = \JApplicationHelper::stringURLSafe($this->title);
+			$this->$slugField = \JApplicationHelper::stringURLSafe($this->$titleField);
 		}
 
 		foreach ($this->knownFields as $fieldName => $field)
@@ -1182,7 +1185,7 @@ class DataModel extends Model implements \JTableInterface
 				$text = $this->container->componentName . '_' . Inflector::singularize($this->getName()) . '_ERR_'
 					. $fieldName . '_EMPTY';
 
-				throw new \RuntimeException(\JText::_($text), 500);
+				throw new \RuntimeException(\JText::_(strtoupper($text)), 500);
 			}
 		}
 
