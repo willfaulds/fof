@@ -536,19 +536,16 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::addBehaviour
      * @dataProvider    DataModelGenericDataprovider::getTestAddBehaviour
      */
-    public function tXestAddBehaviour($test, $check)
+    public function testAddBehaviour($test, $check)
     {
         $msg = 'DataModel::addBehaviour %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $result = $model->addBehaviour($test['class']);
 

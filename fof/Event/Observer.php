@@ -40,6 +40,9 @@ class Observer
 	{
 		if (is_null($this->events))
 		{
+            // Assign an empty array to protect us from behaviours without any valid method
+            $this->events = array();
+
 			$reflection = new \ReflectionObject($this);
 			$methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
 
@@ -61,4 +64,4 @@ class Observer
 
 		return $this->events;
 	}
-} 
+}

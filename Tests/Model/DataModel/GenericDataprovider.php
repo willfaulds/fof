@@ -863,8 +863,8 @@ class DataModelGenericDataprovider
                 'class' => 'Foofilters'
             ),
             array(
-                'case'     => 'Adding behaviour from Fakeapp\\Model\\DataModel\\Behaviour',
-                'class'    => 'Fakeapp\\Model\\DataModel\\Behaviour\\Foofilters',
+                'case'     => 'Adding behaviour from Fakeapp\Site\Model\Behaviour',
+                'class'    => 'Fakeapp\Site\Model\Behaviour\Foofilters',
                 'attached' => true
             )
         );
@@ -875,7 +875,7 @@ class DataModelGenericDataprovider
             ),
             array(
                 'case'     => 'Adding behaviour from Fakeapp\\Model\\Nestedset\\Behaviour\\NamedBehaviour',
-                'class'    => 'Fakeapp\Model\Nestedset\Behaviour\NamedBehaviour',
+                'class'    => 'Fakeapp\Site\Model\Behaviour\Nestedset\NamedBehaviour',
                 'attached' => true
             )
         );
@@ -885,8 +885,8 @@ class DataModelGenericDataprovider
                 'class' => 'Filters'
             ),
             array(
-                'case'     => 'Adding behaviour from Awf\\Mvc\\DataModel\\Behaviour',
-                'class'    => 'Awf\\Mvc\\DataModel\\Behaviour\\Filters',
+                'case'     => 'Adding behaviour from FOF30\\Model\\DataModel\\Behaviour',
+                'class'    => 'FOF30\\Model\\DataModel\\Behaviour\\Filters',
                 'attached' => true
             )
         );
@@ -897,7 +897,7 @@ class DataModelGenericDataprovider
             ),
             array(
                 'case'     => 'Trying to add non-existant behaviour',
-                'class'    => 'Awf\\Mvc\\DataModel\\Behaviour\\Wrong',
+                'class'    => 'FOF30\\Model\\DataModel\\Behaviour\\Wrong',
                 'attached' => false
             )
         );
