@@ -563,15 +563,12 @@ class DataModelGenericTest extends DatabaseTest
      */
     public function tXestGetBehavioursDispatcher()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $reflDisp = ReflectionHelper::getValue($model, 'behavioursDispatcher');
         $disp     = $model->getBehavioursDispatcher();
@@ -589,15 +586,12 @@ class DataModelGenericTest extends DatabaseTest
     {
         $msg    = 'DataModel::orderBy %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_fobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
         $model->expects($this->exactly(2))->method('setState')->willReturn(null)->withConsecutive(
             array($this->equalTo('filter_order'), $this->equalTo($check['field'])),
             array($this->equalTo('filter_order_Dir'), $this->equalTo($check['dir']))
@@ -618,15 +612,12 @@ class DataModelGenericTest extends DatabaseTest
     {
         $msg = 'DataModel::skip %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
         $model->expects($this->once())->method('setState')->willReturn(null)->with($this->equalTo('limitstart'), $this->equalTo($check['limitstart']));
 
         $result = $model->skip($test['limitstart']);
@@ -644,15 +635,12 @@ class DataModelGenericTest extends DatabaseTest
     {
         $msg = 'DataModel::take %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setState'), array(static::$container, $config));
         $model->expects($this->once())->method('setState')->willReturn(null)->with($this->equalTo('limit'), $this->equalTo($check['limit']));
 
         $result = $model->take($test['limit']);
@@ -667,15 +655,12 @@ class DataModelGenericTest extends DatabaseTest
      */
     public function tXestToarray()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
         $model->find(1);
 
         $result = $model->toArray();
@@ -698,15 +683,12 @@ class DataModelGenericTest extends DatabaseTest
      */
     public function tXestToJson($test)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
         $model->find(1);
 
         $result = $model->toJSon($test['pretty']);
@@ -742,15 +724,12 @@ class DataModelGenericTest extends DatabaseTest
     {
         $msg = 'DataModel::where %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getIdFieldName', 'setState', 'addBehaviour'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getIdFieldName', 'setState', 'addBehaviour'), array(static::$container, $config));
         $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour')->willReturn(null);
         $model->expects($this->any())->method('getIdFieldName')->willReturn($test['mock']['id_field']);
         $model->expects($this->once())->method('setState')->with($this->equalTo($check['field']), $this->equalTo($check['options']));
@@ -774,15 +753,12 @@ class DataModelGenericTest extends DatabaseTest
     {
         $this->setExpectedException('FOF30\Model\DataModel\Exception\InvalidSearchMethod');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
         $model->where('id', 'wrong', null);
     }
 
@@ -793,15 +769,12 @@ class DataModelGenericTest extends DatabaseTest
      */
     public function tXestWhereRaw()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $result = $model->whereRaw('foo = bar');
         $where  = ReflectionHelper::getValue($model, 'whereClauses');
@@ -820,13 +793,10 @@ class DataModelGenericTest extends DatabaseTest
     {
         $msg = 'DataModel::has %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         $fakeRelationManager = new ClosureHelper(array(
             'getRelationNames' => function() use ($test){
@@ -834,7 +804,7 @@ class DataModelGenericTest extends DatabaseTest
             }
         ));
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         ReflectionHelper::setValue($model, 'relationManager', $fakeRelationManager);
 
