@@ -500,18 +500,14 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::firstOrCreate
      * @dataProvider    DataModelCrudDataprovider::getTestFirstOrCreate
      */
-    public function tXestFirstOrCreate($test, $check)
+    public function testFirstOrCreate($test, $check)
     {
         $msg = 'DataModel::firstOrCreate %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         $fakeCollection = new ClosureHelper(array(
             'first' => function() use ($test){
@@ -519,9 +515,9 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'create'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'create'), array(static::$container, $config));
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
-        $model->expects($check['create'] ? $this->once() : $this->never())->method('create')->willReturn(null);
+        $model->expects($check['create'] ? $this->once() : $this->never())->method('create');
 
         $result = $model->firstOrCreate(array());
 
@@ -540,18 +536,14 @@ class DataModelCrudTest extends DatabaseTest
      * @group           DataModelCreate
      * @covers          FOF30\Model\DataModel::create
      */
-    public function tXestCreate()
+    public function testCreate()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'bind', 'save'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'bind', 'save'), array(static::$container, $config));
         $model->expects($this->once())->method('reset')->willReturnSelf();
         $model->expects($this->once())->method('bind')->willReturnSelf();
         $model->expects($this->once())->method('save')->willReturnSelf();
@@ -565,18 +557,14 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::firstOrFail
      * @dataProvider    DataModelCrudDataprovider::getTestFirstOrFail
      */
-    public function tXestFirstOrFail($test, $check)
+    public function testFirstOrFail($test, $check)
     {
         $msg = 'DataModel::firstOrFail %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         $fakeCollection = new ClosureHelper(array(
             'first' => function() use ($test){
@@ -584,12 +572,12 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get'), array(static::$container, $config));
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
 
         if($check['exception'])
         {
-            $this->setExpectedException('RuntimeException');
+            $this->setExpectedException('FOF30\Model\DataModel\Exception\NoItemsFound');
         }
 
         $result = $model->firstOrFail(array());
@@ -603,17 +591,14 @@ class DataModelCrudTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::firstOrNew
      * @dataProvider    DataModelCrudDataprovider::getTestFirstOrNew
      */
-    public function tXestFirstOrNew($test, $check)
+    public function testFirstOrNew($test, $check)
     {
         $msg = 'DataModel::firstOrNew %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         $fakeCollection = new ClosureHelper(array(
             'first' => function() use ($test){
@@ -621,9 +606,9 @@ class DataModelCrudTest extends DatabaseTest
             }
         ));
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'reset'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('get', 'reset'), array(static::$container, $config));
         $model->expects($this->once())->method('get')->willReturn($fakeCollection);
-        $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset')->willReturn(null);
+        $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
 
         $result = $model->firstOrNew(array());
 
