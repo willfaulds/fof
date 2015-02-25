@@ -438,21 +438,17 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::get
      * @dataProvider    DataModelGenericDataprovider::getTestGet
      */
-    public function tXestGet($test, $check)
+    public function testGet($test, $check)
     {
         $msg = 'DataModel::get %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState', 'getItemsArray', 'eagerLoad'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getState', 'getItemsArray', 'eagerLoad'), array(self::$container, $config));
 
-        $model->expects($this->any())->method('eagerLoad')->willReturn(null);
         $model->expects($this->any())->method('getState')->willReturnCallback(
             function($state, $default) use ($test)
             {
@@ -483,17 +479,14 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelGetId
      * @covers          FOF30\Model\DataModel::getId
      */
-    public function tXestGetId()
+    public function testGetId()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
         $model->find(2);
 
         $id = $model->getId();
@@ -506,20 +499,17 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelGetIdFieldName
      * @covers          FOF30\Model\DataModel::getIdFieldName
      */
-    public function tXestGetIdFieldName()
+    public function testGetIdFieldName()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
         $id = $model->getIdFieldName();
 
-        $this->assertEquals('id', $id, 'DataModel::getIdFieldName Failed to return the table column id');
+        $this->assertEquals('foftest_bare_id', $id, 'DataModel::getIdFieldName Failed to return the table column id');
     }
 
     /**
@@ -527,20 +517,17 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelGetTableName
      * @covers          FOF30\Model\DataModel::getTableName
      */
-    public function tXestGetTableName()
+    public function testGetTableName()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(self::$container, $config);
         $table = $model->getTableName();
 
-        $this->assertEquals('#__dbtest', $table, 'DataModel::getTableName Failed to return the table name');
+        $this->assertEquals('#__foftest_bares', $table, 'DataModel::getTableName Failed to return the table name');
     }
 
     /**
