@@ -716,7 +716,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::where
      * @dataProvider    DataModelGenericDataprovider::getTestWhere
      */
-    public function tXestWhere($test, $check)
+    public function testWhere($test, $check)
     {
         $msg = 'DataModel::where %s - Case: '.$check['case'];
 
@@ -730,7 +730,7 @@ class DataModelGenericTest extends DatabaseTest
         $model->expects($this->any())->method('getIdFieldName')->willReturn($test['mock']['id_field']);
         $model->expects($this->once())->method('setState')->with($this->equalTo($check['field']), $this->equalTo($check['options']));
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array($container));
+        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array(static::$container, $config));
         $dispatcher->expects($this->any())->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
@@ -745,7 +745,7 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelWhere
      * @covers          FOF30\Model\DataModel::where
      */
-    public function tXestWhereException()
+    public function testWhereException()
     {
         $this->setExpectedException('FOF30\Model\DataModel\Exception\InvalidSearchMethod');
 
@@ -763,7 +763,7 @@ class DataModelGenericTest extends DatabaseTest
      * @group           DataModelWhereRaw
      * @covers          FOF30\Model\DataModel::whereRaw
      */
-    public function tXestWhereRaw()
+    public function testWhereRaw()
     {
         $config = array(
             'idFieldName' => 'foftest_bare_id',
@@ -785,7 +785,7 @@ class DataModelGenericTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::with
      * @dataProvider    DataModelGenericDataprovider::getTestWith
      */
-    public function tXestWith($test, $check)
+    public function testWith($test, $check)
     {
         $msg = 'DataModel::has %s - Case: '.$check['case'];
 
