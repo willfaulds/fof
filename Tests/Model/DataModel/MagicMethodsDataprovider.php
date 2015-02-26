@@ -612,11 +612,11 @@ class MagicMethodsDataprovider
                     'alias'     => array(),
                     'relationGet' => null
                 ),
-                'property' => 'id'
+                'property' => 'foftest_foobar_id'
             ),
             array(
                 'case'          => 'Field is set and has a NOT NULL value',
-                'getField'      => 'id',
+                'getField'      => 'foftest_foobar_id',
                 'magic'         => false,
                 'relationGet'   => false,
                 'isset'         => true
@@ -631,11 +631,11 @@ class MagicMethodsDataprovider
                     'alias'     => array(),
                     'relationGet' => null
                 ),
-                'property' => 'id'
+                'property' => 'foftest_foobar_id'
             ),
             array(
                 'case'          => 'Field is set and has a NULL value',
-                'getField'      => 'id',
+                'getField'      => 'foftest_foobar_id',
                 'magic'         => false,
                 'relationGet'   => false,
                 'isset'         => false
@@ -648,7 +648,7 @@ class MagicMethodsDataprovider
                     'getField'  => 1,
                     'magic'     => '',
                     'alias'     => array(
-                        'foobar' => 'id'
+                        'foobar' => 'foftest_foobar_id'
                     ),
                     'relationGet' => null
                 ),
@@ -656,7 +656,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case'          => 'Field had an alias and has a NOT NULL value',
-                'getField'      => 'id',
+                'getField'      => 'foftest_foobar_id',
                 'magic'         => false,
                 'relationGet'   => false,
                 'isset'         => true
@@ -669,7 +669,7 @@ class MagicMethodsDataprovider
                     'getField'  => null,
                     'magic'     => '',
                     'alias'     => array(
-                        'foobar' => 'id'
+                        'foobar' => 'foftest_foobar_id'
                     ),
                     'relationGet' => null
                 ),
@@ -677,7 +677,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case'          => 'Field had an alias and has a NULL value',
-                'getField'      => 'id',
+                'getField'      => 'foftest_foobar_id',
                 'magic'         => false,
                 'relationGet'   => false,
                 'isset'         => false
@@ -812,11 +812,11 @@ class MagicMethodsDataprovider
                     'alias'       => array(),
                     'relationGet' => null
                 ),
-                'property' => 'id'
+                'property' => 'foftest_foobar_id'
             ),
             array(
                 'case'          => 'Standard field of the DataModel',
-                'getField'      => 'id',
+                'getField'      => 'foftest_foobar_id',
                 'getState'      => false,
                 'magic'         => false,
                 'relationGet'   => false,
@@ -831,7 +831,7 @@ class MagicMethodsDataprovider
                     'getState'    => 0,
                     'magic'       => '',
                     'alias'       => array(
-                        'foobar' => 'id'
+                        'foobar' => 'foftest_foobar_id'
                     ),
                     'relationGet' => null
                 ),
@@ -839,7 +839,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case'          => 'Standard field with an alias of the DataModel',
-                'getField'      => 'id',
+                'getField'      => 'foftest_foobar_id',
                 'getState'      => false,
                 'magic'         => false,
                 'relationGet'   => false,
@@ -941,15 +941,15 @@ class MagicMethodsDataprovider
                 'mock' => array(
                     'alias'    => array()
                 ),
-                'property' => 'id',
+                'property' => 'foftest_foobar_id',
                 'value'    => 10
             ),
             array(
                 'case'     => 'Setting a property that exists in the table',
                 'call'     => false,
                 'count'    => 0,
-                'method'   => 'scopeId',
-                'setField' => 'id',
+                'method'   => '',
+                'setField' => 'foftest_foobar_id',
                 'setState' => false
             )
         );
@@ -958,7 +958,7 @@ class MagicMethodsDataprovider
             array(
                 'mock' => array(
                     'alias'    => array(
-                        'foobar' => 'id'
+                        'foobar' => 'foftest_foobar_id'
                     )
                 ),
                 'property' => 'foobar',
@@ -968,8 +968,8 @@ class MagicMethodsDataprovider
                 'case'     => 'Setting a property that exists in the table using an alias',
                 'call'     => false,
                 'count'    => 0,
-                'method'   => 'scopeId',
-                'setField' => 'id',
+                'method'   => '',
+                'setField' => 'foftest_foobar_id',
                 'setState' => false
             )
         );

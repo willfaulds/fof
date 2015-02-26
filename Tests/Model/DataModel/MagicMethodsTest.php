@@ -113,19 +113,16 @@ class DataModelMagicMethodsTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::__call
      * @dataProvider    MagicMethodsDataprovider::getTest__call
      */
-    public function tXest__call($test, $check)
+    public function test__call($test, $check)
     {
         $msg = 'DataModel::__call %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model  = new DataModelStub($container);
+        $model  = new DataModelStub(static::$container, $config);
 
         $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('isMagicMethod', '__call'), array($model));
         $relation->expects($check['magic'] ? $this->once() : $this->never())->method('isMagicMethod')->willReturn($test['mock']['magic']);
@@ -169,19 +166,16 @@ class DataModelMagicMethodsTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::__isset
      * @dataProvider    MagicMethodsDataprovider::getTest__isset
      */
-    public function tXest__isset($test, $check)
+    public function test__isset($test, $check)
     {
         $msg = 'DataModel::__isset %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldValue'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldValue'), array(static::$container, $config));
         $model->expects($check['getField'] ? $this->once() : $this->never())->method('getFieldValue')->with($check['getField'])
             ->willReturn($test['mock']['getField']);
 
@@ -207,19 +201,16 @@ class DataModelMagicMethodsTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::__get
      * @dataProvider    MagicMethodsDataprovider::getTest__get
      */
-    public function tXest__get($test, $check)
+    public function test__get($test, $check)
     {
         $msg = 'DataModel::__get %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldValue', 'getState'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getFieldValue', 'getState'), array(static::$container, $config));
         $model->expects($check['getField'] ? $this->once() : $this->never())->method('getFieldValue')->with($check['getField'])
             ->willReturn($test['mock']['getField']);
 
@@ -248,23 +239,20 @@ class DataModelMagicMethodsTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::__set
      * @dataProvider    MagicMethodsDataprovider::getTest__set
      */
-    public function tXest__set($test, $check)
+    public function test__set($test, $check)
     {
         $msg = 'DataModel::__set %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue', 'setState', '__call'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('setFieldValue', 'setState', '__call'), array(static::$container, $config));
         $model->expects($check['call'] ? $this->once() : $this->never())->method('__call')->willReturn(null);
 
-        $model->expects($check['setField'] ? $this->once() : $this->never())->method('setFieldValue')->with($check['setField'])->willReturn(null);
-        $model->expects($check['setState'] ? $this->once() : $this->never())->method('setState')->with($check['setState'])->willReturn(null);
+        $model->expects($check['setField'] ? $this->once() : $this->never())->method('setFieldValue')->with($this->equalTo($check['setField']))->willReturn(null);
+        $model->expects($check['setState'] ? $this->once() : $this->never())->method('setState')->with($this->equalTo($check['setState']))->willReturn(null);
 
         ReflectionHelper::setValue($model, 'aliasFields', $test['mock']['alias']);
 
