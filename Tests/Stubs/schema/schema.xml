@@ -230,6 +230,59 @@ CREATE TABLE `jos_foftest_defaults` (
   PRIMARY KEY (`id`)
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>
+
+    </action>
+
+    <action table="jos_foftest_lockedby" canfail="0">
+      <query><![CDATA[
+DROP TABLE IF EXISTS `jos_foftest_lockedby`;
+      ]]></query>
+      <query><![CDATA[
+CREATE TABLE `jos_foftest_lockedby` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `locked_by` INT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+      ]]></query>
+    </action>
+
+    <action table="jos_foftest_lockedon" canfail="0">
+      <query><![CDATA[
+DROP TABLE IF EXISTS `jos_foftest_lockedon`;
+      ]]></query>
+      <query><![CDATA[
+CREATE TABLE `jos_foftest_lockedon` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `locked_on` INT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+      ]]></query>
+    </action>
+
+    <action table="jos_foftest_modifiedby" canfail="0">
+      <query><![CDATA[
+DROP TABLE IF EXISTS `jos_foftest_modifiedby`;
+      ]]></query>
+      <query><![CDATA[
+CREATE TABLE `jos_foftest_modifiedby` (
+ `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+ `modified_by` INT NULL DEFAULT '0',
+ PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+      ]]></query>
+    </action>
+
+    <action table="jos_foftest_modifiedon" canfail="0">
+      <query><![CDATA[
+DROP TABLE IF EXISTS `jos_foftest_modifiedon`;
+      ]]></query>
+      <query><![CDATA[
+CREATE TABLE `jos_foftest_modifiedon` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `modified_on` INT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+      ]]></query>
     </action>
 
   </sql>

@@ -4,7 +4,6 @@ namespace FOF30\Tests\DataModel;
 
 use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
-use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
 require_once 'PublishDataprovider.php';
@@ -166,7 +165,7 @@ class DataModelPublishTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::publish
      * @dataProvider    PublishDataprovider::getTestPublish
      */
-    public function tXestPublish($test, $check)
+    public function testPublish($test, $check)
     {
         $before = 0;
         $after  = 0;
