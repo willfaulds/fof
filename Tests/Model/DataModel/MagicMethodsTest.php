@@ -2,9 +2,7 @@
 
 namespace FOF30\Tests\DataModel;
 
-use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\ReflectionHelper;
-use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 use FOF30\Tests\Helpers\DatabaseTest;
 

@@ -116,6 +116,8 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
   `foftest_child_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
   `foftest_parent_id` INT NOT NULL ,
+  `modified_by` INT NOT NULL,
+  `modified_on` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`foftest_child_id`)
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>

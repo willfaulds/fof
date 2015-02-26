@@ -7,7 +7,6 @@ use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 use FOF30\Tests\Helpers\ObserverClosure;
-use FOF30\Tests\Helpers\ClosureHelper;
 
 require_once 'SpecialColumnsDataprovider.php';
 
