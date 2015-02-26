@@ -80,11 +80,11 @@ class MagicMethodsDataprovider
             array(
                 'case' => 'Not passing anything',
                 'addBehaviour' => 0,
-                'id' => 'foftest_bare_id',
-                'table' => '#__foftest_bares',
+                'id' => 'fakeapp_test_id',
+                'table' => '#__fakeapp_tests',
                 'fields' => array(
-                    'foftest_bare_id' => (object) array(
-                        'Field' => 'foftest_bare_id',
+                    'fakeapp_test_id' => (object) array(
+                        'Field' => 'fakeapp_test_id',
                         'Type' => 'int(11)',
                         'Collation' => null,
                         'Null' => 'NO',
@@ -126,8 +126,8 @@ class MagicMethodsDataprovider
                 'id'          => 'foftest_bare_id',
                 'table'       => '#__foftest_bares',
                 'knownFields' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
                         'Type' => 'int(10) unsigned',
                         'Default' => null,
                     ),
@@ -148,11 +148,11 @@ class MagicMethodsDataprovider
             array(
                 'case' => 'Passing id, tablename and known fields',
                 'addBehaviour' => 0,
-                'id' => 'id',
+                'id' => 'foftest_bare_id',
                 'table' => '#__foftest_bares',
                 'fields' => array(
-                    'id' => (object) array(
-                        'Field' => 'id',
+                    'foftest_bare_id' => (object) array(
+                        'Field' => 'foftest_bare_id',
                         'Type' => 'int(10) unsigned',
                         'Default' => null,
                     ),
@@ -289,8 +289,8 @@ class MagicMethodsDataprovider
                         'description' => 'test'
                     )
                 ),
-                'id'          => 'foftest_bare_id',
-                'table'       => '#__foftest_bares',
+                'id'          => 'id',
+                'table'       => '#__foftest_defaults',
                 'knownFields' => null,
                 'autoChecks'  => null,
                 'skipChecks'  => null,
@@ -303,8 +303,8 @@ class MagicMethodsDataprovider
             array(
                 'case' => 'Setting up guarded fields AND fillable ones, data in the request',
                 'addBehaviour' => 0,
-                'id' => 'foftest_bare_id',
-                'table' => '#__foftest_bares',
+                'id' => 'id',
+                'table' => '#__foftest_defaults',
                 'fields' => null,
                 'autochecks' => true,
                 'skipchecks' => array(),
@@ -312,13 +312,13 @@ class MagicMethodsDataprovider
                 'fillable' => array('title', 'description'),
                 'autofill' => true,
                 'guarded' => array('description'),
-                'values'  => array('title' => 'test', 'description' => null, 'start_date' => null),
+                'values'  => array('title' => 'test', 'description' => null, 'start_date' => '0000-00-00 00:00:00'),
                 'relations' => array(),
                 'counterApp' => 0,
             )
         );
 
-        /*$data[] = array(
+        $data[] = array(
             array(
                 'mock' => array(
                     'state' => array(
@@ -327,7 +327,7 @@ class MagicMethodsDataprovider
                     )
                 ),
                 'id'          => 'id',
-                'table'       => '#__dbtest_defaults',
+                'table'       => '#__foftest_defaults',
                 'knownFields' => null,
                 'autoChecks'  => null,
                 'skipChecks'  => null,
@@ -341,7 +341,7 @@ class MagicMethodsDataprovider
                 'case' => 'Setting up guarded fields AND fillable ones, data in the request, table with defaults values',
                 'addBehaviour' => 0,
                 'id' => 'id',
-                'table' => '#__dbtest_defaults',
+                'table' => '#__foftest_defaults',
                 'fields' => null,
                 'autochecks' => true,
                 'skipchecks' => array(),
@@ -353,15 +353,15 @@ class MagicMethodsDataprovider
                 'relations' => array(),
                 'counterApp' => 0,
             )
-        );*/
+        );
 
-        /*$data[] = array(
+        $data[] = array(
             array(
                 'mock' => array(
                     'state' => array()
                 ),
-                'id'          => 'fakeapp_parent_id',
-                'table'       => '#__fakeapp_parents',
+                'id'          => 'foftest_parent_id',
+                'table'       => '#__foftest_parents',
                 'knownFields' => null,
                 'autoChecks'  => null,
                 'skipChecks'  => null,
@@ -374,8 +374,8 @@ class MagicMethodsDataprovider
             array(
                 'case' => 'Passing a relation - Wrong format',
                 'addBehaviour' => 0,
-                'id' => 'fakeapp_parent_id',
-                'table' => '#__fakeapp_parents',
+                'id' => 'foftest_parent_id',
+                'table' => '#__foftest_parents',
                 'fields' => null,
                 'autochecks' => true,
                 'skipchecks' => array(),
@@ -394,8 +394,8 @@ class MagicMethodsDataprovider
                 'mock' => array(
                     'state' => array()
                 ),
-                'id'          => 'fakeapp_parent_id',
-                'table'       => '#__fakeapp_parents',
+                'id'          => 'foftest_parent_id',
+                'table'       => '#__foftest_parents',
                 'knownFields' => null,
                 'autoChecks'  => null,
                 'skipChecks'  => null,
@@ -408,8 +408,8 @@ class MagicMethodsDataprovider
             array(
                 'case' => 'Passing a relation - Wrong format',
                 'addBehaviour' => 0,
-                'id' => 'fakeapp_parent_id',
-                'table' => '#__fakeapp_parents',
+                'id' => 'foftest_parent_id',
+                'table' => '#__foftest_parents',
                 'fields' => null,
                 'autochecks' => true,
                 'skipchecks' => array(),
@@ -428,8 +428,8 @@ class MagicMethodsDataprovider
                 'mock' => array(
                     'state' => array()
                 ),
-                'id'          => 'fakeapp_parent_id',
-                'table'       => '#__fakeapp_parents',
+                'id'          => 'foftest_parent_id',
+                'table'       => '#__foftest_parents',
                 'knownFields' => null,
                 'autoChecks'  => null,
                 'skipChecks'  => null,
@@ -442,8 +442,8 @@ class MagicMethodsDataprovider
             array(
                 'case' => 'Passing a relation - Wrong format',
                 'addBehaviour' => 0,
-                'id' => 'fakeapp_parent_id',
-                'table' => '#__fakeapp_parents',
+                'id' => 'foftest_parent_id',
+                'table' => '#__foftest_parents',
                 'fields' => null,
                 'autochecks' => true,
                 'skipchecks' => array(),
@@ -462,8 +462,8 @@ class MagicMethodsDataprovider
                 'mock' => array(
                     'state' => array()
                 ),
-                'id'          => 'fakeapp_parent_id',
-                'table'       => '#__fakeapp_parents',
+                'id'          => 'foftest_parent_id',
+                'table'       => '#__foftest_parents',
                 'knownFields' => null,
                 'autoChecks'  => null,
                 'skipChecks'  => null,
@@ -472,19 +472,20 @@ class MagicMethodsDataprovider
                 'fillable'    => null,
                 'guarded'     => null,
                 'relations'   => array(
-                    'children' => array(
+                    array(
+                        'itemName' => 'children',
                         'type' => 'hasMany',
                         'foreignModelClass' => 'Fakeapp\Model\Children',
-                        'localKey' => 'fakeapp_parent_id',
-                        'foreignKey' => 'fakeapp_parent_id'
+                        'localKey' => 'foftest_parent_id',
+                        'foreignKey' => 'foftest_parent_id'
                     )
                 )
             ),
             array(
                 'case' => 'Passing a relation - Correct format',
                 'addBehaviour' => 0,
-                'id' => 'fakeapp_parent_id',
-                'table' => '#__fakeapp_parents',
+                'id' => 'foftest_parent_id',
+                'table' => '#__foftest_parents',
                 'fields' => null,
                 'autochecks' => true,
                 'skipchecks' => array(),
@@ -496,7 +497,7 @@ class MagicMethodsDataprovider
                 'relations' => array('children'),
                 'counterApp' => 0,
             )
-        );*/
+        );
 
         return $data;
     }

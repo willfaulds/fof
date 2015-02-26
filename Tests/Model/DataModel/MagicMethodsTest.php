@@ -23,7 +23,7 @@ class DataModelMagicMethodsTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::__construct
      * @dataProvider    MagicMethodsDataprovider::getTest__construct
      */
-    public function tXest__construct($test, $check)
+    public function test__construct($test, $check)
     {
         $msg        = 'DataModel::__construct %s - Case: '.$check['case'];
         $counterApp = 0;
@@ -95,19 +95,16 @@ class DataModelMagicMethodsTest extends DatabaseTest
      * @group           DataModelConstruct
      * @covers          FOF30\Model\DataModel::__construct
      */
-    public function tXest__constructException()
+    public function test__constructException()
     {
         $this->setExpectedException('FOF30\Model\DataModel\Exception\NoTableColumns');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__wrongtable'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'id',
+            'tableName'   => '#__wrongtable'
+        );
 
-        new DataModelStub($container);
+        new DataModelStub(static::$container, $config);
     }
 
     /**
