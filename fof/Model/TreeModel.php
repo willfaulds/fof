@@ -173,7 +173,7 @@ class TreeModel extends DataModel
 
 			$db->setQuery($query)->execute();
 
-			$this->triggerEvent('onAfterUnlock', array(&$pk));
+			$this->triggerEvent('onAfterDelete', array(&$pk));
 		}
 
 		return $this;
@@ -2224,10 +2224,12 @@ class TreeModel extends DataModel
 
 		$query = parent::buildQuery($overrideLimits);
 
+        // Wipe out select and from sections
+        $query->clear('select');
+        $query->clear('from');
+
 		$query
-			->select(null)
 			->select($db->qn('node') . '.*')
-			->from(null)
 			->from($db->qn($this->tableName) . ' AS ' . $db->qn('node'));
 
 		if ($this->treeNestedGet)
