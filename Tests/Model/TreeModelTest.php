@@ -4,7 +4,6 @@ namespace FOF30\Tests\TreeModel;
 
 use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
-use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\TreeModelStub;
 
 require_once 'TreeModelDataprovider.php';
@@ -117,20 +116,17 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::reorder
      */
-    public function tXestReorder()
+    public function testReorder()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeUnsupportedMethod');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $table->reorder();
     }
 
@@ -139,20 +135,17 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::move
      */
-    public function tXestMove()
+    public function testMove()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeUnsupportedMethod');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $table->move(-1);
     }
 
@@ -162,16 +155,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::create
      * @dataProvider        TreeModelDataprovider::getTestCreate
      */
-    public function tXestCreate($test)
+    public function testCreate($test)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
         $matcher = $this->never();
 
@@ -180,7 +170,7 @@ class TreeModelTest extends DatabaseTest
             $matcher = $this->once();
         }
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('insertAsChildOf', 'getParent'), array($container));
+        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('insertAsChildOf', 'getParent'), array(static::$container, $config));
 
         // This is just a little trick, so insertAsChildOf won't complain about the argument passed
         \PHPUnit_Framework_Error_Notice::$enabled = false;
@@ -200,16 +190,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestInsertAsRoot()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
 
         $table->title = 'New root';
         $table->insertAsRoot();
@@ -226,16 +213,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
 
         $table->findOrFail(1);
         $table->insertAsRoot();
@@ -255,16 +239,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::insertAsFirstChildOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         if($test['loadid'])
@@ -321,16 +302,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         $table->insertAsFirstChildOf($parent);
@@ -350,16 +328,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::insertAsLastChildOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         if($test['loadid'])
@@ -416,16 +391,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         $table->insertAsLastChildOf($parent);
@@ -445,16 +417,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::insertLeftOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         if($test['loadid'])
@@ -510,16 +479,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         $table->insertLeftOf($sibling);
@@ -539,16 +505,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::insertRightOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         if($test['loadid'])
@@ -604,16 +567,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         $table->insertRightOf($sibling);
@@ -631,16 +591,13 @@ class TreeModelTest extends DatabaseTest
         $sibling = null;
         $msg     = 'TreeModel::moveLeft %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToLeftOf'), array($container));
+        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToLeftOf'), array(static::$container, $config));
         $table->expects($this->any())->method('moveToLeftOf')->willReturnCallback(
             function($leftSibling) use (&$counter, &$sibling){
                 $counter++;
@@ -665,16 +622,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
 
         $table->moveLeft();
     }
@@ -691,16 +645,13 @@ class TreeModelTest extends DatabaseTest
         $sibling = null;
         $msg     = 'TreeModel::moveRight %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf'), array($container));
+        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf'), array(static::$container, $config));
         $table->expects($this->any())->method('moveToRightOf')->willReturnCallback(
             function($rightSibling) use (&$counter, &$sibling){
                 $counter++;
@@ -725,16 +676,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table  = new TreeModelStub($container);
+        $table  = new TreeModelStub(static::$container, $config);
 
         $table->moveRight();
     }
@@ -753,16 +701,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::moveToLeftOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         // Am I request to create a different root?
@@ -822,16 +767,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         if($test['loadid'])
@@ -861,16 +803,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::moveToRightOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         // Am I request to create a different root?
@@ -930,16 +869,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $sibling = $table->getClone();
 
         if($test['loadid'])
@@ -969,16 +905,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::makeFirstChildOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1021,16 +954,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         if($test['loadid'])
@@ -1060,16 +990,13 @@ class TreeModelTest extends DatabaseTest
         $msg = 'TreeModel::makeLastChildOf %s - Case: '.$check['case'];
         $db  = self::$driver;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1112,16 +1039,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $parent = $table->getClone();
 
         if($test['loadid'])
@@ -1148,14 +1072,11 @@ class TreeModelTest extends DatabaseTest
         $msg     = 'TreeModel::makeRoot %s - Case: '.$check['case'];
         $counter = 0;
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
         $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('moveToRightOf', 'isRoot', 'getRoot', 'equals'), array($container));
         $table->expects($this->any())->method('isRoot')->willReturn($test['mock']['isRoot']);
@@ -1184,16 +1105,13 @@ class TreeModelTest extends DatabaseTest
     {
         $msg     = 'TreeModel::getLevel %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $table->findOrFail($test['loadid']);
 
         if($test['cache'])
@@ -1215,16 +1133,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $table->getLevel();
     }
 
@@ -1238,16 +1153,13 @@ class TreeModelTest extends DatabaseTest
     {
         $msg     = 'TreeModel::getParent %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table   = new TreeModelStub($container);
+        $table   = new TreeModelStub(static::$container, $config);
         $table->findOrFail($test['loadid']);
 
         if(!is_null($test['cache']))
@@ -1278,16 +1190,13 @@ class TreeModelTest extends DatabaseTest
     {
         $msg       = 'TreeModel::isRoot %s - Case: '.$check['case'];
         $counter   = 0;
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getLevel'), array($container));
+        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getLevel'), array(static::$container, $config));
         $table->expects($this->any())->method('getLevel')->willReturnCallback(
             function()use (&$counter, $test){
                 $counter++;
@@ -1311,16 +1220,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestIsLeaf($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
 
         $table->lft = $test['lft'];
         $table->rgt = $test['rgt'];
@@ -1339,16 +1245,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $table->isLeaf();
     }
 
@@ -1360,16 +1263,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestIsDescendantOf($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $other = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1390,16 +1290,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $other  = $table->getClone();
 
         if($test['loadid'])
@@ -1423,16 +1320,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestIsSelfOrDescendantOf($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $other  = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1453,16 +1347,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $other  = $table->getClone();
 
         if($test['loadid'])
@@ -1486,16 +1377,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestEquals($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $other = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -1528,16 +1416,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $other = $table->getClone();
 
         if($test['loadid'])
@@ -1561,21 +1446,18 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestInSameScope($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array($container));
+        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array(static::$container, $config));
         $table->expects($this->any())->method('isLeaf')->willReturn($test['mock']['table']['isLeaf']);
         $table->expects($this->any())->method('isRoot')->willReturn($test['mock']['table']['isRoot']);
         $table->expects($this->any())->method('isChild')->willReturn($test['mock']['table']['isChild']);
 
-        $other = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array($container));
+        $other = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('isLeaf', 'isRoot', 'isChild'), array(static::$container, $config));
         $other->expects($this->any())->method('isLeaf')->willReturn($test['mock']['other']['isLeaf']);
         $other->expects($this->any())->method('isRoot')->willReturn($test['mock']['other']['isRoot']);
         $other->expects($this->any())->method('isChild')->willReturn($test['mock']['other']['isChild']);
@@ -1593,16 +1475,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestScopeImmediateDescendants($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
         $table->findOrFail($test['loadid']);
 
         ReflectionHelper::invoke($table, 'scopeImmediateDescendants');
@@ -1627,16 +1506,13 @@ class TreeModelTest extends DatabaseTest
     {
         $this->setExpectedException('RuntimeException');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
 
         ReflectionHelper::invoke($table, 'scopeImmediateDescendants');
     }
@@ -1649,16 +1525,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestGetRoot($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
 
         // Am I request to create a different root?
         if($test['newRoot'])
@@ -1714,16 +1587,13 @@ class TreeModelTest extends DatabaseTest
         $this->setExpectedException('RuntimeException');
 
         $counter   = 0;
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('firstOrFail', 'isRoot'), array($container));
+        $table = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('firstOrFail', 'isRoot'), array(static::$container, $config));
         $table->expects($this->any())->method('isRoot')->willReturn(false);
 
         // I want to throw an exception at the first run
@@ -1776,16 +1646,13 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestGetNestedList($test, $check)
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'autoChecks'  => false,
-                'idFieldName' => 'dbtest_nestedset_id',
-                'tableName'   => '#__dbtest_nestedsets'
-            )
-        ));
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
 
-        $table = new TreeModelStub($container);
+        $table = new TreeModelStub(static::$container, $config);
 
         $result = $table->getNestedList($test['column'], $test['key'], $test['separator']);
 
