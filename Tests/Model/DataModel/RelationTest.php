@@ -73,20 +73,16 @@ class DataModelRealtionTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::push
      * @dataProvider    DataModelRelationDataprovider::getTestPush
      */
-    public function tXestPush($test, $check)
+    public function testPush($test, $check)
     {
         $msg       = 'DataModel::push %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array($container));
-        $model->expects($this->any())->method('save')->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
 
         $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('getRelationNames', 'save'), array($model));
         $relation->expects($this->any())->method('getRelationNames')->willReturn($test['mock']['names']);
@@ -111,19 +107,16 @@ class DataModelRealtionTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::eagerLoad
      * @dataProvider    DataModelRelationDataprovider::getTestEagerLoad
      */
-    public function tXestEagerLoad($test, $check)
+    public function testEagerLoad($test, $check)
     {
         $globRelation = null;
         $items = array();
         $msg   = 'DataModel::eagerLoad %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
         // The collection should contain items?
         if($test['items'])
@@ -132,7 +125,7 @@ class DataModelRealtionTest extends DatabaseTest
                 'setDataFromCollection' => function(){}
             ));
 
-            $mockedItem = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array($container));
+            $mockedItem = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array(static::$container, $config));
             $mockedItem->expects($this->any())->method('getRelations')->willReturn($fakeRelationManager);
 
             $item = clone $mockedItem;
@@ -141,9 +134,8 @@ class DataModelRealtionTest extends DatabaseTest
 
         $collection = Collection::make($items);
 
-        $model    = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array($container));
+        $model    = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getRelations'), array(static::$container, $config));
         $relation = $this->getMock('\\FOF30\\Model\\DataModel\\RelationManager', array('getData', 'getForeignKeyMap'), array($model));
-        $relation->expects($this->any())->method('getForeignKeyMap')->willReturn(null);
 
         // Let's check if the logic of swapping the callback function when it's not callable works
         $relation->expects($check['getData'] ? $this->atLeastOnce() : $this->never())->method('getData')->with(
@@ -176,22 +168,19 @@ class DataModelRealtionTest extends DatabaseTest
      * @covers          FOF30\Model\DataModel::has
      * @dataProvider    DataModelRelationDataprovider::getTestHas
      */
-    public function tXestHas($test, $check)
+    public function testHas($test, $check)
     {
         $msg = 'DataModel::has %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('addBehaviour'), array($container));
-        $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour')->willReturn(null);
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('addBehaviour'), array(static::$container, $config));
+        $model->expects($check['add'] ? $this->once() : $this->never())->method('addBehaviour');
 
-        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array($container));
+        $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('hasObserverClass'), array(static::$container));
         $dispatcher->expects($this->any())->method('hasObserverClass')->willReturn($test['mock']['hasClass']);
 
         ReflectionHelper::setValue($model, 'behavioursDispatcher', $dispatcher);
@@ -210,19 +199,16 @@ class DataModelRealtionTest extends DatabaseTest
      * @group           DataModelHas
      * @covers          FOF30\Model\DataModel::has
      */
-    public function tXestHasException()
+    public function testHasException()
     {
         $this->setExpectedException('FOF30\Model\DataModel\Exception\InvalidSearchMethod');
 
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
         $model->has('posts', 'wrong', true);
     }
 
@@ -231,17 +217,14 @@ class DataModelRealtionTest extends DatabaseTest
      * @group           DataModelGetRelations
      * @covers          FOF30\Model\DataModel::getRelations
      */
-    public function tXestGetRelations()
+    public function testGetRelations()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $refl = ReflectionHelper::getValue($model, 'relationManager');
         $obj  = $model->getRelations();
@@ -254,17 +237,14 @@ class DataModelRealtionTest extends DatabaseTest
      * @group           DataModelWhereHas
      * @covers          FOF30\Model\DataModel::whereHas
      */
-    public function tXestWhereHas()
+    public function testWhereHas()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('has'), array($container));
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('has'), array(static::$container, $config));
         $model->expects($this->any())->method('has')->with(
             $this->equalTo('dummy'),
             $this->equalTo('callback'),
@@ -284,17 +264,14 @@ class DataModelRealtionTest extends DatabaseTest
      * @group           DataModelGetRelationFilters
      * @covers          FOF30\Model\DataModel::getRelationFilters
      */
-    public function tXestGetRelationFilters()
+    public function testGetRelationFilters()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $filters = array('foo', 'bar');
 
@@ -309,17 +286,14 @@ class DataModelRealtionTest extends DatabaseTest
      * @group           DataModelGetTouches
      * @covers          FOF30\Model\DataModel::getTouches
      */
-    public function tXestGetTouches()
+    public function testGetTouches()
     {
-        $container = new TestContainer(array(
-            'db' => self::$driver,
-            'mvc_config' => array(
-                'idFieldName' => 'id',
-                'tableName'   => '#__dbtest'
-            )
-        ));
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
 
-        $model = new DataModelStub($container);
+        $model = new DataModelStub(static::$container, $config);
 
         $touches = array('foo', 'bar');
 
