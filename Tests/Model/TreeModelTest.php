@@ -188,7 +188,7 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::insertAsRoot
      */
-    public function tXestInsertAsRoot()
+    public function testInsertAsRoot()
     {
         $config = array(
             'autoChecks'  => false,
@@ -209,9 +209,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::insertAsRoot
      */
-    public function tXestInsertAsRootException()
+    public function testInsertAsRootException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeMethodOnlyAllowedInRoot');
 
         $config = array(
             'autoChecks'  => false,
@@ -231,13 +231,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::insertAsFirstChildOf
      * @dataProvider        TreeModelDataprovider::getTestInsertAsFirstChildOf
      */
-    public function tXestInsertAsFirstChildOf($test, $check)
+    public function testInsertAsFirstChildOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $parent */
 
         $msg = 'TreeModel::insertAsFirstChildOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -277,14 +277,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$parent->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$parent->foftest_nestedset_id);
         $parentDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Children object and database lft values are not the same'));
@@ -298,9 +298,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::insertAsFirstChildOf
      */
-    public function tXestInsertAsFirstChildOfException()
+    public function testInsertAsFirstChildOfException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeInvalidLftRgtParent');
 
         $config = array(
             'autoChecks'  => false,
@@ -320,13 +320,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::insertAsLastChildOf
      * @dataProvider        TreeModelDataprovider::getTestInsertAsLastChildOf
      */
-    public function tXestInsertAsLastChildOf($test, $check)
+    public function testInsertAsLastChildOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $parent */
 
         $msg = 'TreeModel::insertAsLastChildOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -366,14 +366,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$parent->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$parent->foftest_nestedset_id);
         $parentDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Children object and database lft values are not the same'));
@@ -387,9 +387,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::insertAsLastChildOf
      */
-    public function tXestInsertAsLastChildOfException()
+    public function testInsertAsLastChildOfException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeInvalidLftRgtParent');
 
         $config = array(
             'autoChecks'  => false,
@@ -409,13 +409,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::insertLeftOf
      * @dataProvider        TreeModelDataprovider::getTestInsertLeftOf
      */
-    public function tXestInsertLeftOf($test, $check)
+    public function testInsertLeftOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $sibling */
 
         $msg = 'TreeModel::insertLeftOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -454,14 +454,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$sibling->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
         $siblingDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Node object and database lft values are not the same'));
@@ -475,9 +475,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::insertLeftOf
      */
-    public function tXestInsertLeftOfException()
+    public function testInsertLeftOfException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeInvalidLftRgtSibling');
 
         $config = array(
             'autoChecks'  => false,
@@ -497,13 +497,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::insertRightOf
      * @dataProvider        TreeModelDataprovider::getTestInsertRightOf
      */
-    public function tXestInsertRightOf($test, $check)
+    public function testInsertRightOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $sibling */
 
         $msg = 'TreeModel::insertRightOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -542,14 +542,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
             ->select('*')
-            ->from('#__dbtest_nestedsets')
-            ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
             ->select('*')
-            ->from('#__dbtest_nestedsets')
-            ->where('dbtest_nestedset_id = '.$sibling->dbtest_nestedset_id);
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
         $siblingDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Node object and database lft values are not the same'));
@@ -563,9 +563,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::insertRightOf
      */
-    public function tXestInsertRightOfException()
+    public function testInsertRightOfException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeInvalidLftRgtSibling');
 
         $config = array(
             'autoChecks'  => false,
@@ -585,7 +585,7 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::moveLeft
      * @dataProvider        TreeModelDataprovider::getTestMoveLeft
      */
-    public function tXestMoveLeft($test, $check)
+    public function testMoveLeft($test, $check)
     {
         $counter = 0;
         $sibling = null;
@@ -601,7 +601,7 @@ class TreeModelTest extends DatabaseTest
         $table->expects($this->any())->method('moveToLeftOf')->willReturnCallback(
             function($leftSibling) use (&$counter, &$sibling){
                 $counter++;
-                $sibling = $leftSibling->dbtest_nestedset_id;
+                $sibling = $leftSibling->foftest_nestedset_id;
             }
         );
 
@@ -618,9 +618,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::moveLeft
      */
-    public function tXestMoveLeftException()
+    public function testMoveLeftException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeInvalidLftRgtCurrent');
 
         $config = array(
             'autoChecks'  => false,
@@ -639,7 +639,7 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::moveRight
      * @dataProvider        TreeModelDataprovider::getTestMoveRight
      */
-    public function tXestMoveRight($test, $check)
+    public function testMoveRight($test, $check)
     {
         $counter = 0;
         $sibling = null;
@@ -655,7 +655,7 @@ class TreeModelTest extends DatabaseTest
         $table->expects($this->any())->method('moveToRightOf')->willReturnCallback(
             function($rightSibling) use (&$counter, &$sibling){
                 $counter++;
-                $sibling = $rightSibling->dbtest_nestedset_id;
+                $sibling = $rightSibling->foftest_nestedset_id;
             }
         );
 
@@ -672,9 +672,9 @@ class TreeModelTest extends DatabaseTest
      * @group               TreeModel
      * @covers              FOF30\Model\TreeModel::moveRight
      */
-    public function tXestMoveRightException()
+    public function testMoveRightException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\TreeInvalidLftRgtCurrent');
 
         $config = array(
             'autoChecks'  => false,
@@ -693,13 +693,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::moveToLeftOf
      * @dataProvider        TreeModelDataprovider::getTestMoveToLeftOf
      */
-    public function tXestMoveToLeftOf($test, $check)
+    public function testMoveToLeftOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $sibling */
 
         $msg = 'TreeModel::moveToLeftOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -707,7 +707,7 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = new TreeModelStub(static::$container, $config);
+        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
         $sibling = $table->getClone();
 
         // Am I request to create a different root?
@@ -741,14 +741,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$sibling->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
         $siblingDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Node object and database lft values are not the same'));
@@ -763,9 +763,9 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::moveToLeftOf
      * @dataProvider        TreeModelDataprovider::getTestMoveToLeftOfException
      */
-    public function tXestMoveToLeftOfException($test)
+    public function testMoveToLeftOfException($test, $check)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\\'.$check['exception']);
 
         $config = array(
             'autoChecks'  => false,
@@ -795,13 +795,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::moveToRightOf
      * @dataProvider        TreeModelDataprovider::getTestMoveToRightOf
      */
-    public function tXestMoveToRightOf($test, $check)
+    public function testMoveToRightOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $sibling */
 
         $msg = 'TreeModel::moveToRightOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -809,7 +809,7 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = new TreeModelStub(static::$container, $config);
+        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
         $sibling = $table->getClone();
 
         // Am I request to create a different root?
@@ -843,14 +843,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$sibling->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
         $siblingDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Node object and database lft values are not the same'));
@@ -865,9 +865,9 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::moveToRightOf
      * @dataProvider        TreeModelDataprovider::getTestMoveToRightOfException
      */
-    public function tXestMoveToRightOfException($test)
+    public function testMoveToRightOfException($test, $check)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\\'.$check['exception']);
 
         $config = array(
             'autoChecks'  => false,
@@ -897,13 +897,13 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::makeFirstChildOf
      * @dataProvider        TreeModelDataprovider::getTestMakeFirstChildOf
      */
-    public function tXestMakeFirstChildOf($test, $check)
+    public function testMakeFirstChildOf($test, $check)
     {
         /** @var TreeModelStub $table */
         /** @var TreeModelStub $parent */
 
         $msg = 'TreeModel::makeFirstChildOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -911,7 +911,7 @@ class TreeModelTest extends DatabaseTest
             'tableName'   => '#__foftest_nestedsets'
         );
 
-        $table   = new TreeModelStub(static::$container, $config);
+        $table   = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\TreeModelStub', array('getState'), array(static::$container, $config));
         $parent = $table->getClone();
 
         $table->findOrFail($test['loadid']);
@@ -928,14 +928,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$parent->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$parent->foftest_nestedset_id);
         $parentDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Node object and database lft values are not the same'));
@@ -950,9 +950,9 @@ class TreeModelTest extends DatabaseTest
      * @covers              FOF30\Model\TreeModel::makeFirstChildOf
      * @dataProvider        TreeModelDataprovider::getTestMakeFirstChildOfException
      */
-    public function tXestMakeFirstChildOfException($test)
+    public function testMakeFirstChildOfException($test, $check)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\\'.$check['exception']);
 
         $config = array(
             'autoChecks'  => false,
@@ -968,7 +968,7 @@ class TreeModelTest extends DatabaseTest
             $table->findOrFail($test['loadid']);
         }
 
-        if($test['siblingid'])
+        if($test['parentid'])
         {
             $parent->findOrFail($test['parentid']);
         }
@@ -988,7 +988,7 @@ class TreeModelTest extends DatabaseTest
         /** @var TreeModelStub $parent */
 
         $msg = 'TreeModel::makeLastChildOf %s - Case: '.$check['case'];
-        $db  = self::$driver;
+        $db  = \JFactory::getDbo();
 
         $config = array(
             'autoChecks'  => false,
@@ -1013,14 +1013,14 @@ class TreeModelTest extends DatabaseTest
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$table->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
         $query = $db->getQuery(true)
                     ->select('*')
-                    ->from('#__dbtest_nestedsets')
-                    ->where('dbtest_nestedset_id = '.$parent->dbtest_nestedset_id);
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$parent->foftest_nestedset_id);
         $parentDb = $db->setQuery($query)->loadObject();
 
         $this->assertEquals($table->lft, $nodeDb->lft, sprintf($msg, 'Node object and database lft values are not the same'));
@@ -1037,7 +1037,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestMakeLastChildOfException($test)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1131,7 +1131,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestGetLevelException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1177,7 +1177,7 @@ class TreeModelTest extends DatabaseTest
         $parent = $table->getParent();
 
         $this->assertInstanceOf('\\FOF30\\Model\\TreeModel', $parent, sprintf($msg, 'Should return an instance of TreeModel'));
-        $this->assertEquals($check['parent'], $parent->dbtest_nestedset_id, sprintf($msg, 'Returned the wrong parent id'));
+        $this->assertEquals($check['parent'], $parent->foftest_nestedset_id, sprintf($msg, 'Returned the wrong parent id'));
     }
 
     /**
@@ -1243,7 +1243,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestIsLeafException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1288,7 +1288,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestIsDescendantOfException($test)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1345,7 +1345,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestIsSelfOrDescendantOfException($test)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1414,7 +1414,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestEqualsException($test)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1504,7 +1504,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestScopeImmediateDescendantsException()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $config = array(
             'autoChecks'  => false,
@@ -1584,7 +1584,7 @@ class TreeModelTest extends DatabaseTest
      */
     public function tXestGetRootException($test)
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\RuntimeException');
 
         $counter   = 0;
         $config = array(

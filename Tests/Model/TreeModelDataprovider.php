@@ -553,18 +553,33 @@ class TreeModelDataprovider
     public static function getTestMoveToLeftOfException()
     {
         $data[] = array(
-            'loadid'    => 0,
-            'siblingid' => 0
+            array(
+                'loadid'    => 0,
+                'siblingid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         $data[] = array(
-            'loadid'    => 1,
-            'siblingid' => 0
+            array(
+                'loadid'    => 1,
+                'siblingid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtSibling'
+            )
         );
 
         $data[] = array(
-            'loadid'    => 0,
-            'siblingid' => 1
+            array(
+                'loadid'    => 0,
+                'siblingid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         return $data;
@@ -620,18 +635,33 @@ class TreeModelDataprovider
     public static function getTestMoveToRightOfException()
     {
         $data[] = array(
-            'loadid'    => 0,
-            'siblingid' => 0
+            array(
+                'loadid'    => 0,
+                'siblingid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         $data[] = array(
-            'loadid'    => 1,
-            'siblingid' => 0
+            array(
+                'loadid'    => 1,
+                'siblingid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtSibling'
+            )
         );
 
         $data[] = array(
-            'loadid'    => 0,
-            'siblingid' => 1
+            array(
+                'loadid'    => 0,
+                'siblingid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         return $data;
@@ -684,18 +714,33 @@ class TreeModelDataprovider
     public static function getTestMakeFirstChildOfException()
     {
         $data[] = array(
-            'loadid'   => 0,
-            'parentid' => 0
+            array(
+                'loadid'   => 0,
+                'parentid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         $data[] = array(
-            'loadid'   => 1,
-            'parentid' => 0
+            array(
+                'loadid'   => 1,
+                'parentid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtParent'
+            )
         );
 
         $data[] = array(
-            'loadid'   => 0,
-            'parentid' => 1
+            array(
+                'loadid'   => 0,
+                'parentid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         return $data;
@@ -1641,7 +1686,7 @@ class TreeModelDataprovider
         $data[] = array(
             array(
                 'column'    => 'title',
-                'key'       => 'dbtest_nestedset_id',
+                'key'       => 'foftest_nestedset_id',
                 'separator' => ' '
             ),
             array(
@@ -1669,7 +1714,7 @@ class TreeModelDataprovider
         $data[] = array(
             array(
                 'column'    => 'title',
-                'key'       => 'dbtest_nestedset_id',
+                'key'       => 'foftest_nestedset_id',
                 'separator' => '-'
             ),
             array(
@@ -1725,7 +1770,7 @@ class TreeModelDataprovider
         $data[] = array(
             array(
                 'column'    => 'slug',
-                'key'       => 'dbtest_nestedset_id',
+                'key'       => 'foftest_nestedset_id',
                 'separator' => ' '
             ),
             array(
