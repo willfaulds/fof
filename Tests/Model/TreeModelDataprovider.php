@@ -793,18 +793,33 @@ class TreeModelDataprovider
     public static function getTestMakeLastChildOfException()
     {
         $data[] = array(
-            'loadid'   => 0,
-            'parentid' => 0
+            array(
+                'loadid'   => 0,
+                'parentid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         $data[] = array(
-            'loadid'   => 1,
-            'parentid' => 0
+            array(
+                'loadid'   => 1,
+                'parentid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtParent'
+            )
         );
 
         $data[] = array(
-            'loadid'   => 0,
-            'parentid' => 1
+            array(
+                'loadid'   => 0,
+                'parentid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
         );
 
         return $data;
@@ -1111,6 +1126,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 0,
                 'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1118,6 +1136,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 1,
                 'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtOther'
             )
         );
 
@@ -1125,6 +1146,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 0,
                 'otherid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1175,6 +1199,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 0,
                 'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1182,6 +1209,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 1,
                 'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtOther'
             )
         );
 
@@ -1189,6 +1219,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 0,
                 'otherid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1248,6 +1281,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 0,
                 'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1255,6 +1291,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 1,
                 'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtOther'
             )
         );
 
@@ -1262,6 +1301,9 @@ class TreeModelDataprovider
             array(
                 'loadid'  => 0,
                 'otherid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1642,6 +1684,9 @@ class TreeModelDataprovider
                     'firstOrFail' => array(false, false)
                 ),
                 'wrongNode' => false
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
             )
         );
 
@@ -1653,6 +1698,9 @@ class TreeModelDataprovider
                     'firstOrFail' => array(true, false)
                 ),
                 'wrongNode' => false
+            ),
+            array(
+                'exception' => 'TreeRootNotFound'
             )
         );
 
@@ -1664,6 +1712,9 @@ class TreeModelDataprovider
                     'firstOrFail' => array(false, true)
                 ),
                 'wrongNode' => true
+            ),
+            array(
+                'exception' => 'TreeRootNotFound'
             )
         );
 
@@ -1675,6 +1726,9 @@ class TreeModelDataprovider
                     'firstOrFail' => array(false, true)
                 ),
                 'wrongNode' => false
+            ),
+            array(
+                'exception' => 'TreeRootNotFound'
             )
         );
 
