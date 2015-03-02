@@ -83,6 +83,10 @@ class Joomla3 extends AkeebaStrapper
 				'layout-' . $layout,
 				'task-' . $task,
 				'task-' . $taskForCssClass,
+				// We have a floating sidebar, they said. It looks great, they said. They must've been blind, I say!
+				'j-toggle-main',
+				'j-toggle-transition',
+				'span12',
 			);
 
 			$classes = array_unique($classes);
