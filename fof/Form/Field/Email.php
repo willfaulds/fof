@@ -211,6 +211,12 @@ class Email extends \JFormFieldEMail implements FieldInterface
 
 			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
 			$replace   = $this->item->$fieldname;
+
+			if (!is_string($replace))
+			{
+				continue;
+			}
+
 			$ret  = str_replace($search, $replace, $ret);
 		}
 
