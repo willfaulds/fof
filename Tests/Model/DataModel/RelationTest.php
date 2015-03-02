@@ -33,15 +33,15 @@ class DataModelRealtionTest extends DatabaseTest
 
         $config = array(
             'autoChecks'  => false,
-            'idFieldName' => 'foftest_parent_id',
-            'tableName'   => '#__foftest_parents',
+            'idFieldName' => 'fakeapp_parent_id',
+            'tableName'   => '#__fakeapp_parents',
             'relations'   => array(
                 array(
                     'itemName' => 'children',
                     'type' => 'hasMany',
                     'foreignModelClass' => 'Children',
-                    'localKey' => 'foftest_parent_id',
-                    'foreignKey' => 'foftest_parent_id'
+                    'localKey' => 'fakeapp_parent_id',
+                    'foreignKey' => 'fakeapp_parent_id'
                 )
             )
         );
@@ -56,8 +56,8 @@ class DataModelRealtionTest extends DatabaseTest
         $db = \JFactory::getDbo();
         $query = $db->getQuery(true)
             ->select('*')
-            ->from($db->qn('#__foftest_children'))
-            ->where($db->qn('foftest_parent_id').' = '.$db->q(1));
+            ->from($db->qn('#__fakeapp_children'))
+            ->where($db->qn('fakeapp_parent_id').' = '.$db->q(1));
         $children = $db->setQuery($query)->loadObjectList();
 
         foreach($children as $child)

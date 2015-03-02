@@ -15,8 +15,8 @@ class RelationFiltersDataprovider
 FROM test
 WHERE ((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) >= '1')"
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) >= '1')"
             )
         );
 
@@ -31,8 +31,8 @@ WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) >
 FROM test
 WHERE ((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) = '1')"
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) = '1')"
             )
         );
 
@@ -47,11 +47,11 @@ WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) =
 FROM test
 WHERE (((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) >= 1) AND ((
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) >= 1) AND ((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) <= 3))"
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) <= 3))"
             )
         );
 
@@ -66,11 +66,11 @@ WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) <
 FROM test
 WHERE (((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) < 1) AND ((
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) < 1) AND ((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) > 3))"
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) > 3))"
             )
         );
 
@@ -88,11 +88,11 @@ WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) >
 FROM test
 WHERE (((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) >= 0) AND ((
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) >= 0) AND ((
 SELECT COUNT(*)
-FROM `#__foftest_children` AS `reltbl`
-WHERE `reltbl`.`foftest_parent_id` = `#__foftest_parents`.`foftest_parent_id`) <= 4))"
+FROM `#__fakeapp_children` AS `reltbl`
+WHERE `reltbl`.`fakeapp_parent_id` = `#__fakeapp_parents`.`fakeapp_parent_id`) <= 4))"
             )
         );
 

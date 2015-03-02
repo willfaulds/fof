@@ -32,8 +32,8 @@ class RelationFiltersTest extends DatabaseTest
                     'itemName' => 'children',
                     'type' => 'hasMany',
                     'foreignModelClass' => 'Children',
-                    'localKey' => 'foftest_parent_id',
-                    'foreignKey' => 'foftest_parent_id'
+                    'localKey' => 'fakeapp_parent_id',
+                    'foreignKey' => 'fakeapp_parent_id'
                 )
             )
         );
