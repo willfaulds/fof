@@ -1153,10 +1153,8 @@ class DataController extends Controller
 
 		try
 		{
-			if (method_exists($this, 'onBeforeApplySave'))
-			{
-				$this->onBeforeApplySave($data);
-			}
+			$eventName = 'onBeforeApplySave';
+			$result = $this->triggerEvent($eventName, array(&$data));
 
 			// Save the data
 			$model->save($data);
@@ -1167,10 +1165,8 @@ class DataController extends Controller
 				$model->unlock();
 			}
 
-			if (method_exists($this, 'onAfterApplySave'))
-			{
-				$this->onAfterApplySave($data);
-			}
+			$eventName = 'onAfterApplySave';
+			$result = $this->triggerEvent($eventName, array(&$data, $model->getId()));
 
 			$this->input->set('id', $model->getId());
 		}
