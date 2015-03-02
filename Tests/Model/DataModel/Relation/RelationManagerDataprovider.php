@@ -17,7 +17,7 @@ class RelationManagerDataprovider
                 'relation'  => ''
             )
         );
-        
+
         $data[] = array(
             array(
                 'name'        => 'children',
