@@ -61,7 +61,11 @@ abstract class AbstractFilter
 
 		$this->name = $field->name;
 		$this->type = $field->type;
-		$this->filterZero = $field->filterZero;
+
+		if (isset ($field->filterZero))
+		{
+			$this->filterZero = $field->filterZero;
+		}
 	}
 
 	/**
