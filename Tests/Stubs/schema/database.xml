@@ -292,9 +292,9 @@
     </row>
   </table>
 
-  <table name="jos_foftest_parts">
-    <column>foftest_part_id</column>
-    <column>dummy</column>
+  <table name="jos_fakeapp_parts">
+    <column>fakeapp_part_id</column>
+    <column>description</column>
 
     <row>
       <value>1</value>
@@ -310,9 +310,9 @@
     </row>
   </table>
 
-  <table name="jos_foftest_groups">
-    <column>foftest_group_id</column>
-    <column>dummy</column>
+  <table name="jos_fakeapp_groups">
+    <column>fakeapp_group_id</column>
+    <column>description</column>
 
     <row>
       <value>1</value>
@@ -328,9 +328,9 @@
     </row>
   </table>
 
-  <table name="jos_foftest_parts_groups">
-    <column>foftest_group_id</column>
-    <column>foftest_part_id</column>
+  <table name="jos_fakeapp_parts_groups">
+    <column>fakeapp_group_id</column>
+    <column>fakeapp_part_id</column>
 
     <row>
       <value>1</value>

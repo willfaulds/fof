@@ -124,42 +124,42 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
     </action>
 
     <!-- ORM table A -->
-    <action table="jos_foftest_parts" canfail="0">
+    <action table="jos_fakeapp_parts" canfail="0">
       <query><![CDATA[
-DROP TABLE IF EXISTS `jos_foftest_parts`;
+DROP TABLE IF EXISTS `jos_fakeapp_parts`;
       ]]></query>
       <query><![CDATA[
-CREATE TABLE IF NOT EXISTS `jos_foftest_parts`(
-  `foftest_part_id` INT NOT NULL AUTO_INCREMENT ,
-  `dummy` varchar (50) NOT NULL ,
-  PRIMARY KEY (`foftest_part_id`)
+CREATE TABLE IF NOT EXISTS `jos_fakeapp_parts`(
+  `fakeapp_part_id` INT NOT NULL AUTO_INCREMENT ,
+  `description` varchar (50) NOT NULL ,
+  PRIMARY KEY (`fakeapp_part_id`)
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>
     </action>
 
     <!-- ORM table B -->
-    <action table="jos_foftest_groups" canfail="0">
+    <action table="jos_fakeapp_groups" canfail="0">
       <query><![CDATA[
-DROP TABLE IF EXISTS `jos_foftest_groups`;
+DROP TABLE IF EXISTS `jos_fakeapp_groups`;
       ]]></query>
       <query><![CDATA[
-CREATE TABLE IF NOT EXISTS `jos_foftest_groups`(
-  `foftest_group_id` INT NOT NULL AUTO_INCREMENT ,
-  `dummy` varchar (50) NOT NULL ,
-  PRIMARY KEY (`foftest_group_id`)
+CREATE TABLE IF NOT EXISTS `jos_fakeapp_groups`(
+  `fakeapp_group_id` INT NOT NULL AUTO_INCREMENT ,
+  `description` varchar (50) NOT NULL ,
+  PRIMARY KEY (`fakeapp_group_id`)
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>
     </action>
 
     <!-- ORM glue table -->
-    <action table="jos_foftest_parts_groups" canfail="0">
+    <action table="jos_fakeapp_parts_groups" canfail="0">
       <query><![CDATA[
-DROP TABLE IF EXISTS `jos_foftest_parts_groups`;
+DROP TABLE IF EXISTS `jos_fakeapp_parts_groups`;
       ]]></query>
       <query><![CDATA[
-CREATE TABLE IF NOT EXISTS `jos_foftest_parts_groups`(
-  `foftest_group_id` INT NOT NULL ,
-  `foftest_part_id` INT NOT NULL
+CREATE TABLE IF NOT EXISTS `jos_fakeapp_parts_groups`(
+  `fakeapp_group_id` INT NOT NULL ,
+  `fakeapp_part_id` INT NOT NULL
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>
     </action>
