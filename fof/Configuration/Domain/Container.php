@@ -32,11 +32,11 @@ class Container implements DomainInterface
 		$ret['container'] = array();
 
 		// Parse the dispatcher configuration
-		$dispatcherData = $xml->dispatcher;
+		$containerData = $xml->container;
 
 		// Sanity check
 
-		if (empty($dispatcherData))
+		if (empty($containerData))
 		{
 			return;
 		}
