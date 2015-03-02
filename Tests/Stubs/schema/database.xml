@@ -248,8 +248,8 @@
     </row>
   </table>
 
-  <table name="jos_foftest_parents">
-    <column>foftest_parent_id</column>
+  <table name="jos_fakeapp_parents">
+    <column>fakeapp_parent_id</column>
     <column>dummy</column>
 
     <row>
@@ -268,10 +268,10 @@
     </row>
   </table>
 
-  <table name="jos_foftest_children">
-    <column>foftest_child_id</column>
+  <table name="jos_fakeapp_children">
+    <column>fakeapp_child_id</column>
     <column>dummy</column>
-    <column>foftest_parent_id</column>
+    <column>fakeapp_parent_id</column>
 
     <row>
       <value>1</value>

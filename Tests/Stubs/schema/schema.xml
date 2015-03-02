@@ -93,32 +93,32 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_joomlachildren`(
     </action>
 
     <!-- Parent table 1:n - 1:1 relation -->
-    <action table="jos_foftest_parents" canfail="0">
+    <action table="jos_fakeapp_parents" canfail="0">
       <query><![CDATA[
-DROP TABLE IF EXISTS `jos_foftest_parents`;
+DROP TABLE IF EXISTS `jos_fakeapp_parents`;
       ]]></query>
       <query><![CDATA[
-CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
-  `foftest_parent_id` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `jos_fakeapp_parents` (
+  `fakeapp_parent_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
-  PRIMARY KEY (`foftest_parent_id`)
+  PRIMARY KEY (`fakeapp_parent_id`)
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>
     </action>
 
     <!-- Children table 1:n - 1:1 relation -->
-    <action table="jos_foftest_children" canfail="0">
+    <action table="jos_fakeapp_children" canfail="0">
       <query><![CDATA[
-DROP TABLE IF EXISTS `jos_foftest_children`;
+DROP TABLE IF EXISTS `jos_fakeapp_children`;
       ]]></query>
       <query><![CDATA[
-CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
-  `foftest_child_id` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `jos_fakeapp_children` (
+  `fakeapp_child_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
-  `foftest_parent_id` INT NOT NULL ,
+  `fakeapp_parent_id` INT NOT NULL ,
   `modified_by` INT NOT NULL,
   `modified_on` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`foftest_child_id`)
+  PRIMARY KEY (`fakeapp_child_id`)
 )ENGINE=MEMORY DEFAULT CHARSET=utf8;
       ]]></query>
     </action>
