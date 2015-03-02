@@ -50,6 +50,7 @@
                 <directory suffix=".php">fof/Hal/Exception</directory>
                 <directory suffix=".php">fof/Model/Exception</directory>
                 <directory suffix=".php">fof/Model/DataModel/Exception</directory>
+                <directory suffix=".php">fof/Model/DataModel/Filter/Exception</directory>
                 <directory suffix=".php">fof/Toolbar/Exception</directory>
                 <directory suffix=".php">fof/View/Exception</directory>
             </exclude>
