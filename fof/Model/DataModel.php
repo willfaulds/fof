@@ -825,7 +825,7 @@ class DataModel extends Model implements \JTableInterface
 
 			if (method_exists($this, $method))
 			{
-				$this->recordData[$name] = $this->{$method}($value);
+				$copy[$name] = $this->{$method}($value);
 			}
 		}
 
