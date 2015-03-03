@@ -41,6 +41,15 @@ defined('_JEXEC') or die;
  * @method DataModel limit() limit(int $limit)
  * @method DataModel limitstart() limitstart(int $limitStart)
  *
+ * @property  int     $enabled      Publish status of this record
+ * @property  int     $ordering     Sort ordering of this record
+ * @property  int     $created_by   ID of the user who created this record
+ * @property  string  $created_on   Date/time stamp of record creation
+ * @property  int     $modified_by  ID of the user who modified this record
+ * @property  string  $modified_on  Date/time stamp of record modification
+ * @property  int     $locked_by    ID of the user who locked this record
+ * @property  string  $locked_on    Date/time stamp of record locking
+ *
  * Type hinting -- end
  */
 class DataModel extends Model implements \JTableInterface
