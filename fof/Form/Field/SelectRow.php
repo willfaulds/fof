@@ -131,20 +131,27 @@ class SelectRow extends \JFormField implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		// Should I support checked-out elements?
+		$checkoutSupport = false;
+
+		if (isset($this->element['checkout']))
+		{
+			$checkoutSupportValue = (string)$this->element['checkout'];
+			$checkoutSupport = in_array(strtolower($checkoutSupportValue), array('yes', 'true', 'on', 1));
+		}
+
 		if (!($this->item instanceof DataModel))
 		{
 			throw new DataModelRequired(__CLASS__);
 		}
 
 		// Is this record checked out?
-		$checked_out     = false;
-		$locked_by_field = $this->item->getFieldAlias('locked_by');
-		$myId            = $this->form->getContainer()->platform->getUser()->get('id', 0);
+		$userId = $this->form->getContainer()->platform->getUser()->get('id', 0);
+		$checked_out = false;
 
-		if (property_exists($this->item, $locked_by_field))
+		if ($checkoutSupport)
 		{
-			$locked_by   = $this->item->$locked_by_field;
-			$checked_out = ($locked_by != 0 && $locked_by != $myId);
+			$checked_out     = $this->item->isLocked($userId);
 		}
 
 		// Get the key id for this record
@@ -152,6 +159,6 @@ class SelectRow extends \JFormField implements FieldInterface
 		$key_id    = $this->item->$key_field;
 
 		// Get the HTML
-		return JHTML::_('grid.id', $this->rowid, $key_id, $checked_out);
+		return JHtml::_('grid.id', $this->rowid, $key_id, $checked_out);
 	}
 }

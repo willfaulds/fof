@@ -303,6 +303,23 @@ class Toolbar
 			$msg = JText::_($option . '_CONFIRM_DELETE');
 			JToolBarHelper::deleteList(strtoupper($msg));
 		}
+
+		// A Check-In button is only added if there is a locked_on field in the table
+		try
+		{
+			$model = $this->container->factory->model($view);
+
+			if ($model->hasField('locked_on'))
+			{
+				JToolBarHelper::checkin();
+			}
+
+		}
+		catch (\Exception $e)
+		{
+			// Yeah. Let's not add the button if we can't load the model...
+		}
+
 	}
 
 	/**

@@ -133,6 +133,15 @@ class Text extends \JFormFieldText implements FieldInterface
 			return $this->getInput();
 		}
 
+		// Should I support checked-out elements?
+		$checkoutSupport = false;
+
+		if (isset($this->element['checkout']))
+		{
+			$checkoutSupportValue = (string)$this->element['checkout'];
+			$checkoutSupport = in_array(strtolower($checkoutSupportValue), array('yes', 'true', 'on', 1));
+		}
+
 		// Initialise
 		$class					= $this->class ? $this->class : $this->id;
 		$format_string			= $this->element['format'] ? (string) $this->element['format'] : '';
@@ -176,6 +185,30 @@ class Text extends \JFormFieldText implements FieldInterface
 
 		// Create the HTML
 		$html = '<span class="' . $class . '">';
+
+		$userId = $this->form->getContainer()->platform->getUser()->id;
+
+		if ($checkoutSupport && $this->item->isLocked($userId))
+		{
+			$key_field = $this->item->getKeyName();
+			$key_id    = $this->item->$key_field;
+
+			$lockedBy = '';
+			$lockedOn = '';
+
+			if ($this->item->hasField('locked_by'))
+			{
+				$lockedUser = $this->form->getContainer()->platform->getUser($this->item->getFieldValue('locked_by'));
+				$lockedBy = $lockedUser->name . ' (' . $lockedUser->username . ')';
+			}
+
+			if ($this->item->hasField('locked_on'))
+			{
+				$lockedOn = $this->item->getFieldValue('locked_on');
+			}
+
+			$html .= \JHtml::_('jgrid.checkedout', $key_id, $lockedBy, $lockedOn, '', true);
+		}
 
 		if ($link_url)
 		{
