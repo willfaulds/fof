@@ -151,6 +151,8 @@ class Html extends Raw implements DataViewInterface
 	{
 		// Hide main menu
 		\JFactory::getApplication()->input->set('hidemainmenu', true);
+
+		parent::onBeforeAdd();
 	}
 
 	/**
@@ -160,5 +162,7 @@ class Html extends Raw implements DataViewInterface
 	{
 		// Hide main menu
 		\JFactory::getApplication()->input->set('hidemainmenu', true);
+
+		parent::onBeforeEdit();
 	}
 } 
