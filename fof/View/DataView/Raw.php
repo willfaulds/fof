@@ -228,8 +228,6 @@ class Raw extends View implements DataViewInterface
 
 	/**
 	 * Executes before rendering the page for the Browse task.
-	 *
-	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBeforeBrowse()
 	{
@@ -266,14 +264,10 @@ class Raw extends View implements DataViewInterface
 			$params = $app->getParams();
 			$this->pageParams = $params;
 		}
-
-		return true;
 	}
 
 	/**
 	 * Executes before rendering the page for the add task.
-	 *
-	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBeforeAdd()
 	{
@@ -281,14 +275,10 @@ class Raw extends View implements DataViewInterface
 		$model = $this->getModel();
 
 		$this->item = $model->reset(true, true);
-
-		return true;
 	}
 
 	/**
 	 * Executes before rendering the page for the Edit task.
-	 *
-	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBeforeEdit()
 	{
@@ -319,14 +309,10 @@ class Raw extends View implements DataViewInterface
 		}
 
 		$this->item = $model->findOrFail();
-
-		return true;
 	}
 
 	/**
 	 * Executes before rendering the page for the Read task.
-	 *
-	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBeforeRead()
 	{
@@ -334,7 +320,5 @@ class Raw extends View implements DataViewInterface
 		$model = $this->getModel();
 
 		$this->item = $model->findOrFail();
-
-		return true;
 	}
 } 

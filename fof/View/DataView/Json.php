@@ -53,20 +53,10 @@ class Json extends Raw implements DataViewInterface
 	public function display($tpl = null)
 	{
 		$eventName = 'onBefore' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		return true;
 	}
@@ -75,8 +65,6 @@ class Json extends Raw implements DataViewInterface
 	 * The event which runs when we are displaying the record list JSON view
 	 *
 	 * @param   string  $tpl  The sub-template to use
-	 *
-	 * @return  boolean  True to allow display of the view
 	 */
 	public function onBeforeBrowse($tpl = null)
 	{
@@ -186,14 +174,10 @@ class Json extends Raw implements DataViewInterface
 				$document->setName($filename);
 				echo $json;
 			}
-
-			return false;
 		}
 		else
 		{
 			echo $result;
-
-			return false;
 		}
 	}
 
@@ -201,8 +185,6 @@ class Json extends Raw implements DataViewInterface
 	 * The event which runs when we are displaying a single item JSON view
 	 *
 	 * @param   string  $tpl  The view sub-template to use
-	 *
-	 * @return  boolean  True to allow display of the view
 	 */
 	protected function onBeforeRead($tpl = null)
 	{
@@ -290,18 +272,12 @@ class Json extends Raw implements DataViewInterface
 				$document->setName($filename);
 
 				echo $json;
-
-				return false;
 			}
 		}
 		else
 		{
 			echo $result;
-
-			return false;
 		}
-
-		return true;
 	}
 
 	/**

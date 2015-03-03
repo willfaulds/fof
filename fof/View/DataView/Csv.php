@@ -93,12 +93,7 @@ class Csv extends Html implements DataViewInterface
 	public function display($tpl = null)
 	{
 		$eventName = 'onBefore' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		// Load the model
 		/** @var DataModel $model */
@@ -232,12 +227,7 @@ class Csv extends Html implements DataViewInterface
 		}
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		return true;
 	}

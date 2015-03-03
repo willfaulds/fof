@@ -556,12 +556,7 @@ class View
 	public function display($tpl = null)
 	{
 		$eventName = 'onBefore' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		$preRenderResult = '';
 
@@ -576,12 +571,7 @@ class View
 		$templateResult = $this->loadTemplate($tpl);
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		if (is_object($templateResult) && ($templateResult instanceof \Exception))
 		{

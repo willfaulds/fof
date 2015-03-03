@@ -39,12 +39,7 @@ class Form extends Html implements DataViewInterface
 		$this->form->setView($this);
 
 		$eventName = 'onBefore' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		$preRenderResult = '';
 
@@ -66,12 +61,7 @@ class Form extends Html implements DataViewInterface
 		}
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
-		$result = $this->triggerEvent($eventName);
-
-		if (!$result)
-		{
-			throw new AccessForbidden;
-		}
+		$this->triggerEvent($eventName, array($tpl));
 
 		if (is_object($templateResult) && ($templateResult instanceof \Exception))
 		{

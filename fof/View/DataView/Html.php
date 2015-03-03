@@ -146,27 +146,19 @@ class Html extends Raw implements DataViewInterface
 
 	/**
 	 * Executes before rendering the page for the Add task.
-	 *
-	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBeforeAdd()
 	{
 		// Hide main menu
 		\JFactory::getApplication()->input->set('hidemainmenu', true);
-
-		return parent::onBeforeAdd();
 	}
 
 	/**
 	 * Executes before rendering the page for the Edit task.
-	 *
-	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBeforeEdit()
 	{
 		// Hide main menu
 		\JFactory::getApplication()->input->set('hidemainmenu', true);
-
-		return parent::onBeforeEdit();
 	}
 } 
