@@ -833,6 +833,12 @@ HTML;
 					$field->item	 = $item;
 					$labelClass		 = $field->labelclass;
 					$class			 = $labelClass ? 'class ="' . $labelClass . '"' : '';
+
+					if (!method_exists($field, 'getRepeatable'))
+					{
+						throw new \Exception('getRepeatable not found in class ' . get_class($field));
+					}
+
 					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . "\n";
 				}
 
