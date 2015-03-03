@@ -1176,11 +1176,10 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Create a slug if there is a title and an empty slug
-        $slugField  = $this->getFieldAlias('slug');
-        $titleField = $this->getFieldValue('title');
-
 		if ($this->hasField('title') && $this->hasField('slug') && !$this->$slugField)
 		{
+			$slugField  = $this->getFieldAlias('slug');
+			$titleField = $this->getFieldValue('title');
 			$this->$slugField = \JApplicationHelper::stringURLSafe($this->$titleField);
 		}
 
