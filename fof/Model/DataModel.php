@@ -1795,9 +1795,15 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function copy()
 	{
+		$this->triggerEvent('onBeforeCopy');
+
 		$this->{$this->idFieldName} = null;
 
-		return $this->save();
+		$result = $this->save();
+
+		$this->triggerEvent('onAfterCopy', array(&$result));
+
+		return $result;
 	}
 
 	/**
