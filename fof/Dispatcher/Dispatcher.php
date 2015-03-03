@@ -54,7 +54,7 @@ class Dispatcher
 	 * @param \FOF30\Container\Container $container
 	 * @param array                      $config
 	 */
-	function __construct(Container $container, array $config = array())
+	public function __construct(Container $container, array $config = array())
 	{
 		$this->container = $container;
 
@@ -66,8 +66,8 @@ class Dispatcher
 		}
 
 		// Get the default values for the view and layout names
-		$this->view = $this->input->getCmd('view', null);
-		$this->layout = $this->input->getCmd('layout', null);
+		$this->view = $this->container->input->getCmd('view', null);
+		$this->layout = $this->container->input->getCmd('layout', null);
 
 		// Not redundant; you may pass an empty but non-null view which is invalid, so we need the fallback
 		if (empty($this->view))
