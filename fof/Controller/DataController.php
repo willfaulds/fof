@@ -378,6 +378,11 @@ class DataController extends Controller
 		if ($form !== false)
 		{
 			$this->hasForm = true;
+
+			if (empty($this->layout))
+			{
+				$this->layout = 'default';
+			}
 		}
 
 		// Display the view
