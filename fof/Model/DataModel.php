@@ -36,6 +36,11 @@ defined('_JEXEC') or die;
  * @method DataModel hasMany() hasMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
  * @method DataModel belongsToMany() belongsToMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null, string $pivotTable = null, string $pivotLocalKey = null, string $pivotForeignKey = null)
  *
+ * @method DataModel filter_order() filter_order(string $orderingField)
+ * @method DataModel filter_order_Dir() filter_order_Dir(string $direction)
+ * @method DataModel limit() limit(int $limit)
+ * @method DataModel limitstart() limitstart(int $limitStart)
+ *
  * Type hinting -- end
  */
 class DataModel extends Model implements \JTableInterface
