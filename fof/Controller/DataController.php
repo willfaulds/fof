@@ -420,6 +420,10 @@ class DataController extends Controller
 		{
 			$this->layout = 'item';
 		}
+		elseif ($this->layout == 'default')
+		{
+			$this->layout = 'item';
+		}
 
 		// Apply the Form name
 		$formName = 'form.' . $this->layout;
@@ -450,6 +454,10 @@ class DataController extends Controller
 
 		// Set the layout to form, if it's not set in the URL
 		if (empty($this->layout))
+		{
+			$this->layout = 'form';
+		}
+		elseif ($this->layout == 'default')
 		{
 			$this->layout = 'form';
 		}
@@ -523,6 +531,10 @@ class DataController extends Controller
 
 		// Set the layout to form, if it's not set in the URL
 		if (empty($this->layout))
+		{
+			$this->layout = 'form';
+		}
+		elseif ($this->layout == 'default')
 		{
 			$this->layout = 'form';
 		}
