@@ -149,7 +149,9 @@ class Text extends \JFormFieldText implements FieldInterface
 		$parse_value			= in_array((string) $this->element['parse_value'], array('true', '1', 'on', 'yes'));
 		$link_url				= $this->element['url'] ? (string) $this->element['url'] : '';
 		$empty_replacement		= $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
-
+		$format_source_file     = empty($this->element['format_source_file']) ? '' : (string) $this->element['format_source_file'];
+		$format_source_class    = empty($this->element['format_source_class']) ? '' : (string) $this->element['format_source_class'];
+		$format_source_method   = empty($this->element['format_source_method']) ? '' : (string) $this->element['format_source_method'];
 
 		if ($link_url && ($this->item instanceof DataModel))
 		{
@@ -177,6 +179,30 @@ class Text extends \JFormFieldText implements FieldInterface
 		{
 			$format_string = $this->parseFieldTags($format_string);
 			$value = sprintf($format_string, $value);
+		}
+		elseif ($format_source_class && $format_source_method)
+		{
+			// Maybe we have to load a file?
+			if (!empty($format_source_file))
+			{
+				$format_source_file = $this->form->getContainer()->template->parsePath($format_source_file, true);
+
+				if ($this->form->getContainer()->filesystem->fileExists($format_source_file))
+				{
+					include_once $format_source_file;
+				}
+			}
+
+			// Make sure the class and method exist
+			if (class_exists($format_source_class, true) && in_array($format_source_method, get_class_methods($format_source_class)))
+			{
+				$value = $format_source_class::$format_source_method($value);
+				$value = $this->parseFieldTags($value);
+			}
+			else
+			{
+				$value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+			}
 		}
 		else
 		{
