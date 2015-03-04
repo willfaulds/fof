@@ -776,6 +776,11 @@ class DataModel extends Model implements \JTableInterface
 			$name = $this->aliasFields[$name];
 		}
 
+		if (!array_key_exists($name, $this->knownFields))
+		{
+			return $default;
+		}
+
 		if (!isset($this->recordData[$name]))
 		{
 			$this->recordData[$name] = $default;
@@ -799,7 +804,10 @@ class DataModel extends Model implements \JTableInterface
 			$name = $this->aliasFields[$name];
 		}
 
-		$this->recordData[$name] = $value;
+		if (array_key_exists($name, $this->knownFields))
+		{
+			$this->recordData[$name] = $value;
+		}
 	}
 
 	/**
