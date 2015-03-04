@@ -265,6 +265,7 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
+     * @group           DataControllerEdit
      * @covers          FOF30\Controller\DataController::edit
      * @dataProvider    DataControllerDataprovider::getTestEdit
      */
@@ -296,7 +297,8 @@ class DataControllertest extends DatabaseTest
 
         $container->session->set('dummycontrollers.savedata', $test['mock']['session'], 'com_fakeapp');
 
-        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('getId', 'lock', 'bind', 'setFormName', 'getForm'), array(), '', false);
+        $modelMethods = array('getId', 'lock', 'bind', 'setFormName', 'getForm', 'isLocked');
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', $modelMethods, array(), '', false);
         $model->expects($this->any())->method('getId')->willReturn($test['mock']['getId']);
 
         $method = $model->expects($this->any())->method('lock');
@@ -664,6 +666,7 @@ class DataControllertest extends DatabaseTest
     /**
      * The best way to test with method is to run it and check vs the database
      *
+     * @group           DataControllerSaveOrder
      * @covers          FOF30\Controller\DataController::saveorder
      * @dataProvider    DataControllerDataprovider::getTestsaveorder
      */
@@ -680,6 +683,7 @@ class DataControllertest extends DatabaseTest
         ));
 
         $config = array(
+            'autoChecks'  => false,
             'idFieldName' => $test['id'],
             'tableName'   => $test['table']
         );
