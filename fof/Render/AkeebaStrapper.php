@@ -534,7 +534,6 @@ JS;
 
 		\JHtml::_('bootstrap.tooltip');
 		\JHtml::_('dropdown.init');
-		\JHtml::_('formbehavior.chosen', 'select');
 		$view	 = $form->getView();
 		$order	 = $view->escape($view->getLists()->order);
 
@@ -1336,6 +1335,14 @@ JS;
 	 */
 	function renderForm(Form &$form, DataModel $model, $formType = null, $raw = false)
 	{
+		$useChosen = $form->getAttribute('chosen', 'true');
+		$useChosen = in_array($useChosen, array('true', 'yes', 'on', 1));
+
+		if ($useChosen)
+		{
+			\JHtml::_('formbehavior.chosen', 'select');
+		}
+
 		if (is_null($formType))
 		{
 			$formType = $form->getAttribute('type', 'edit');
