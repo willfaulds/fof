@@ -43,6 +43,8 @@ class TreeModelStub extends TreeModel
 
             return call_user_func_array($func, $args);
         }
+
+	    return parent::__call($method, $args);
     }
 
     /**

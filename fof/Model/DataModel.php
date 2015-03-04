@@ -463,10 +463,7 @@ class DataModel extends Model implements \JTableInterface
 			return call_user_func_array(array($this->relationManager, $name), $arguments);
 		}
 
-		$arg1 = array_shift($arguments);
-		$this->$name = $arg1;
-
-		return $this;
+		return parent::__call($name, $arguments);
 	}
 
 	/**
