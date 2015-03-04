@@ -19,16 +19,10 @@
             <exclude>
                 <file>fof/include.php</file>
                 <directory suffix=".php">fof/Autoloader</directory>
-                <file>fof/Configuration/Domain/DomainInterface.php</file>
                 <file>fof/Download/Adapter/AbstractAdapter.php</file>
-                <file>fof/Download/DownloadInterface.php</file>
                 <file>fof/Event/Observable.php</file>
-                <file>fof/Hal/Render/RenderInterface.php</file>
                 <directory suffix=".php">fof/Less</directory>
                 <directory suffix=".php">fof/Platform/Base</directory>
-                <file>fof/Platform/Joomla/Filesystem.php</file>
-                <file>fof/Platform/FilesystemInterface.php</file>
-                <file>fof/Platform/PlatformInterface.php</file>
                 <file>fof/Utils/helpers.php</file>
                 <file>fof/Utils/Phpfunc.php</file>
 
@@ -39,6 +33,16 @@
 
                 <directory suffix=".php">fof2</directory>
                 <directory suffix=".php">tests-old</directory>
+
+                <!-- Exclude interfaces from code coverage -->
+                <file>fof/Configuration/Domain/DomainInterface.php</file>
+                <file>fof/Download/DownloadInterface.php</file>
+                <file>fof/Form/FieldInterface.php</file>
+                <file>fof/Form/HeaderInterface.php</file>
+                <file>fof/Hal/Render/RenderInterface.php</file>
+                <file>fof/Platform/Joomla/Filesystem.php</file>
+                <file>fof/Platform/FilesystemInterface.php</file>
+                <file>fof/Platform/PlatformInterface.php</file>
 
                 <!-- Exclude exceptions from code coverage -->
                 <directory suffix=".php">fof/Container/Exception</directory>
