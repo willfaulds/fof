@@ -286,7 +286,10 @@ class ViewTest extends FOFTestCase
             $methods['onBeforeDummy'] = function($self) use($test, &$before){
                 $before['counter']++;
 
-                return $test['mock']['before'];
+                if(!$test['mock']['before'])
+                {
+                    throw new \Exception();
+                }
             };
         }
 
@@ -295,7 +298,10 @@ class ViewTest extends FOFTestCase
             $methods['onAfterDummy'] = function($self) use($test, &$after){
                 $after['counter']++;
 
-                return $test['mock']['after'];
+                if(!$test['mock']['after'])
+                {
+                    throw new \Exception();
+                }
             };
         }
 

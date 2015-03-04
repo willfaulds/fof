@@ -433,7 +433,7 @@ class ViewDataprovider
             )
         );
 
-        // No template, before returns false
+        // No template, before throws an exception
         $data[] = array(
             array(
                 'mock' => array(
@@ -447,17 +447,17 @@ class ViewDataprovider
                 'tpl' => null
             ),
             array(
-                'case'      => 'No template, before returns false',
+                'case'      => 'No template, before throws an exception',
                 'output'    => null,
                 'tpl'       => null,
-                'exception' => 'FOF30\View\Exception\AccessForbidden',
+                'exception' => '\Exception',
                 'load'      => false,
                 'before'    => array('counter' => 1),
                 'after'     => array('counter' => 0),
             )
         );
 
-        // No template, after returns false
+        // No template, after throws an exception
         $data[] = array(
             array(
                 'mock' => array(
@@ -471,10 +471,10 @@ class ViewDataprovider
                 'tpl' => null
             ),
             array(
-                'case'      => 'No template, after returns false',
+                'case'      => 'No template, after throws an exception',
                 'output'    => null,
                 'tpl'       => null,
-                'exception' => 'FOF30\View\Exception\AccessForbidden',
+                'exception' => '\Exception',
                 'load'      => true,
                 'before'    => array('counter' => 1),
                 'after'     => array('counter' => 1),
