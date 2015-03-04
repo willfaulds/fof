@@ -1164,6 +1164,20 @@ HTML;
 			}
 			*/
 
+			// Do we have field "prepend" and "append" text?
+			$prependText = $form->getFieldAttribute($field->fieldname, 'prepend_text', '', $field->group);
+			$appendText = $form->getFieldAttribute($field->fieldname, 'append_text', '', $field->group);
+
+			if (!empty($prependText))
+			{
+				$prependText = \JText::_($prependText);
+			}
+
+			if (!empty($appendText))
+			{
+				$appendText = \JText::_($appendText);
+			}
+
 			$inputField = '';
 
 			if ($formType == 'read')
@@ -1188,10 +1202,37 @@ HTML;
 			}
 			else
 			{
+				if ($prependText || $appendText)
+				{
+					$wrapperClass = $prependText ? 'input-prepend' : '';
+					$wrapperClass .= $appendText ? 'input-append' : '';
+				}
+
 				$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . "\n";
 				$html .= $this->renderFieldsetLabel($field, $form, $title);
 				$html .= "\t\t\t\t" . '<div class="controls">' . "\n";
+
+				if ($prependText || $appendText)
+				{
+					$html .= "\t\t\t\t<div class=\"$wrapperClass\">\n";
+				}
+
+				if ($prependText)
+				{
+					$html .= "\t\t\t\t\t<span class=\"add-on\">$prependText</span>\n";
+				}
+
 				$html .= "\t\t\t\t\t" . $inputField . "\n";
+
+				if ($appendText)
+				{
+					$html .= "\t\t\t\t\t<span class=\"add-on\">$appendText</span>\n";
+				}
+
+				if ($prependText || $appendText)
+				{
+					$html .= "\t\t\t\t</div>\n";
+				}
 
 				if (!empty($description))
 				{
