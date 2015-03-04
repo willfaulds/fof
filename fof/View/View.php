@@ -608,6 +608,12 @@ class View
 	public function setLayout($layout)
 	{
 		$previous = $this->layout;
+
+		if (is_null($layout))
+		{
+			$layout = 'default';
+		}
+
 		if (strpos($layout, ':') === false)
 		{
 			$this->layout = $layout;
