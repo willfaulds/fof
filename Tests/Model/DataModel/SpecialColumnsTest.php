@@ -2,6 +2,7 @@
 
 namespace FOF30\Tests\DataModel;
 
+use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
@@ -430,5 +431,52 @@ class DataModelSpecialColumnsTest extends DatabaseTest
 
         $model = new DataModelStub(static::$container, $config);
         $model->touch();
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelCheckIn
+     * @covers          FOF30\Model\DataModel::checkIn
+     * @dataProvider    SpecialColumnsDataprovider::getTestCheckIn
+     */
+    public function testCheckIn($test, $check)
+    {
+        $container = new TestContainer(array(
+            'platform' => new ClosureHelper(array(
+                'getDbo' => function(){
+                    return \JFactory::getDbo();
+                },
+                'getUser' => function(){
+                    return (object) array('id' => 99);
+                },
+                'authorise' => function($self, $permission, $section) use ($test){
+                    return $test['mock']['permissions'][$section][$permission];
+                }
+            ))
+        ));
+
+        $config = array(
+            'idFieldName' => $test['tableid'],
+            'tableName'   => $test['table']
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unlock', 'isAssetsTracked', 'getAssetKey'), array($container, $config));
+        $model->expects($check['unlock'] ? $this->once() : $this->never())->method('unlock')->willReturnSelf();
+        $model->expects($this->any())->method('isAssetsTracked')->willReturn($test['mock']['assetsTracked']);
+        $model->expects($this->any())->method('getAssetKey')->willReturn('foobars.dummy');
+
+        if($check['exception'])
+        {
+            $this->setExpectedException($check['exception']);
+        }
+
+        if($test['load'])
+        {
+            $model->find($test['load']);
+        }
+
+        $result = $model->checkIn($test['userid']);
+
+        $this->assertInstanceOf('FOF30\Model\DataModel', $result);
     }
 }

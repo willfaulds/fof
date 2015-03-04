@@ -534,4 +534,337 @@ class SpecialColumnsDataprovider
 
         return $data;
     }
+
+    public static function getTestCheckIn()
+    {
+        // Table not loaded
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares',
+                'userid'  => null,
+                'load'    => 0,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array()
+                )
+            ),
+            array(
+                'exception' => 'FOF30\Model\DataModel\Exception\RecordNotLoaded',
+                'unlock'    => false
+            )
+        );
+
+        // Table with no lock support
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares',
+                'userid'  => null,
+                'load'    => 1,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array()
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => false
+            )
+        );
+
+        // Table with only locked_on column
+        $data[] = array(
+            array(
+                'tableid' => 'id',
+                'table'   => '#__foftest_lockedon',
+                'userid'  => null,
+                'load'    => 1,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array()
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record with empty locked_by
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => null,
+                'load'    => 1,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array()
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by the current user
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 99,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array()
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by the current user (userid got from the session)
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => null,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array()
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we are admin
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 50,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false,
+                            'core.admin'      => true,
+                            'core.manage'     => false
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we are managers
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 50,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false,
+                            'core.admin'      => false,
+                            'core.manage'     => true
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we can edit the state
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 50,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => true,
+                            'core.admin'      => false,
+                            'core.manage'     => false
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we can edit the state (assets tracked)
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 50,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => true,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false,
+                            'core.admin'      => false,
+                            'core.manage'     => false
+                        ),
+                        'foobars.dummy' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => true
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we created it and we can edit our own records
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 42,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => false,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => true,
+                            'core.edit.state' => false,
+                            'core.admin'      => false,
+                            'core.manage'     => false
+                        ),
+                        'foobars.dummy' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we created it and we can edit our own records (assets tracked)
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 42,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => true,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false,
+                            'core.admin'      => false,
+                            'core.manage'     => false
+                        ),
+                        'foobars.dummy' => array(
+                            'core.edit.own'   => true,
+                            'core.edit.state' => false
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'unlock'    => true
+            )
+        );
+
+        // Record locked by another user, we created it and but we can not edit our own records
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 42,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => true,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false,
+                            'core.admin'      => false,
+                            'core.manage'     => false
+                        ),
+                        'foobars.dummy' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => 'FOF30\Controller\Exception\LockedRecord',
+                'unlock'    => false
+            )
+        );
+
+        // Record locked by another user, we didn't create it
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'userid'  => 50,
+                'load'    => 5,
+                'mock' => array(
+                    'assetsTracked' => true,
+                    'permissions'   => array(
+                        'com_fakeapp' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false,
+                            'core.admin'      => false,
+                            'core.manage'     => false
+                        ),
+                        'foobars.dummy' => array(
+                            'core.edit.own'   => false,
+                            'core.edit.state' => false
+                        )
+                    )
+                )
+            ),
+            array(
+                'exception' => 'FOF30\Controller\Exception\LockedRecord',
+                'unlock'    => false
+            )
+        );
+
+        return $data;
+    }
 }

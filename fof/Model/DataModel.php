@@ -1839,11 +1839,11 @@ class DataModel extends Model implements \JTableInterface
 		// If there is no loaded record we can't do much, I'm afraid
 		if (!$this->getId())
 		{
-			throw new RecordNotLoaded("Can't archive a not loaded DataModel");
+			throw new RecordNotLoaded("Can't checkin a not loaded DataModel");
 		}
 
 		// If the lock fields are missing we have nothing to do
-		if (!$this->hasField('locked_by') && $this->hasField('locked_on'))
+		if (!$this->hasField('locked_by') && !$this->hasField('locked_on'))
 		{
 			return $this;
 		}
@@ -1906,7 +1906,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if ($this->hasField('created_by'))
 		{
-			$owner = $this->hasField('created_by');
+			$owner = $this->getFieldValue('created_by');
 		}
 
 		if ($privileges['editown'] && ($owner == $userId))

@@ -529,7 +529,15 @@
       <value>29</value>
       <value>1928f95c598b9e69462fcb512625cf8e28923044</value>
     </row>
+  </table>
 
+  <table name="jos_foftest_lockedon">
+    <column>id</column>
+    <column>locked_on</column>
 
+    <row>
+      <value>1</value>
+      <value>0000-00-00 00:00:00</value>
+    </row>
   </table>
 </dataset>
