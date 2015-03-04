@@ -8,10 +8,14 @@
 namespace FOF30\Form;
 
 use FOF30\Container\Container;
+use FOF30\Form\Field\Model;
 use FOF30\Form\Header\HeaderBase;
 use FOF30\Model\DataModel;
 use FOF30\View\DataView\DataViewInterface;
+use JFactory;
 use JForm;
+use JText;
+use SimpleXMLElement;
 
 defined('_JEXEC') or die;
 
@@ -861,5 +865,190 @@ class Form extends JForm
 		}
 
 		parent::bindLevel($group, $data);
+	}
+
+	/**
+	 * Method to load, setup and return a JFormField object based on field data.
+	 *
+	 * @param   string  $element  The XML element object representation of the form field.
+	 * @param   string  $group    The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value    The optional value to use as the default for the field.
+	 *
+	 * @return  mixed  The JFormField object for the field or boolean false on error.
+	 *
+	 * @since   11.1
+	 */
+	protected function loadField($element, $group = null, $value = null)
+	{
+		// Make sure there is a valid SimpleXMLElement.
+		if (!($element instanceof SimpleXMLElement))
+		{
+			return false;
+		}
+
+		// Get the field type.
+		$type = $element['type'] ? (string) $element['type'] : 'text';
+
+		// Load the JFormField object for the field.
+		$field = $this->loadFieldType($type);
+
+		// If the object could not be loaded, get a text field object.
+		if ($field === false)
+		{
+			$field = $this->loadFieldType('text');
+		}
+
+		/*
+		 * Get the value for the form field if not set.
+		 * Default to the translated version of the 'default' attribute
+		 * if 'translate_default' attribute if set to 'true' or '1'
+		 * else the value of the 'default' attribute for the field.
+		 */
+		if ($value === null)
+		{
+			$default = (string) $element['default'];
+
+			if (($translate = $element['translate_default']) && ((string) $translate == 'true' || (string) $translate == '1'))
+			{
+				$lang = JFactory::getLanguage();
+
+				if ($lang->hasKey($default))
+				{
+					$debug = $lang->setDebug(false);
+					$default = JText::_($default);
+					$lang->setDebug($debug);
+				}
+				else
+				{
+					$default = JText::_($default);
+				}
+			}
+
+			$getValueFrom = (isset($element['name_from'])) ? (string) $element['name_from'] : (string) $element['name'];
+
+			$value = $this->getValue($getValueFrom, $group, $default);
+		}
+
+		// Setup the JFormField object.
+		$field->setForm($this);
+
+		if ($field->setup($element, $value, $group))
+		{
+			return $field;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Method to get a form field represented as an XML element object.
+	 *
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 *
+	 * @return  mixed  The XML element object for the field or boolean false on error.
+	 *
+	 * @since   11.1
+	 */
+	protected function findField($name, $group = null)
+	{
+		$element = false;
+		$fields = array();
+
+		// Make sure there is a valid JForm XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			return false;
+		}
+
+		// Let's get the appropriate field element based on the method arguments.
+		if ($group)
+		{
+			// Get the fields elements for a given group.
+			$elements = &$this->findGroup($group);
+
+			// Get all of the field elements with the correct name for the fields elements.
+			/** @var SimpleXMLElement $element */
+			foreach ($elements as $element)
+			{
+				// If there are matching field elements add them to the fields array.
+				if ($tmp = $element->xpath('descendant::field[@name="' . $name . '"]'))
+				{
+					$fields = array_merge($fields, $tmp);
+				}
+				elseif ($tmp = $element->xpath('descendant::field[@name_from="' . $name . '"]'))
+				{
+					$fields = array_merge($fields, $tmp);
+				}
+			}
+
+			// Make sure something was found.
+			if (!$fields)
+			{
+				return false;
+			}
+
+			// Use the first correct match in the given group.
+			$groupNames = explode('.', $group);
+
+			/** @var SimpleXMLElement $field */
+			foreach ($fields as &$field)
+			{
+				// Get the group names as strings for ancestor fields elements.
+				$attrs = $field->xpath('ancestor::fields[@name]/@name');
+				$names = array_map('strval', $attrs ? $attrs : array());
+
+				// If the field is in the exact group use it and break out of the loop.
+				if ($names == (array) $groupNames)
+				{
+					$element = &$field;
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Get an array of fields with the correct name.
+			$fields = $this->xml->xpath('//field[@name="' . $name . '"]');
+
+			if (!$fields)
+			{
+				$fields = array();
+			}
+
+			$fieldsNameFrom = $this->xml->xpath('//field[@name_from="' . $name . '"]');
+
+			if ($fieldsNameFrom)
+			{
+				$fields = array_merge($fields, $fieldsNameFrom);
+			}
+
+			// Make sure something was found.
+			if (empty($fields))
+			{
+				return false;
+			}
+
+			// Search through the fields for the right one.
+			foreach ($fields as &$field)
+			{
+				// If we find an ancestor fields element with a group name then it isn't what we want.
+				if ($field->xpath('ancestor::fields[@name]'))
+				{
+					continue;
+				}
+
+				// Found it!
+				else
+				{
+					$element = &$field;
+					break;
+				}
+			}
+		}
+
+		return $element;
 	}
 }
