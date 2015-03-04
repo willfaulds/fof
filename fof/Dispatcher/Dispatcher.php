@@ -85,7 +85,7 @@ class Dispatcher
 	 *
 	 * @return  mixed|null
 	 */
-	function __get($name)
+	public function __get($name)
 	{
 		// Handle $this->input
 		if ($name == 'input')
