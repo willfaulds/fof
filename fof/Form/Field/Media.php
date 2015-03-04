@@ -145,7 +145,7 @@ class Media extends \JFormFieldMedia implements FieldInterface
 	{
 		$imgattr = array();
 
-		if ($fieldOptions['id'])
+		if (isset($fieldOptions['id']))
 		{
 			$imgattr['id'] = $fieldOptions['id'];
 		}
