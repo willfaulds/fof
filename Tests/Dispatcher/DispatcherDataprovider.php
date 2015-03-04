@@ -142,7 +142,7 @@ class DispatcherDataprovider
                     'input' => array(),
                     'execute' => true,
                     'before' => true,
-                    'after' => false,
+                    'after' => 'throw',
                     'isCli' => false
                 )
             ),
@@ -210,7 +210,7 @@ class DispatcherDataprovider
                     'input' => array(),
                     'execute' => true,
                     'before' => true,
-                    'after' => false,
+                    'after' => 'throw',
                     'isCli' => false
                 )
             ),

@@ -166,7 +166,19 @@ class Dispatcher
 		$this->controller = $this->container->factory->controller($view, $this->config);
 		$status = $this->controller->execute($task);
 
-		if (($status === false) || ($this->triggerEvent($onAfterEventName) === false))
+        if($status)
+        {
+            try
+            {
+                $this->triggerEvent($onAfterEventName);
+            }
+            catch(\Exception $e)
+            {
+                $status = false;
+            }
+        }
+
+		if (($status === false))
 		{
 			if ($this->container->platform->isCli())
 			{

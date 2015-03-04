@@ -127,7 +127,9 @@ class DispatcherTest extends FOFTestCase
             'onAfterDispatch' => function() use ($test, &$events){
                 $events['after']++;
 
-                return $test['mock']['after'];
+                if($test['mock']['after'] === 'throw'){
+                    throw new \Exception();
+                }
             },
             'onBeforeDispatchCLI' => function() use ($test, &$events){
                 $events['beforeCli']++;
@@ -138,7 +140,9 @@ class DispatcherTest extends FOFTestCase
             'onAfterDispatchCLI' => function() use ($test, &$events){
                 $events['afterCli']++;
 
-                return $test['mock']['after'];
+                if($test['mock']['after'] === 'throw'){
+                    throw new \Exception();
+                }
             },
         );
 
