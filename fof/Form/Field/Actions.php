@@ -7,8 +7,8 @@
 
 namespace FOF30\Form\Field;
 
-use FOF30\Form\Exceptions\DataModelRequired;
-use FOF30\Form\Exceptions\GetStaticNotAllowed;
+use FOF30\Form\Exception\DataModelRequired;
+use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;

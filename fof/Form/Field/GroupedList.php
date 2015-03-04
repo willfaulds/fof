@@ -7,7 +7,7 @@
 
 namespace FOF30\Form\Field;
 
-use FOF30\Form\Exceptions\InvalidGroupContents;
+use FOF30\Form\Exception\InvalidGroupContents;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;

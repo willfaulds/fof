@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Form\Exceptions;
+namespace FOF30\Form\Exception;
 
 use Exception;
 
