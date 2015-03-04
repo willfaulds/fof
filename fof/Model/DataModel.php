@@ -2532,11 +2532,6 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function isLocked($userId = null)
 	{
-		if (!$this->getId())
-		{
-			throw new CannotLockNotLoadedRecord;
-		}
-
 		if (!$this->hasField('locked_on') && !$this->hasField('locked_by'))
 		{
 			return false;
