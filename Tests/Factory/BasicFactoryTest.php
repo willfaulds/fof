@@ -45,7 +45,7 @@ class BasicFactoryTest extends FOFTestCase
         $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createController'), array(static::$container));
         $factory->expects($this->any())->method('createController')->willReturnCallback(function($class) use(&$test, &$names){
             $names[] = $class;
-            $result = array_shift($test['mock']['controller']);
+            $result = array_shift($test['mock']['create']);
 
             if($result !== true){
                 throw new $result($class);
@@ -61,6 +61,70 @@ class BasicFactoryTest extends FOFTestCase
 
         $factory->controller($test['view']);
 
-        $this->assertEquals($check['names'], $names, sprintf($msg, 'Failed to correctly search for the controller classname'));
+        $this->assertEquals($check['names'], $names, sprintf($msg, 'Failed to correctly search for the classname'));
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          BasicFactory::model
+     * @dataProvider    BasicFactoryDataprovider::getTestModel
+     */
+    public function testModel($test, $check)
+    {
+        $msg   = 'BasicFactory::model %s - Case: '.$check['case'];
+        $names = array();
+
+        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createModel'), array(static::$container));
+        $factory->expects($this->any())->method('createModel')->willReturnCallback(function($class) use(&$test, &$names){
+            $names[] = $class;
+            $result = array_shift($test['mock']['create']);
+
+            if($result !== true){
+                throw new $result($class);
+            }
+
+            return $result;
+        });
+
+        if($check['exception'])
+        {
+            $this->setExpectedException($check['exception']);
+        }
+
+        $factory->model($test['view']);
+
+        $this->assertEquals($check['names'], $names, sprintf($msg, 'Failed to correctly search for the classname'));
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          BasicFactory::view
+     * @dataProvider    BasicFactoryDataprovider::getTestView
+     */
+    public function testView($test, $check)
+    {
+        $msg   = 'BasicFactory::view %s - Case: '.$check['case'];
+        $names = array();
+
+        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createView'), array(static::$container));
+        $factory->expects($this->any())->method('createView')->willReturnCallback(function($class) use(&$test, &$names){
+            $names[] = $class;
+            $result = array_shift($test['mock']['create']);
+
+            if($result !== true){
+                throw new $result($class);
+            }
+
+            return $result;
+        });
+
+        if($check['exception'])
+        {
+            $this->setExpectedException($check['exception']);
+        }
+
+        $factory->view($test['view'], $test['type']);
+
+        $this->assertEquals($check['names'], $names, sprintf($msg, 'Failed to correctly search for the classname'));
     }
 }

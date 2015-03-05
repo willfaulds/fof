@@ -141,7 +141,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Dispatcher
 	 */
-	function dispatcher(array $config = array())
+	public function dispatcher(array $config = array())
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
 
@@ -163,7 +163,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 */
-	function toolbar(array $config = array())
+    public function toolbar(array $config = array())
 	{
 		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
 
@@ -185,7 +185,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  TransparentAuthentication
 	 */
-	function transparentAuthentication(array $config = array())
+    public function transparentAuthentication(array $config = array())
 	{
 		$authClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
 
@@ -214,7 +214,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @throws  \RuntimeException If the form exists but cannot be loaded
 	 */
-	function form($name, $source, $viewName = null, array $options = array(), $replace = true, $xpath = false)
+    public function form($name, $source, $viewName = null, array $options = array(), $replace = true, $xpath = false)
 	{
 		// Get a new form instance
 		$form = new Form($this->container, $name, $options);
@@ -269,7 +269,7 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @return  mixed
 	 */
-	function viewFinder(View $view, array $config = array())
+    public function viewFinder(View $view, array $config = array())
 	{
 		// Initialise the configuration with the default values
 		$defaultConfig = array(
