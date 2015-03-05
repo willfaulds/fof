@@ -22,7 +22,7 @@ class BasicFactoryTest extends FOFTestCase
 {
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::__construct
+     * @covers          FOF30\Factory\BasicFactory::__construct
      */
     public function test__construct()
     {
@@ -34,7 +34,7 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::controller
+     * @covers          FOF30\Factory\BasicFactory::controller
      * @dataProvider    BasicFactoryDataprovider::getTestController
      */
     public function testController($test, $check)
@@ -66,7 +66,7 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::model
+     * @covers          FOF30\Factory\BasicFactory::model
      * @dataProvider    BasicFactoryDataprovider::getTestModel
      */
     public function testModel($test, $check)
@@ -98,7 +98,7 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::view
+     * @covers          FOF30\Factory\BasicFactory::view
      * @dataProvider    BasicFactoryDataprovider::getTestView
      */
     public function testView($test, $check)
@@ -130,7 +130,7 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::dispatcher
+     * @covers          FOF30\Factory\BasicFactory::dispatcher
      * @dataProvider    BasicFactoryDataprovider::getTestDispatcher
      */
     public function testDispatcher($test, $check)
@@ -166,7 +166,7 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::toolbar
+     * @covers          FOF30\Factory\BasicFactory::toolbar
      * @dataProvider    BasicFactoryDataprovider::getTestToolbar
      */
     public function testToolbar($test, $check)
@@ -202,7 +202,7 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
-     * @covers          BasicFactory::transparentAuthentication
+     * @covers          FOF30\Factory\BasicFactory::transparentAuthentication
      * @dataProvider    BasicFactoryDataprovider::getTestTransparentAuthentication
      */
     public function testTransparentAuthentication($test, $check)
