@@ -1173,13 +1173,19 @@ HTML;
 
 			// Auto-generate label and description if needed
 			// Field label
-			$title 		 = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
-			$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
+			$title 		     = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
+			$emptylabel      = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
+			$label_placement = $form->getFieldAttribute($field->fieldname, 'label_placement', null, $field->group);
 
 			if (empty($title) && !$emptylabel)
 			{
 				$model->getName();
 				$title = strtoupper($this->container->componentName . '_' . $model->getName() . '_' . $field->id . '_LABEL');
+			}
+
+			if (empty($label_placement))
+			{
+				$label_placement = !empty($title) ? 'left' : 'none';
 			}
 
 			// Field description
@@ -1223,58 +1229,74 @@ HTML;
 				$inputField = $field->input;
 			}
 
-			if (empty($title))
+			if ($prependText || $appendText)
 			{
-				$html .= "\t\t\t" . $inputField . "\n";
-
-				if (!empty($description) && $formType == 'edit')
-				{
-					$html .= "\t\t\t\t" . '<span class="help-block">';
-					$html .= \JText::_($description) . '</span>' . "\n";
-				}
+				$wrapperClass = $prependText ? 'input-prepend' : '';
+				$wrapperClass .= $appendText ? 'input-append' : '';
 			}
-			else
+
+			$renderedLabel = !empty($title) ? $this->renderFieldsetLabel($field, $form, $title) : '';
+			$renderedLabel = ($label_placement == 'empty') ? '' : $renderedLabel;
+
+			switch ($label_placement)
 			{
-				if ($prependText || $appendText)
-				{
-					$wrapperClass = $prependText ? 'input-prepend' : '';
-					$wrapperClass .= $appendText ? 'input-append' : '';
-				}
+				case 'left':
+				case 'empty':
+					$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . "\n";
+					$html .= "\t\t\t" . $renderedLabel;
+					$html .= "\t\t\t\t" . '<div class="controls">' . "\n";
+					break;
 
-				$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . "\n";
-				$html .= $this->renderFieldsetLabel($field, $form, $title);
-				$html .= "\t\t\t\t" . '<div class="controls">' . "\n";
+				case 'top':
+					$html .= "\t\t\t" . '<div class="' . $groupClass . '">' . "\n";
+					$html .= "\t\t\t" . $renderedLabel . "<br/>\n";
+					break;
+			}
 
-				if ($prependText || $appendText)
-				{
-					$html .= "\t\t\t\t<div class=\"$wrapperClass\">\n";
-				}
+			if ($prependText || $appendText)
+			{
+				$html .= "\t\t\t\t<div class=\"$wrapperClass\">\n";
+			}
 
-				if ($prependText)
-				{
-					$html .= "\t\t\t\t\t<span class=\"add-on\">$prependText</span>\n";
-				}
+			if ($prependText)
+			{
+				$html .= "\t\t\t\t\t<span class=\"add-on\">$prependText</span>\n";
+			}
 
-				$html .= "\t\t\t\t\t" . $inputField . "\n";
+			$html .= "\t\t\t\t\t" . $inputField . "\n";
 
-				if ($appendText)
-				{
-					$html .= "\t\t\t\t\t<span class=\"add-on\">$appendText</span>\n";
-				}
+			if ($appendText)
+			{
+				$html .= "\t\t\t\t\t<span class=\"add-on\">$appendText</span>\n";
+			}
 
-				if ($prependText || $appendText)
-				{
-					$html .= "\t\t\t\t</div>\n";
-				}
+			if ($prependText || $appendText)
+			{
+				$html .= "\t\t\t\t</div>\n";
+			}
 
-				if (!empty($description))
-				{
-					$html .= "\t\t\t\t" . '<span class="help-block">';
-					$html .= \JText::_($description) . '</span>' . "\n";
-				}
+			if (!empty($description))
+			{
+				$html .= "\t\t\t\t" . '<span class="help-block">';
+				$html .= \JText::_($description) . '</span>' . "\n";
+			}
 
-				$html .= "\t\t\t\t" . '</div>' . "\n";
-				$html .= "\t\t\t" . '</div>' . "\n";
+			switch ($label_placement)
+			{
+				case 'left':
+				case 'empty':
+					$html .= "\t\t\t\t" . '</div>' . "\n";
+					$html .= "\t\t\t" . '</div>' . "\n";
+					break;
+
+				case 'top':
+					$html .= "\t\t\t" . '</div>' . "\n";
+					break;
+
+				case 'bottom':
+					$html .= "\t\t\t" . '<br/>' . "\n";
+					$html .= "\t\t\t" . $renderedLabel . "\n";
+					$html .= "\t\t\t" . '</div>' . "\n";
 			}
 		}
 
