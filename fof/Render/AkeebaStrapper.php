@@ -15,6 +15,7 @@ use FOF30\Form\Field\Ordering as FieldOrdering;
 use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use FOF30\Toolbar\Toolbar;
+use FOF30\View\View;
 
 defined('_JEXEC') or die;
 
@@ -1133,7 +1134,40 @@ HTML;
 			$html .= "\t\t" . '<h3>' . \JText::_($fieldset->label) . '</h3>' . "\n";
 		}
 
-		foreach ($fields as $field)
+		// Add an external view template, if specified
+		$sourceTemplate = isset($fieldset->source) ? $fieldset->source : null;
+		$sourceView = isset($fieldset->source_view) ? $fieldset->source_view : null;
+		$sourceViewType = isset($fieldset->source_view_type) ? $fieldset->source_view_type : 'html';
+		$sourceComponent = isset($fieldset->source_component) ? $fieldset->source_component : null;
+
+		if (!empty($sourceTemplate))
+		{
+			$sourceContainer = empty($sourceComponent) ? $this->container : Container::getInstance($sourceComponent);
+
+			if (empty($sourceView))
+			{
+				$viewObject = new View($sourceContainer, array(
+					'name' => 'FAKE_FORM_VIEW'
+				));
+			}
+			else
+			{
+				$viewObject = $sourceContainer->factory->view($sourceView, $sourceViewType);
+			}
+
+			$viewObject->populateFromModel($model);
+
+			$html .= $viewObject->loadAnyTemplate($sourceTemplate, array(
+				'model' => $model,
+				'form' => $form,
+				'fieldset' => $fieldset,
+				'formType' => $formType,
+				'innerHtml' => $innerHtml
+			));
+		}
+
+		// Add the fieldset fields
+		if (!empty($fields)) foreach ($fields as $field)
 		{
 			$groupClass	 = $form->getFieldAttribute($field->fieldname, 'groupclass', '', $field->group);
 

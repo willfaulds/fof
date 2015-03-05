@@ -1314,4 +1314,15 @@ class View
 		$this->viewTemplateAliases[$alias] = $viewTemplate;
 	}
 
+	/**
+	 * This method is called by the Renderer when an XML form includes a view template. The $model variable contains the
+	 * Model object instance used by the form. You can override this method to populate your View class with data from
+	 * that model.
+	 *
+	 * @param   \FOF30\Model\Model  $model  The model object passed from the XML form renderer
+	 */
+	public function populateFromModel(Model $model)
+	{
+		// Override this method if you need to populate your view from the model passed by an XML form
+	}
 }
