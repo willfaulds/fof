@@ -41,12 +41,15 @@
                 <!-- Exclude interfaces from code coverage -->
                 <file>fof/Configuration/Domain/DomainInterface.php</file>
                 <file>fof/Download/DownloadInterface.php</file>
+                <file>fof/Factory/FactoryInterface.php</file>
+                <file>fof/Factory/Scaffolding/ErectorInterface.php</file>
                 <file>fof/Form/FieldInterface.php</file>
                 <file>fof/Form/HeaderInterface.php</file>
                 <file>fof/Hal/Render/RenderInterface.php</file>
                 <file>fof/Platform/Joomla/Filesystem.php</file>
                 <file>fof/Platform/FilesystemInterface.php</file>
                 <file>fof/Platform/PlatformInterface.php</file>
+                <file>fof/View/DataView/DataViewInterface.php</file>
 
                 <!-- Exclude exceptions from code coverage -->
                 <directory suffix=".php">fof/Container/Exception</directory>
