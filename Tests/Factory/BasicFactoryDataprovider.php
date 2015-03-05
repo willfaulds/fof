@@ -178,4 +178,97 @@ class BasicFactoryDataprovider
 
         return $data;
     }
+
+    public static function getTestDispatcher()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => true
+                )
+            ),
+            array(
+                'case' => 'Dispatcher found',
+                'name' => '\Fakeapp\Site\Dispatcher\Dispatcher',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => 'FOF30\Factory\Exception\DispatcherNotFound'
+                )
+            ),
+            array(
+                'case' => 'Dispatcher not found, fall back to the default one',
+                'name' => '\Fakeapp\Site\Dispatcher\Dispatcher',
+                'result' => true
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestToolbar()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => true
+                )
+            ),
+            array(
+                'case' => 'Toolbar found',
+                'name' => '\Fakeapp\Site\Toolbar\Toolbar',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => 'FOF30\Factory\Exception\ToolbarNotFound'
+                )
+            ),
+            array(
+                'case' => 'Toolbar not found, fall back to the default one',
+                'name' => '\Fakeapp\Site\Toolbar\Toolbar',
+                'result' => true
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestTransparentAuthentication()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => true
+                )
+            ),
+            array(
+                'case' => 'Authentication found',
+                'name' => '\Fakeapp\Site\TransparentAuthentication\TransparentAuthentication',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'create' => 'FOF30\Factory\Exception\TransparentAuthenticationNotFound'
+                )
+            ),
+            array(
+                'case' => 'Authentication not found, fall back to the default one',
+                'name' => '\Fakeapp\Site\TransparentAuthentication\TransparentAuthentication',
+                'result' => true
+            )
+        );
+
+        return $data;
+    }
 }

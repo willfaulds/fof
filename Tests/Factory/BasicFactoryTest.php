@@ -127,4 +127,112 @@ class BasicFactoryTest extends FOFTestCase
 
         $this->assertEquals($check['names'], $names, sprintf($msg, 'Failed to correctly search for the classname'));
     }
+
+    /**
+     * @group           BasicFactory
+     * @covers          BasicFactory::dispatcher
+     * @dataProvider    BasicFactoryDataprovider::getTestDispatcher
+     */
+    public function testDispatcher($test, $check)
+    {
+        $msg  = 'BasicFactory::dispatcher %s - Case: '.$check['case'];
+        $name = '';
+
+        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createDispatcher'), array(static::$container));
+        $factory->expects($this->any())->method('createDispatcher')->willReturnCallback(function($class) use($test, &$name){
+                $name   = $class;
+                $result = $test['mock']['create'];
+
+                if($result !== true){
+                    throw new $result($class);
+                }
+
+                return $result;
+            });
+
+        $result = $factory->dispatcher();
+
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to search for the correct class'));
+
+        if(is_object($result))
+        {
+            $this->assertInstanceOf('FOF30\Dispatcher\Dispatcher', $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+        else
+        {
+            $this->assertEquals($check['result'], $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          BasicFactory::toolbar
+     * @dataProvider    BasicFactoryDataprovider::getTestToolbar
+     */
+    public function testToolbar($test, $check)
+    {
+        $msg  = 'BasicFactory::toolbar %s - Case: '.$check['case'];
+        $name = '';
+
+        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createToolbar'), array(static::$container));
+        $factory->expects($this->any())->method('createToolbar')->willReturnCallback(function($class) use($test, &$name){
+            $name   = $class;
+            $result = $test['mock']['create'];
+
+            if($result !== true){
+                throw new $result($class);
+            }
+
+            return $result;
+        });
+
+        $result = $factory->toolbar();
+
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to search for the correct class'));
+
+        if(is_object($result))
+        {
+            $this->assertInstanceOf('FOF30\Toolbar\Toolbar', $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+        else
+        {
+            $this->assertEquals($check['result'], $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          BasicFactory::transparentAuthentication
+     * @dataProvider    BasicFactoryDataprovider::getTestTransparentAuthentication
+     */
+    public function testTransparentAuthentication($test, $check)
+    {
+        $msg  = 'BasicFactory::transparentAuthentication %s - Case: '.$check['case'];
+        $name = '';
+
+        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('createTransparentAuthentication'), array(static::$container));
+        $factory->expects($this->any())->method('createTransparentAuthentication')->willReturnCallback(function($class) use($test, &$name){
+            $name   = $class;
+            $result = $test['mock']['create'];
+
+            if($result !== true){
+                throw new $result($class);
+            }
+
+            return $result;
+        });
+
+        $result = $factory->transparentAuthentication();
+
+        $this->assertEquals($check['name'], $name, sprintf($msg, 'Failed to search for the correct class'));
+
+        if(is_object($result))
+        {
+            $this->assertInstanceOf('FOF30\TransparentAuthentication\TransparentAuthentication', $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+        else
+        {
+            $this->assertEquals($check['result'], $result, sprintf($msg, 'Failed to return the correct result'));
+        }
+    }
 }

@@ -169,7 +169,7 @@ class BasicFactory implements FactoryInterface
 
 		try
 		{
-			return $this->createtoolbar($toolbarClass, $config);
+			return $this->createToolbar($toolbarClass, $config);
 		}
 		catch (ToolbarNotFound $e)
 		{
