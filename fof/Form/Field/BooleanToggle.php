@@ -21,8 +21,15 @@ defined('_JEXEC') or die;
  * Form Field class for FOF
  * Supports a drop-down list of Yes/No (boolean) answers.
  */
-class Boolean extends GenericList implements FieldInterface
+class BooleanToggle extends Radio implements FieldInterface
 {
+	protected function getInput()
+	{
+		$this->class = 'btn-group btn-group-yesno ';
+
+		return parent::getInput();
+	}
+
 
 	/**
 	 * Method to get the field options.
