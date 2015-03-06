@@ -23,7 +23,7 @@ if (!class_exists('JFormFieldSql'))
  * Form Field class for FOF
  * Generic list from a model's results
  */
-class HeaderModel extends Selectable
+class Model extends Selectable
 {
 	/**
 	 * Method to get the field options.
