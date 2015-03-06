@@ -2425,4 +2425,58 @@ class DataModelGenericDataprovider
 
         return $data;
     }
+
+    public static function getTestapplyAccessFiltering()
+    {
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares'
+            ),
+            array(
+                'case'  => 'Table with no access support',
+                'state' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars'
+            ),
+            array(
+                'case'  => 'Table with access support',
+                'state' => true
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestGetContentType()
+    {
+        $data[] = array(
+            array(
+                'contentType' => 'com_fakeapp.foobar'
+            ),
+            array(
+                'case' => 'Content Type is set',
+                'exception' => false,
+                'result' => 'com_fakeapp.foobar'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'contentType' => null
+            ),
+            array(
+                'case' => 'Content Type is not set',
+                'exception' => true,
+                'result' => null
+            )
+        );
+
+        return $data;
+    }
 }

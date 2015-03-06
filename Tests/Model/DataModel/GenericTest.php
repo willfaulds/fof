@@ -811,4 +811,61 @@ class DataModelGenericTest extends DatabaseTest
         $this->assertInstanceOf('\\FOF30\\Model\\DataModel', $result, sprintf($msg, 'Should return an instance of itself'));
         $this->assertEquals($check['eager'], $eager, sprintf($msg, 'Failed to set the eagerLoad relationships'));
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelApplyAccessFiltering
+     * @covers          FOF30\Model\DataModel::applyAccessFiltering
+     * @dataProvider    DataModelGenericDataprovider::getTestapplyAccessFiltering
+     */
+    public function testapplyAccessFiltering($test, $check)
+    {
+        $msg = 'DataModel::applyAccessFiltering %s - Case: '.$check['case'];
+
+        $platform = static::$container->platform;
+        $platform::$user = new ClosureHelper(array(
+            'getAuthorisedViewLevels' => function(){ return array(5, 10); }
+        ));
+
+        $config = array(
+            'idFieldName' => $test['tableid'],
+            'tableName'   => $test['table']
+        );
+
+        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('setState'), array(static::$container, $config));
+        $model->expects($check['state'] ? $this->once() : $this->never())->method('setState');
+
+        $result = $model->applyAccessFiltering();
+
+        $this->assertInstanceOf('FOF30\Model\DataModel', $result, sprintf($msg, 'Should return an instance of iteself'));
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetContentType
+     * @covers          FOF30\Model\DataModel::getContentType
+     * @dataProvider    DataModelGenericDataprovider::getTestGetContentType
+     */
+    public function testGetContentType($test, $check)
+    {
+        $msg = 'DataModel::getContentType %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, 'contentType', $test['contentType']);
+
+        if($check['exception'])
+        {
+            $this->setExpectedException('FOF30\Model\DataModel\Exception\NoContentType');
+        }
+
+        $result = $model->getContentType();
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
+    }
 }
