@@ -621,4 +621,55 @@ class DataModelCrudTest extends DatabaseTest
             $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
         }
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelStore
+     * @covers          FOF30\Model\DataModel::store
+     * @dataProvider    DataModelCrudDataprovider::getTestStore
+     */
+    public function testStore($test, $check)
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model  = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save'), array(static::$container, $config));
+
+        if($test['exception'])
+        {
+            $model->expects($this->once())->method('save')->willThrowException(new \Exception());
+        }
+
+        $result = $model->store();
+
+        $this->assertEquals($check['result'], $result, 'DataModel::store Returned the wrong value');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelLoad
+     * @covers          FOF30\Model\DataModel::load
+     * @dataProvider    DataModelCrudDataprovider::getTestLoad
+     */
+    public function testLoad($test, $check)
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model  = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('reset', 'findOrFail'), array(static::$container, $config));
+        $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
+
+        if($test['exception'])
+        {
+            $model->expects($this->once())->method('findOrFail')->willThrowException(new \Exception());
+        }
+
+        $result = $model->load(null, $test['reset']);
+
+        $this->assertEquals($check['result'], $result, 'DataModel::load Returned the wrong value');
+    }
 }

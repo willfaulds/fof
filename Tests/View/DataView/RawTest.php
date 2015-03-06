@@ -7,10 +7,8 @@
 
 namespace FOF30\Tests\View;
 
-use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
-use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\View\DataView\RawStub;
 
 require_once __DIR__.'/RawDataprovider.php';

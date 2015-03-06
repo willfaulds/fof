@@ -818,4 +818,54 @@ class DataModelCrudDataprovider
 
         return $data;
     }
+
+    public static function getTestStore()
+    {
+        $data[] = array(
+            array(
+                'exception' => false
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'exception' => true
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestLoad()
+    {
+        $data[] = array(
+            array(
+                'reset'     => false,
+                'exception' => false
+            ),
+            array(
+                'reset'  => false,
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'reset'     => true,
+                'exception' => true
+            ),
+            array(
+                'reset'  => true,
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }

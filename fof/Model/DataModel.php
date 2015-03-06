@@ -744,6 +744,8 @@ class DataModel extends Model implements \JTableInterface
 	 * Alias of getIdFieldName. Used for JTableInterface compatibility.
 	 *
 	 * @return  string  The name of the primary key for the table.
+     *
+     * @codeCoverageIgnore
 	 */
 	public function getKeyName()
 	{
@@ -1028,7 +1030,7 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
-	 * Alias of store. For JTableInterface compatibility.
+	 * Alias of save. For JTableInterface compatibility.
 	 *
 	 * @param   boolean  $updateNulls  Blatantly ignored.
 	 *

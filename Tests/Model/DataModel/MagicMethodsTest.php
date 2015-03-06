@@ -233,6 +233,27 @@ class DataModelMagicMethodsTest extends DatabaseTest
 
     /**
      * @group           DataModel
+     * @group           DataModel__get
+     * @covers          FOF30\Model\DataModel::__get
+     */
+    public function test__getInput()
+    {
+        $containerInp = static::$container->input;
+
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        $input = $model->input;
+
+        $this->assertSame($containerInp, $input, 'DataModel::__get Should return the container input');
+    }
+
+    /**
+     * @group           DataModel
      * @group           DataModel__set
      * @covers          FOF30\Model\DataModel::__set
      * @dataProvider    MagicMethodsDataprovider::getTest__set
