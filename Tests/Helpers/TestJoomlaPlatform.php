@@ -32,6 +32,11 @@ class TestJoomlaPlatform extends PlatformJoomla
     /** @var object|null The current user */
     public static $user = null;
 
+    public static $uriBase = null;
+
+    /** @var null Supply a closure to perform additional checks */
+    public static $authorise = null;
+
     public function getUser($id = null)
     {
         if(isset(static::$user))
@@ -40,6 +45,26 @@ class TestJoomlaPlatform extends PlatformJoomla
         }
 
         return parent::getUser($id);
+    }
+
+    public function URIbase($pathonly = false)
+    {
+        if(isset(static::$uriBase))
+        {
+            return static::$uriBase;
+        }
+
+        return parent::URIbase($pathonly);
+    }
+
+    public function authorise($action, $assetname)
+    {
+        if(is_callable(static::$authorise))
+        {
+            return call_user_func_array(static::$authorise, array($action, $assetname));
+        }
+
+        return parent::authorise($action, $assetname);
     }
 
 	/**
