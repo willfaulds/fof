@@ -867,4 +867,61 @@ class SpecialColumnsDataprovider
 
         return $data;
     }
+
+    public static function getTestIsLocked()
+    {
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_bare_id',
+                'table'   => '#__foftest_bares',
+                'load'    => 0,
+                'userid'  => null
+            ),
+            array(
+                'case' => 'Table with no lock support',
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'load'    => 0,
+                'userid'  => null
+            ),
+            array(
+                'case' => 'Table with lock support, not loaded',
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'load'    => 5,
+                'userid'  => null
+            ),
+            array(
+                'case' => 'Table with lock support, loaded, no user provided',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'tableid' => 'foftest_foobar_id',
+                'table'   => '#__foftest_foobars',
+                'load'    => 5,
+                'userid'  => 99
+            ),
+            array(
+                'case' => 'Table with lock support, loaded, user provided',
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }

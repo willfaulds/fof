@@ -479,4 +479,31 @@ class DataModelSpecialColumnsTest extends DatabaseTest
 
         $this->assertInstanceOf('FOF30\Model\DataModel', $result);
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelIsLocked
+     * @covers          FOF30\Model\DataModel::isLocked
+     * @dataProvider    SpecialColumnsDataprovider::getTestIsLocked
+     */
+    public function testIsLocked($test, $check)
+    {
+        $msg = 'DataModel::isLocked %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => $test['tableid'],
+            'tableName'   => $test['table']
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        if($test['load'])
+        {
+            $model->find($test['load']);
+        }
+
+        $result = $model->isLocked($test['userid']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
+    }
 }
