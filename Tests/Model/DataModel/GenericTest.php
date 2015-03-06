@@ -868,4 +868,46 @@ class DataModelGenericTest extends DatabaseTest
 
         $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong value'));
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetItemsArray
+     * @covers          FOF30\Model\DataModel::getItemsArray
+     */
+    public function testGetItemsArray()
+    {
+        $msg     = 'DataModel::getItemsArray %s ';
+        $counter = 0;
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $query = \JFactory::getDbo()->getQuery(true)
+                 ->select('*')
+                 ->from('#__foftest_bares')
+                 ->where('foftest_bare_id = 1');
+
+        $methods = array(
+            'onAfterGetItemsArray' => function() use (&$counter){
+                $counter++;
+            }
+        );
+
+        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('buildQuery'), array(static::$container, $config, $methods));
+        $model->expects($this->any())->method('buildQuery')->willReturn($query);
+
+        $result = $model->getItemsArray(0, 0, false);
+
+        $this->assertInternalType('array', $result, sprintf($msg, 'Should return an array'));
+
+        $key  = array_shift(array_keys($result));
+        $item = array_shift($result);
+
+        $this->assertSame(1, $key, sprintf($msg, 'Should index the array by the record id'));
+        $this->assertInstanceOf('FOF30\Model\DataModel', $item, sprintf($msg, 'Should return an array of DataModels'));
+        $this->assertSame('1', $item->foftest_bare_id, sprintf($msg, 'Should bind the data to the object'));
+        $this->assertEquals(1, $counter, sprintf($msg, 'Failed to invoke the onAfter event'));
+    }
 }

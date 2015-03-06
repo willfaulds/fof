@@ -401,6 +401,16 @@ class DataModelStub extends DataModel
         }
     }
 
+    public function onAfterGetItemsArray()
+    {
+        if(isset($this->methods['onAfterGetItemsArray']))
+        {
+            $func = $this->methods['onAfterGetItemsArray'];
+
+            return call_user_func_array($func, array());
+        }
+    }
+
     public function dynamicCall()
     {
         $this->dynamicCall[] = func_get_args();
