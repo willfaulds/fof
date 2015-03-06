@@ -525,25 +525,6 @@ class MagicMethodsDataprovider
 
         $data[] = array(
             array(
-                'method'   => 'dummyProperty',
-                'argument' => array('test', null),
-                'mock'     => array(
-                    'magic' => false
-                )
-            ),
-            array(
-                'case'     => 'Property with a specific method, argument passed',
-                'method'   => 'scopeDummyProperty',
-                'property' => 'dummyProperty',
-                'value'    => 'test',
-                'count'    => 0,
-                'magic'    => true,
-                'relationCall' => false
-            )
-        );
-
-        $data[] = array(
-            array(
                 'method'   => 'dummyPropertyNoFunction',
                 'argument' => null,
                 'mock'     => array(
@@ -554,26 +535,7 @@ class MagicMethodsDataprovider
                 'case'     => 'Property without a specific method, no argument passed',
                 'method'   => 'scopeDummyPropertyNoFunction',
                 'property' => 'dummyPropertyNoFunction',
-                'value'    => null,
-                'count'    => 0,
-                'magic'    => true,
-                'relationCall' => false
-            )
-        );
-
-        $data[] = array(
-            array(
-                'method'   => 'dummyPropertyNoFunction',
-                'argument' => array('test', null),
-                'mock'     => array(
-                    'magic' => false
-                )
-            ),
-            array(
-                'case'     => 'Property without a specific method, argument passed',
-                'method'   => 'scopeDummyPropertyNoFunction',
-                'property' => 'dummyPropertyNoFunction',
-                'value'    => 'test',
+                'value'    => 'default',
                 'count'    => 0,
                 'magic'    => true,
                 'relationCall' => false

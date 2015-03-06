@@ -112,6 +112,9 @@ WHERE `pivotTable`.`fakeapp_group_id` =`#__fakeapp_groups`.`fakeapp_group_id`';
      */
     public function testSaveAll()
     {
+        $platform = static::$container->platform;
+        $platform::$user = (object) array('id' => 42);
+
         $model    = new Groups(static::$container);
         $model->find(1);
         $relation = new BelongsToMany($model, 'Parts');

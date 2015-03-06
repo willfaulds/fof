@@ -279,12 +279,12 @@ class DataModelGenericDataprovider
                 'mock' => array(
                     'alias' => array()
                 ),
-                'name'  => 'foo',
+                'name'  => 'title',
                 'value' => 'bar'
             ),
             array(
                 'case'  => 'Setting a method, no alias',
-                'key'   => 'foo',
+                'key'   => 'title',
                 'value' => 'bar'
             )
         );
@@ -293,7 +293,7 @@ class DataModelGenericDataprovider
             array(
                 'mock' => array(
                     'alias' => array(
-                        'foo' => 'test'
+                        'foo' => 'title'
                     )
                 ),
                 'name'  => 'foo',
@@ -301,7 +301,7 @@ class DataModelGenericDataprovider
             ),
             array(
                 'case'  => 'Setting a method, with alias',
-                'key'   => 'test',
+                'key'   => 'title',
                 'value' => 'bar'
             )
         );
