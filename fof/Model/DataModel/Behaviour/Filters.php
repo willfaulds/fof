@@ -81,7 +81,7 @@ class Filters extends Observer
 			{
 				case 'between':
 				case 'outside':
-					$sql = $field->$method($options->get('from', null), $options->get('to'));
+					$sql = $field->$method($options->get('from', null), $options->get('to', null), $options->get('include', false));
 					break;
 
 				case 'interval':

@@ -33,10 +33,19 @@ class RelationFilters extends Observer
 			$relationName = $filterState['relation'];
 
 			$subQuery = $model->getRelations()->getCountSubquery($relationName);
-			$filter = new DataModel\Filter\Relation($model->getDbo(), $relationName, $subQuery);
+
+			// Callback method needs different handling
+			if (isset($filterState['method']) && ($filterState['method'] == 'callback'))
+			{
+				call_user_func_array($filterState['value'], array(&$subQuery));
+				$filterState['method'] = 'search';
+				$filterState['operator'] = '>=';
+				$filterState['value'] = '1';
+			}
 
 			$options = new JRegistry($filterState);
 
+			$filter = new DataModel\Filter\Relation($model->getDbo(), $relationName, $subQuery);
 			$methods = $filter->getSearchMethods();
 			$method = $options->get('method', $filter->getDefaultSearchMethod());
 
@@ -69,7 +78,6 @@ class RelationFilters extends Observer
 			{
 				$query->where($sql);
 			}
-
 		}
 	}
 } 
