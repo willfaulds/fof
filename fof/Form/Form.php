@@ -839,7 +839,7 @@ class Form extends JForm
 	{
 		if (is_object($data) && ($data instanceof DataModel))
 		{
-			return parent::bind($data->toArray());
+			return parent::bind($this->modelToBindSource($data));
 		}
 
 		return parent::bind($data);
@@ -859,7 +859,7 @@ class Form extends JForm
 	{
 		if (is_object($data) && ($data instanceof DataModel))
 		{
-			parent::bindLevel($group, $data->toArray());
+			parent::bindLevel($group, $this->modelToBindSource($data));
 
 			return;
 		}
@@ -1050,5 +1050,57 @@ class Form extends JForm
 		}
 
 		return $element;
+	}
+
+	protected function modelToBindSource(DataModel $model)
+	{
+		$data = $model->toArray();
+
+		$relations = $model->getRelations()->getRelationNames();
+		$relationTypes = $model->getRelations()->getRelationTypes();
+		$relationTypes = array_map(function ($x) {
+			return ltrim($x, '\\');
+		}, $relationTypes);
+		$relationTypes = array_flip($relationTypes);
+
+		if (is_array($relations) && count($relations))
+		{
+			foreach ($relations as $relationName)
+			{
+				$rel = $model->getRelations()->getRelation($relationName);
+				$class = get_class($rel);
+
+				if (!isset($relationTypes[$class]))
+				{
+					continue;
+				}
+
+				if ($relationTypes[$class] != 'hasOne')
+				{
+					continue;
+				}
+
+				$relData = $model->$relationName;
+
+				if (!($relData instanceof DataModel))
+				{
+					continue;
+				}
+
+				$relDataArray = $relData->toArray();
+
+				if (empty($relDataArray) || !is_array($relDataArray))
+				{
+					continue;
+				}
+
+				foreach ($relDataArray as $k => $v)
+				{
+					$data[$relationName . '.' . $k] = $v;
+				}
+			}
+		}
+
+		return $data;
 	}
 }
