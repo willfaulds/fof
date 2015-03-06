@@ -954,11 +954,11 @@ HTML;
 		}
 
 		// Check form ID. Use id="yourformname" to modify the id of your form.
-		$formid = $form->getAttribute('name');
+		$formid = $form->getAttribute('id');
 
 		if (empty($formid))
 		{
-			$formid = 'adminForm';
+			$formid = $formname;
 		}
 
 		// Check if we have a custom task
