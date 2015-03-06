@@ -235,4 +235,54 @@ class BasicFactoryTest extends FOFTestCase
             $this->assertEquals($check['result'], $result, sprintf($msg, 'Failed to return the correct result'));
         }
     }
+
+    /**
+     * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::isScaffolding
+     */
+    public function testIsScaffolding()
+    {
+        $factory = new BasicFactory(static::$container);
+
+        ReflectionHelper::setValue($factory, 'scaffolding', true);
+
+        $this->assertTrue($factory->isScaffolding(), 'BasicFactory::isScaffolding Failed to set the scaffolding flag');
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::setScaffolding
+     */
+    public function testSetScaffolding()
+    {
+        $factory = new BasicFactory(static::$container);
+        $factory->setScaffolding(true);
+
+        $this->assertTrue(ReflectionHelper::getValue($factory, 'scaffolding'), 'BasicFactory::isScaffolding Failed to set the scaffolding flag');
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::isSaveScaffolding
+     */
+    public function testIsSaveScaffolding()
+    {
+        $factory = new BasicFactory(static::$container);
+
+        ReflectionHelper::setValue($factory, 'saveScaffolding', true);
+
+        $this->assertTrue($factory->isSaveScaffolding(), 'BasicFactory::isSaveScaffolding Failed to set the save scaffolding flag');
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::setSaveScaffolding
+     */
+    public function testSetSaveScaffolding()
+    {
+        $factory = new BasicFactory(static::$container);
+        $factory->setSaveScaffolding(true);
+
+        $this->assertTrue(ReflectionHelper::getValue($factory, 'saveScaffolding'), 'BasicFactory::setSaveScaffolding Failed to set the save scaffolding flag');
+    }
 }
