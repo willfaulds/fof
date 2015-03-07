@@ -2050,7 +2050,7 @@ class DataModel extends Model implements \JTableInterface
 			$db      = $this->getDbo();
 			$query   = $db->getQuery(true)
 			              ->select($db->qn('master') . '.' . $db->qn($pkField))
-			              ->from($db->qn($this->_tbl) . ' AS ' . $db->qn('master'));
+			              ->from($db->qn($this->tableName) . ' AS ' . $db->qn('master'));
 			$tableNo = 0;
 
 			foreach ($joins as $table)
