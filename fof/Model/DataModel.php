@@ -41,6 +41,7 @@ defined('_JEXEC') or die;
  * @method DataModel filter_order_Dir() filter_order_Dir(string $direction)
  * @method DataModel limit() limit(int $limit)
  * @method DataModel limitstart() limitstart(int $limitStart)
+ * @method DataModel enabled() enabled(int $enabled)
  *
  * @property  int     $enabled      Publish status of this record
  * @property  int     $ordering     Sort ordering of this record
