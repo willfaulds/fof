@@ -482,7 +482,7 @@ class FormErector extends BaseErector implements ErectorInterface
 			$langKey = $this->builder->getContainer()->componentName . '_' . $this->viewName . '_' . $fieldName .
 				'_OPT_' . $k;
 			$this->addString($langKey, $v);
-			$displayOptions[$langKey] = $k;
+			$displayOptions[$k] = $langKey;
 		}
 
 		$langDefs = $this->getFieldLabel($fieldName);

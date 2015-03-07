@@ -624,7 +624,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 			$langKey = $this->builder->getContainer()->componentName . '_' . $this->viewName . '_' . $fieldName .
 				'_OPT_' . $k;
 			$this->addString($langKey, $v);
-			$displayOptions[$langKey] = $k;
+			$displayOptions[$k] = $langKey;
 		}
 
 		$langDefs = $this->getFieldLabel($fieldName);
@@ -633,7 +633,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 		$header = $headerSet->addChild('header');
 		$header->addAttribute('name', $fieldName);
-		$header->addAttribute('type', 'GenericList');
+		$header->addAttribute('type', 'Selectable');
 		$header->addAttribute('label', $langDefs['label']['key']);
 		$header->addAttribute('sortable', 'true');
 

@@ -201,7 +201,13 @@ class BaseErector implements ErectorInterface
 				$detectedType = 'GenericList';
 				$parameters = trim($parameters, "\t\n\r\0\x0B )");
 				$detectedParameters = explode(',', $parameters);
-				$detectedParameters = array_map(function ($x) { return trim($x); }, $detectedParameters);
+				$detectedParameters = array_map(function ($x) { return trim($x, "'\n\r\t\0\x0B"); }, $detectedParameters);
+				$temp = array();
+				foreach ($detectedParameters as $v)
+				{
+					$temp[$v] = $v;
+				}
+				$detectedParameters = $temp;
 				break;
 		}
 
