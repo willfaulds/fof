@@ -246,8 +246,24 @@ class Raw extends View implements DataViewInterface
 		$this->lists->order_Dir = $model->getState('filter_order_Dir', 'DESC', 'cmd');
 
 		// Display limits
+		$defaultLimit = 20;
+
+		if (!$this->container->platform->isCli() && class_exists('JFactory'))
+		{
+			$app = \JFactory::getApplication();
+
+			if (method_exists($app, 'get'))
+			{
+				$defaultLimit = $app->get('list_limit');
+			}
+			else
+			{
+				$defaultLimit = 20;
+			}
+		}
+
 		$this->lists->limitStart = $model->getState('limitstart', 0, 'int');
-		$this->lists->limit = $model->getState('limit', 0, 'int');
+		$this->lists->limit = $model->getState('limit', $defaultLimit, 'int');
 
 		// Assign items to the view
 		$this->items = $model->get();
