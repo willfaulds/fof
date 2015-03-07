@@ -265,8 +265,11 @@ class Raw extends View implements DataViewInterface
 		$this->lists->limitStart = $model->getState('limitstart', 0, 'int');
 		$this->lists->limit = $model->getState('limit', $defaultLimit, 'int');
 
+		$model->limitstart = $this->lists->limitStart;
+		$model->limit = $this->lists->limit;
+
 		// Assign items to the view
-		$this->items = $model->get();
+		$this->items = $model->get(false);
 		$this->itemCount = $model->count();
 
 		// Pagination
