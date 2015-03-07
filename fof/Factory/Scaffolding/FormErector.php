@@ -398,7 +398,7 @@ class FormErector extends BaseErector implements ErectorInterface
 
 	private function applyIntegerField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
 	{
-		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Integer');
+		$this->applyFieldOfType($model, $fieldSet, $fieldName, 'Text');
 	}
 
 	private function applyMediaField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName)
