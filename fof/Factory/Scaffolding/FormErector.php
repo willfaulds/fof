@@ -280,12 +280,22 @@ class FormErector extends BaseErector implements ErectorInterface
 					$model->getRelations()->getRelation($parts[0]);
 
 					$this->applyRelationField($model, $fieldSet, $fieldName);
+
+					continue;
 				}
 				catch (DataModel\Relation\Exception\RelationNotFound $e)
 				{
 					$foreignName = Inflector::pluralize($foreignName);
 
-					$this->applyModelField($model, $fieldSet, $fieldName, $foreignName);
+					try
+					{
+						$this->applyModelField($model, $fieldSet, $fieldName, $foreignName);
+
+						continue;
+					}
+					catch (\Exception $e)
+					{
+					}
 				}
 			}
 
@@ -458,6 +468,19 @@ class FormErector extends BaseErector implements ErectorInterface
 
 	private function applyModelField(DataModel $model, \SimpleXMLElement &$fieldSet, $fieldName, $modelName)
 	{
+		// This will fail if the model is invalid, e.g. we have example_foobar_id but no #__example_foobars table. The
+		// error will balloon up the stack and the field will be rendered as simple numeric field instead of a Model
+		// field.
+		/** @var DataModel $foreignModel */
+		$foreignModel = $model->getContainer()->factory->model($modelName);
+
+		$value_field = $foreignModel->getKeyName();
+
+		if ($foreignModel->hasField('title'))
+		{
+			$value_field = $foreignModel->getFieldAlias('title');
+		}
+
 		$langDefs = $this->getFieldLabel($fieldName);
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
 		$this->addString($langDefs['desc']['key'], $langDefs['desc']['value']);
@@ -466,7 +489,10 @@ class FormErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', 'Model');
 		$field->addAttribute('model', $modelName);
+		$field->addAttribute('key_field', $foreignModel->getKeyName());
+		$field->addAttribute('value_field', $value_field);
 		$field->addAttribute('label', $langDefs['label']['key']);
+
 		if ($this->addDescriptions)
 		{
 			$field->addAttribute('description', $langDefs['desc']['key']);

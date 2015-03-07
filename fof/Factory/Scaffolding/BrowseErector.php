@@ -595,7 +595,15 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		// This will fail if the model is invalid, e.g. we have example_foobar_id but no #__example_foobars table. The
 		// error will balloon up the stack and the field will be rendered as simple numeric field instead of a Model
 		// field.
-		$model->getContainer()->factory->model($modelName);
+		/** @var DataModel $foreignModel */
+		$foreignModel = $model->getContainer()->factory->model($modelName);
+
+		$value_field = $foreignModel->getKeyName();
+
+		if ($foreignModel->hasField('title'))
+		{
+			$value_field = $foreignModel->getFieldAlias('title');
+		}
 
 		$langDefs = $this->getFieldLabel($fieldName);
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
@@ -605,6 +613,8 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$header->addAttribute('name', $fieldName);
 		$header->addAttribute('type', 'Model');
 		$header->addAttribute('model', $modelName);
+		$header->addAttribute('key_field', $foreignModel->getKeyName());
+		$header->addAttribute('value_field', $value_field);
 		$header->addAttribute('label', $langDefs['label']['key']);
 		$header->addAttribute('sortable', 'true');
 
@@ -612,6 +622,8 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('name', $fieldName);
 		$field->addAttribute('type', 'Model');
 		$field->addAttribute('model', $modelName);
+		$field->addAttribute('key_field', $foreignModel->getKeyName());
+		$field->addAttribute('value_field', $value_field);
 		$field->addAttribute('label', $langDefs['label']['key']);
 	}
 
