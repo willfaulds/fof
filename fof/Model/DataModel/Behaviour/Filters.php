@@ -35,7 +35,8 @@ class Filters extends Observer
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{
-			if (in_array($fieldname, $backlist)) {
+			if (in_array($fieldname, $backlist))
+			{
 				continue;
 			}
 
@@ -45,8 +46,27 @@ class Filters extends Observer
 				'filterZero' => $filterZero,
 			);
 
-			$filterName = ($fieldInfo->name == $tableKey) ? 'id' : $fieldInfo->name;
+			$filterName = $fieldInfo->name;
 			$filterState = $model->getState($filterName, null);
+
+			// Special primary key handling: if ignore request is set we'll also look for an 'id' state variable if a
+			// state variable by the same name as the key doesn't exist. If ignore request is not set in the model we
+			// do not filter by 'id' since this interferes with going from an edit page to a browse page (the list is
+			// filtered by id without user controls to unset it).
+			if ($fieldInfo->name == $tableKey)
+			{
+				$filterState = $model->getState($filterName, null);
+
+				if (!$model->getIgnoreRequest())
+				{
+					continue;
+				}
+
+				if (empty($filterState))
+				{
+					$filterState = $model->getState('id', null);
+				}
+			}
 
 			$field = DataModel\Filter\AbstractFilter::getField($fieldInfo, array('dbo' => $db));
 
