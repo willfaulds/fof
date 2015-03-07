@@ -491,7 +491,7 @@ class FormErector extends BaseErector implements ErectorInterface
 
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
-		$field->addAttribute('type', 'Model');
+		$field->addAttribute('type', 'GenericList');
 		$field->addAttribute('label', $langDefs['label']['key']);
 		if ($this->addDescriptions)
 		{

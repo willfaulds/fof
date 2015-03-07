@@ -262,12 +262,22 @@ class BrowseErector extends BaseErector implements ErectorInterface
 					$model->getRelations()->getRelation($parts[0]);
 
 					$this->applyRelationField($model, $headerSet, $fieldSet, $fieldName);
+
+					continue;
 				}
 				catch (DataModel\Relation\Exception\RelationNotFound $e)
 				{
 					$foreignName = Inflector::pluralize($foreignName);
 
-					$this->applyModelField($model, $headerSet, $fieldSet, $fieldName, $foreignName);
+					try
+					{
+						$this->applyModelField($model, $headerSet, $fieldSet, $fieldName, $foreignName);
+
+						continue;
+					}
+					catch (\Exception $e)
+					{
+					}
 				}
 			}
 
@@ -582,6 +592,11 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 	private function applyModelField(DataModel $model, \SimpleXMLElement &$headerSet, \SimpleXMLElement &$fieldSet, $fieldName, $modelName)
 	{
+		// This will fail if the model is invalid, e.g. we have example_foobar_id but no #__example_foobars table. The
+		// error will balloon up the stack and the field will be rendered as simple numeric field instead of a Model
+		// field.
+		$model->getContainer()->factory->model($modelName);
+
 		$langDefs = $this->getFieldLabel($fieldName);
 		$this->addString($langDefs['label']['key'], $langDefs['label']['value']);
 		$this->addString($langDefs['desc']['key'], $langDefs['desc']['value']);
@@ -618,7 +633,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 		$header = $headerSet->addChild('header');
 		$header->addAttribute('name', $fieldName);
-		$header->addAttribute('type', 'Model');
+		$header->addAttribute('type', 'GenericList');
 		$header->addAttribute('label', $langDefs['label']['key']);
 		$header->addAttribute('sortable', 'true');
 
@@ -629,7 +644,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
-		$field->addAttribute('type', 'Model');
+		$field->addAttribute('type', 'GenericList');
 		$field->addAttribute('label', $langDefs['label']['key']);
 
 		foreach ($displayOptions as $k => $v)
