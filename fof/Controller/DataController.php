@@ -195,7 +195,7 @@ class DataController extends Controller
 			case 'DELETE':
 				if ($id)
 				{
-					$task = 'delete';
+					$task = 'remove';
 				}
 				break;
 
