@@ -181,13 +181,13 @@ class Template
 			{
 				if (is_string($altPath))
 				{
-					$this->addCSS($altPath);
+					$this->addCSS($altPath, $version, $type, $media, $attribs);
 				}
 				elseif (is_array($altPath))
 				{
 					foreach ($altPath as $anAltPath)
 					{
-						$this->addCSS($anAltPath);
+						$this->addCSS($anAltPath, $version, $type, $media, $attribs);
 					}
 				}
 			}

@@ -121,7 +121,7 @@ class Form extends JForm
 
 			foreach ($cssfiles as $cssfile)
 			{
-				$this->container->template->addCSS(trim($cssfile));
+				$this->getView()->addCssFile(trim($cssfile));
 			}
 		}
 
@@ -137,7 +137,7 @@ class Form extends JForm
 				$parts = explode('||', $def, 2);
 				$lessfile = $parts[0];
 				$alt = (count($parts) > 1) ? trim($parts[1]) : null;
-				$this->container->template->addLESS(trim($lessfile), $alt);
+				$this->getView()->addLess(trim($lessfile), $alt);
 			}
 		}
 	}
@@ -162,7 +162,7 @@ class Form extends JForm
 
 		foreach ($jsfiles as $jsfile)
 		{
-			$this->container->template->addJS(trim($jsfile));
+			$this->getView()->addJavascriptFile(trim($jsfile));
 		}
 	}
 
