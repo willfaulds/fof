@@ -613,6 +613,51 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
+	 * Adds a known field to the DataModel. This is only necessary if you are using a custom buildQuery with JOINs or
+	 * field aliases. Please note that you need to make further modifications for bind() and save() to work in this
+	 * case. Please refer to the documentation blocks of these methods for more information. It is generally considered
+	 * a very BAD idea using JOINs instead of relations. It complicates your life and is bound to cause bugs that are
+	 * very hard to track back.
+	 *
+	 * Basically, if you find yourself using this method you are probably doing something very wrong or very advanced.
+	 * If you do not feel confident with debugging FOF code STOP WHATEVER YOU'RE DOING and rethink your Model. Why are
+	 * you using a JOIN? If you want to filter the records by a field found in another table you can still use
+	 * relations and whereHas with a callback. If you want to display data from related entries in an XML form
+	 * you can do that with relations, using the dot notation (name_from="relationName.fieldName"). If you want to do
+	 * advanced grouping of records (GROUP clauses) then allright, you can't use relations. But if you are doing this
+	 * kind of advanced stuff you needn't be reading introductory texts like this so get back to coding already!
+	 *
+	 * @param   string  $fieldName  The name of the field
+	 * @param   mixed   $default    Default value, used by reset() (default: null)
+	 * @param   string  $type       Database type for the field. If unsure use 'integer', 'float' or 'text'.
+	 * @param   bool    $replace    Should we replace an existing known field definition?
+	 *
+	 * @return  $this  Self, for chaining
+	 */
+	public function addKnownField($fieldName, $default = null, $type = 'integer', $replace = false)
+	{
+		if (array_key_exists($fieldName, $this->knownFields) && !$replace)
+		{
+			return $this;
+		}
+
+		$info = (object)array(
+			'Default' => $default,
+			'type' => $type,
+		);
+
+		$this->knownFields[$fieldName] = $info;
+
+		// Initialize only the null or not yet set records
+		if(!isset($this->recordData[$fieldName]))
+		{
+			$this->recordData[$fieldName] = $default;
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Get the columns from a database table.
 	 *
 	 * @param   string $tableName Table name. If null current table is used
@@ -836,6 +881,10 @@ class DataModel extends Model implements \JTableInterface
 	 * Applies the setSomethingAttribute methods to $this->recordData, converting the record representation to database
 	 * representation. It does not modify $this->recordData, it returns a copy of the data array.
 	 *
+	 * If you are using custom knownFields to cater for table JOINs you need to override this method and _remove_ the
+	 * fields which do not belong to the table you are saving to. It's generally a bad idea using JOINs instead of
+	 * relations. You have been warned!
+	 *
 	 * @return  array
 	 */
 	protected function recordDataToDatabaseData()
@@ -891,6 +940,12 @@ class DataModel extends Model implements \JTableInterface
 	/**
 	 * Save a record, creating it if it doesn't exist or updating it if it exists. By default it uses the currently set
 	 * data, unless you provide a $data array.
+	 *
+	 * Special note if you are using a custom buildQuery with JOINs or field aliases:
+	 * You will need to override the recordDataToDatabaseData method. Make sure that you _remove_ or rename any fields
+	 * which do not exist in the table defined in $this->tableName. Otherwise Joomla! will not know how to insert /
+	 * update the data on the table and will throw an Exception denoting a database error. It is generally a BAD idea
+	 * using JOINs instead of relations. If unsure, use relations.
 	 *
 	 * @param   null|array $data           [Optional] Data to bind
 	 * @param   string     $orderingFilter A WHERE clause used to apply table item reordering
@@ -1108,8 +1163,13 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
-	 * Method to bind an associative array or object to the DataModel instance. This
-	 * method optionally takes an array of properties to ignore when binding.
+	 * Method to bind an associative array or object to the DataModel instance. This method optionally takes an array of
+	 * properties to ignore when binding.
+	 *
+	 * Special note if you are using a custom buildQuery with JOINs or field aliases:
+	 * You will need to use addKnownField to let FOF know that the fields from your JOINs and the aliased fields should
+	 * be bound to the record data. If you are using aliased fields you may also want to override the
+	 * databaseDataToRecordData method. Generally, it is a BAD idea using JOINs instead of relations.
 	 *
 	 * @param   mixed $data   An associative array or object to bind to the DataModel instance.
 	 * @param   mixed $ignore An optional array or space separated list of properties to ignore while binding.
