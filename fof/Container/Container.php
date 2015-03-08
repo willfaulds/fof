@@ -51,6 +51,7 @@ defined('_JEXEC') or die;
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
  * @property  string                                   $factoryClass       The fully qualified class name or slug (basic, switch) of the MVC Factory object, default is FOF30\Factory\BasicFactory.
+ * @property  string                                   $mediaVersion       A version string for media files in forms. Default: md5 of release version, release date and site secret (if found)
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
  * @property-read  \FOF30\View\Compiler\Blade          $blade              The Blade view template compiler engine
@@ -228,6 +229,13 @@ class Container extends ContainerBase
 			'scaffolding' => $appConfig->get('container.scaffolding', $values['scaffolding']),
 			'saveScaffolding' => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
 		));
+
+		$mediaVersion = $appConfig->get('container.mediaVersion', null);
+
+		if (!empty($mediaVersion))
+		{
+			$values['mediaVersion'] = $mediaVersion;
+		}
 
 		unset($appConfig);
 		unset($tmpConfig);
@@ -563,6 +571,12 @@ class Container extends ContainerBase
 				return new Template($c);
 			};
 		}
+
+		// Media version string
+		if (!isset($this['mediaVersion']))
+		{
+			$this['mediaVersion'] = $this->getDefaultMediaVersion();
+		}
 	}
 
 	/**
@@ -636,5 +650,58 @@ class Container extends ContainerBase
 		$replace = array_values($platformDirs);
 
 		return str_replace($search, $replace, $path);
+	}
+
+	/**
+	 * Gets the default media version string for the component using the component's version and date, as well as the
+	 * site's secret key.
+	 *
+	 * @return  string
+	 */
+	protected function getDefaultMediaVersion()
+	{
+		// Initialise
+		$version = '0.0.0';
+		$date = '0000-00-00';
+		$secret = '';
+
+		// Get the version and date of the component from the manifest cache
+		try
+		{
+			$db = $this->db;
+			$query = $db->getQuery(true)
+	            ->select(array(
+		            $db->qn('manifest_cache')
+	            ))->from($db->qn('#__extensions'))
+	            ->where($db->qn('type') . ' = ' . $db->q('component'))
+	            ->where($db->qn('name') . ' = ' . $db->q($this->componentName));
+
+			$db->setQuery($query);
+
+			$json = $db->loadResult();
+			$params = new \JRegistry($json);
+			$version = $params->get('version', $version);
+			$date = $params->get('creationDate', $date);
+		}
+		catch (\Exception $e)
+		{
+		}
+
+		// Get the site's secret
+		try
+		{
+			$app = \JFactory::getApplication();
+
+			if (method_exists($app, 'get'))
+			{
+				$secret = $app->get('secret');
+			}
+		}
+		catch (\Exception $e)
+		{
+		}
+
+		// Generate the version string
+		return md5($version . $date . $secret);
 	}
 }
