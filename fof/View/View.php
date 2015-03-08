@@ -1349,6 +1349,12 @@ class View
 	 */
 	public function addJavascriptFile($uri, $version = null, $type = 'text/javascript', $defer = false, $async = false)
 	{
+		// Add an automatic version if $version is null. For no version parameter pass an empty string to $version.
+		if (is_null($version))
+		{
+			$version = $this->container->mediaVersion;
+		}
+
 		$this->container->template->addJS($uri, $defer, $async, $version, $type);
 
 		return $this;
@@ -1382,6 +1388,12 @@ class View
 	 */
 	public function addCssFile($uri, $version = null, $type = 'text/css', $media = null, $attribs = array())
 	{
+		// Add an automatic version if $version is null. For no version parameter pass an empty string to $version.
+		if (is_null($version))
+		{
+			$version = $this->container->mediaVersion;
+		}
+
 		$this->container->template->addCSS($uri, $version, $type, $media, $attribs);
 
 		return $this;
@@ -1422,6 +1434,12 @@ class View
 	 */
 	public function addLess($uri, $cssUri, $version, $type = 'text/css', $media = null, $attribs = array())
 	{
+		// Add an automatic version if $version is null. For no version parameter pass an empty string to $version.
+		if (is_null($version))
+		{
+			$version = $this->container->mediaVersion;
+		}
+
 		$this->container->template->addLESS($uri, $cssUri, false, $version, $type, $media, $attribs);
 
 		return $this;
