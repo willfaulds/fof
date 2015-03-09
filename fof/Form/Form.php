@@ -837,6 +837,8 @@ class Form extends JForm
 	 */
 	public function bind($data)
 	{
+		$this->data = new \JRegistry();
+
 		if (is_object($data) && ($data instanceof DataModel))
 		{
 			return parent::bind($this->modelToBindSource($data));
