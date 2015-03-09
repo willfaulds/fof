@@ -911,4 +911,32 @@ class DataModelGenericTest extends DatabaseTest
         $this->assertSame('1', $item->foftest_bare_id, sprintf($msg, 'Should bind the data to the object'));
         $this->assertEquals(1, $counter, sprintf($msg, 'Failed to invoke the onAfter event'));
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetAddKnownField
+     * @covers          FOF30\Model\DataModel::addKnownField
+     * @dataProvider    DataModelGenericDataprovider::getTestAddKnownField
+     */
+    public function testAddKnownField($test, $check)
+    {
+        $msg = 'DataModel::addKnownField %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        $result = $model->addKnownField($test['name'], 'foobar', 'varchar(100)', $test['replace']);
+
+        $known = ReflectionHelper::getValue($model, 'knownFields');
+        $data  = ReflectionHelper::getValue($model, 'recordData');
+
+        $this->assertInstanceOf('\FOF30\Model\DataModel', $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertArrayHasKey($check['field'], $known, sprintf($msg, 'Failed to set the field into the internal array'));
+        $this->assertEquals($known[$check['field']], $check['info'], sprintf($msg, 'Failed to set the field info'));
+        $this->assertSame($data[$check['field']], $check['value'], sprintf($msg, 'Failed to set field default value'));
+    }
 }

@@ -643,7 +643,7 @@ class DataModel extends Model implements \JTableInterface
 
 		$info = (object)array(
 			'Default' => $default,
-			'type' => $type,
+			'Type' => $type,
 		);
 
 		$this->knownFields[$fieldName] = $info;

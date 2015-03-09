@@ -2479,4 +2479,64 @@ class DataModelGenericDataprovider
 
         return $data;
     }
+
+    public static function getTestAddKnownField()
+    {
+        $data[] = array(
+            array(
+                'name'    => 'foftest_bare_id',
+                'replace' => false
+            ),
+            array(
+                'case'  => 'Try to add a field that already exists - no replace',
+                'field' => 'foftest_bare_id',
+                'value' => null,
+                'info'  => (object)array(
+                    'Field' => 'foftest_bare_id',
+                    'Type' => 'int(11)',
+                    'Collation' => null,
+                    'Null' => 'NO',
+                    'Key' => 'PRI',
+                    'Default' => null,
+                    'Extra' => 'auto_increment',
+                    'Privileges' => 'select,insert,update,references',
+                    'Comment' => null
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'    => 'foftest_bare_id',
+                'replace' => true
+            ),
+            array(
+                'case'  => 'Try to add a field that already exists - replace',
+                'field' => 'foftest_bare_id',
+                'value' => 'foobar',
+                'info'  => (object)array(
+                    'Type' => 'varchar(100)',
+                    'Default' => 'foobar',
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'    => 'new_one',
+                'replace' => false
+            ),
+            array(
+                'case'  => 'Adding a field that does not exist',
+                'field' => 'new_one',
+                'value' => 'foobar',
+                'info'  => (object)array(
+                    'Type' => 'varchar(100)',
+                    'Default' => 'foobar',
+                )
+            )
+        );
+
+        return $data;
+    }
 }
