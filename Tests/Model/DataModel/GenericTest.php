@@ -914,7 +914,7 @@ class DataModelGenericTest extends DatabaseTest
 
     /**
      * @group           DataModel
-     * @group           DataModelGetAddKnownField
+     * @group           DataModelAddKnownField
      * @covers          FOF30\Model\DataModel::addKnownField
      * @dataProvider    DataModelGenericDataprovider::getTestAddKnownField
      */
@@ -938,5 +938,122 @@ class DataModelGenericTest extends DatabaseTest
         $this->assertArrayHasKey($check['field'], $known, sprintf($msg, 'Failed to set the field into the internal array'));
         $this->assertEquals($known[$check['field']], $check['info'], sprintf($msg, 'Failed to set the field info'));
         $this->assertSame($data[$check['field']], $check['value'], sprintf($msg, 'Failed to set field default value'));
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetRules
+     * @covers          FOF30\Model\DataModel::getRules
+     */
+    public function testGetRules()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, '_rules', 'test');
+
+        $this->assertEquals('test', $model->getRules(), 'DataModel::getRules Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelIsAssetsTracked
+     * @covers          FOF30\Model\DataModel::isAssetsTracked
+     */
+    public function testIsAssetsTracked()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, '_trackAssets', true);
+
+        $this->assertEquals(true, $model->isAssetsTracked(), 'DataModel::isAssetTracked Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelSetAssetsTracked
+     * @covers          FOF30\Model\DataModel::setAssetsTracked
+     */
+    public function testSetAssetsTracked()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+        $model->setAssetsTracked(true);
+
+        $value = ReflectionHelper::getValue($model, '_trackAssets');
+
+        $this->assertEquals(true, $value, 'DataModel::setAssetsTracked Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelHasTags
+     * @covers          FOF30\Model\DataModel::hasTags
+     */
+    public function testHasTags()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, '_has_tags', true);
+
+        $this->assertEquals(true, $model->hasTags(), 'DataModel::hasTags Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelSetHasTags
+     * @covers          FOF30\Model\DataModel::setHasTags
+     */
+    public function testSetHasTags()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+        $model->setHasTags(true);
+
+        $value = ReflectionHelper::getValue($model, '_has_tags');
+
+        $this->assertEquals(true, $value, 'DataModel::setHasTags Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelSetAssetKey
+     * @covers          FOF30\Model\DataModel::setAssetKey
+     */
+    public function testSetAssetKey()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+        $model->setAssetKey('com_fakeapp.foobars');
+
+        $value = ReflectionHelper::getValue($model, '_assetKey');
+
+        $this->assertEquals('com_fakeapp.foobars', $value, 'DataModel::setAssetKey Returned the wrong result');
     }
 }
