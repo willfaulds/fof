@@ -144,6 +144,14 @@ abstract class HeaderBase
 	protected $filterSource;
 
 	/**
+	 * The name of the filter field
+	 *
+	 * @var    mixed
+	 * @since  3.0
+	 */
+	protected $filterFieldName;
+
+	/**
 	 * Is this a sortable column?
 	 *
 	 * @var    bool
@@ -194,6 +202,8 @@ abstract class HeaderBase
 			case 'fieldname':
 			case 'group':
 			case 'tdwidth':
+			case 'filterSource':
+			case 'filterFieldName':
 				return $this->$name;
 				break;
 
@@ -307,6 +317,7 @@ abstract class HeaderBase
 		$this->options = null;
 		$this->value = null;
 		$this->filterSource = null;
+		$this->filterFieldName = null;
 
 		// Set the XML element object.
 		$this->element = $element;
@@ -315,6 +326,7 @@ abstract class HeaderBase
 		$id = (string) $element['id'];
 		$name = (string) $element['name'];
 		$filterSource = (string) $element['filter_source'];
+		$filterFieldName = (string) $element['searchfieldname'];
 		$tdwidth = (string) $element['tdwidth'];
 
 		// Set the field description text.
@@ -331,6 +343,7 @@ abstract class HeaderBase
 		$this->name = $this->getName($this->fieldname);
 		$this->id = $this->getId($id, $this->fieldname);
 		$this->filterSource = $this->getFilterSource($filterSource);
+		$this->filterFieldName = $this->getFilterFieldName($filterFieldName);
 
 		// Set the field default value.
 		$this->value = $this->getValue();
@@ -517,6 +530,25 @@ abstract class HeaderBase
 		else
 		{
 			return $this->name;
+		}
+	}
+
+	/**
+	 * Return the name of the filter field
+	 *
+	 * @param   string  $filterFieldName  The filter field name source value to return
+	 *
+	 * @return  string
+	 */
+	protected function getFilterFieldName($filterFieldName)
+	{
+		if ($filterFieldName)
+		{
+			return $filterFieldName;
+		}
+		else
+		{
+			return $this->filterSource;
 		}
 	}
 

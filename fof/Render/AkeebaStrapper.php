@@ -663,14 +663,18 @@ HTML;
 				{
 					$label = $headerField->label;
 
+					$filterName = $headerField->filterFieldName;
+					$filterSource = $headerField->filterSource;
+
 					\JHtmlSidebar::addFilter(
-						'- ' . \JText::_($label) . ' -', (string) $headerField->name,
+						'- ' . \JText::_($label) . ' -',
+						$filterName,
 						\JHtml::_(
 							'select.options',
 							$options,
 							'value',
 							'text',
-							$model->getState($headerField->name, ''), true
+							$model->getState($filterSource, ''), true
 						)
 					);
 				}
