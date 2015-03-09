@@ -34,8 +34,32 @@ class TestJoomlaPlatform extends PlatformJoomla
 
     public static $uriBase = null;
 
-    /** @var null Supply a closure to perform additional checks */
+    /** @var \Closure Supply a closure to perform additional checks */
     public static $authorise = null;
+
+    /** @var \Closure Supply a closure to perform additional checks */
+    public static $getUserStateFromRequest = null;
+
+    /** @var \Closure Supply a closure to perform additional checks */
+    public static $runPlugins = null;
+
+    /**
+     * Resets all the mock variables to their default value
+     */
+    public function reset()
+    {
+        static::$isCli            = false;
+        static::$isAdmin          = false;
+        static::$template         = null;
+        static::$templateSuffixes = null;
+        static::$baseDirs         = null;
+        static::$user             = null;
+        static::$uriBase          = null;
+        static::$authorise        = null;
+        static::$runPlugins       = null;
+
+        static::$getUserStateFromRequest = null;
+    }
 
     public function getUser($id = null)
     {
@@ -121,4 +145,24 @@ class TestJoomlaPlatform extends PlatformJoomla
 	{
 		list(self::$isCli, self::$isAdmin) = parent::isCliAdmin();
 	}
+
+    public function getUserStateFromRequest($key, $request, $input, $default = null, $type = 'none', $setUserState = true)
+    {
+        if(is_callable(static::$getUserStateFromRequest))
+        {
+            return call_user_func_array(static::$getUserStateFromRequest, array($key, $request, $input, $default, $type, $setUserState));
+        }
+
+        return parent::getUserStateFromRequest($key, $request, $input, $default, $type, $setUserState);
+    }
+
+    public function runPlugins($event, $data)
+    {
+        if(is_callable(static::$runPlugins))
+        {
+            return call_user_func_array(static::$runPlugins, array($event, $data));
+        }
+
+        return parent::runPlugins($event, $data);
+    }
 }
