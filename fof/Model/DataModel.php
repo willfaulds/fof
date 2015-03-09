@@ -1532,7 +1532,7 @@ class DataModel extends Model implements \JTableInterface
 			->from($this->getTableName());
 
 		// Run the "before build query" hook and behaviours
-		$this->triggerEvent('onBeforeBuildQuery', array(&$query));
+		$this->triggerEvent('onBeforeBuildQuery', array(&$query, $overrideLimits));
 
 		// Apply custom WHERE clauses
 		if (count($this->whereClauses))
@@ -1566,7 +1566,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Run the "before after query" hook and behaviours
-		$this->triggerEvent('onAfterBuildQuery', array(&$query));
+		$this->triggerEvent('onAfterBuildQuery', array(&$query, $overrideLimits));
 
 		return $query;
 	}
