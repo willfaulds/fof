@@ -2022,6 +2022,8 @@ class DataModel extends Model implements \JTableInterface
 
 		$this->relationFilters = array();
 
+		$this->triggerEvent('onAfterReset', array($useDefaults, $resetRelations));
+
 		return $this;
 	}
 
