@@ -151,6 +151,8 @@ class User extends \JFormFieldUser implements FieldInterface
 	 */
 	public function getRepeatable()
 	{
+		static $userCache = array();
+
 		if (isset($this->element['legacy']))
 		{
 			return $this->getInput();
@@ -169,7 +171,15 @@ class User extends \JFormFieldUser implements FieldInterface
 		$class         = '';
 
 		// Get the user record
-		$user = $this->form->getContainer()->platform->getUser($this->value);
+		$key = is_numeric($this->value) ? $this->value : 'empty';
+		$key = ($key == 0) ? 'zero' : $key;
+
+		if (!array_key_exists($key, $userCache))
+		{
+			$userCache[$key] = $this->form->getContainer()->platform->getUser($this->value);
+		}
+
+		$user = $userCache[$key];
 
 		// Get the field parameters
 		if ($this->class)

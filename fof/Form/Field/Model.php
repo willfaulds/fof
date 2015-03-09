@@ -56,6 +56,13 @@ class Model extends GenericList implements FieldInterface
 	public $item;
 
 	/**
+	 * Options loaded from the model, cached for efficiency
+	 *
+	 * @var null|array
+	 */
+	protected $loadedOptions = null;
+
+	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
 	 * @param   string  $name  The property name for which to the the value.
@@ -180,92 +187,106 @@ class Model extends GenericList implements FieldInterface
 	 *
 	 * @return  array  The field option objects.
 	 */
-	protected function getOptions()
+	protected function getOptions($forceReset = false)
 	{
-		$options = array();
+		static $loadedOptions = array();
 
-		// Initialize some field attributes.
-		$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
-		$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
-		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
-		$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
-		$modelName = (string) $this->element['model'];
-		$nonePlaceholder = (string) $this->element['none'];
+		$myFormKey = $this->form->getName();
 
-		if (!empty($nonePlaceholder))
+		if ($forceReset && isset($loadedOptions[$myFormKey]))
 		{
-			$options[] = JHtml::_('select.option', JText::_($nonePlaceholder), null);
+			unset($loadedOptions[$myFormKey]);
 		}
 
-		// Process field atrtibutes
-		$applyAccess = strtolower($applyAccess);
-		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
-
-		// Explode model name into component name and prefix
-		$componentName = $this->form->getContainer()->componentName;
-		$mName = $modelName;
-
-		if (strpos($modelName, '.') !== false)
+		if (!isset($loadedOptions[$myFormKey]))
 		{
-			list ($componentName, $mName) = explode('.', $mName, 2);
-		}
+			$options = array();
 
-		// Get the applicable container
-		$container = $this->form->getContainer();
+			// Initialize some field attributes.
+			$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
+			$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
+			$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
+			$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
+			$modelName = (string) $this->element['model'];
+			$nonePlaceholder = (string) $this->element['none'];
 
-		if ($componentName != $container->componentName)
-		{
-			$container = Container::getInstance($componentName);
-		}
-
-		/** @var DataModel $model */
-		$model = $container->factory->model($mName)->setIgnoreRequest(true)->savestate(false);
-
-		// Get the model object
-		if ($applyAccess)
-		{
-			$model->applyAccessFiltering();
-		}
-
-		// Process state variables
-		/** @var \SimpleXMLElement $stateoption */
-		foreach ($this->element->children() as $stateoption)
-		{
-			// Only add <option /> elements.
-			if ($stateoption->getName() != 'state')
+			if (!empty($nonePlaceholder))
 			{
-				continue;
+				$options[] = JHtml::_('select.option', JText::_($nonePlaceholder), null);
 			}
 
-			$stateKey = (string) $stateoption['key'];
-			$stateValue = (string) $stateoption;
+			// Process field atrtibutes
+			$applyAccess = strtolower($applyAccess);
+			$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
-			$model->setState($stateKey, $stateValue);
-		}
+			// Explode model name into component name and prefix
+			$componentName = $this->form->getContainer()->componentName;
+			$mName = $modelName;
 
-		// Set the query and get the result list.
-		$items = $model->get(true);
-
-		// Build the field options.
-		if (!empty($items))
-		{
-			foreach ($items as $item)
+			if (strpos($modelName, '.') !== false)
 			{
-				if ($translate == true)
+				list ($componentName, $mName) = explode('.', $mName, 2);
+			}
+
+			// Get the applicable container
+			$container = $this->form->getContainer();
+
+			if ($componentName != $container->componentName)
+			{
+				$container = Container::getInstance($componentName);
+			}
+
+			/** @var DataModel $model */
+			$model = $container->factory->model($mName)->setIgnoreRequest(true)->savestate(false);
+
+			// Get the model object
+			if ($applyAccess)
+			{
+				$model->applyAccessFiltering();
+			}
+
+			// Process state variables
+			/** @var \SimpleXMLElement $stateoption */
+			foreach ($this->element->children() as $stateoption)
+			{
+				// Only add <option /> elements.
+				if ($stateoption->getName() != 'state')
 				{
-					$options[] = JHtml::_('select.option', $item->$key, JText::_($item->$value));
+					continue;
 				}
-				else
+
+				$stateKey = (string) $stateoption['key'];
+				$stateValue = (string) $stateoption;
+
+				$model->setState($stateKey, $stateValue);
+			}
+
+			// Set the query and get the result list.
+			$items = $model->get(true);
+
+			// Build the field options.
+			if (!empty($items))
+			{
+				foreach ($items as $item)
 				{
-					$options[] = JHtml::_('select.option', $item->$key, $item->$value);
+					if ($translate == true)
+					{
+						$options[] = JHtml::_('select.option', $item->$key, JText::_($item->$value));
+					}
+					else
+					{
+						$options[] = JHtml::_('select.option', $item->$key, $item->$value);
+					}
 				}
 			}
+
+			// Merge any additional options in the XML definition.
+			$options = array_merge(parent::getOptions(), $options);
+
+			$loadedOptions[$myFormKey] = $options;
 		}
 
-		// Merge any additional options in the XML definition.
-		$options = array_merge(parent::getOptions(), $options);
-
-		return $options;
+		return $loadedOptions[$myFormKey];
 	}
 
 	/**
