@@ -672,4 +672,35 @@ class DataModelCrudTest extends DatabaseTest
 
         $this->assertEquals($check['result'], $result, 'DataModel::load Returned the wrong value');
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelCanDelete
+     * @covers          FOF30\Model\DataModel::canDelete
+     * @dataProvider    DataModelCrudDataprovider::getTestCanDelete
+     */
+    public function testCanDelete($test, $check)
+    {
+        $config = array(
+            'idFieldName' => 'fakeapp_parent_id',
+            'tableName'   => '#__fakeapp_parents'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        if($check['exception'])
+        {
+            $this->setExpectedException($check['exception'], $check['message']);
+        }
+
+        if($test['load'])
+        {
+            $model->find($test['load']);
+        }
+
+        $model->canDelete($test['id'], $test['joins']);
+
+        // Fake assertion to prevent PHPUnit from complaining
+        $this->assertTrue(true);
+    }
 }

@@ -868,4 +868,131 @@ class DataModelCrudDataprovider
 
         return $data;
     }
+
+    public static function getTestCanDelete()
+    {
+        // Empty join array
+        $data[] = array(
+            array(
+                'id'    => 1,
+                'load'  => 0,
+                'joins' => array()
+            ),
+            array(
+                'exception' => false,
+                'message'   => ''
+            )
+        );
+
+        // Joins are not defined
+        $data[] = array(
+            array(
+                'id'    => 1,
+                'load'  => 0,
+                'joins' => null
+            ),
+            array(
+                'exception' => false,
+                'message'   => ''
+            )
+        );
+
+        // Parent with 1 child - ID passed
+        $data[] = array(
+            array(
+                'id'    => 1,
+                'load'  => 0,
+                'joins' => array(
+                    array(
+                        'idfield'   => 'fakeapp_child_id',
+                        'idalias'   => 'child_id',
+                        'name'      => '#__fakeapp_children',
+                        'joinfield' => 'fakeapp_parent_id',
+                        'label'     => 'CHILD'
+                    )
+                )
+            ),
+            array(
+                'exception' => '\RuntimeException',
+                'message'   => '<ul><li>COM_FAKEAPP_PARENTS_NODELETE_CHILD</li></ul>'
+            )
+        );
+
+        // Parent with 1 child - Loaded table
+        $data[] = array(
+            array(
+                'id'    => 0,
+                'load'  => 1,
+                'joins' => array(
+                    array(
+                        'idfield'   => 'fakeapp_child_id',
+                        'idalias'   => 'child_id',
+                        'name'      => '#__fakeapp_children',
+                        'joinfield' => 'fakeapp_parent_id',
+                        'label'     => 'CHILD'
+                    )
+                )
+            ),
+            array(
+                'exception' => '\RuntimeException',
+                'message'   => '<ul><li>COM_FAKEAPP_PARENTS_NODELETE_CHILD</li></ul>'
+            )
+        );
+
+        // Parent with no children - delete allowed
+        $data[] = array(
+            array(
+                'id'    => 3,
+                'load'  => 0,
+                'joins' => array(
+                    array(
+                        'idfield'   => 'fakeapp_child_id',
+                        'idalias'   => 'child_id',
+                        'name'      => '#__fakeapp_children',
+                        'joinfield' => 'fakeapp_parent_id',
+                        'label'     => 'CHILD'
+                    )
+                )
+            ),
+            array(
+                'exception' => false,
+                'message'   => ''
+            )
+        );
+
+        // Join array missing some fields
+        $data[] = array(
+            array(
+                'id'    => 3,
+                'load'  => 0,
+                'joins' => array(
+                    array(
+                        'idfield'   => 'fakeapp_child_id',
+                        'idalias'   => 'child_id',
+                        'name'      => '#__fakeapp_children',
+                        'joinfield' => 'fakeapp_parent_id',
+                    )
+                )
+            ),
+            array(
+                'exception' => '\InvalidArgumentException',
+                'message'   => ''
+            )
+        );
+
+        // Table not loaded an no id is passed
+        $data[] = array(
+            array(
+                'id'    => 0,
+                'load'  => 0,
+                'joins' => array()
+            ),
+            array(
+                'exception' => '\InvalidArgumentException',
+                'message'   => ''
+            )
+        );
+
+        return $data;
+    }
 }
