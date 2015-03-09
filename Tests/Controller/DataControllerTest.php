@@ -970,16 +970,14 @@ class DataControllertest extends DatabaseTest
         $msg = 'DataController::getItemidURLSuffix %s - Case: '.$check['case'];
 
         $container = new TestContainer(array(
-            'componentName' => 'com_fakeapp',
-            'platform' => new ClosureHelper(array(
-                'isFrontend' => function() use ($test){
-                    return $test['mock']['frontend'];
-                }
-            )),
             'input' => new Input(array(
                 'Itemid' => $test['mock']['itemid']
             ))
         ));
+
+        $platform = static::$container->platform;
+        $platform::$isCli   = !$test['mock']['frontend'];
+        $platform::$isAdmin = !$test['mock']['frontend'];
 
         $controller = new DataControllerStub($container);
 

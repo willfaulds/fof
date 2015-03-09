@@ -92,16 +92,13 @@ class ModelTest extends FOFTestCase
     public function testGetState($test, $check)
     {
         $msg       = 'Model::getState %s - Case: '.$check['case'];
-        $container = new TestContainer(array(
-            'componentName' => 'com_fakeapp',
-            'platform'      => new ClosureHelper(array(
-                'getUserStateFromRequest' => function() use ($test){
-                    return $test['mock']['getUserState'];
-                }
-            ))
-        ));
 
-        $model = new ModelStub($container, $test['config']);
+        $platform = static::$container->platform;
+        $platform::$getUserStateFromRequest = function() use ($test){
+            return $test['mock']['getUserState'];
+        };
+
+        $model = new ModelStub(static::$container, $test['config']);
 
         ReflectionHelper::setValue($model, '_ignoreRequest', $test['mock']['ignore']);
 

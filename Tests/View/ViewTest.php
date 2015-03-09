@@ -55,22 +55,15 @@ class ViewTest extends FOFTestCase
     {
         $msg = 'View::__construct %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'componentName'	=> 'com_fakeapp',
-            'platform'      => new ClosureHelper(array(
-                'getTemplate' => function(){
-                    return 'fake_test_template';
-                },
-                'runPlugins' => function() use($test){
-                    return $test['mock']['plugins'];
-                },
-                'URIbase' => function(){
-                    return 'www.example.com';
-                }
-            ))
-        ));
+        $platform = static::$container->platform;
 
-        $view = new ViewStub($container, $test['config']);
+        $platform::$template    = 'fake_test_template';
+        $platform::$uriBase     = 'www.example.com';
+        $platform::$runPlugins  = function() use($test){
+            return $test['mock']['plugins'];
+        };
+
+        $view = new ViewStub(static::$container, $test['config']);
 
         $name           = ReflectionHelper::getValue($view, 'name');
         $layout         = ReflectionHelper::getValue($view, 'layout');
