@@ -795,12 +795,12 @@ HTML;
 
 			foreach ($items as $i => $item)
 			{
+				$rowHtml = '';
+
 				$form->bind($item);
 
 				$m		 = 1 - $m;
-				$class	 = 'row' . $m;
-
-				$html .= "\t\t\t\t<tr class=\"$class\">" . "\n";
+				$rowClass	 = 'row' . $m;
 
 				$fields = $form->getFieldset('items');
 
@@ -839,10 +839,16 @@ HTML;
 						throw new \Exception('getRepeatable not found in class ' . get_class($field));
 					}
 
-					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . "\n";
+					// Let the fields change the row (tr element) class
+					if (method_exists($field, 'getRepeatableRowClass'))
+					{
+						$rowClass = $field->getRepeatableRowClass($rowClass);
+					}
+
+					$rowHtml .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . "\n";
 				}
 
-				$html .= "\t\t\t\t</tr>" . "\n";
+				$html .= "\t\t\t\t<tr class=\"$rowClass\">\n" . $rowHtml . "\t\t\t\t</tr>\n";
 			}
 		}
 		elseif ($norows_placeholder)
