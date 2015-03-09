@@ -32,7 +32,8 @@ class RelationFilters extends Observer
 		{
 			$relationName = $filterState['relation'];
 
-			$subQuery = $model->getRelations()->getCountSubquery($relationName);
+			$tableAlias = $model->getBehaviorParam('tableAlias', null);
+			$subQuery = $model->getRelations()->getCountSubquery($relationName, $tableAlias);
 
 			// Callback method needs different handling
 			if (isset($filterState['method']) && ($filterState['method'] == 'callback'))

@@ -32,6 +32,7 @@ class Filters extends Observer
 		$fields     = $model->getTableFields();
 		$backlist   = $model->blacklistFilters();
 		$filterZero = $model->getBehaviorParam('filterZero', null);
+		$tableAlias = $model->getBehaviorParam('tableAlias', null);
 
 		foreach ($fields as $fieldname => $fieldmeta)
 		{
@@ -44,6 +45,7 @@ class Filters extends Observer
 				'name'	=> $fieldname,
 				'type'	=> $fieldmeta->Type,
 				'filterZero' => $filterZero,
+				'tableAlias' => $tableAlias,
 			);
 
 			$filterName = $fieldInfo->name;

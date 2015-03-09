@@ -278,15 +278,22 @@ class BelongsToMany extends Relation
 	/**
 	 * Returns the count subquery for DataModel's has() and whereHas() methods.
 	 *
+	 * @param   string  $tableAlias  The alias of the local table in the query. Leave blank to use the table's name.
+	 *
 	 * @return \JDatabaseQuery
 	 */
-	public function getCountSubquery()
+	public function getCountSubquery($tableAlias = null)
 	{
 		/** @var DataModel $foreignModel */
 		$foreignModel = $this->getForeignModel();
 		$foreignModel->setIgnoreRequest(true);
 
 		$db = $foreignModel->getDbo();
+
+		if (empty($tableAlias))
+		{
+			$tableAlias = $this->parentModel->getTableName();
+		}
 
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
@@ -299,7 +306,7 @@ class BelongsToMany extends Relation
 			)
 			->where(
 				$db->qn('pivotTable') . '.' . $db->qn($this->pivotLocalKey) . ' ='
-				. $db->qn($this->parentModel->getTableName()) . '.'
+				. $db->qn($tableAlias) . '.'
 				. $db->qn($this->parentModel->getFieldAlias($this->localKey))
 			);
 

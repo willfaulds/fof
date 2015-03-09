@@ -38,6 +38,16 @@ abstract class AbstractFilter
 	protected $filterZero = true;
 
 	/**
+	 * Prefix each table name with this table alias. For example, field bar normally creates a WHERE clause:
+	 * `bar` = '1'
+	 * If tableAlias is set to "foo" then the WHERE clause it generates becomes
+	 * `foo`.`bar` = '1'
+	 *
+	 * @var  null
+	 */
+	protected $tableAlias = null;
+
+	/**
 	 * The null value for this type
 	 *
 	 * @var  mixed
@@ -65,6 +75,11 @@ abstract class AbstractFilter
 		if (isset ($field->filterZero))
 		{
 			$this->filterZero = $field->filterZero;
+		}
+
+		if (isset ($field->tableAlias))
+		{
+			$this->tableAlias = $field->tableAlias;
 		}
 	}
 
@@ -237,6 +252,11 @@ abstract class AbstractFilter
 	public function getFieldName()
 	{
 		$name = $this->db->qn($this->name);
+
+		if (!empty($this->tableAlias))
+		{
+			$name = $this->db->qn($this->tableAlias) . '.' . $name;
+		}
 
 		return $name;
 	}

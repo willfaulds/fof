@@ -340,14 +340,23 @@ class RelationManager
 		return $this->relations[$name]->getForeignKeyMap();
 	}
 
-	public function getCountSubquery($name)
+	/**
+	 * Returns the count sub-query for a relation, used for relation filters (whereHas in the DataModel).
+	 *
+	 * @param   string  $name        The relation to get the sub-query for
+	 * @param   string  $tableAlias  The alias to use for the local table
+	 *
+	 * @return \JDatabaseQuery
+	 * @throws Relation\Exception\RelationNotFound
+	 */
+	public function getCountSubquery($name, $tableAlias = null)
 	{
 		if (!isset($this->relations[$name]))
 		{
 			throw new DataModel\Relation\Exception\RelationNotFound("Relation '$name' not found");
 		}
 
-		return $this->relations[$name]->getCountSubquery();
+		return $this->relations[$name]->getCountSubquery($tableAlias);
 	}
 
 	/**

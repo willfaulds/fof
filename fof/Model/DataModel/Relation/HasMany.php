@@ -112,20 +112,28 @@ class HasMany extends Relation
 	/**
 	 * Returns the count subquery for DataModel's has() and whereHas() methods.
 	 *
+	 * @param   string  $tableAlias  The alias of the local table in the query. Leave blank to use the table's name.
+	 *
 	 * @return \JDatabaseQuery
 	 */
-	public function getCountSubquery()
+	public function getCountSubquery($tableAlias = null)
 	{
 		// Get a model instance
 		$foreignModel = $this->getForeignModel();
 		$foreignModel->setIgnoreRequest(true);
 
 		$db = $foreignModel->getDbo();
+
+		if (empty($tableAlias))
+		{
+			$tableAlias = $this->parentModel->getTableName();
+		}
+
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
 			->from($db->qn($foreignModel->getTableName()) . ' AS ' . $db->qn('reltbl'))
 			->where($db->qn('reltbl') . '.' . $db->qn($foreignModel->getFieldAlias($this->foreignKey)) . ' = '
-				. $db->qn($this->parentModel->getTableName()) . '.'
+				. $db->qn($tableAlias) . '.'
 				. $db->qn($this->parentModel->getFieldAlias($this->localKey)));
 
 		return $query;
