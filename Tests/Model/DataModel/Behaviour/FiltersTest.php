@@ -39,6 +39,8 @@ class FiltersTest extends DatabaseTest
             return $default;
         });
 
+        $model->setIgnoreRequest($test['ignore']);
+
         $query      = \JFactory::getDbo()->getQuery(true)->select('*')->from('test');
         $dispatcher = $model->getBehavioursDispatcher();
         $filter     = new Filters($dispatcher);

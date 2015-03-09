@@ -6,6 +6,7 @@ class FiltersDataprovider
     {
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'id' => 1,
@@ -13,7 +14,23 @@ class FiltersDataprovider
                 )
             ),
             array(
-                'case'  => 'Searching vs primary key',
+                'case'  => 'Searching vs primary key, not ignoring the request',
+                'query' => "SELECT *
+FROM test"
+            )
+        );
+
+        $data[] = array(
+            array(
+                'ignore' => true,
+                'mock' => array(
+                    'state' => array(
+                        'id' => 1,
+                    )
+                )
+            ),
+            array(
+                'case'  => 'Searching vs primary key, ignoring the request',
                 'query' => "SELECT *
 FROM test
 WHERE (`foftest_foobar_id` = '1')"
@@ -22,6 +39,7 @@ WHERE (`foftest_foobar_id` = '1')"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'title' => 'test'
@@ -38,6 +56,7 @@ WHERE (`title` LIKE '%test%')"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'title' => array(
@@ -56,6 +75,7 @@ WHERE (`title` LIKE '%one%')"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -74,6 +94,7 @@ FROM test"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -88,12 +109,13 @@ FROM test"
                 'case'  => 'Searching using an array, passing the method in the state - 1',
                 'query' => "SELECT *
 FROM test
-WHERE ((`created_on` >= '1979-01-01') AND (`created_on` <= '1981-12-31'))"
+WHERE ((`created_on` > '1979-01-01') AND (`created_on` < '1981-12-31'))"
             )
         );
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -112,6 +134,7 @@ FROM test"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -130,6 +153,7 @@ FROM test"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -150,6 +174,7 @@ WHERE ((`created_on` < '1979-01-01') AND (`created_on` > '1981-12-31'))"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -170,6 +195,7 @@ WHERE (`created_on` >= DATE_ADD(`created_on`, INTERVAL 1 year))"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -189,6 +215,29 @@ WHERE (`created_on` = '1979-01-01')"
 
         $data[] = array(
             array(
+                'ignore' => false,
+                'mock' => array(
+                    'state' => array(
+                        'created_on' => array(
+                            'method'  => 'between',
+                            'from'    => '1979-01-01',
+                            'to'      => '1981-12-31',
+                            'include' => true
+                        ),
+                    )
+                )
+            ),
+            array(
+                'case'  => 'Searching using an array, passing the method in the state - 7',
+                'query' => "SELECT *
+FROM test
+WHERE ((`created_on` >= '1979-01-01') AND (`created_on` <= '1981-12-31'))"
+            )
+        );
+
+        $data[] = array(
+            array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'id' => array(
@@ -201,13 +250,13 @@ WHERE (`created_on` = '1979-01-01')"
             array(
                 'case'  => 'Searching using an array, passing a wrong method in the state',
                 'query' => "SELECT *
-FROM test
-WHERE (`foftest_foobar_id` = '32')"
+FROM test"
             )
         );
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => array(
@@ -230,6 +279,7 @@ WHERE (`created_on` > '1979-01-01')"
 
         $data[] = array(
             array(
+                'ignore' => false,
                 'mock' => array(
                     'state' => array(
                         'created_on' => (object) array(

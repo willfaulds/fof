@@ -100,6 +100,7 @@ class DataModelGenericTest extends DatabaseTest
         $model = new DataModelStub(self::$container, $config);
 
         $newContainer = new TestContainer(array(
+            'mediaVersion' => '123',
             'db' => function() use (&$dbcounter, $selfDb){
                 $dbcounter++;
                 return $selfDb;
