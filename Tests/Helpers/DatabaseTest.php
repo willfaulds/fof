@@ -150,4 +150,19 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
             'componentName'	=> 'com_fakeapp',
         ));
     }
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        // Since we're creating the platform only when we instantiate the test class, any modification
+        // will be carried over in the other tests, so we have to manually reset the platform before
+        // running any other test
+        $platform = static::$container->platform;
+
+        if(method_exists($platform, 'reset'))
+        {
+            $platform->reset();
+        }
+    }
 }
