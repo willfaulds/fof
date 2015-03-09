@@ -750,7 +750,8 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
-	 * Returns the data currently bound to the model in an array format
+	 * Returns the data currently bound to the model in an array format. Similar to toArray() but returns a copy instead
+	 * of the internal table itself.
 	 *
 	 * @return array
 	 */
