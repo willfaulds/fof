@@ -422,6 +422,48 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the end repeatable statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileRepeatable($expression)
+	{
+		$expression = trim($expression, '()');
+		$parts = explode(',', $expression, 2);
+
+		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($parts[0]));
+		$argumentsList = isset($parts[1]) ? "use({$parts[1]})" : '';
+
+		return "<?php @\$$functionName = function() $argumentsList { ?>";
+	}
+
+	/**
+	 * Compile the end endRepeatable statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileEndRepeatable($expression)
+	{
+		return "<?php }; ?>";
+	}
+
+	/**
+	 * Compile the end yieldRepeatable statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileYieldRepeatable($expression)
+	{
+		$expression = trim($expression, '()');
+		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($expression));
+
+		return "<?php \$$functionName(); ?>";
+	}
+
+	/**
 	 * Compile the lang statements into valid PHP.
 	 *
 	 * @param  string  $expression
