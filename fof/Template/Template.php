@@ -71,6 +71,8 @@ class Template
 		if (empty($version))
 		{
 			$document->addStyleSheet($url, $type, $media, $attribs);
+
+			return;
 		}
 
 		$document->addStyleSheetVersion($url, $version, $type, $media, $attribs);
@@ -120,6 +122,8 @@ class Template
 		if (empty($version))
 		{
 			$document->addScript($url, $type, $defer, $async);
+
+			return;
 		}
 
 		$document->addScriptVersion($url, $version, $type, $defer, $async);
