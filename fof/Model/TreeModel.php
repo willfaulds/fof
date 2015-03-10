@@ -281,6 +281,8 @@ class TreeModel extends DataModel
 	 * Makes a copy of the record, inserting it as the last child of the current node's parent.
 	 *
 	 * @return static
+     *
+     * @codeCoverageIgnore
 	 */
 	public function copy()
 	{
@@ -294,6 +296,8 @@ class TreeModel extends DataModel
 	 * @param   boolean $resetRelations Should I reset the relations too? Default: no
 	 *
 	 * @return  static  Self, for chaining
+     *
+     * @codeCoverageIgnore
 	 */
 	public function reset($useDefaults = true, $resetRelations = false)
 	{
@@ -947,6 +951,8 @@ class TreeModel extends DataModel
 	 * @param TreeModel $siblingNode
 	 *
 	 * @return $this for chaining
+     *
+     * @codeCoverageIgnore
 	 */
 	public function makeNextSiblingOf(TreeModel $siblingNode)
 	{
@@ -959,6 +965,8 @@ class TreeModel extends DataModel
 	 * @param TreeModel $siblingNode
 	 *
 	 * @return $this for chaining
+     *
+     * @codeCoverageIgnore
 	 */
 	public function makeSiblingOf(TreeModel $siblingNode)
 	{
@@ -971,6 +979,8 @@ class TreeModel extends DataModel
 	 * @param TreeModel $siblingNode
 	 *
 	 * @return $this for chaining
+     *
+     * @codeCoverageIgnore
 	 */
 	public function makePreviousSiblingOf(TreeModel $siblingNode)
 	{
@@ -1193,6 +1203,8 @@ class TreeModel extends DataModel
 	 * @param TreeModel $parentNode
 	 *
 	 * @return $this for chaining
+     *
+     * @codeCoverageIgnore
 	 */
 	public function makeChildOf(TreeModel $parentNode)
 	{
