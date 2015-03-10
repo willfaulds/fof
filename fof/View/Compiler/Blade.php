@@ -433,9 +433,9 @@ class Blade implements CompilerInterface
 		$parts = explode(',', $expression, 2);
 
 		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($parts[0]));
-		$argumentsList = isset($parts[1]) ? "use({$parts[1]})" : '';
+		$argumentsList = isset($parts[1]) ? $parts[1] : '';
 
-		return "<?php @\$$functionName = function() $argumentsList { ?>";
+		return "<?php @\$$functionName = function($argumentsList) { ?>";
 	}
 
 	/**
@@ -458,9 +458,12 @@ class Blade implements CompilerInterface
 	protected function compileYieldRepeatable($expression)
 	{
 		$expression = trim($expression, '()');
-		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($expression));
+		$parts = explode(',', $expression, 2);
 
-		return "<?php \$$functionName(); ?>";
+		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($parts[0]));
+		$argumentsList = isset($parts[1]) ? $parts[1] : '';
+
+		return "<?php \$$functionName($argumentsList); ?>";
 	}
 
 	/**
