@@ -667,7 +667,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileRoute($expression)
 	{
-		return "<?php echo \JRoute::_($expression); ?>";
+		return "<?php echo \JRoute::_{$expression}; ?>";
 	}
 
 	/**
@@ -678,7 +678,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileCss($expression)
 	{
-		return "<?php $this->addCssFile($expression); ?>";
+		return "<?php \$this->addCssFile{$expression}; ?>";
 	}
 
 	/**
@@ -689,7 +689,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileInlineCss($expression)
 	{
-		return "<?php $this->addCssInline($expression); ?>";
+		return "<?php \$this->addCssInline{$expression}; ?>";
 	}
 
 	/**
@@ -700,7 +700,7 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileInlineJs($expression)
 	{
-		return "<?php $this->addJavascriptInline($expression); ?>";
+		return "<?php \$this->addJavascriptInline{$expression}; ?>";
 	}
 
 	/**
@@ -711,18 +711,40 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileJs($expression)
 	{
-		return "<?php $this->addJavascriptFile($expression); ?>";
+		return "<?php \$this->addJavascriptFile{$expression}; ?>";
 	}
 
 	/**
-	 * Compile the js statements into valid PHP.
+	 * Compile the less statements into valid PHP.
 	 *
 	 * @param  string  $expression
 	 * @return string
 	 */
 	protected function compileLess($expression)
 	{
-		return "<?php $this->addLessFile($expression); ?>";
+		return "<?php \$this->addLessFile{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the jhtml statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileJhtml($expression)
+	{
+		return "<?php echo \\JHtml::_{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the media statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileMedia($expression)
+	{
+		return "<?php echo \$this->container->template->parsePath{$expression}; ?>";
 	}
 
 	/**
