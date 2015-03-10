@@ -7,6 +7,7 @@
 
 namespace FOF30\Tests\DataModel;
 
+use FOF30\Form\Form;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
@@ -1055,5 +1056,157 @@ class DataModelGenericTest extends DatabaseTest
         $value = ReflectionHelper::getValue($model, '_assetKey');
 
         $this->assertEquals('com_fakeapp.foobars', $value, 'DataModel::setAssetKey Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetAssetName
+     * @covers          FOF30\Model\DataModel::getAssetName
+     * @dataProvider    DataModelGenericDataprovider::getTestGetAssetName
+     */
+    public function testGetAssetName($test, $check)
+    {
+        $msg = 'DataModel::getAssetName %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        if($test['load'])
+        {
+            $model->find($test['load']);
+        }
+
+        ReflectionHelper::setValue($model, '_assetKey', $test['assetkey']);
+
+        if($check['exception'])
+        {
+            $this->setExpectedException('FOF30\Model\DataModel\Exception\NoAssetKey');
+        }
+
+        $result = $model->getAssetName();
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetAssetKey
+     * @covers          FOF30\Model\DataModel::getAssetKey
+     */
+    public function testGetAssetKey()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, '_assetKey', 'com_fakeapp.foobar');
+
+        $this->assertEquals('com_fakeapp.foobar', $model->getAssetKey(), 'DataModel::getAssetKey Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetFormName
+     * @covers          FOF30\Model\DataModel::getFormName
+     */
+    public function testGetFormName()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, 'formName', 'foobar');
+
+        $this->assertEquals('foobar', $model->getFormName(), 'DataModel::getFormName Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelSetFormName
+     * @covers          FOF30\Model\DataModel::setFormName
+     */
+    public function testSetFormName()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+        $model->setFormName('foobar');
+
+        $value = ReflectionHelper::getValue($model, 'formName');
+
+        $this->assertEquals('foobar', $value, 'DataModel::setFormName Returned the wrong result');
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetForm
+     * @covers          FOF30\Model\DataModel::getForm
+     * @dataProvider    DataModelGenericDataprovider::getTestGetForm
+     */
+    public function testGetForm($test, $check)
+    {
+        $msg    = 'DataModel::getForm %s - Case: '.$check['case'];
+        $before = 0;
+        $after  = 0;
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        // I am passing those methods so I can double check if the method is really called
+        $methods = array(
+            'onBeforeLoadForm' => function() use(&$before){
+                $before++;
+            },
+            'onAfterLoadForm' => function() use(&$after){
+                $after++;
+            }
+        );
+
+        $container = clone static::$container;
+
+        $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('loadForm'), array(static::$container, $config, $methods));
+        $model->expects($this->any())->method('loadForm')
+            ->with($this->equalTo($check['name']), $this->equalTo($check['source']), $this->equalTo($check['options']))
+            ->willReturnCallback(function($name) use ($test, $container){
+                if($test['mock']['loadForm'] === true){
+                    return new Form($container, $name);
+                }
+
+                return $test['mock']['loadForm'];
+            });
+
+        ReflectionHelper::setValue($model, 'formName', $test['mock']['formName']);
+
+        $result = $model->getForm($test['data'], $test['loadData'], $test['source']);
+
+        $formData = ReflectionHelper::getValue($model, '_formData');
+
+        if($check['result'])
+        {
+            $this->assertInstanceOf('FOF30\Form\Form', $result, sprintf($msg, 'Returned the wrong result'));
+        }
+        else
+        {
+            $this->assertFalse($result, sprintf($msg, 'Returned the wrong result'));
+        }
+
+        $this->assertEquals($check['data'], $formData, sprintf($msg, 'Failed to save form data'));
+        $this->assertEquals($check['before'], $before, sprintf($msg, 'Failed to trigger the before event'));
+        $this->assertEquals($check['after'], $after, sprintf($msg, 'Failed to trigger the after event'));
     }
 }

@@ -2539,4 +2539,116 @@ class DataModelGenericDataprovider
 
         return $data;
     }
+
+    public static function getTestGetAssetName()
+    {
+        $data[] = array(
+            array(
+                'load' => 0,
+                'assetkey' => ''
+            ),
+            array(
+                'case'      => 'Asset key not defined',
+                'exception' => true,
+                'result'    => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'load' => 0,
+                'assetkey' => 'com_fakeapp.foobar'
+            ),
+            array(
+                'case'      => 'Table not loaded',
+                'exception' => true,
+                'result'    => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'load' => 1,
+                'assetkey' => 'com_fakeapp.foobar'
+            ),
+            array(
+                'case'      => 'Asset key present and table loaded',
+                'exception' => false,
+                'result'    => 'com_fakeapp.foobar.1'
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestGetForm()
+    {
+        $data[] = array(
+            array(
+                'data'     => array(),
+                'loadData' => true,
+                'source'   => null,
+                'mock'     => array(
+                    'formName' => '',
+                    'loadForm' => true
+                )
+            ),
+            array(
+                'case'    => 'No data, loading the form, no source, loadForm returns a valid form',
+                'data'    => array(),
+                'name'    => 'com_fakeapp.nestedset.form.nestedset',
+                'source'  => 'form.nestedset',
+                'options' => array('control' => false, 'load_data' => true),
+                'result'  => true,
+                'before'  => 1,
+                'after'   => 1
+            )
+        );
+
+        $data[] = array(
+            array(
+                'data'     => array(),
+                'loadData' => true,
+                'source'   => null,
+                'mock'     => array(
+                    'formName' => 'fromobject',
+                    'loadForm' => true
+                )
+            ),
+            array(
+                'case'    => 'No data, loading the form, no source (taken from Model name), loadForm returns a valid form',
+                'data'    => array(),
+                'name'    => 'com_fakeapp.nestedset.fromobject',
+                'source'  => 'fromobject',
+                'options' => array('control' => false, 'load_data' => true),
+                'result'  => true,
+                'before'  => 1,
+                'after'   => 1
+            )
+        );
+
+        $data[] = array(
+            array(
+                'data'     => array('foobar' => '123'),
+                'loadData' => false,
+                'source'   => 'default',
+                'mock'     => array(
+                    'formName' => '',
+                    'loadForm' => false
+                )
+            ),
+            array(
+                'case'    => 'With data, not loading the form, no source, loadForm returns false',
+                'data'    => array('foobar' => '123'),
+                'name'    => 'com_fakeapp.nestedset.default',
+                'source'  => 'default',
+                'options' => array('control' => false, 'load_data' => false),
+                'result'  => false,
+                'before'  => 1,
+                'after'   => 0
+            )
+        );
+
+        return $data;
+    }
 }

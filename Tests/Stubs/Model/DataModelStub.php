@@ -411,6 +411,26 @@ class DataModelStub extends DataModel
         }
     }
 
+    public function onBeforeLoadForm()
+    {
+        if(isset($this->methods['onBeforeLoadForm']))
+        {
+            $func = $this->methods['onBeforeLoadForm'];
+
+            return call_user_func_array($func, array());
+        }
+    }
+
+    public function onAfterLoadForm()
+    {
+        if(isset($this->methods['onAfterLoadForm']))
+        {
+            $func = $this->methods['onAfterLoadForm'];
+
+            return call_user_func_array($func, array());
+        }
+    }
+
     public function dynamicCall()
     {
         $this->dynamicCall[] = func_get_args();

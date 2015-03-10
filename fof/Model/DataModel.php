@@ -3477,6 +3477,8 @@ class DataModel extends Model implements \JTableInterface
 	 * primary name of the row. If this method is not overridden, the asset name is used.
 	 *
 	 * @return  string  The string to use as the title in the asset table.
+     *
+     * @codeCoverageIgnore
 	 */
 	public function getAssetTitle()
 	{
