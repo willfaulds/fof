@@ -671,6 +671,61 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the css statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileCss($expression)
+	{
+		return "<?php $this->addCssFile($expression); ?>";
+	}
+
+	/**
+	 * Compile the inlineCss statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileInlineCss($expression)
+	{
+		return "<?php $this->addCssInline($expression); ?>";
+	}
+
+	/**
+	 * Compile the inlineJs statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileInlineJs($expression)
+	{
+		return "<?php $this->addJavascriptInline($expression); ?>";
+	}
+
+	/**
+	 * Compile the js statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileJs($expression)
+	{
+		return "<?php $this->addJavascriptFile($expression); ?>";
+	}
+
+	/**
+	 * Compile the js statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileLess($expression)
+	{
+		return "<?php $this->addLessFile($expression); ?>";
+	}
+
+	/**
 	 * Register a custom Blade compiler.
 	 *
 	 * @param  callable  $compiler
