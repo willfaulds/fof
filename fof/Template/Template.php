@@ -479,7 +479,7 @@ class Template
 	 * Returns the contents of a module position
 	 *
 	 * @param   string  $position  The position name, e.g. "position-1"
-	 * @param   int     $style     Rendering style; please refer to Joomla!'s code for more information
+	 * @param   int     $style     Rendering style, see JDocumentRendererModule::render
 	 *
 	 * @return  string  The contents of the module position
 	 */
@@ -516,6 +516,49 @@ class Template
 		}
 
 		return $contents;
+	}
+
+	/**
+	 * Render a module by name
+	 *
+	 * @param   string  $moduleName  The name of the module (real, eg 'Breadcrumbs' or folder, eg 'mod_breadcrumbs')
+	 * @param   int     $style       The rendering style, see JDocumentRendererModule::render
+	 *
+	 * @return string  The rendered module
+	 */
+	public function loadModule($moduleName, $style = -2)
+	{
+		$document = $this->container->platform->getDocument();
+
+		if (!($document instanceof JDocument))
+		{
+			return '';
+		}
+
+		if (!method_exists($document, 'loadRenderer'))
+		{
+			return '';
+		}
+
+		try
+		{
+			$renderer = $document->loadRenderer('module');
+		}
+		catch (\Exception $exc)
+		{
+			return '';
+		}
+
+		$params = array('style' => $style);
+
+		$mod = \JModuleHelper::getModule($moduleName);
+
+		if (empty($mod))
+		{
+			return '';
+		}
+
+		return $renderer->render($mod, $params);
 	}
 
 	/**

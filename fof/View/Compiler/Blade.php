@@ -748,6 +748,28 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the modules statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileModules($expression)
+	{
+		return "<?php echo \$this->container->template->loadPosition{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the module statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileModule($expression)
+	{
+		return "<?php echo \$this->container->template->loadModule{$expression}; ?>";
+	}
+
+	/**
 	 * Register a custom Blade compiler.
 	 *
 	 * @param  callable  $compiler
