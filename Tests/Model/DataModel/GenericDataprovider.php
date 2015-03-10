@@ -2651,4 +2651,149 @@ class DataModelGenericDataprovider
 
         return $data;
     }
+
+    public function getTestValidateForm()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'filter'   => array(123),
+                    'validate' => true,
+                    'errors'   => ''
+                )
+            ),
+            array(
+                'case'      => 'Validation runs fine',
+                'exception' => false,
+                'message'   => '',
+                'result'    => array(123)
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'filter'   => array(123),
+                    'validate' => new \Exception(),
+                    'errors'   => ''
+                )
+            ),
+            array(
+                'case'      => 'Validate returns an exception',
+                'exception' => '\Exception',
+                'message'   => '',
+                'result'    => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'filter'   => array(123),
+                    'validate' => false,
+                    'errors'   => array(new \Exception())
+                )
+            ),
+            array(
+                'case'      => 'Validate returns false, the error stack contains an exception',
+                'exception' => '\Exception',
+                'message'   => '',
+                'result'    => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'filter'   => array(123),
+                    'validate' => false,
+                    'errors'   => array('Error')
+                )
+            ),
+            array(
+                'case'      => 'Validate returns false, the error stack contains a message',
+                'exception' => 'FOF30\Model\DataModel\Exception\BaseException',
+                'message'   => 'Error',
+                'result'    => ''
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestGetBehaviorParam()
+    {
+        $data[] = array(
+            array(
+                'name' => 'foo',
+                'default' => 'test',
+                'mock' => array(
+                    'behaviors' => array(
+                        'foo' => 'bar'
+                    )
+                )
+            ),
+            array(
+                'case' => 'Behavior is set',
+                'result' => 'bar'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name' => 'foo',
+                'default' => 'test',
+                'mock' => array(
+                    'behaviors' => array()
+                )
+            ),
+            array(
+                'case' => 'Behavior is not set',
+                'result' => 'test'
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestBlacklistFilters()
+    {
+        $data[] = array(
+            array(
+                'list'  => null,
+                'reset' => false
+            ),
+            array(
+                'case'    => 'Retrieving the whole list of filters',
+                'result'  => array('test'),
+                'filters' => array('test')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'list'  => 'foobar',
+                'reset' => false
+            ),
+            array(
+                'case'    => 'Setting a new list - no replace',
+                'result'  => null,
+                'filters' => array('test', 'foobar')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'list'  => 'foobar',
+                'reset' => true
+            ),
+            array(
+                'case'    => 'Setting a new list - with replace',
+                'result'  => null,
+                'filters' => array('foobar')
+            )
+        );
+
+        return $data;
+    }
 }

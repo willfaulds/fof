@@ -1209,4 +1209,111 @@ class DataModelGenericTest extends DatabaseTest
         $this->assertEquals($check['before'], $before, sprintf($msg, 'Failed to trigger the before event'));
         $this->assertEquals($check['after'], $after, sprintf($msg, 'Failed to trigger the after event'));
     }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelValidateForm
+     * @covers          FOF30\Model\DataModel::validateForm
+     * @dataProvider    DataModelGenericDataprovider::getTestValidateForm
+     */
+    public function testValidateForm($test, $check)
+    {
+        $msg = 'DataModel::validateForm %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        $form = $this->getMock('FOF30\Form\Form', array('filter', 'validate', 'getErrors'), array(static::$container, 'Foobar'));
+        $form->expects($this->any())->method('filter')->willReturn($test['mock']['filter']);
+        $form->expects($this->any())->method('validate')->willReturn($test['mock']['validate']);
+        $form->expects($this->any())->method('getErrors')->willReturn($test['mock']['errors']);
+
+        if($check['exception'])
+        {
+            $this->setExpectedException($check['exception'], $check['message']);
+        }
+
+        $result = $model->validateForm($form, array(), '');
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelSetBehaviorParam
+     * @covers          FOF30\Model\DataModel::setBehaviorParam
+     */
+    public function testSetBehaviorParam()
+    {
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        $result = $model->setBehaviorParam('foo', 'bar');
+
+        $behaviors = ReflectionHelper::getValue($model, '_behaviorParams');
+
+        $this->assertArrayHasKey('foo', $behaviors);
+        $this->assertEquals('bar', $behaviors['foo']);
+        $this->assertInstanceOf('FOF30\Model\DataModel', $result);
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelGetBehaviorParam
+     * @covers          FOF30\Model\DataModel::getBehaviorParam
+     * @dataProvider    DataModelGenericDataprovider::getTestGetBehaviorParam
+     */
+    public function testGetBehaviorParam($test, $check)
+    {
+        $msg = 'DataModel::getBehaviorParam %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, '_behaviorParams', $test['mock']['behaviors']);
+
+        $result = $model->getBehaviorParam($test['name'], $test['default']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           DataModel
+     * @group           DataModelBlacklistFilters
+     * @covers          FOF30\Model\DataModel::blacklistFilters
+     * @dataProvider    DataModelGenericDataprovider::getTestBlacklistFilters
+     */
+    public function testBlacklistFilters($test, $check)
+    {
+        $msg = 'DataModel::blacklistFilters %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_bare_id',
+            'tableName'   => '#__foftest_bares'
+        );
+
+        $model = new DataModelStub(static::$container, $config);
+
+        ReflectionHelper::setValue($model, '_behaviorParams', array('blacklistFilters' => array('test')));
+
+        $result = $model->blacklistFilters($test['list'], $test['reset']);
+
+        $behaviors = ReflectionHelper::getValue($model, '_behaviorParams');
+        $filters   = isset($behaviors['blacklistFilters']) ? $behaviors['blacklistFilters'] : array();
+
+        $this->assertSame($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['filters'], $filters, sprintf($msg, 'Failed to set the filters'));
+    }
 }
