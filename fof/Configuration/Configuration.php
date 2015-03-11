@@ -103,7 +103,7 @@ class Configuration
 			foreach ($order as $area)
 			{
 				$config = $this->parseComponentArea($area, $userConfig);
-				self::$configurations[$this->container->componentName] = array_merge_recursive(self::$configurations[$this->container->componentName], $config);
+				self::$configurations[$this->container->componentName] = array_replace_recursive(self::$configurations[$this->container->componentName], $config);
 			}
 		}
 	}
