@@ -78,12 +78,18 @@ class ModelTypeHints
 
 		$relations = $model->getRelations()->getRelationNames();
 
+		$modelType = get_class($model);
+		$modelTypeParts = explode('\\', $modelType);
+		array_pop($modelTypeParts);
+		$modelType = implode('\\', $modelTypeParts) . '\\';
+
 		if ($relations)
 		{
 			foreach($relations as $relationName)
 			{
-				$relationObject = $model->getRelations()->getRelation($relationName);
+				$relationObject = $model->getRelations()->getRelation($relationName)->getForeignModel();
 				$relationType = get_class($relationObject);
+				$relationType = str_replace($modelType, '', $relationType);
 
 				$hints['property-read'][] = array(
 					$relationType,
