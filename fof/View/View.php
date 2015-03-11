@@ -149,8 +149,8 @@ class View
 	 * @var    array
 	 */
 	protected $viewEngineMap = array(
-		'.php'       => 'FOF30\\View\\Engine\\BladeEngine',
-		'.blade.php' => 'FOF30\\View\\Engine\\PhpEngine',
+		'.php'       => 'FOF30\\View\\Engine\\PhpEngine',
+		'.blade.php' => 'FOF30\\View\\Engine\\BladeEngine',
 	);
 
 	/**
