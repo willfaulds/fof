@@ -149,8 +149,8 @@ class View
 	 * @var    array
 	 */
 	protected $viewEngineMap = array(
-		'.php'       => 'FOF30\\View\\Engine\\PhpEngine',
 		'.blade.php' => 'FOF30\\View\\Engine\\BladeEngine',
+		'.php'       => 'FOF30\\View\\Engine\\PhpEngine',
 	);
 
 	/**
@@ -1074,14 +1074,15 @@ class View
 	 */
 	protected function getEngine($path)
 	{
-		if ( ! $extension = $this->getExtension($path))
+		foreach ($this->viewEngineMap as $extension => $engine)
 		{
-			throw new UnrecognisedExtension($path);
+			if (substr($path, -strlen($extension)) == $extension)
+			{
+				return new $engine($this);
+			}
 		}
 
-		$engine = $this->viewEngineMap[$extension];
-
-		return new $engine($this);
+		throw new UnrecognisedExtension($path);
 	}
 
 	/**
