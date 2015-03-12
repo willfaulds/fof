@@ -1767,6 +1767,12 @@ class TreeModel extends DataModel
 	 */
 	public function getRoot()
 	{
+        // Empty node, let's try to get the first available root, ie lft=1
+        if(!$this->getId())
+        {
+            $this->load(array('lft' => 1));
+        }
+
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
         {
@@ -2098,7 +2104,7 @@ class TreeModel extends DataModel
 		}
 
 		// Just a slash? Return the root
-		if (empty($pathParts))
+		if (empty($pathParts[0]))
 		{
 			return $this->getRoot();
 		}
@@ -2106,9 +2112,9 @@ class TreeModel extends DataModel
 		// Get the quoted field names
 		$db = $this->getDbo();
 
-		$fldLeft = $db->qn($this->getFieldAlias('lft'));
+		$fldLeft  = $db->qn($this->getFieldAlias('lft'));
 		$fldRight = $db->qn($this->getFieldAlias('rgt'));
-		$fldHash = $db->qn($this->getFieldAlias('hash'));
+		$fldHash  = $db->qn($this->getFieldAlias('hash'));
 
 		// Get the quoted hashes of the slugs
 		$pathHashesQuoted = array();
@@ -2139,7 +2145,7 @@ class TreeModel extends DataModel
 
 		// Handle paths with (no root slug provided) and without (root slug provided) a leading slash
 		$currentLevel = (substr($path, 0, 1) == '/') ? 0 : -1;
-		$maxLevel = count($pathParts) + $currentLevel;
+		$maxLevel     = count($pathParts) + $currentLevel;
 
 		// Initialise the path results array
 		$i = $currentLevel;
@@ -2157,9 +2163,9 @@ class TreeModel extends DataModel
 
 		// Search for the best matching nodes
 		$colSlug = $this->getFieldAlias('slug');
-		$colLft = $this->getFieldAlias('lft');
-		$colRgt = $this->getFieldAlias('rgt');
-		$colId = $this->getIdFieldName();
+		$colLft  = $this->getFieldAlias('lft');
+		$colRgt  = $this->getFieldAlias('rgt');
+		$colId   = $this->getIdFieldName();
 
 		foreach ($queryResults as $row)
 		{

@@ -1913,4 +1913,42 @@ class TreeModelDataprovider
 
         return $data;
     }
+
+    public static function getTestFindByPath()
+    {
+        $data[] = array(
+            array(
+                'path' => ''
+            ),
+            array(
+                'case' => 'Path is empty',
+                'result' => false,
+                'id'   => ''
+            )
+        );
+
+        $data[] = array(
+            array(
+                'path' => '/'
+            ),
+            array(
+                'case' => 'Path is just a slash',
+                'result' => true,
+                'id'   => 1
+            )
+        );
+
+        /*$data[] = array(
+            array(
+                'path' => '/root/electronics/audio'
+            ),
+            array(
+                'case' => 'Full path, not leading with a slash',
+                'result' => true,
+                'id'   => 3
+            )
+        );*/
+
+        return $data;
+    }
 }

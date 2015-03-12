@@ -1715,4 +1715,35 @@ class TreeModelTest extends DatabaseTest
 
         $table->insideSubtree($other);
     }
+
+    /**
+     * @group               TreeModelFindByPath
+     * @group               TreeModel
+     * @covers              FOF30\Model\TreeModel::findByPath
+     * @dataProvider        TreeModelDataprovider::getTestFindByPath
+     */
+    public function testFindByPath($test, $check)
+    {
+        $msg = 'TreeModel::findByPath %s - Case: '.$check['case'];
+
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
+
+        $table = new TreeModelStub(static::$container, $config);
+
+        $result = $table->findByPath($test['path']);
+
+        if(!$check['result'])
+        {
+            $this->assertNull($result, sprintf($msg, 'Returned the wrong value'));
+        }
+        else
+        {
+            $this->assertInstanceOf('FOF30\Model\TreeModel', $result, sprintf($msg, 'Should return an instance of TreeModel'));
+            $this->assertEquals($check['id'], $result->getId(), sprintf($msg, 'Returned the wrong node'));
+        }
+    }
 }
