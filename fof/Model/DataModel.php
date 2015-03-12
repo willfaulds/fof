@@ -32,16 +32,16 @@ defined('_JEXEC') or die;
  *
  * Type hinting -- start
  *
- * @method DataModel hasOne() hasOne(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
- * @method DataModel belongsTo() belongsTo(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
- * @method DataModel hasMany() hasMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
- * @method DataModel belongsToMany() belongsToMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null, string $pivotTable = null, string $pivotLocalKey = null, string $pivotForeignKey = null)
+ * @method $this hasOne() hasOne(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
+ * @method $this belongsTo() belongsTo(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
+ * @method $this hasMany() hasMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
+ * @method $this belongsToMany() belongsToMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null, string $pivotTable = null, string $pivotLocalKey = null, string $pivotForeignKey = null)
  *
- * @method DataModel filter_order() filter_order(string $orderingField)
- * @method DataModel filter_order_Dir() filter_order_Dir(string $direction)
- * @method DataModel limit() limit(int $limit)
- * @method DataModel limitstart() limitstart(int $limitStart)
- * @method DataModel enabled() enabled(int $enabled)
+ * @method $this filter_order() filter_order(string $orderingField)
+ * @method $this filter_order_Dir() filter_order_Dir(string $direction)
+ * @method $this limit() limit(int $limit)
+ * @method $this limitstart() limitstart(int $limitStart)
+ * @method $this enabled() enabled(int $enabled)
  *
  * @property  int     $enabled      Publish status of this record
  * @property  int     $ordering     Sort ordering of this record
