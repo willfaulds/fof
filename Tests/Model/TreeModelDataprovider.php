@@ -1851,4 +1851,66 @@ class TreeModelDataprovider
 
         return $data;
     }
+
+    public static function getTestInsideSubTree()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 4,
+                'otherid' => 2,
+            ),
+            array(
+                'case'   => 'Node is inside the other one',
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 16,
+                'otherid' => 2,
+            ),
+            array(
+                'case'   => 'Node is inside another subtree',
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestInsideSubTreeException()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 1,
+                'otherid' => 0
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtOther'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 1
+            ),
+            array(
+                'exception' => 'TreeInvalidLftRgtCurrent'
+            )
+        );
+
+        return $data;
+    }
 }

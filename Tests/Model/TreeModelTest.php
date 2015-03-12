@@ -1658,4 +1658,61 @@ class TreeModelTest extends DatabaseTest
 
         $this->assertEquals($check['result'], $result, 'TreeModel::getNestedList returned the wrong list');
     }
+
+    /**
+     * @group               TreeModelInsideSubTree
+     * @group               TreeModel
+     * @covers              FOF30\Model\TreeModel::insideSubTree
+     * @dataProvider        TreeModelDataprovider::getTestInsideSubTree
+     */
+    public function testInsideSubtree($test, $check)
+    {
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
+
+        $table = new TreeModelStub(static::$container, $config);
+        $other = $table->getClone();
+
+        $table->findOrFail($test['loadid']);
+        $other->findOrFail($test['otherid']);
+
+        $result = $table->insideSubTree($other);
+
+        $this->assertEquals($check['result'], $result, 'TreeModel::insideSubTree returned the wrong value - Case: '.$check['case']);
+    }
+
+    /**
+     * @group               TreeModelInsideSubTree
+     * @group               TreeModel
+     * @covers              FOF30\Model\TreeModel::insideSubTree
+     * @dataProvider        TreeModelDataprovider::getTestInsideSubTreeException
+     */
+    public function testInsideSubtreeException($test, $check)
+    {
+        $this->setExpectedException('FOF30\Model\DataModel\Exception\\'.$check['exception']);
+
+        $config = array(
+            'autoChecks'  => false,
+            'idFieldName' => 'foftest_nestedset_id',
+            'tableName'   => '#__foftest_nestedsets'
+        );
+
+        $table = new TreeModelStub(static::$container, $config);
+        $other = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->findOrFail($test['loadid']);
+        }
+
+        if($test['otherid'])
+        {
+            $other->findOrFail($test['otherid']);
+        }
+
+        $table->insideSubtree($other);
+    }
 }
