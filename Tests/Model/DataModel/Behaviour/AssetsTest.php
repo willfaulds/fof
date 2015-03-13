@@ -24,7 +24,7 @@ class AssetsTest extends DatabaseTest
     /**
      * @group           Behaviour
      * @group           AssetsOnAfterSave
-     * @covers          FOF30\Model\DataModel\Behaviour\Assets::onAfterBuildQuery
+     * @covers          FOF30\Model\DataModel\Behaviour\Assets::onAfterSave
      * @dataProvider    AssetsDataprovider::getTestOnAfterSave
      */
     public function testOnAfterSave($test, $check)

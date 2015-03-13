@@ -18,7 +18,7 @@ class EnabledTest extends DatabaseTest
     /**
      * @group           Behaviour
      * @group           EnabledOnBeforeBuildQuery
-     * @covers          FOF30\Model\DataModel\Behaviour\Own::onBeforeBuildQuery
+     * @covers          FOF30\Model\DataModel\Behaviour\Enabled::onBeforeBuildQuery
      * @dataProvider    EnabledDataprovider::getTestOnBeforeBuildQuery
      */
     public function testOnBeforeBuildQuery($test, $check)
