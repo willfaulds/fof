@@ -460,9 +460,13 @@ class Controller
 				/** @var \JApplicationCms $app */
 				$app = \JFactory::getApplication();
 
-				$registeredurlparams = $app->get('registeredurlparams');
+				$registeredurlparams = null;
 
-				if (empty($registeredurlparams))
+				if (!empty($app->registeredurlparams))
+				{
+					$registeredurlparams = $app->registeredurlparams;
+				}
+				else
 				{
 					$registeredurlparams = new \stdClass;
 				}
@@ -473,7 +477,7 @@ class Controller
 					$registeredurlparams->$key = $value;
 				}
 
-				$app->set('registeredurlparams', $registeredurlparams);
+				$app->registeredurlparams = $registeredurlparams;
 			}
 
 			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
