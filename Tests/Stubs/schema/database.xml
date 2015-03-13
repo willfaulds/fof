@@ -1140,8 +1140,8 @@
       <value>105</value>
       <value>106</value>
       <value>1</value>
-      <value>com_foftest.foobar.4</value>
-      <value>com_foftest.foobar.4</value>
+      <value>com_fakeapp.nestedset.4</value>
+      <value>com_fakeapp.nestedset.4</value>
       <value></value>
     </row>
   </table>

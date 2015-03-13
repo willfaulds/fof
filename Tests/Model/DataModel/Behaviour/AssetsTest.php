@@ -130,50 +130,49 @@ class AssetsTest extends DatabaseTest
         $this->assertTrue($return, sprintf($msg, 'Returned a wrong value'));
         $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, sprintf($msg, 'Set rules wrong'));
     }
-    
-    public function tXestOnBeforeDelete($tableinfo, $test, $check)
+
+    /**
+     * @group           Behaviour
+     * @group           AssetsOnBeforeDelete
+     * @covers          FOF30\Model\DataModel\Behaviour\Assets::onBeforeDelete
+     * @dataProvider    AssetsDataprovider::getTestOnBeforeDelete
+     */
+    public function testOnBeforeDelete($test, $check)
     {
-        $db              = JFactory::getDbo();
-        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
+        $msg = 'Own::onBeforeDelete %s - Case: '.$check['case'];
+        $db  = \JFactory::getDbo();
 
-        if(isset($test['tbl_key']))
+        $config = array(
+            'idFieldName' => $test['tableid'],
+            'tableName'   => $test['table']
+        );
+
+        $model      = new DataModelStub(static::$container, $config);
+        $dispatcher = $model->getBehavioursDispatcher();
+        $behavior   = new Assets($dispatcher);
+
+        $model->setAssetsTracked($test['track']);
+
+        if($test['load'])
         {
-            $config['tbl_key'] = $test['tbl_key'];
+            $model->find($test['load']);
         }
 
-        $table = F0FTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
-
-        $reflection = new ReflectionProperty($table, 'tableDispatcher');
-        $reflection->setAccessible(true);
-        $dispatcher = $reflection->getValue($table);
-
-        $behavior = new F0FTableBehaviorAssets($dispatcher);
-
-        if(isset($test['alias']))
+        if($check['exception'])
         {
-            foreach($test['alias'] as $column => $alias)
-            {
-                $table->setColumnAlias($column, $alias);
-            }
-
-            $table->setAssetsTracked(true);
-        }
-
-        if(isset($test['loadid']))
-        {
-            $table->load($test['loadid']);
+            $this->setExpectedException('FOF30\Model\DataModel\Exception\NoAssetKey');
         }
 
         $query       = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
         $beforeTotal = $db->setQuery($query)->loadResult();
 
-        $return = $behavior->onBeforeDelete($table, isset($test['id']) ? $test['id'] : null);
+        $result = $behavior->onBeforeDelete($model, $test['id']);
 
-        $this->assertEquals($check['return'], $return, 'F0FTableBehaviorAssets::onBeforeDelete returned a wrong value');
+        $this->assertTrue($result, sprintf($msg, 'Returned a wrong value'));
 
         $query      = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
         $afterTotal = $db->setQuery($query)->loadResult();
 
-        $this->assertEquals($check['count'], $beforeTotal - $afterTotal, 'F0FTableBehaviorAssets::onBeforeDelete deleted a wrong number of assets');
+        $this->assertEquals($check['count'], $beforeTotal - $afterTotal, sprintf($msg, 'Deleted a wrong number of assets'));
     }
 }

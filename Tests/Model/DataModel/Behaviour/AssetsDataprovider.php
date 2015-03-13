@@ -166,64 +166,79 @@ class AssetsDataprovider
 
     public static function getTestOnBeforeDelete()
     {
-        // Without asset support
         $data[] = array(
             array(
-                'name' => 'bare',
+                'table'   => '#__foftest_foobars',
+                'tableid' => 'foftest_foobar_id',
+                'load'    => 0,
+                'track'   => false,
+                'id'      => null
             ),
-            array(),
-            array('return' => true, 'count' => 0)
+            array(
+                'case'  => 'Without asset tracking',
+                'count' => 0,
+                'exception' => false
+            )
         );
 
-        // With asset support - not loaded
         $data[] = array(
             array(
-                'name' => 'foobar',
+                'table'   => '#__foftest_foobars',
+                'tableid' => 'foftest_foobar_id',
+                'load'    => 0,
+                'track'   => true,
+                'id'      => null
             ),
-            array(),
-            array('return' => false, 'count' => 0)
+            array(
+                'case'  => 'With asset tracking, not loaded',
+                'count' => 0,
+                'exception' => true
+            )
         );
 
-        // With asset support - loaded no asset
         $data[] = array(
             array(
-                'name' => 'foobar',
+                'table'   => '#__foftest_foobars',
+                'tableid' => 'foftest_foobar_id',
+                'load'    => 2,
+                'track'   => true,
+                'id'      => null
             ),
-            array('loadid' => 2),
-            array('return' => true, 'count' => 0)
+            array(
+                'case'  => 'With asset tracking, loaded no asset',
+                'count' => 0,
+                'exception' => false
+            )
         );
 
-        // With asset support - loaded with asset
         $data[] = array(
             array(
-                'name' => 'foobar',
+                'table'   => '#__foftest_foobars',
+                'tableid' => 'foftest_foobar_id',
+                'load'    => 4,
+                'track'   => true,
+                'id'      => null
             ),
-            array('loadid' => 4),
-            array('return' => true, 'count' => 1)
+            array(
+                'case'  => 'With asset tracking, loaded with asset',
+                'count' => 1,
+                'exception' => false
+            )
         );
 
-        // With asset support - loaded (using ID) with asset
         $data[] = array(
             array(
-                'name' => 'foobar',
-            ),
-            array('id' => 4),
-            array('return' => true, 'count' => 1)
-        );
-
-        // With asset support - loaded (using ID) with asset
-        $data[] = array(
-            array(
-                'name' => 'foobaraliases',
+                'table'   => '#__foftest_foobars',
+                'tableid' => 'foftest_foobar_id',
+                'load'    => 0,
+                'track'   => true,
+                'id'      => 4
             ),
             array(
-                'id'      => 2,
-                'tbl_key' => 'id_foobar_aliases',
-                'alias'   => array(
-                    'asset_id' => 'fo_asset_id',
-                )
-            ),
-            array('return' => true, 'count' => 0)
+                'case'  => 'With asset tracking, loaded (using ID) with asset',
+                'count' => 1,
+                'exception' => false
+            )
         );
 
         return $data;
