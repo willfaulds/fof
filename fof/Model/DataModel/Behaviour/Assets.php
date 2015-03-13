@@ -28,17 +28,9 @@ class Assets extends Observer
 		}
 
 		$assetFieldAlias = $model->getFieldAlias('asset_id');
-		$currentAssetId = null;
+        $currentAssetId  = $model->getFieldValue('asset_id');
 
-		if ($model->hasField('asset_id'))
-		{
-			$currentAssetId = $model->getFieldValue('asset_id');
-
-			if ($model->isAssetsTracked())
-			{
-				unset($model->$assetFieldAlias);
-			}
-		}
+        unset($model->$assetFieldAlias);
 
 		// Create the object used for inserting/udpating data to the database
 		$fields = $model->getTableFields();
@@ -51,10 +43,8 @@ class Assets extends Observer
 
 		// Asset Tracking
 		$parentId = $model->getAssetParentId();
-
-		$name = $model->getAssetName();
-
-		$title = $model->getAssetTitle();
+		$name     = $model->getAssetName();
+		$title    = $model->getAssetTitle();
 
 		$asset = \JTable::getInstance('Asset');
 		$asset->loadByName($name);
