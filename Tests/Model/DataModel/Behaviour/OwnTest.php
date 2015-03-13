@@ -2,9 +2,7 @@
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Behaviour\Own;
-use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\DatabaseTest;
-use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
 require_once 'OwnDataprovider.php';
