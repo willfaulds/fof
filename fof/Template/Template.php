@@ -325,8 +325,17 @@ class Template
 	 * templates/mytemplate/media/com_foobar/css/test.css if the current
 	 * template is called mytemplate and there's a media override for it.
 	 *
+	 * Regarding plugins, templates are searched inside the plugin's tmpl directory and the template's html directory.
+	 * For instance considering plugin://system/example/something the files will be looked for in:
+	 * plugins/system/example/tmpl/something.php
+	 * templates/yourTemplate/html/plg_system_example/something.php
+	 * Template paths for plugins are uncommon and not standard Joomla! practice. They make sense when you are
+	 * implementing features of your component as plugins and they need to provide HTML output, e.g. some of the
+	 * integration plugins we use in Akeeba Subscriptions.
+	 *
 	 * The valid protocols are:
 	 * media://		The media directory or a media override
+	 * plugin://	Given as plugin://pluginType/pluginName/template, e.g. plugin://system/example/something
 	 * admin://		Path relative to administrator directory (no overrides)
 	 * site://		Path relative to site's root (no overrides)
 	 *
@@ -386,6 +395,7 @@ class Template
 	 * admin://		Path relative to administrator directory (no alternate)
 	 * site://		Path relative to site's root (no alternate)
 	 * auto://      Automatically guess if it should be site:// or admin://
+	 * plugin://	The plugin directory or a template override (must be plugin://pluginType/pluginName/templateName)
 	 *
 	 * @param   string  $path  Fancy path
 	 *
@@ -422,6 +432,22 @@ class Template
 					'normal'	 => 'media/' . $pathAndParams[0],
 					'alternate'	 => $this->container->platform->getTemplateOverridePath('media:/' . $pathAndParams[0], false),
 				);
+				break;
+
+			case 'plugin':
+				// The path is pluginType/pluginName/viewTemplate
+				$pathInfo = explode('/', $path);
+				$pluginType = isset($pathInfo[0]) ? $pathInfo[0] : 'system';
+				$pluginName = isset($pathInfo[1]) ? $pathInfo[1] : 'foobar';
+				$viewTemplate = isset($pathInfo[2]) ? $pathInfo[2] : 'default';
+
+				$pluginSystemName = 'plg_' . $pluginType . '_' . $pluginName;
+
+				$ret = array(
+					'normal'	 => 'plugins/' . $pluginType . '/' . $pluginName . '/tmpl/' . $viewTemplate,
+					'alternate'	 => $this->container->platform->getTemplateOverridePath('auto:/' . $pluginSystemName . '/' . $viewTemplate, false),
+				);
+
 				break;
 
 			case 'admin':
