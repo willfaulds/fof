@@ -253,14 +253,14 @@ abstract class Relation
 		// If the model comes from this component go through our Factory
 		if (is_null($this->foreignModelComponent))
 		{
-			$model = $this->container->factory->model($this->foreignModelName, $config);
+			$model = $this->container->factory->model($this->foreignModelName, $config)->tmpInstance();
 
 			return $model;
 		}
 
 		// The model comes from another component. Create a container and go through its factory.
 		$foreignContainer = Container::getInstance($this->foreignModelComponent, array('tempInstance' => true));
-		$model = $foreignContainer->factory->model($this->foreignModelName, $config);
+		$model = $foreignContainer->factory->model($this->foreignModelName, $config)->tmpInstance();
 
 		return $model;
 	}
