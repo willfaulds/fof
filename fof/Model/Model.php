@@ -436,6 +436,18 @@ class Model
 	}
 
 	/**
+	 * Returns a temporary instance of the model. Please note that this returns a _clone_ of the model object, not the
+	 * original object. The new object is set up to not save its stats, ignore the request when getting state variables
+	 * and comes with an empty state.
+	 *
+	 * @return  $this
+	 */
+	public function tmpInstance()
+	{
+		return $this->getClone()->savestate(false)->setIgnoreRequest(true)->clearState();
+	}
+
+	/**
 	 * Triggers an object-specific event. The event runs both locally –if a suitable method exists– and through the
 	 * object's behaviours dispatcher and Joomla! plugin system. Neither handler is expected to return anything (return
 	 * values are ignored). If you want to mark an error and cancel the event you have to raise an exception.

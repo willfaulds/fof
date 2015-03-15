@@ -613,6 +613,18 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
+	 * Returns a temporary instance of the model. Please note that this returns a _clone_ of the model object, not the
+	 * original object. The new object is set up to not save its stats, ignore the request when getting state variables
+	 * and comes with an empty state. The temporary object instance has its data and relations reset as well.
+	 *
+	 * @return  $this
+	 */
+	public function tmpInstance()
+	{
+		return parent::tmpInstance()->reset(true, true);
+	}
+
+	/**
 	 * Adds a known field to the DataModel. This is only necessary if you are using a custom buildQuery with JOINs or
 	 * field aliases. Please note that you need to make further modifications for bind() and save() to work in this
 	 * case. Please refer to the documentation blocks of these methods for more information. It is generally considered
