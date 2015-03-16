@@ -1226,6 +1226,59 @@ class DataControllerDataprovider
         return $data;
     }
 
+    public static function getTestCheckin()
+    {
+        // Everything works fine, no custom redirect set, getting the id from the request
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'returnurl' => '',
+                    'checkin'   => array(true),
+                    'ids'       => array(3)
+                )
+            ),
+            array(
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'  => null,
+                'type' => null
+            )
+        );
+
+        // Everything works fine, custom redirect set, getting the id from the request
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'returnurl' => 'http://www.example.com/index.php?view=custom',
+                    'checkin'   => array(true),
+                    'ids'       => array(3)
+                )
+            ),
+            array(
+                'url'  => 'http://www.example.com/index.php?view=custom',
+                'msg'  => null,
+                'type' => null
+            )
+        );
+
+        // Trash throws an error, no custom redirect set, getting the id from the request
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'returnurl' => '',
+                    'checkin'   => array('throw'),
+                    'ids'       => array(3)
+                )
+            ),
+            array(
+                'url'  => 'index.php?option=com_fakeapp&view=dummycontrollers',
+                'msg'  => 'Exception in checkin',
+                'type' => 'error'
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestSaveorder()
     {
         $data[] = array(

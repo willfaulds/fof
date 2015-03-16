@@ -664,6 +664,49 @@ class DataControllertest extends DatabaseTest
     }
 
     /**
+     * @covers          FOF30\Controller\DataController::checkin
+     * @dataProvider    DataControllerDataprovider::getTestCheckin
+     */
+    public function testCheckin($test, $check)
+    {
+        $container = new TestContainer(array(
+            'componentName' => 'com_fakeapp',
+            'input' => new Input(array(
+                'returnurl' => $test['mock']['returnurl'] ? base64_encode($test['mock']['returnurl']) : '',
+            ))
+        ));
+
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('checkin'), array($container, $config));
+        $model->expects($this->any())->method('checkin')->willReturnCallback(
+            function() use (&$test)
+            {
+                // Should I return a value or throw an exception?
+                $ret = array_shift($test['mock']['checkin']);
+
+                if($ret === 'throw')
+                {
+                    throw new \Exception('Exception in checkin');
+                }
+
+                return $ret;
+            }
+        );
+
+        $controller = $this->getMock('\\FOF30\\Tests\\Stubs\\Controller\\DataControllerStub', array('csrfProtection', 'getModel', 'getIDsFromRequest', 'setRedirect'), array($container));
+        $controller->expects($this->any())->method('getModel')->willReturn($model);
+        $controller->expects($this->any())->method('getIDsFromRequest')->willReturn($test['mock']['ids']);
+
+        $controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['url']), $this->equalTo($check['msg']), $this->equalTo($check['type']));
+
+        $controller->checkin();
+    }
+
+    /**
      * The best way to test with method is to run it and check vs the database
      *
      * @group           DataControllerSaveOrder
