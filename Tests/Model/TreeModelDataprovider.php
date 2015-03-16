@@ -1676,20 +1676,6 @@ class TreeModelDataprovider
 
     public static function getTestRootException()
     {
-        // Node is not loaded
-        $data[] = array(
-            array(
-                'loadid' => 0,
-                'mock'   => array(
-                    'firstOrFail' => array(false, false)
-                ),
-                'wrongNode' => false
-            ),
-            array(
-                'exception' => 'TreeInvalidLftRgtCurrent'
-            )
-        );
-
         // Can't find any valid root
         $data[] = array(
             array(
@@ -1843,7 +1829,7 @@ class TreeModelDataprovider
                     12 => '   android',
                     13 => '  laptops',
                     14 => '  tablets',
-                    15 => '   apple',
+                    15 => '   apple-1',
                     16 => '   android',
                 )
             )

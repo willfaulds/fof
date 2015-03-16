@@ -22,8 +22,8 @@ class ViewDataprovider
                 ),
                 'baseurl' => 'www.example.com',
                 'engines' => array(
-                    '.php' => 'FOF30\View\Engine\BladeEngine',
-                    '.blade.php' => 'FOF30\View\Engine\PhpEngine'
+                    '.blade.php' => 'FOF30\View\Engine\BladeEngine',
+                    '.php' => 'FOF30\View\Engine\PhpEngine'
                 )
             )
         );
@@ -56,8 +56,8 @@ class ViewDataprovider
                 ),
                 'baseurl' => 'www.example.com',
                 'engines' => array(
-                    '.php' => 'FOF30\View\Engine\BladeEngine',
-                    '.blade.php' => 'FOF30\View\Engine\PhpEngine',
+                    '.blade.php' => 'FOF30\View\Engine\BladeEngine',
+                    '.php' => 'FOF30\View\Engine\PhpEngine',
                     'test' => 'testEngine'
                 )
             )
@@ -89,8 +89,8 @@ class ViewDataprovider
                 ),
                 'baseurl' => 'www.example.com',
                 'engines' => array(
-                    '.php' => 'FOF30\View\Engine\BladeEngine',
-                    '.blade.php' => 'FOF30\View\Engine\PhpEngine',
+                    '.blade.php' => 'FOF30\View\Engine\BladeEngine',
+                    '.php' => 'FOF30\View\Engine\PhpEngine',
                     'test' => 'testEngine',
                     'test2' => 'test2Engine'
                 )
