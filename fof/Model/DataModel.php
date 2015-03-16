@@ -627,7 +627,7 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function tmpInstance()
 	{
-		return parent::tmpInstance()->reset(true, false);
+		return parent::tmpInstance()->reset(true, true);
 	}
 
 	/**
@@ -1616,8 +1616,8 @@ class DataModel extends Model implements \JTableInterface
 	/**
 	 * Eager loads the provided relations and assigns their data to a data collection
 	 *
-	 * @param DataCollection $dataCollection The data collection on which the eager loaded relations will be applied
-	 * @param array|null $relations      The relations to eager load. Leave empty to use the already defined relations
+	 * @param    DataCollection  $dataCollection  The data collection on which the eager loaded relations will be applied
+	 * @param    array|null      $relations       The relations to eager load. Leave empty to use the already defined relations
 	 *
 	 * @return $this for chaining
 	 */
@@ -1972,7 +1972,7 @@ class DataModel extends Model implements \JTableInterface
 	 * Reset the record data
 	 *
 	 * @param   boolean $useDefaults    Should I use the default values? Default: yes
-	 * @param   boolean $resetRelations Should I reset (remove!) the relations too? Default: no
+	 * @param   boolean $resetRelations Should I reset the relations too? Default: no
 	 *
 	 * @return  static  Self, for chaining
 	 */
@@ -1994,7 +1994,7 @@ class DataModel extends Model implements \JTableInterface
 
 		if ($resetRelations)
 		{
-			$this->relationManager->resetRelations();
+			$this->relationManager->resetRelationData();
 			$this->eagerRelations = array();
 		}
 
@@ -2789,10 +2789,13 @@ class DataModel extends Model implements \JTableInterface
 
 		// If we are dealing with the primary key, let's set the field name to "id". This is a convention and it will
 		// be used inside the Filters behaviour
+		// -- Let's not do this. The Filters behaviour works just fine with the regular field name!
+		/**
 		if ($fieldName == $this->getIdFieldName())
 		{
 			$fieldName = 'id';
 		}
+		**/
 
 		$options = array(
 			'method' => $method,

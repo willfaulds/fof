@@ -211,6 +211,19 @@ class RelationManager
 	}
 
 	/**
+	 * Resets the data of all relations in this manager. This doesn't remove relations, just their data so that they
+	 * get loaded again.
+	 */
+	public function resetRelationData()
+	{
+		/** @var Relation $relation */
+		foreach ($this->relations as $relation)
+		{
+			$relation->reset();
+		}
+	}
+
+	/**
 	 * Returns a list of all known relations' names
 	 *
 	 * @return array
