@@ -621,13 +621,13 @@ class DataModel extends Model implements \JTableInterface
 	/**
 	 * Returns a temporary instance of the model. Please note that this returns a _clone_ of the model object, not the
 	 * original object. The new object is set up to not save its stats, ignore the request when getting state variables
-	 * and comes with an empty state. The temporary object instance has its data and relations reset as well.
+	 * and comes with an empty state. The temporary object instance has its data reset as well.
 	 *
 	 * @return  $this
 	 */
 	public function tmpInstance()
 	{
-		return parent::tmpInstance()->reset(true, true);
+		return parent::tmpInstance()->reset(true, false);
 	}
 
 	/**
@@ -1972,7 +1972,7 @@ class DataModel extends Model implements \JTableInterface
 	 * Reset the record data
 	 *
 	 * @param   boolean $useDefaults    Should I use the default values? Default: yes
-	 * @param   boolean $resetRelations Should I reset the relations too? Default: no
+	 * @param   boolean $resetRelations Should I reset (remove!) the relations too? Default: no
 	 *
 	 * @return  static  Self, for chaining
 	 */
