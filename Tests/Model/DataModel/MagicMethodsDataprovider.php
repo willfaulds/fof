@@ -22,7 +22,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Passing id, tablename, autochecks are on, skipchecks fields, alias field and behaviours',
-                'addBehaviour' => 2,
+                'addBehaviour' => 4,
                 'id' => 'foftest_bare_id',
                 'table' => '#__foftest_bares',
                 'fields' => array(
@@ -79,7 +79,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Not passing anything',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'fakeapp_test_id',
                 'table' => '#__fakeapp_tests',
                 'fields' => array(
@@ -147,7 +147,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Passing id, tablename and known fields',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_bare_id',
                 'table' => '#__foftest_bares',
                 'fields' => array(
@@ -192,7 +192,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Setting up fillable fields, no guarded ones',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_bare_id',
                 'table' => '#__foftest_bares',
                 'fields' => null,
@@ -228,7 +228,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Setting up fillable fields, no guarded ones, data in the request',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_bare_id',
                 'table' => '#__foftest_bares',
                 'fields' => null,
@@ -265,7 +265,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Setting up guarded fields, no fillable ones, data in the request',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_bare_id',
                 'table' => '#__foftest_bares',
                 'fields' => null,
@@ -302,7 +302,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Setting up guarded fields AND fillable ones, data in the request',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'id',
                 'table' => '#__foftest_defaults',
                 'fields' => null,
@@ -339,7 +339,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Setting up guarded fields AND fillable ones, data in the request, table with defaults values',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'id',
                 'table' => '#__foftest_defaults',
                 'fields' => null,
@@ -373,7 +373,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Passing a relation - Wrong format',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_parent_id',
                 'table' => '#__foftest_parents',
                 'fields' => null,
@@ -407,7 +407,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Passing a relation - Wrong format',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_parent_id',
                 'table' => '#__foftest_parents',
                 'fields' => null,
@@ -441,7 +441,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Passing a relation - Wrong format',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_parent_id',
                 'table' => '#__foftest_parents',
                 'fields' => null,
@@ -483,7 +483,7 @@ class MagicMethodsDataprovider
             ),
             array(
                 'case' => 'Passing a relation - Correct format',
-                'addBehaviour' => 0,
+                'addBehaviour' => 2,
                 'id' => 'foftest_parent_id',
                 'table' => '#__foftest_parents',
                 'fields' => null,
