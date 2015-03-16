@@ -290,6 +290,12 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
+		// Add extra behaviours
+		foreach (array('Created', 'Modified') as $behaviour)
+		{
+			$this->addBehaviour($behaviour);
+		}
+
 		// Do I have a list of fillable fields?
 		if (isset($config['fillable_fields']) && !empty($config['fillable_fields']))
 		{
@@ -877,7 +883,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return  void
 	 */
-	protected function databaseDataToRecordData()
+	public function databaseDataToRecordData()
 	{
 		foreach ($this->recordData as $name => $value)
 		{
@@ -900,7 +906,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return  array
 	 */
-	protected function recordDataToDatabaseData()
+	public function recordDataToDatabaseData()
 	{
 		$copy = array_merge($this->recordData);
 
@@ -995,46 +1001,6 @@ class DataModel extends Model implements \JTableInterface
 
 		// Get the database object
 		$db = $this->getDbo();
-		$nullDate = $db->getNullDate();
-		$date = new \JDate();
-
-		// Get the user manager for this application and retrieve the user
-		$userId = $this->container->platform->getUser()->id;
-
-		// Is this a locked record?
-		$isLocked = $this->isLocked($userId);
-
-		// Update the created_on / modified_on
-		if ($isNewRecord && $this->hasField('created_on'))
-		{
-			$created_on = $this->getFieldAlias('created_on');
-
-			if (empty($this->$created_on) || ($this->$created_on == $nullDate))
-			{
-				$this->$created_on = $date->toSql(false, $db);
-			}
-		}
-		elseif (!$isNewRecord && $this->hasField('modified_on') && !$isLocked)
-		{
-			$modified_on        = $this->getFieldAlias('modified_on');
-			$this->$modified_on = $date->toSql(false, $db);
-		}
-
-		// Update the created_by / modified_by values if necessary
-		if ($isNewRecord && $this->hasField('created_by'))
-		{
-			$created_by = $this->getFieldAlias('created_by');
-
-			if (empty($this->$created_by))
-			{
-				$this->$created_by = $userId;
-			}
-		}
-		elseif (!$isNewRecord && $this->hasField('modified_by') && !$isLocked)
-		{
-			$modified_by        = $this->getFieldAlias('modified_by');
-			$this->$modified_by = $userId;
-		}
 
 		// Insert or update the record. Note that the object we use for insertion / update is the a copy holding
 		// the transformed data.
@@ -2454,7 +2420,7 @@ class DataModel extends Model implements \JTableInterface
 		{
 			$className = $prefix . '\\' . ucfirst($behaviour);
 
-			if (class_exists($className, true))
+			if (class_exists($className, true) && !$this->behavioursDispatcher->hasObserverClass($className))
 			{
 				/** @var Observer $o */
 				$observer = new $className($this->behavioursDispatcher);
@@ -2462,6 +2428,47 @@ class DataModel extends Model implements \JTableInterface
 
 				return $this;
 			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Removes a behaviour by its name. It will search the following classes, in this order:
+	 * \component_namespace\Model\modelName\Behaviour\behaviourName
+	 * \component_namespace\Model\DataModel\Behaviour\behaviourName
+	 * \FOF30\Model\DataModel\Behaviour\behaviourName
+	 * where:
+	 * component_namespace  is the namespace of the component as defined in the container
+	 * modelName            is the model's name, first character uppercase, e.g. Baz
+	 * behaviourName        is the $behaviour parameter, first character uppercase, e.g. Something
+	 *
+	 * @param   string $behaviour The behaviour's name
+	 *
+	 * @return  $this  Self, for chaining
+	 */
+	public function removeBehaviour($behaviour)
+	{
+		$prefixes = array(
+			$this->container->getNamespacePrefix() . 'Model\\Behaviour\\' . ucfirst($this->getName()),
+			$this->container->getNamespacePrefix() . 'Model\\Behaviour',
+			'\\FOF30\\Model\\DataModel\\Behaviour',
+		);
+
+		foreach ($prefixes as $prefix)
+		{
+			$className = $prefix . '\\' . ucfirst($behaviour);
+
+			$observer = $this->behavioursDispatcher->getObserverByClass($className);
+
+			if (is_null($observer))
+			{
+				continue;
+			}
+
+			$this->behavioursDispatcher->detach($observer);
+
+			return $this;
 		}
 
 		return $this;

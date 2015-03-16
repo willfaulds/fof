@@ -145,13 +145,30 @@ class Dispatcher implements Observable
 	/**
 	 * Is there an observer of the specified class already registered with this dispatcher?
 	 *
-	 * @param   string  $className  The observer classname to check if it's attached
+	 * @param   string  $className  The observer class name to check if it's attached
 	 *
 	 * @return  boolean
 	 */
 	public function hasObserverClass($className)
 	{
 		return isset($this->observers[$className]);
+	}
+
+	/**
+	 * Returns an observer attached to this behaviours dispatcher by its class name
+	 *
+	 * @param   string  $className  The class name of the observer object to return
+	 *
+	 * @return  null|Observer
+	 */
+	public function getObserverByClass($className)
+	{
+		if (!$this->hasObserverClass($className))
+		{
+			return null;
+		}
+
+		return $this->observers[$className];
 	}
 
 	/**
