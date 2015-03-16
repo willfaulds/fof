@@ -1433,7 +1433,7 @@ class View
 	 *
 	 * @return  $this  Self, for chaining
 	 */
-	public function addLess($uri, $cssUri, $version, $type = 'text/css', $media = null, $attribs = array())
+	public function addLess($uri, $cssUri, $version = null, $type = 'text/css', $media = null, $attribs = array())
 	{
 		// Add an automatic version if $version is null. For no version parameter pass an empty string to $version.
 		if (is_null($version))
