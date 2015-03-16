@@ -81,6 +81,7 @@ class DispatcherTest extends FOFTestCase
 			array('some', 'NOPE', 'thing', 'Existing option must be read correctly'),
 			array('foo', 'NOPE', 'bar', 'Existing option must be read correctly'),
 			array('godzilla', 'narf', 'narf', 'Non-existing option must return default value'),
+            array('*', '', array('some' => 'thing', 'foo' => 'bar'), 'Retrieving all the options')
 		);
 	}
 }
