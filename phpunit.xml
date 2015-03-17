@@ -23,7 +23,10 @@
                 <file>fof/Event/Observable.php</file>
                 <directory suffix=".php">fof/Less</directory>
                 <directory suffix=".php">fof/Platform/Base</directory>
+                <directory suffix=".php">fof/Pimple</directory>
                 <file>fof/Utils/helpers.php</file>
+                <file>fof/Utils/CacheCleaner.php</file>
+                <file>fof/Utils/InstallScript.php</file>
                 <file>fof/Utils/Phpfunc.php</file>
 
                 <directory suffix=".php">Tests</directory>
@@ -37,6 +40,7 @@
                 <!-- Exclude packages that are impossible to test -->
                 <directory suffix=".php">fof/Form</directory>
                 <directory suffix=".php">fof/Render</directory>
+                <directory suffix=".php">fof/Update</directory>
 
                 <!-- Exclude interfaces from code coverage -->
                 <file>fof/Configuration/Domain/DomainInterface.php</file>
