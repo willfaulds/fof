@@ -540,9 +540,15 @@ class Container extends ContainerBase
 		     !($this['input'] instanceof \FOF30\Input\Input) ||
 		     !($this['input'] instanceof \JInput))
 		) {
+			// This swap is necessary to prevent infinite recursion
+			$this['rawInputData'] = array_merge($this['input']);
+			unset($this['input']);
+
 			$this['input'] = function (Container $c)
 			{
-				return new \FOF30\Input\Input($c['input']);
+				$input = new \FOF30\Input\Input($c['rawInputData']);
+				unset($c['rawInputData']);
+				return $input;
 			};
 		}
 
