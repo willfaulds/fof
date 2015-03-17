@@ -195,6 +195,75 @@ class ToolbarDataprovider
         return $data;
     }
 
+    public static function getTestOnCpanelsBrowse()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isAdmin'  => true,
+                    'dataView' => false
+                ),
+                'submenu' => false,
+                'buttons' => false
+            ),
+            array(
+                'case' => 'On backend, no dataview',
+                'submenu' => true,
+                'methods' => array('title' => 1)
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isAdmin'  => true,
+                    'dataView' => true
+                ),
+                'submenu' => false,
+                'buttons' => false
+            ),
+            array(
+                'case' => 'On backend, is a dataview',
+                'submenu' => true,
+                'methods' => array('title' => 1, 'preferences' => 1)
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isAdmin'  => false,
+                    'dataView' => false
+                ),
+                'submenu' => false,
+                'buttons' => false
+            ),
+            array(
+                'case' => 'No admin, no buttons',
+                'submenu' => false,
+                'methods' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isAdmin'  => false,
+                    'dataView' => false
+                ),
+                'submenu' => true,
+                'buttons' => false
+            ),
+            array(
+                'case' => 'On frontend, with submenu',
+                'submenu' => true,
+                'methods' => array()
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestIsDataView()
     {
         $data[] = array(

@@ -98,6 +98,33 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\Toolbar\Toolbar::onCpanelsBrowse
+     * @dataProvider    ToolbarDataprovider::getTestOnCpanelsBrowse
+     */
+    public function testOnCpanelsBrowse($test, $check)
+    {
+        $msg = 'Toolbar::onCpanelsBrowse %s - Case: '.$check['case'];
+
+        \JToolbarHelper::resetMethods();
+
+        $platform = static::$container->platform;
+        $platform::$isAdmin = $test['mock']['isAdmin'];
+
+        $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('renderSubmenu', 'isDataView'), array(static::$container));
+        $toolbar->expects($check['submenu'] ? $this->once() : $this->never())->method('renderSubmenu');
+        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+
+        ReflectionHelper::setValue($toolbar, 'renderFrontendSubmenu', $test['submenu']);
+        ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
+
+        $toolbar->onCpanelsBrowse();
+
+        $methods = \JToolbarHelper::$methodCounter;
+
+        $this->assertEquals($check['methods'], $methods, sprintf($msg, 'Failed to invoke JToolbar methods'));
+    }
+
+    /**
      * @covers          FOF30\Toolbar\Toolbar::getRenderFrontendButtons
      */
     public function testGetRenderFrontendButtons()
