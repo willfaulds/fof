@@ -282,6 +282,25 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\Toolbar\Toolbar::appendLink
+     * @dataProvider    ToolbarDataprovider::getTestAppendLink
+     */
+    public function testAppendLink($test, $check)
+    {
+        $msg = 'Toolbar::appendLink %s - Case: '.$check['case'];
+
+        $toolbar = new ToolbarStub(static::$container);
+
+        ReflectionHelper::setValue($toolbar, 'linkbar', $test['mock']['linkbar']);
+
+        $toolbar->appendLink($test['name'], $test['link'], $test['active'], $test['icon'], $test['parent']);
+
+        $linkbar = ReflectionHelper::getValue($toolbar, 'linkbar');
+
+        $this->assertEquals($check['linkbar'], $linkbar, sprintf($msg, 'Failed to correctly build the links'));
+    }
+
+    /**
      * @covers          FOF30\Toolbar\Toolbar::getRenderFrontendButtons
      */
     public function testGetRenderFrontendButtons()

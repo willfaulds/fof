@@ -675,6 +675,197 @@ class ToolbarDataprovider
         return $data;
     }
 
+    public static function getTestAppendLink()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'linkbar' => array()
+                ),
+                'name'   => 'foobar',
+                'link'   => null,
+                'active' => false,
+                'icon'   => null,
+                'parent' => ''
+            ),
+            array(
+                'case'    => 'No parent link, no links with the same name',
+                'linkbar' => array(
+                    'foobar' => array('name' => 'foobar', 'link' => null, 'active' => false, 'icon' => null)
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'linkbar' => array(
+                        'foobar' => array('name' => 'foobar', 'link' => null, 'active' => false, 'icon' => null)
+                    )
+                ),
+                'name'   => 'foobar',
+                'link'   => 'new_link',
+                'active' => false,
+                'icon'   => null,
+                'parent' => ''
+            ),
+            array(
+                'case'    => 'No parent link, link with the same name',
+                'linkbar' => array(
+                    'foobar' => array('name' => 'foobar', 'link' => 'new_link', 'active' => false, 'icon' => null)
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'linkbar' => array(
+                        'foobar' => array('name' => 'foobar', 'link' => null, 'active' => false, 'icon' => null,
+                                          'items' => array('some values'))
+                    )
+                ),
+                'name'   => 'foobar',
+                'link'   => 'new_link',
+                'active' => false,
+                'icon'   => null,
+                'parent' => ''
+            ),
+            array(
+                'case'    => 'No parent link, link with the same name and with some children',
+                'linkbar' => array(
+                    'foobar' => array(
+                        'name'   => 'foobar',
+                        'link'   => 'new_link',
+                        'active' => false,
+                        'icon'   => null,
+                        'items' => array(
+                            array('name' => 'foobar', 'link' => 'new_link', 'active' => false, 'icon' => null),
+                            'some values'
+                        )
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'linkbar' => array()
+                ),
+                'name'   => 'foobar',
+                'link'   => null,
+                'active' => true,
+                'icon'   => null,
+                'parent' => 'parent'
+            ),
+            array(
+                'case'    => 'With parent link, no links with the same name',
+                'linkbar' => array(
+                    'parent' => array(
+                        'name'   => 'parent',
+                        'link'   => null,
+                        'active' => true,
+                        'icon'   => null,
+                        'items'  => array(
+                            array('name' => 'foobar', 'link' => null, 'active' => true, 'icon' => null),
+                        ),
+                        'dropdown' => 1
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'linkbar' => array(
+                        'parent' => array(
+                            'name'   => 'parent',
+                            'link'   => null,
+                            'active' => true,
+                            'icon'   => null,
+                            'items'  => array(
+                                array('name' => 'foobar', 'link' => null, 'active' => true, 'icon' => null),
+                            ),
+                            'dropdown' => 1
+                        )
+                    )
+                ),
+                'name'   => 'dummy',
+                'link'   => null,
+                'active' => true,
+                'icon'   => null,
+                'parent' => 'parent'
+            ),
+            array(
+                'case'    => 'With parent link, parent already exists',
+                'linkbar' => array(
+                    'parent' => array(
+                        'name'   => 'parent',
+                        'link'   => null,
+                        'active' => true,
+                        'icon'   => null,
+                        'items'  => array(
+                            array('name' => 'foobar', 'link' => null, 'active' => true, 'icon' => null),
+                            array('name' => 'dummy', 'link' => null, 'active' => true, 'icon' => null),
+                        ),
+                        'dropdown' => 1
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'linkbar' => array(
+                        'parent' => array(
+                            'name'   => 'parent',
+                            'link'   => 'some link',
+                            'active' => true,
+                            'icon'   => null,
+                            'items'  => array(
+                                array('name' => 'foobar', 'link' => null, 'active' => true, 'icon' => null),
+                            )
+                        )
+                    )
+                ),
+                'name'   => 'dummy',
+                'link'   => null,
+                'active' => true,
+                'icon'   => null,
+                'parent' => 'parent'
+            ),
+            array(
+                'case'    => 'With parent link, parent already exists with a link and no dropdown',
+                'linkbar' => array(
+                    'parent' => array(
+                        'name'   => 'parent',
+                        'link'   => 'some link',
+                        'active' => true,
+                        'icon'   => null,
+                        'items'  => array(
+                            array(
+                                'name'   => 'parent',
+                                'link'   => 'some link',
+                                'active' => true,
+                                'icon'   => null,
+                                'items'  => array(
+                                    array('name' => 'foobar', 'link' => null, 'active' => true, 'icon' => null),
+                                )
+                            ),
+                            array('name' => 'dummy', 'link' => null, 'active' => true, 'icon' => null),
+                        ),
+                        'dropdown' => 1
+                    )
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestIsDataView()
     {
         $data[] = array(
