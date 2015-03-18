@@ -8,9 +8,11 @@
 namespace FOF30\Tests\Toolbar;
 
 use FOF30\Input\Input;
+use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 use FOF30\Tests\Helpers\TestContainer;
+use FOF30\Tests\Stubs\Model\DataModelStub;
 use FOF30\Tests\Stubs\Toolbar\ToolbarStub;
 use FOF30\Toolbar\Toolbar;
 
@@ -122,6 +124,161 @@ class ToolbarTest extends FOFTestCase
         $methods = \JToolbarHelper::$methodCounter;
 
         $this->assertEquals($check['methods'], $methods, sprintf($msg, 'Failed to invoke JToolbar methods'));
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::onBrowse
+     * @dataProvider    ToolbarDataprovider::getTestOnBrowse
+     */
+    public function testOnBrowse($test, $check)
+    {
+        $msg = 'Toolbar::onBrowse %s - Case: '.$check['case'];
+
+        \JToolbarHelper::resetMethods();
+
+        $TestContainer = static::$container;
+        $options       = array();
+
+        if($test['model'])
+        {
+            $options['factory'] = new ClosureHelper(array(
+                'model' => function() use ($test, $TestContainer){
+
+                    if($test['model'] == 'checkin'){
+                        $config = array(
+                            'idFieldName' => 'foftest_foobar_id',
+                            'tableName'   => '#__foftest_foobars'
+                        );
+                    }
+                    else{
+                        $config = array(
+                            'idFieldName' => 'foftest_bare_id',
+                            'tableName'   => '#__foftest_bares'
+                        );
+                    }
+
+                    return new DataModelStub($TestContainer, $config);
+                }
+            ));
+        }
+
+        $container = new TestContainer($options);
+
+        $platform = $container->platform;
+        $platform::$isAdmin = $test['mock']['isAdmin'];
+
+        $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('renderSubmenu', 'isDataView'), array($container));
+        $toolbar->expects($check['submenu'] ? $this->once() : $this->never())->method('renderSubmenu');
+        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+
+        ReflectionHelper::setValue($toolbar, 'renderFrontendSubmenu', $test['submenu']);
+        ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
+        ReflectionHelper::setValue($toolbar, 'perms', (object) $test['perms']);
+
+        $toolbar->onBrowse();
+
+        $methods = \JToolbarHelper::$methodCounter;
+
+        $this->assertEquals($check['methods'], $methods, sprintf($msg, 'Failed to invoke JToolbar methods'));
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::onRead
+     * @dataProvider    ToolbarDataprovider::getTestOnRead
+     */
+    public function testOnRead($test, $check)
+    {
+        $msg = 'Toolbar::onRead %s - Case: '.$check['case'];
+
+        \JToolbarHelper::resetMethods();
+
+        $platform = static::$container->platform;
+        $platform::$isAdmin = $test['mock']['isAdmin'];
+
+        $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('renderSubmenu', 'isDataView'), array(static::$container));
+        $toolbar->expects($check['submenu'] ? $this->once() : $this->never())->method('renderSubmenu');
+        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+
+        ReflectionHelper::setValue($toolbar, 'renderFrontendSubmenu', $test['submenu']);
+        ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
+
+        $toolbar->onRead();
+
+        $methods = \JToolbarHelper::$methodCounter;
+
+        $this->assertEquals($check['methods'], $methods, sprintf($msg, 'Failed to invoke JToolbar methods'));
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::onAdd
+     * @dataProvider    ToolbarDataprovider::getTestOnAdd
+     */
+    public function testOnAdd($test, $check)
+    {
+        $msg = 'Toolbar::onAdd %s - Case: '.$check['case'];
+
+        \JToolbarHelper::resetMethods();
+
+        $platform = static::$container->platform;
+        $platform::$isAdmin = $test['mock']['isAdmin'];
+
+        $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('isDataView'), array(static::$container));
+        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+
+        ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
+        ReflectionHelper::setValue($toolbar, 'perms', (object) $test['perms']);
+
+        $toolbar->onAdd();
+
+        $methods = \JToolbarHelper::$methodCounter;
+
+        $this->assertEquals($check['methods'], $methods, sprintf($msg, 'Failed to invoke JToolbar methods'));
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::onEdit
+     * @dataProvider    ToolbarDataprovider::getTestOnEdit
+     */
+    public function testOnEdit($test, $check)
+    {
+        $platform = static::$container->platform;
+        $platform::$isAdmin = $test['mock']['isAdmin'];
+
+        $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('onAdd'), array(static::$container));
+        $toolbar->expects($check['onAdd'] ? $this->once() : $this->never())->method('onAdd');
+
+        ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
+
+        $toolbar->onEdit();
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::clearLinks
+     */
+    public function testClearLinks()
+    {
+        $toolbar = new ToolbarStub(static::$container);
+
+        ReflectionHelper::setValue($toolbar, 'linkbar', array(1,2,3));
+
+        $toolbar->clearLinks();
+
+        $this->assertEmpty(ReflectionHelper::getValue($toolbar, 'linkbar'));
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::getLinks
+     */
+    public function testGetLinks()
+    {
+        $toolbar = new ToolbarStub(static::$container);
+        $links   = array(1,2,3);
+
+        ReflectionHelper::setValue($toolbar, 'linkbar', $links);
+
+        $result = $toolbar->getLinks();
+
+        $this->assertEquals($links, $result);
     }
 
     /**
