@@ -125,7 +125,7 @@ class lib_fof30InstallerScript
 		/** @var JInstaller $grandpa */
 		$grandpa = $parent->getParent();
 		$src = $grandpa->getPath('source');
-		$sqlSource = $src . '/sql';
+		$sqlSource = $src . '/fof/sql';
 
 		$dbInstaller = new FOF30\Database\Installer($db, $sqlSource);
 		$dbInstaller->updateSchema();
@@ -175,8 +175,6 @@ class lib_fof30InstallerScript
 
 		$target = JPATH_LIBRARIES . '/fof30';
 
-		$haveToInstallFOF = true;
-
 		// If FOF is not really installed (someone removed the directory instead of uninstalling?) I have to install it.
 		if (!JFolder::exists($target))
 		{
@@ -211,7 +209,7 @@ class lib_fof30InstallerScript
 			'date'    => new JDate(trim($info[1]))
 		);
 
-		$haveToInstallFOF = $fofVersion['package']['date']->toUNIX() > $fofVersion['installed']['date']->toUNIX();
+		$haveToInstallFOF = $fofVersion['package']['date']->toUNIX() >= $fofVersion['installed']['date']->toUNIX();
 
 		return $haveToInstallFOF;
 	}
