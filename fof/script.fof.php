@@ -7,7 +7,7 @@
 
 defined('_JEXEC') or die();
 
-class lib_fofInstallerScript
+class lib_fof30InstallerScript
 {
 	/**
 	 * The minimum PHP version required to install this extension
@@ -21,7 +21,7 @@ class lib_fofInstallerScript
 	 *
 	 * @var   string
 	 */
-	protected $minimumJoomlaVersion = '3.2.1';
+	protected $minimumJoomlaVersion = '3.3.0';
 
 	/**
 	 * The maximum Joomla! version this extension can be installed on
@@ -108,9 +108,9 @@ class lib_fofInstallerScript
 	 * database updates and similar housekeeping functions.
 	 *
 	 * @param   string                $type   install, update or discover_update
-	 * @param   JInstallerAdapterFile $parent Parent object
+	 * @param   JInstallerAdapterLibrary $parent Parent object
 	 */
-	public function postflight($type, JInstallerAdapterFile $parent)
+	public function postflight($type, JInstallerAdapterLibrary $parent)
 	{
 		$this->loadFOF30();
 
@@ -138,11 +138,11 @@ class lib_fofInstallerScript
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param   JInstallerAdapterFile $parent The parent object
+	 * @param   JInstallerAdapterLibrary $parent The parent object
 	 *
 	 * @throws  RuntimeException  If the uninstallation is not allowed
 	 */
-	public function uninstall(JInstallerAdapterFile $parent)
+	public function uninstall(JInstallerAdapterLibrary $parent)
 	{
 		// Check dependencies on FOF
 		$dependencyCount = count($this->getDependencies('fof30'));
@@ -162,11 +162,11 @@ class lib_fofInstallerScript
 	 * Is this package an update to the currently installed FOF? If not (we're a downgrade) we will return false
 	 * and prevent the installation from going on.
 	 *
-	 * @param   \JInstallerAdapterComponent $parent The parent object
+	 * @param   JInstallerAdapterLibrary $parent The parent object
 	 *
 	 * @return  array  The installation status
 	 */
-	protected function amIAnUpdate(JInstallerAdapterFile $parent)
+	protected function amIAnUpdate(JInstallerAdapterLibrary $parent)
 	{
 		/** @var JInstaller $grandpa */
 		$grandpa = $parent->getParent();

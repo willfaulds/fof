@@ -4,21 +4,21 @@
 	<libraryname>fof30</libraryname>
 	<description>
 		<![CDATA[
-		Framework-on-Framework (FOF) 3.0 - The rapid component development framework for Joomla!.<br/>
-		<b>WARNING</b>: This is NOT a duplicate of the FOF library already installed with Joomla!. Do NOT uninstall the FOF package, it will break your site. Do NOT uninstall this package either; it is automatically uninstalled when no other extension is using it.
+		Framework-on-Framework (FOF) 3.x - The rapid application development framework for Joomla!.<br/>
+		<b>WARNING</b>: This is NOT a duplicate of the FOF library already installed with Joomla!. It is a different version used by other extensions on your site. Do NOT uninstall either FOF package. If you do you will break your site.
 		]]>
 	</description>
 	<creationDate>##DATE##</creationDate>
 	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
 	<authorUrl>https://www.akeebabackup.com</authorUrl>
-	<copyright>(C)2011-2014 Nicholas K. Dionysopoulos</copyright>
+	<copyright>(C)2011-2015 Nicholas K. Dionysopoulos</copyright>
 	<license>GNU GPLv2 or later</license>
 	<version>##VERSION##</version>
 	<packager>Akeeba Ltd</packager>
 	<packagerurl>https://www.AkeebaBackup.com/download.html</packagerurl>
 
-    <languages folder="language">
+    <languages folder="fof/language">
         <language tag="en-GB">en-GB/en-GB.lib_fof30.ini</language>
     </languages>
 
