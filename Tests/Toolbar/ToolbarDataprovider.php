@@ -866,6 +866,41 @@ class ToolbarDataprovider
         return $data;
     }
 
+    public static function getTestRenderSubmenu()
+    {
+        $data[] = array(
+            array(
+                'input' => array(),
+                'myviews' => array()
+            ),
+            array(
+                'case' => 'MyView returns empty',
+                'links' => array()
+            )
+        );
+
+        $data[] = array(
+            array(
+                'input' => array(
+                    'view' => 'items'
+                ),
+                'myviews' => array(
+                    'foobars',
+                    'items'
+                )
+            ),
+            array(
+                'case' => 'We have some views',
+                'links' => array(
+                    array('Foobars', 'index.php?option=com_fakeapp&view=foobars', null),
+                    array('Items', 'index.php?option=com_fakeapp&view=items', true),
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestIsDataView()
     {
         $data[] = array(

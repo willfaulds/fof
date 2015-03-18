@@ -301,6 +301,49 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @covers          FOF30\Toolbar\Toolbar::prefixLink
+     */
+    public function testPrefixLink()
+    {
+        $toolbar = new ToolbarStub(static::$container);
+
+        ReflectionHelper::setValue($toolbar, 'linkbar', array('some', 'links'));
+
+        $link = array('name' => 'foobar', 'link' => null, 'active' => false, 'icon' => '');
+
+        $toolbar->prefixLink('foobar');
+
+        $linkbar = ReflectionHelper::getValue($toolbar, 'linkbar');
+
+        $this->assertEquals($link, array_shift($linkbar));
+    }
+
+    /**
+     * @covers          FOF30\Toolbar\Toolbar::renderSubmenu
+     * @dataProvider    ToolbarDataprovider::getTestRenderSubmenu
+     */
+    public function testRenderSubmenu($test, $check)
+    {
+        $msg     = 'Toolbar::renderSubmenu %s - Case: '.$check['case'];
+        $checker = array();
+
+        $container = new TestContainer(array(
+            'input' => new Input($test['input'])
+        ));
+
+        $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('getMyViews', 'appendLink'), array($container));
+        $toolbar->expects($this->any())->method('getMyViews')->willReturn($test['myviews']);
+        $toolbar->expects($this->any())->method('appendLink')
+            ->willReturnCallback(function($name, $link, $active) use(&$checker){
+                $checker[] = array($name, $link, $active);
+        });
+
+        $toolbar->renderSubmenu();
+
+        $this->assertEquals($check['links'], $checker, sprintf($msg, 'Failed to create the links'));
+    }
+
+    /**
      * @covers          FOF30\Toolbar\Toolbar::getRenderFrontendButtons
      */
     public function testGetRenderFrontendButtons()
