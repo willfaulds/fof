@@ -58,4 +58,8 @@
 
 	<!-- Installation / uninstallation script file -->
 	<scriptfile>script.fof.php</scriptfile>
+
+    <updateservers>
+        <server type="extension" priority="1" name="FOF 3.x">http://cdn.akeebabackup.com/updates/fof3.xml</server>
+    </updateservers>
 </extension>
