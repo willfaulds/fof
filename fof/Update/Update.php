@@ -92,13 +92,30 @@ class Update extends Model
 			$this->updateSiteName = $config['update_sitename'];
 		}
 
+		// Get the extension type
+		list($extensionPrefix, $extensionName) = explode('_', $this->component);
+
+		switch ($extensionPrefix)
+		{
+			default:
+			case 'com':
+				$type = 'component';
+				$name = $this->component;
+				break;
+
+			case 'pkg':
+				$type = 'package';
+				$name = $this->component;
+				break;
+		}
+
 		// Find the extension ID
 		$db = $this->container->db;
 		$query = $db->getQuery(true)
 		            ->select('*')
 		            ->from($db->qn('#__extensions'))
-		            ->where($db->qn('type') . ' = ' . $db->q('component'))
-		            ->where($db->qn('element') . ' = ' . $db->q($this->component));
+		            ->where($db->qn('type') . ' = ' . $db->q($type))
+		            ->where($db->qn('element') . ' = ' . $db->q($name));
 		$db->setQuery($query);
 		$extension = $db->loadObject();
 
