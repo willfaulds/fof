@@ -3,17 +3,17 @@
 	<property file="./build.properties" />
 	
 	<!-- Default properties, set only if not already assigned in the build.properties file -->
-	<property name="dirs.root" value=".." />
-	<property name="dirs.library" value="../fof" />
-	<property name="dirs.plugins" value="../plugins" />
-	<property name="dirs.release" value="../release" />
+	<property name="dirs.root" value="${phing.dir}/.." />
+	<property name="dirs.library" value="${dirs.root}/fof" />
+	<property name="dirs.plugins" value="${dirs.root}/plugins" />
+	<property name="dirs.release" value="${dirs.root}/release" />
 	<property name="version" value="dev" />
 
 	<property name="dirs.bin" value="bin" />
 	<property name="dirs.bin.libxml" value="${dirs.bin}/libxml" />
 	<property name="dirs.bin.fop" value="${dirs.bin}/fop" />
 	<property name="dirs.bin.dbxsl" value="${dirs.bin}/dbxsl" />
-	<property name="dirs.bin.release" value="../release" />
+	<property name="dirs.bin.release" value="${phing.dir}/../release" />
 
 	<taskdef name="zipme" classname="phingext.ZipmeTask" />
 	<taskdef name="gitversion" classname="phingext.GitVersionTask" />
