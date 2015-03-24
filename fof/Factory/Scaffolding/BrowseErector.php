@@ -259,7 +259,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 
 				try
 				{
-					$model->getRelations()->getRelation($parts[0]);
+					$model->getRelations()->getRelation($foreignName);
 
 					$this->applyRelationField($model, $headerSet, $fieldSet, $fieldName);
 
