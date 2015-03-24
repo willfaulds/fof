@@ -657,7 +657,7 @@ class Form extends JForm
 		// First try to find the namespaced class
 		foreach ($namespacedPrefixes as $prefix)
 		{
-			$class = $prefix . 'Form\\' . ucfirst($entity) . '\\' . ucfirst($type);
+			$class = rtrim($prefix, '\\') . '\\Form\\' . ucfirst($entity) . '\\' . ucfirst($type);
 
 			if (class_exists($class, true))
 			{
