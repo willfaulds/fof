@@ -26,49 +26,39 @@ class Ordering extends Field
 	{
 		$sortable = ($this->element['sortable'] != 'false');
 
-		$view = $this->form->getView();
-		$model = $this->form->getModel();
-
-		$hasAjaxOrderingSupport = $view->hasAjaxOrderingSupport();
-
 		if (!$sortable)
 		{
 			// Non sortable?! I'm not sure why you'd want that, but if you insist...
 			return JText::_('JGRID_HEADING_ORDERING');
 		}
 
-		if (!$hasAjaxOrderingSupport)
+		$iconClass = isset($this->element['iconClass']) ? (string) $this->element['iconClass'] : 'icon-menu-2';
+		$class     = isset($this->element['class']) ? (string) $this->element['class'] : 'btn btn-micro pull-right';
+
+		$view  = $this->form->getView();
+		$model = $this->form->getModel();
+
+		// Drag'n'drop ordering support WITH a save order button
+		$html = JHtml::_(
+			'grid.sort',
+			'<i class="' . $iconClass . '"></i>',
+			'ordering',
+			$view->getLists()->order_Dir,
+			$view->getLists()->order,
+			null,
+			'asc',
+			'JGRID_HEADING_ORDERING'
+		);
+
+		$ordering = $view->getLists()->order == 'ordering';
+
+		if ($ordering)
 		{
-			// Ye olde Joomla! 2.5 method
-			$html = JHTML::_('grid.sort', 'JFIELD_ORDERING_LABEL', 'ordering', $view->getLists()->order_Dir, $view->getLists()->order, 'browse');
-			$html .= JHTML::_('grid.order', $model->get());
-
-			return $html;
+			$html .= '<a href="javascript:saveorder(' . (count($model->get()) - 1) . ', \'saveorder\')" ' .
+				'rel="tooltip" class="save-order ' . $class . '" title="' . JText::_('JLIB_HTML_SAVE_ORDER') . '">'
+				. '<span class="icon-ok"></span></a>';
 		}
-		else
-		{
-			// The new, drag'n'drop ordering support WITH a save order button
-			$html = JHtml::_(
-				'grid.sort',
-				'<i class="icon-menu-2"></i>',
-				'ordering',
-				$view->getLists()->order_Dir,
-				$view->getLists()->order,
-				null,
-				'asc',
-				'JGRID_HEADING_ORDERING'
-			);
 
-			$ordering = $view->getLists()->order == 'ordering';
-
-			if ($ordering)
-			{
-				$html .= '<a href="javascript:saveorder(' . (count($model->get()) - 1) . ', \'saveorder\')" ' .
-					'rel="tooltip" class="save-order btn btn-micro pull-right" title="' . JText::_('JLIB_HTML_SAVE_ORDER') . '">'
-					. '<span class="icon-ok"></span></a>';
-			}
-
-			return $html;
-		}
+		return $html;
 	}
 }
