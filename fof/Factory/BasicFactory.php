@@ -214,13 +214,13 @@ class BasicFactory implements FactoryInterface
 	 *
 	 * @throws  \RuntimeException If the form exists but cannot be loaded
 	 */
-    public function form($name, $source, $viewName = null, array $options = array(), $replace = true, $xpath = false)
+    public function form($name, $source, $viewName, array $options = array(), $replace = true, $xpath = false)
 	{
 		// Get a new form instance
 		$form = new Form($this->container, $name, $options);
 
 		// If $source looks like raw XML data, parse it directly
-		if (strpos($source, '<form ') !== false)
+		if (strpos($source, '<form') !== false)
 		{
 			if ($form->load($source, $replace, $xpath) === false)
 			{
