@@ -271,4 +271,129 @@ class BasicFactoryDataprovider
 
         return $data;
     }
+
+    public static function getTestForm()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'formFilename' => false,
+                    'scaffolding'  => false
+                ),
+                'name' => 'item',
+                'source' => 'form.default',
+                'view' => 'children',
+                'options' => array(),
+                'replace' => true,
+                'xpath' => false
+            ),
+            array(
+                'case'   => 'No scaffolding, no filename, source is the name of the form',
+                'result' => null,
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'formFilename' => false,
+                    'scaffolding'  => true
+                ),
+                'name' => 'item',
+                'source' => 'form.default',
+                'view' => 'children',
+                'options' => array(),
+                'replace' => true,
+                'xpath' => false
+            ),
+            array(
+                'case'   => 'With scaffolding, no filename, source is the name of the form',
+                'result' => true,
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'formFilename' => JPATH_TESTS.'/_data/form/form.default.xml',
+                    'scaffolding'  => true
+                ),
+                'name' => 'item',
+                'source' => 'form.default',
+                'view' => 'children',
+                'options' => array(),
+                'replace' => true,
+                'xpath' => false
+            ),
+            array(
+                'case'   => 'With scaffolding, with filename, source is the name of the form',
+                'result' => true,
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'formFilename' => 'wrong_path',
+                    'scaffolding'  => true
+                ),
+                'name' => 'item',
+                'source' => 'form.default',
+                'view' => 'children',
+                'options' => array(),
+                'replace' => true,
+                'xpath' => false
+            ),
+            array(
+                'case'      => 'With scaffolding, with filename (not existing), source is the name of the form',
+                'result'    => true,
+                'exception' => 'FOF30\Factory\Exception\FormLoadFile'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'formFilename' => 'wrong_path',
+                    'scaffolding'  => true
+                ),
+                'name' => 'item',
+                'source' => file_get_contents(JPATH_TESTS.'/_data/form/form.default.xml'),
+                'view' => 'children',
+                'options' => array(),
+                'replace' => true,
+                'xpath' => false
+            ),
+            array(
+                'case'      => 'With scaffolding, no filename, source is a correct string',
+                'result'    => true,
+                'exception' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'formFilename' => 'wrong_path',
+                    'scaffolding'  => true
+                ),
+                'name' => 'item',
+                'source' => '<form this is simply wrong',
+                'view' => 'children',
+                'options' => array(),
+                'replace' => true,
+                'xpath' => false
+            ),
+            array(
+                'case'      => 'With scaffolding, no filename, source is a malformed string',
+                'result'    => true,
+                'exception' => 'FOF30\Factory\Exception\FormLoadData'
+            )
+        );
+
+        return $data;
+    }
 }

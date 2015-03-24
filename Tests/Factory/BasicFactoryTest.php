@@ -238,6 +238,37 @@ class BasicFactoryTest extends FOFTestCase
 
     /**
      * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::form
+     * @dataProvider    BasicFactoryDataprovider::getTestForm
+     */
+    public function testForm($test, $check)
+    {
+        $msg  = 'BasicFactory::form %s - Case: '.$check['case'];
+
+        $factory = $this->getMock('FOF30\Factory\BasicFactory', array('getFormFilename'), array(static::$container));
+        $factory->expects($this->any())->method('getFormFilename')->willReturn($test['mock']['formFilename']);
+
+        ReflectionHelper::setValue($factory, 'scaffolding', $test['mock']['scaffolding']);
+
+        if($check['exception'])
+        {
+            $this->setExpectedException($check['exception']);
+        }
+
+        $result = $factory->form($test['name'], $test['source'], $test['view'], $test['options'], $test['replace'], $test['xpath']);
+
+        if(is_null($check['result']))
+        {
+            $this->assertNull($result, sprintf($msg, 'Returned the wrong result'));
+        }
+        else
+        {
+            $this->assertInstanceOf('FOF30\Form\Form', $result, sprintf($msg, 'Returned the wrong result'));
+        }
+    }
+
+    /**
+     * @group           BasicFactory
      * @covers          FOF30\Factory\BasicFactory::isScaffolding
      */
     public function testIsScaffolding()
