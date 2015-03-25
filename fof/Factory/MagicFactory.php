@@ -105,7 +105,7 @@ class MagicFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 */
-	function toolbar(array $config = array())
+	public function toolbar(array $config = array())
 	{
 		$appConfig = $this->container->appConfig;
 
@@ -120,7 +120,7 @@ class MagicFactory extends BasicFactory implements FactoryInterface
 		return parent::toolbar($config);
 	}
 
-	function dispatcher(array $config = array())
+    public function dispatcher(array $config = array())
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
 
@@ -144,7 +144,7 @@ class MagicFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  TransparentAuthentication
 	 */
-	function transparentAuthentication(array $config = array())
+    public function transparentAuthentication(array $config = array())
 	{
 		$authClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
 
