@@ -10,6 +10,8 @@ namespace FOF30\Tests\Factory;
 use FOF30\Factory\BasicFactory;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\TestContainer;
+use FOF30\Tests\Stubs\View\ViewStub;
 
 require_once 'BasicFactoryDataprovider.php';
 
@@ -265,6 +267,39 @@ class BasicFactoryTest extends FOFTestCase
         {
             $this->assertInstanceOf('FOF30\Form\Form', $result, sprintf($msg, 'Returned the wrong result'));
         }
+    }
+
+    /**
+     * @group           BasicFactory
+     * @covers          FOF30\Factory\BasicFactory::viewFinder
+     */
+    public function testViewFinder()
+    {
+        $msg  = 'BasicFactory::viewFinder %s';
+
+        $configuration = $this->getMock('FOF30\Configuration\Configuration', array('get'), array(), '', false);
+        $configuration->expects($this->any())->method('get')->willReturnCallback(
+            function($key, $default){
+                return $default;
+            }
+        );
+
+        $container = new TestContainer(array(
+            'appConfig' => $configuration,
+        ));
+
+        $platform = $container->platform;
+        $platform::$template = 'fake_test_template';
+        $platform::$uriBase  = 'www.example.com';
+
+        $view    = new ViewStub($container);
+        $factory = new BasicFactory($container);
+
+        $result = $factory->viewFinder($view, array());
+
+        // I can only test if the correct object is passed, since we are simply collecting all the data
+        // and passing it to the ViewTemplateFinder constructor
+        $this->assertInstanceOf('FOF30\View\ViewTemplateFinder', $result, sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
