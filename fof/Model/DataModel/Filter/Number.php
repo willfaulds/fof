@@ -53,6 +53,9 @@ class Number extends AbstractFilter
 			$extra = '=';
 		}
 
+		$from = str_replace(',', '.', (string) $from);
+		$to = str_replace(',', '.', (string) $to);
+
 		$sql = '((' . $this->getFieldName() . ' >' . $extra . ' ' . $from . ') AND ';
 		$sql .= '(' . $this->getFieldName() . ' <' . $extra . ' ' . $to . '))';
 
@@ -88,6 +91,9 @@ class Number extends AbstractFilter
 		{
 			$extra = '=';
 		}
+
+		$from = str_replace(',', '.', (string) $from);
+		$to = str_replace(',', '.', (string) $to);
 
 		$sql = '((' . $this->getFieldName() . ' <' . $extra . ' ' . $from . ') AND ';
 		$sql .= '(' . $this->getFieldName() . ' >' . $extra . ' ' . $to . '))';
@@ -127,9 +133,27 @@ class Number extends AbstractFilter
 			$extra = '=';
 		}
 
+		$from = str_replace(',', '.', (string) $from);
+		$to = str_replace(',', '.', (string) $to);
+
 		$sql = '((' . $this->getFieldName() . ' >' . $extra . ' ' . $from . ') AND ';
 		$sql .= '(' . $this->getFieldName() . ' <' . $extra . ' ' . $to . '))';
 
 		return $sql;
+	}
+
+	/**
+	 * Overrides the parent to handle floats in locales where the decimal separator is a comma instead of a dot
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $operator
+	 *
+	 * @return  string
+	 */
+	public function search($value, $operator = '=')
+	{
+		$value = str_replace(',', '.', (string) $value);
+
+		return parent::search($value, $operator);
 	}
 }

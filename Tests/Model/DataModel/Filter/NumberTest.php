@@ -30,6 +30,22 @@ class NumberTest extends DatabaseTest
 
     /**
      * @group           NumberFilter
+     * @group           NumberFilterEquals
+     * @covers          FOF30\Model\DataModel\Filter\Number::search
+     * @dataProvider    NumberDataprovider::getTestSearch
+     */
+    public function testSearch($test, $check)
+    {
+        $msg    = 'Number::search %s - Case: '.$check['case'];
+        $filter = new Number(\JFactory::getDbo(), (object)array('name' => 'test', 'type' => 'int (10)'));
+
+        $result = $filter->search($test['value'], $test['operator']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Failed to return the correct SQL'));
+    }
+
+    /**
+     * @group           NumberFilter
      * @group           NumberFilterBetween
      * @covers          FOF30\Model\DataModel\Filter\Number::between
      * @dataProvider    NumberDataprovider::getTestBetween

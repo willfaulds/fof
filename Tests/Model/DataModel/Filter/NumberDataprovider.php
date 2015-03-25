@@ -2,6 +2,35 @@
 
 class NumberDataprovider
 {
+	public static function getTestSearch()
+	{
+		$data = array();
+
+		$data[] = array(
+			array(
+				'value' => 1,
+				'operator' => '=',
+			),
+			array(
+				'case' => 'Equals integer',
+				'result' => '(`test` = \'1\')'
+			)
+		);
+
+		$data[] = array(
+			array(
+				'value' => 1.2,
+				'operator' => '=',
+			),
+			array(
+				'case' => 'Equals float',
+				'result' => '(`test` = \'1.2\')'
+			)
+		);
+
+		return $data;
+	}
+
     public static function getTestBetween()
     {
         $data[] = array(
