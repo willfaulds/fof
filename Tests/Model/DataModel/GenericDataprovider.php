@@ -1108,7 +1108,7 @@ class DataModelGenericDataprovider
             array(
                 'case'    => 'Behaviors not loaded, field is the primary key',
                 'add'     => true,
-                'field'   => 'id',
+                'field'   => 'foobar',
                 'options' => array(
                     'method'   => 'search',
                     'value'    => null,
