@@ -147,7 +147,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Dispatcher
 	 */
-	function dispatcher(array $config = array())
+	public function dispatcher(array $config = array())
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
 
@@ -180,7 +180,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 */
-	function toolbar(array $config = array())
+    public function toolbar(array $config = array())
 	{
 		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
 
@@ -214,7 +214,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  TransparentAuthentication
 	 */
-	function transparentAuthentication(array $config = array())
+    public function transparentAuthentication(array $config = array())
 	{
 		$toolbarClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
 
@@ -253,7 +253,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 *
 	 * @return  mixed
 	 */
-	function viewFinder(View $view, array $config = array())
+    public function viewFinder(View $view, array $config = array())
 	{
 		// Initialise the configuration with the default values
 		$defaultConfig = array(

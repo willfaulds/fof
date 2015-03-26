@@ -26,6 +26,7 @@ require_once __DIR__ . '/../fof/Utils/helpers.php';
 // Tell the FOF autoloader where to load test classes from (very useful for stubs!)
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Tests\\', __DIR__);
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('Fakeapp\\', __DIR__ . '/Stubs/Fakeapp');
+\FOF30\Autoloader\Autoloader::getInstance()->addMap('Dummyapp\\', __DIR__ . '/Stubs/Dummyapp');
 
 // Include the Composer autoloader.
 if (false == include_once __DIR__ . '/../vendor/autoload.php')
