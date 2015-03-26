@@ -26,6 +26,17 @@ class SwitchFactoryDataprovider
             )
         );
 
+        $data[] = array(
+            array(
+                'backend' => true,
+                'view' => 'bare'
+            ),
+            array(
+                'case' => 'Backend controller, found',
+                'result' => 'Fakeapp\Site\Controller\Bare'
+            )
+        );
+
         return $data;
     }
 
@@ -66,6 +77,17 @@ class SwitchFactoryDataprovider
             array(
                 'case' => 'Frontend view, found',
                 'result' => 'Fakeapp\Site\View\Parents\Html'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'backend' => false,
+                'view' => 'bare'
+            ),
+            array(
+                'case' => 'Frontend view, found',
+                'result' => 'Fakeapp\Site\View\Bare\Html'
             )
         );
 
