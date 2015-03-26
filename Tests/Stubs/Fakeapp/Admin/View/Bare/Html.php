@@ -1,6 +1,6 @@
 <?php
 
-namespace Fakeapp\Site\View\Bare;
+namespace Fakeapp\Admin\View\Bare;
 
 use FOF30\View\View;
 

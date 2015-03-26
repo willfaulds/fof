@@ -28,12 +28,12 @@ class SwitchFactoryDataprovider
 
         $data[] = array(
             array(
-                'backend' => true,
-                'view' => 'bare'
+                'backend' => false,
+                'view' => 'bares'
             ),
             array(
                 'case' => 'Backend controller, found',
-                'result' => 'Fakeapp\Site\Controller\Bare'
+                'result' => 'Fakeapp\Admin\Controller\Bare'
             )
         );
 
@@ -83,11 +83,11 @@ class SwitchFactoryDataprovider
         $data[] = array(
             array(
                 'backend' => false,
-                'view' => 'bare'
+                'view' => 'bares'
             ),
             array(
                 'case' => 'Frontend view, found',
-                'result' => 'Fakeapp\Site\View\Bare\Html'
+                'result' => 'Fakeapp\Admin\View\Bare\Html'
             )
         );
 

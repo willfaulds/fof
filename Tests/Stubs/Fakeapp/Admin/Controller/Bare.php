@@ -1,6 +1,6 @@
 <?php
 
-namespace Fakeapp\Site\Controller;
+namespace Fakeapp\Admin\Controller;
 
 use FOF30\Controller\DataController;
 
