@@ -41,7 +41,7 @@ class ConfigurationTest extends FOFTestCase
 
 		$this->assertInstanceOf('\\FOF30\\Configuration\\Configuration', $x, 'Configuration object must be of correct type');
 
-		$actual = $x->get('models.orders.field.enabled', null);
+		$actual = $x->get('models.Orders.field.enabled', null);
 
 		$this->assertEquals('published', $actual, 'get() must return valid domain data');
 	}

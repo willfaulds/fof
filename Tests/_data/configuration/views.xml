@@ -15,7 +15,7 @@
             <option name="behaviors">filter,access</option>
         </config>
     </view>
-    <view name="item">
+    <view name="Item">
         <taskmap>
             <task name="list">browse</task>
         </taskmap>
@@ -33,7 +33,7 @@
             <button type="cancel" />
         </toolbar>
     </view>
-    <view name="bad">
+    <view name="Bad">
         <taskmap>
             <task name="show">show</task>
             <task name="gimme">read</task>
@@ -49,7 +49,7 @@
             <button type="other"/>
         </toolbar>
     </view>
-    <view name="baz">
+    <view name="Baz">
         <taskmap>
             <task name="gimme">read</task>
         </taskmap>

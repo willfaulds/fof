@@ -16,7 +16,7 @@
           <behaviors>ping,pong</behaviors>
       </model>
       <!-- Table options for a specific table -->
-      <model name="orders">
+      <model name="Orders">
           <field name="enabled">published</field>
           <relation type="children" name="items" />
           <relation type="multiple"
@@ -30,7 +30,7 @@
           <relation type="child" name="client" tableClass="Fakeapp\Model\Users" />
           <behaviors>foo,bar,baz</behaviors>
       </model>
-      <model name="users">
+      <model name="Users">
           <tablealias>folks</tablealias>
           <field name="locked_by">locked</field>
           <field name="locked_on">locked_on</field>
@@ -51,7 +51,7 @@
               <option name="behaviors">filter,access</option>
           </config>
       </view>
-      <view name="item">
+      <view name="Item">
           <taskmap>
               <task name="list">browse</task>
           </taskmap>
@@ -69,7 +69,7 @@
               <button type="cancel" />
           </toolbar>
       </view>
-      <view name="bad">
+      <view name="Bad">
           <taskmap>
               <task name="show">show</task>
               <task name="gimme">read</task>
@@ -85,7 +85,7 @@
               <button type="other"/>
           </toolbar>
       </view>
-      <view name="baz">
+      <view name="Baz">
           <taskmap>
               <task name="gimme">read</task>
           </taskmap>

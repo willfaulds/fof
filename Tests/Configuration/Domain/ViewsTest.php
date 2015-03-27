@@ -52,8 +52,8 @@ class ViewsTest extends FOFTestCase
 		$this->assertArrayHasKey('views', $this->data, 'The models key must be set');
 		$views = $this->data['views'];
 		$this->assertArrayHasKey('*', $views, 'We must read the star view');
-		$this->assertArrayHasKey('item', $views, 'We must read the item view');
-		$this->assertArrayHasKey('bad', $views, 'We must read the bad view');
+		$this->assertArrayHasKey('Item', $views, 'We must read the item view');
+		$this->assertArrayHasKey('Bad', $views, 'We must read the bad view');
 
 		$starView = $views['*'];
 		$this->assertArrayHasKey('acl', $starView, 'Every view must have acl key');
@@ -117,11 +117,11 @@ class ViewsTest extends FOFTestCase
 	{
 		return array(
 			array('*.taskmap', array('show' => 'browse'), 1, 'Taskmap: explictly named taskmap, star view'),
-			array('item.taskmap', array('show' => 'browse'), 1, 'Taskmap: implicit taskmap from star view'),
-			array('item.taskmap', array('list' => 'browse'), 1, 'Taskmap: explictly named taskmap, explicit view'),
+			array('Item.taskmap', array('show' => 'browse'), 1, 'Taskmap: implicit taskmap from star view'),
+			array('Item.taskmap', array('list' => 'browse'), 1, 'Taskmap: explictly named taskmap, explicit view'),
 			array('notthere.taskmap', array('show' => 'browse'), 1, 'Taskmap: explictly named taskmap, inexistant view'),
-			array('bad.taskmap', array('show' => 'show'), 1, 'Taskmap: explictly named taskmap overrides explicit star view'),
-			array('baz.taskmap', array('show' => 'show'), -1, 'Taskmap: explictly named taskmap does not override implicit star view'),
+			array('Bad.taskmap', array('show' => 'show'), 1, 'Taskmap: explictly named taskmap overrides explicit star view'),
+			array('Baz.taskmap', array('show' => 'show'), -1, 'Taskmap: explictly named taskmap does not override implicit star view'),
 		);
 	}
 
@@ -157,10 +157,10 @@ class ViewsTest extends FOFTestCase
 		return array(
 			array('*.acl.browse', 'foobar.something', 1, 'ACL: explictly named acl, star view'),
 			array('*.acl.baz', null, 1, 'ACL: non-existent acl, star view'),
-			array('item.acl.browse', 'foobar.something', 1, 'ACL: implicitly named acl, existing view'),
-			array('item.acl.dosomething', '', 1, 'ACL: explicitly named empty acl, existing view'),
-			array('item.acl.somethingelse', 'core.manage', 1, 'ACL: explicitly named non-empty acl, existing view'),
-			array('bad.acl.browse', 'kot', 1, 'ACL: explicitly named non-empty acl, existing view, override star view'),
+			array('Item.acl.browse', 'foobar.something', 1, 'ACL: implicitly named acl, existing view'),
+			array('Item.acl.dosomething', '', 1, 'ACL: explicitly named empty acl, existing view'),
+			array('Item.acl.somethingelse', 'core.manage', 1, 'ACL: explicitly named non-empty acl, existing view'),
+			array('Bad.acl.browse', 'kot', 1, 'ACL: explicitly named non-empty acl, existing view, override star view'),
 			array('notthere.acl.browse', 'foobar.something', 1, 'ACL: implicitly named acl, not-existent view'),
 			array('notthere.acl.kot', '', 1, 'ACL: not-existent acl, not-existent view'),
 		);
@@ -198,9 +198,9 @@ class ViewsTest extends FOFTestCase
 		return array(
 			array('*.config.behaviors', 'filter,access', 1, 'Config: explictly named config, star view'),
 			array('*.config.foobar', null, 1, 'Config: non-existent config, star view'),
-			array('item.config.behaviors', 'filter,access', 1, 'Config: implicitly named config, existing view'),
-			array('item.config.autoRouting', '3', 1, 'Config: explicitly named empty config, existing view'),
-			array('bad.config.behaviors', '', 1, 'Config: explicitly named non-empty config, existing view, override star view'),
+			array('Item.config.behaviors', 'filter,access', 1, 'Config: implicitly named config, existing view'),
+			array('Item.config.autoRouting', '3', 1, 'Config: explicitly named empty config, existing view'),
+			array('Bad.config.behaviors', '', 1, 'Config: explicitly named non-empty config, existing view, override star view'),
 			array('notthere.config.behaviors', 'filter,access', 1, 'Config: implicitly named config, not-existent view'),
 			array('notthere.config.kot', '', 1, 'Config: not-existent config, not-existent view'),
 		);
@@ -257,14 +257,14 @@ class ViewsTest extends FOFTestCase
 		return array(
 			array('*.toolbar.browse', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_GENERIC')), 1, 'Toolbar: explictly named Toolbar, star view'),
 			array('*.toolbar.notthere', array('title' => null), 0, 'Toolbar: non-existent Toolbar, star view'),
-			array('item.toolbar.browse', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_GENERIC')), 1, 'Toolbar: implicitly named Toolbar, existing view'),
-			array('item.toolbar.browse', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_GENERIC')), 1, 'Toolbar: implicitly named Toolbar, existing view'),
-			array('item.toolbar.notthere', array('title' => null), 0, 'Toolbar: non-existent Toolbar, existing view'),
-			array('item.toolbar.edit', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_ITEM')), 1, 'Toolbar: explicitly named Toolbar, existing view'),
-			array('item.toolbar.edit', array('save' => null), 2, 'Toolbar: explicitly named Toolbar, existing view'),
-			array('item.toolbar.edit', array('saveclose' => null), 2, 'Toolbar: explicitly named Toolbar, existing view'),
-			array('item.toolbar.edit', array('apply' => null), 0, 'Toolbar: explicitly named Toolbar, existing view'),
-			array('item.bad.browse', array('apply' => null), 0, 'Toolbar: explicitly named Toolbar, override star view'),
+			array('Item.toolbar.browse', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_GENERIC')), 1, 'Toolbar: implicitly named Toolbar, existing view'),
+			array('Item.toolbar.browse', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_GENERIC')), 1, 'Toolbar: implicitly named Toolbar, existing view'),
+			array('Item.toolbar.notthere', array('title' => null), 0, 'Toolbar: non-existent Toolbar, existing view'),
+			array('Item.toolbar.edit', array('title' => array('value' => 'COM_FOOBAR_TOOLBAR_ITEM')), 1, 'Toolbar: explicitly named Toolbar, existing view'),
+			array('Item.toolbar.edit', array('save' => null), 2, 'Toolbar: explicitly named Toolbar, existing view'),
+			array('Item.toolbar.edit', array('saveclose' => null), 2, 'Toolbar: explicitly named Toolbar, existing view'),
+			array('Item.toolbar.edit', array('apply' => null), 0, 'Toolbar: explicitly named Toolbar, existing view'),
+			array('Item.bad.browse', array('apply' => null), 0, 'Toolbar: explicitly named Toolbar, override star view'),
 		);
 	}
 }

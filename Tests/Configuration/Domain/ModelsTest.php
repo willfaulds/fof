@@ -51,8 +51,8 @@ class ModelsTest extends FOFTestCase
 
 		$this->assertArrayHasKey('models', $this->data, 'The models key must be set');
 		$this->assertArrayHasKey('*', $this->data['models'], 'All model keys must be read');
-		$this->assertArrayHasKey('orders', $this->data['models'], 'All model keys must be read');
-		$this->assertArrayHasKey('users', $this->data['models'], 'All model keys must be read');
+		$this->assertArrayHasKey('Orders', $this->data['models'], 'All model keys must be read');
+		$this->assertArrayHasKey('Users', $this->data['models'], 'All model keys must be read');
 		$this->assertArrayHasKey('behaviors', $this->data['models']['*'], 'Model keys must have behaviors subkey');
 		$this->assertArrayHasKey('behaviorsMerge', $this->data['models']['*'], 'Model keys must have behaviorsMerge subkey');
 		$this->assertArrayHasKey('tablealias', $this->data['models']['*'], 'Model keys must have tablealias subkey');
@@ -83,10 +83,10 @@ class ModelsTest extends FOFTestCase
 	{
 		return array(
 			array('*.field.locked_by', 'NOPE', 'checked_out', 'Star model must be read'),
-			array('orders.field.locked_by', 'NOPE', 'checked_out', 'Star model options must be applied to other models'),
-			array('orders.field.enabled', 'NOPE', 'published', 'Custom model fields must be applied'),
-			array('users.field.locked_by', 'NOPE', 'locked', 'Custom model fields must override star model'),
-			array('users.field.bazinga', 'bork', 'bork', 'Undefined override must return its default value'),
+			array('Orders.field.locked_by', 'NOPE', 'checked_out', 'Star model options must be applied to other models'),
+			array('Orders.field.enabled', 'NOPE', 'published', 'Custom model fields must be applied'),
+			array('Users.field.locked_by', 'NOPE', 'locked', 'Custom model fields must override star model'),
+			array('Users.field.bazinga', 'bork', 'bork', 'Undefined override must return its default value'),
 		);
 	}
 
@@ -113,7 +113,7 @@ class ModelsTest extends FOFTestCase
 	{
 		return array(
 			array('*.tablealias', null, null, 'Do not return undefined values'),
-			array('users.tablealias', null, 'folks', 'Return defined values'),
+			array('Users.tablealias', null, 'folks', 'Return defined values'),
 		);
 	}
 
@@ -147,8 +147,8 @@ class ModelsTest extends FOFTestCase
 		return array(
 			array('*.behaviors', array('ping', 'pong'), true, 'All behaviours must be read from star model'),
 			array('notthere.behaviors', array('ping', 'pong'), true, 'Behaviours of random models must be read from the star model'),
-			array('orders.behaviors', array('foo', 'bar', 'baz'), true, 'Non-merged behaviours must only include the explicitly defined behaviours'),
-			array('users.behaviors', array('ping', 'pong', 'foo', 'bar', 'baz'), true, 'Merged behaviours must include both explicitly defined and star model behaviours'),
+			array('Orders.behaviors', array('foo', 'bar', 'baz'), true, 'Non-merged behaviours must only include the explicitly defined behaviours'),
+			array('Users.behaviors', array('ping', 'pong', 'foo', 'bar', 'baz'), true, 'Merged behaviours must include both explicitly defined and star model behaviours'),
 		);
 	}
 
@@ -160,7 +160,7 @@ class ModelsTest extends FOFTestCase
 	 */
 	public function testGetRelations()
 	{
-		$actual = $this->object->get($this->data, 'orders.relations', array());
+		$actual = $this->object->get($this->data, 'Orders.relations', array());
 
 		$this->assertCount(3, $actual, 'All relations must be read');
 		$this->assertEquals('children', $actual[0]['type'], 'Relation type must match');
