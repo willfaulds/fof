@@ -33,7 +33,7 @@ class MagicSwitchFactoryTest extends FOFTestCase
 
         $result = $factory->controller($test['view']);
 
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['result'], get_class($result), sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
@@ -49,7 +49,7 @@ class MagicSwitchFactoryTest extends FOFTestCase
 
         $result = $factory->model($test['view']);
 
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['result'], get_class($result), sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
@@ -69,7 +69,7 @@ class MagicSwitchFactoryTest extends FOFTestCase
 
         $result = $factory->view($test['view']);
 
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['result'], get_class($result), sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
@@ -96,7 +96,7 @@ class MagicSwitchFactoryTest extends FOFTestCase
 
         $result = $factory->dispatcher();
 
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['result'], get_class($result), sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
@@ -123,6 +123,6 @@ class MagicSwitchFactoryTest extends FOFTestCase
 
         $result = $factory->transparentAuthentication();
 
-        $this->assertInstanceOf($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals($check['result'], get_class($result), sprintf($msg, 'Returned the wrong result'));
     }
 }

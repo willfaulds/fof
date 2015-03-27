@@ -20,7 +20,7 @@ class MagicSwitchFactoryDataprovider
             ),
             array(
                 'case' => 'Controller is not found',
-                'result' => 'FOF30\Controller\DataController'
+                'result' => 'Fakeapp\Site\Controller\DefaultDataController'
             )
         );
 

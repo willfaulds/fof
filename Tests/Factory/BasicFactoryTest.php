@@ -158,7 +158,7 @@ class BasicFactoryTest extends FOFTestCase
 
         if(is_object($result))
         {
-            $this->assertInstanceOf('FOF30\Dispatcher\Dispatcher', $result, sprintf($msg, 'Failed to return the correct result'));
+            $this->assertEquals('FOF30\Dispatcher\Dispatcher', get_class($result), sprintf($msg, 'Failed to return the correct result'));
         }
         else
         {
@@ -194,7 +194,7 @@ class BasicFactoryTest extends FOFTestCase
 
         if(is_object($result))
         {
-            $this->assertInstanceOf('FOF30\Toolbar\Toolbar', $result, sprintf($msg, 'Failed to return the correct result'));
+            $this->assertEquals('FOF30\Toolbar\Toolbar', get_class($result), sprintf($msg, 'Failed to return the correct result'));
         }
         else
         {
@@ -230,7 +230,7 @@ class BasicFactoryTest extends FOFTestCase
 
         if(is_object($result))
         {
-            $this->assertInstanceOf('FOF30\TransparentAuthentication\TransparentAuthentication', $result, sprintf($msg, 'Failed to return the correct result'));
+            $this->assertEquals('FOF30\TransparentAuthentication\TransparentAuthentication', get_class($result), sprintf($msg, 'Failed to return the correct result'));
         }
         else
         {
@@ -265,7 +265,7 @@ class BasicFactoryTest extends FOFTestCase
         }
         else
         {
-            $this->assertInstanceOf('FOF30\Form\Form', $result, sprintf($msg, 'Returned the wrong result'));
+            $this->assertEquals('FOF30\Form\Form', get_class($result), sprintf($msg, 'Returned the wrong result'));
         }
     }
 
@@ -299,7 +299,7 @@ class BasicFactoryTest extends FOFTestCase
 
         // I can only test if the correct object is passed, since we are simply collecting all the data
         // and passing it to the ViewTemplateFinder constructor
-        $this->assertInstanceOf('FOF30\View\ViewTemplateFinder', $result, sprintf($msg, 'Returned the wrong result'));
+        $this->assertEquals('FOF30\View\ViewTemplateFinder', get_class($result), sprintf($msg, 'Returned the wrong result'));
     }
 
     /**
