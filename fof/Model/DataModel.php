@@ -1247,32 +1247,32 @@ class DataModel extends Model implements \JTableInterface
 
 		if (is_object($form) && $form instanceof Form)
 		{
-			$fieldset = $form->getFieldset();
-
-			foreach ($fieldset as $nfield => $fldset)
-			{
-				if (!array_key_exists($nfield, $allData))
-				{
-					$field = $form->getField($fldset->fieldname, $fldset->group);
-					$type  = strtolower($field->type);
-
-					switch ($type)
-					{
-						case 'checkbox':
-							$allData[$nfield] = 0;
-							break;
-
-						default:
-							$allData[$nfield] = '';
-							break;
-					}
-				}
-			}
-
 			$serverside_validate = strtolower($form->getAttribute('serverside_validate'));
 
 			if (in_array($serverside_validate, array('true', 'yes', '1', 'on')))
 			{
+				$fieldset = $form->getFieldset();
+
+				foreach ($fieldset as $nfield => $fldset)
+				{
+					if (!array_key_exists($nfield, $allData))
+					{
+						$field = $form->getField($fldset->fieldname, $fldset->group);
+						$type  = strtolower($field->type);
+
+						switch ($type)
+						{
+							case 'checkbox':
+								$allData[$nfield] = 0;
+								break;
+
+							default:
+								$allData[$nfield] = '';
+								break;
+						}
+					}
+				}
+
 				try
 				{
 					$this->validateForm($form, $allData);
