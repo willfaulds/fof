@@ -81,7 +81,9 @@ class MagicSwitchFactoryDataprovider
     {
         $data[] = array(
             array(
-                'backend' => true
+                'backend' => true,
+                'backend_path' => JPATH_TESTS.'/Stubs/Fakeapp/Admin',
+                'component' => 'com_fakeapp'
             ),
             array(
                 'case' => 'Dispatcher is found',
@@ -91,7 +93,21 @@ class MagicSwitchFactoryDataprovider
 
         $data[] = array(
             array(
-                'backend' => false
+                'backend' => false,
+                'backend_path' => JPATH_TESTS.'/Stubs/Fakeapp/Admin',
+                'component' => 'com_fakeapp'
+            ),
+            array(
+                'case' => 'Dispatcher is found',
+                'result' => 'Fakeapp\Admin\Dispatcher\Dispatcher'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'backend' => false,
+                'backend_path' => JPATH_TESTS.'/Stubs/Dummyapp/Admin',
+                'component' => 'com_dummyapp'
             ),
             array(
                 'case' => 'Dispatcher not found',
@@ -106,7 +122,9 @@ class MagicSwitchFactoryDataprovider
     {
         $data[] = array(
             array(
-                'backend' => true
+                'backend' => true,
+                'backend_path' => JPATH_TESTS.'/Stubs/Fakeapp/Admin',
+                'component' => 'com_fakeapp'
             ),
             array(
                 'case' => 'TransparentAuthentication is found',
@@ -116,7 +134,21 @@ class MagicSwitchFactoryDataprovider
 
         $data[] = array(
             array(
-                'backend' => false
+                'backend' => false,
+                'backend_path' => JPATH_TESTS.'/Stubs/Fakeapp/Admin',
+                'component' => 'com_fakeapp'
+            ),
+            array(
+                'case' => 'TransparentAuthentication is found',
+                'result' => 'Fakeapp\Admin\TransparentAuthentication\TransparentAuthentication'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'backend' => false,
+                'backend_path' => JPATH_TESTS.'/Stubs/Dummyapp/Admin',
+                'component' => 'com_dummyapp'
             ),
             array(
                 'case' => 'TransparentAuthentication not found',

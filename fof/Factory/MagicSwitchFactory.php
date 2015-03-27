@@ -108,7 +108,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 	 *
 	 * @return  Toolbar
 	 */
-	function toolbar(array $config = array())
+	public function toolbar(array $config = array())
 	{
 		$appConfig = $this->container->appConfig;
 
@@ -130,7 +130,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 	 *
 	 * @return  Dispatcher
 	 */
-	function dispatcher(array $config = array())
+	public function dispatcher(array $config = array())
 	{
 		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
 
@@ -165,7 +165,7 @@ class MagicSwitchFactory extends SwitchFactory implements FactoryInterface
 	 *
 	 * @return  TransparentAuthentication
 	 */
-	function transparentAuthentication(array $config = array())
+	public function transparentAuthentication(array $config = array())
 	{
 		$toolbarClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
 

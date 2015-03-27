@@ -82,7 +82,8 @@ class MagicSwitchFactoryTest extends FOFTestCase
         $msg   = 'MagicSwitchFactory::dispatcher %s - Case: '.$check['case'];
 
         $container = new TestContainer(array(
-            'backEndPath' => JPATH_TESTS.'/Stubs/Fakeapp/Admin'
+            'componentName' => $test['component'],
+            'backEndPath' => $test['backend_path']
         ));
 
         $platform = $container->platform;
@@ -108,7 +109,8 @@ class MagicSwitchFactoryTest extends FOFTestCase
         $msg   = 'MagicSwitchFactory::transparentAuthentication %s - Case: '.$check['case'];
 
         $container = new TestContainer(array(
-            'backEndPath' => JPATH_TESTS.'/Stubs/Fakeapp/Admin'
+            'componentName' => $test['component'],
+            'backEndPath' => $test['backend_path']
         ));
 
         $platform = $container->platform;
