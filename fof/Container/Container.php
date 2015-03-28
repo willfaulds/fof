@@ -212,7 +212,6 @@ class Container extends ContainerBase
 
 		// Get the values overrides from fof.xml
 		$values = array_merge(array(
-			'rendererClass' => '\\FOF30\\Render\\Joomla3',
 			'factoryClass' => '\\FOF30\\Factory\\BasicFactory',
 			'scaffolding' => false,
 			'saveScaffolding' => false,
@@ -224,11 +223,16 @@ class Container extends ContainerBase
 			'frontEndPath' => $frontEndPath,
 			'backEndPath' => $backEndPath,
 			'thisPath' => $thisPath,
-			'rendererClass' => $appConfig->get('container.rendererClass', $values['rendererClass']),
+			'rendererClass' => $appConfig->get('container.rendererClass', null),
 			'factoryClass' => $appConfig->get('container.factoryClass', $values['factoryClass']),
 			'scaffolding' => $appConfig->get('container.scaffolding', $values['scaffolding']),
 			'saveScaffolding' => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
 		));
+
+		if (empty($values['rendererClass']))
+		{
+			unset ($values['rendererClass']);
+		}
 
 		$mediaVersion = $appConfig->get('container.mediaVersion', null);
 
@@ -505,18 +509,17 @@ class Container extends ContainerBase
 							continue;
 						}
 
-						$camel = Inflector::camelize($filename);
-						$className = 'FOF30\\Render\\' . ucfirst(Inflector::getPart($camel, 0));
+						$className = 'FOF30\\Render\\' . basename($filename, '.php');
 
 						if (!class_exists($className, true))
 						{
 							continue;
 						}
 
-						/** @var RenderInterface $renderer */
-						$renderer = new $className($c);
+						/** @var RenderInterface $o */
+						$o = new $className($c);
 
-						$info = $renderer->getInformation();
+						$info = $o->getInformation();
 
 						if (!$info->enabled)
 						{
@@ -526,6 +529,7 @@ class Container extends ContainerBase
 						if ($info->priority > $priority)
 						{
 							$priority = $info->priority;
+							$renderer = $o;
 						}
 					}
 				}
