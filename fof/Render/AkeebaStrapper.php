@@ -35,7 +35,7 @@ class AkeebaStrapper extends RenderBase implements RenderInterface
 	public function __construct(Container $container)
 	{
 		$this->priority	 = 60;
-		$this->enabled	 = class_exists('\\AkeebaStrapper');
+		$this->enabled	 = class_exists('\\AkeebaStrapper30');
 
 		parent::__construct($container);
 	}
