@@ -18,10 +18,10 @@ class Joomla3 extends AkeebaStrapper
 {
 	public function __construct(Container $container)
 	{
+		parent::__construct($container);
+
 		$this->priority	 = 55;
 		$this->enabled	 = version_compare(JVERSION, '3.0', 'ge');
-
-		parent::__construct($container);
 	}
 
 	/**
