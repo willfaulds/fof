@@ -24,6 +24,18 @@ defined('_JEXEC') or die;
 class Created extends Observer
 {
 	/**
+	 * Add the created_on and created_by fields in the fieldsSkipChecks list of the model. We expect them to be empty
+	 * so that we can fill them in through this behaviour.
+	 *
+	 * @param   DataModel  $model
+	 */
+	public function onBeforeCheck(&$model)
+	{
+		$model->addSkipCheckField('created_on');
+		$model->addSkipCheckField('created_by');
+	}
+
+	/**
 	 * @param   DataModel  $model
 	 * @param   \stdClass  $dataObject
 	 */

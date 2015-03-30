@@ -1213,6 +1213,9 @@ class DataModel extends Model implements \JTableInterface
 			return $this;
 		}
 
+		// Run a custom event
+		$this->triggerEvent('onBeforeCheck');
+
 		// Create a slug if there is a title and an empty slug
         $slugField  = $this->getFieldAlias('slug');
         $titleField = $this->getFieldValue('title');
@@ -4056,6 +4059,11 @@ class DataModel extends Model implements \JTableInterface
 		$this->setBehaviorParam('blacklistFilters', $list);
 	}
 
+	/**
+	 * This method is called by Joomla! itself when it needs to update the UCM content
+	 *
+	 * @return  bool
+	 */
 	public function updateUcmContent()
 	{
 		// Process the tags
@@ -4074,5 +4082,88 @@ class DataModel extends Model implements \JTableInterface
 		$ucmId = $ucmContentTable->core_content_id;
 
 		return $result;
+	}
+
+	/**
+	 * Add a field to the list of fields to be ignored by the check() method
+	 *
+	 * @param   string  $fieldName  The field to add (can be a field alias)
+	 *
+	 * @return  void
+	 */
+	public function addSkipCheckField($fieldName)
+	{
+		if (!is_array($this->fieldsSkipChecks))
+		{
+			$this->fieldsSkipChecks = array();
+		}
+
+		if (!$this->hasField($fieldName))
+		{
+			return;
+		}
+
+		$fieldName = $this->getFieldAlias($fieldName);
+
+		if (!in_array($fieldName, $this->fieldsSkipChecks))
+		{
+			$this->fieldsSkipChecks[] = $fieldName;
+		}
+	}
+
+	/**
+	 * Remove a field from the list of fields to be ignored by the check() method
+	 *
+	 * @param   string  $fieldName  The field to remove (can be a field alias)
+	 *
+	 * @return  void
+	 */
+	public function removeSkipCheckField($fieldName)
+	{
+		if (!is_array($this->fieldsSkipChecks))
+		{
+			$this->fieldsSkipChecks = array();
+
+			return;
+		}
+
+		if (!$this->hasField($fieldName))
+		{
+			return;
+		}
+
+		$fieldName = $this->getFieldAlias($fieldName);
+
+		if (in_array($fieldName, $this->fieldsSkipChecks))
+		{
+			$index = array_search($fieldName, $this->fieldsSkipChecks);
+			unset($this->fieldsSkipChecks[$index]);
+		}
+	}
+
+	/**
+	 * Is a field present in the list of fields to be ignored by the check() method?
+	 *
+	 * @param   string  $fieldName  The field to check (can be a field alias)
+	 *
+	 * @return  bool  True if the field is skipped from checks, false if not or if the field doesn't exist.
+	 */
+	public function hasSkipCheckField($fieldName)
+	{
+		if (!is_array($this->fieldsSkipChecks))
+		{
+			$this->fieldsSkipChecks = array();
+
+			return false;
+		}
+
+		if (!$this->hasField($fieldName))
+		{
+			return false;
+		}
+
+		$fieldName = $this->getFieldAlias($fieldName);
+
+		return in_array($fieldName, $this->fieldsSkipChecks);
 	}
 }

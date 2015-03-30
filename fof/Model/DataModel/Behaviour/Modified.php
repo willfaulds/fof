@@ -24,6 +24,18 @@ defined('_JEXEC') or die;
 class Modified extends Observer
 {
 	/**
+	 * Add the modified_on and modified_by fields in the fieldsSkipChecks list of the model. We expect them to be empty
+	 * so that we can fill them in through this behaviour.
+	 *
+	 * @param   DataModel  $model
+	 */
+	public function onBeforeCheck(&$model)
+	{
+		$model->addSkipCheckField('modified_on');
+		$model->addSkipCheckField('modified_by');
+	}
+
+	/**
 	 * @param   DataModel  $model
 	 * @param   \stdClass  $dataObject
 	 */
