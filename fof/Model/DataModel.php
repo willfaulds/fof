@@ -42,6 +42,7 @@ defined('_JEXEC') or die;
  * @method $this limit() limit(int $limit)
  * @method $this limitstart() limitstart(int $limitStart)
  * @method $this enabled() enabled(int $enabled)
+ * @method DataModel getNew() getNew(string $relationName)
  *
  * @property  int     $enabled      Publish status of this record
  * @property  int     $ordering     Sort ordering of this record
@@ -454,6 +455,7 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function __call($name, $arguments)
 	{
+		// If no arguments are provided try mapping to the scopeSomething() method
 		if (empty($arguments))
 		{
 			$methodName = 'scope' . ucfirst($name);
@@ -465,11 +467,19 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
+		// Implements getNew($relationName)
+		if (($name == 'getNew') && count($arguments))
+		{
+			return $this->relationManager->getNew($arguments[0]);
+		}
+
+		// Magically map relations to methods, e.g. $this->foobar will return the "foobar" relations' contents
 		if ($this->relationManager->isMagicMethod($name))
 		{
 			return call_user_func_array(array($this->relationManager, $name), $arguments);
 		}
 
+		// Otherwise call the parent
 		return parent::__call($name, $arguments);
 	}
 
