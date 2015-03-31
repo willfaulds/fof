@@ -1021,7 +1021,6 @@ class DataModel extends Model implements \JTableInterface
 
 		// Get the relation to local field map and initialise the relationsAffected array
 		$relationImportantFields = $this->getRelationFields();
-		$relationsAffected = array();
 		$dataBeforeBind = array();
 
 		// If we have relations we keep a copy of the data before bind.
@@ -1034,27 +1033,6 @@ class DataModel extends Model implements \JTableInterface
 		if (!is_null($data))
 		{
 			$this->bind($data, $ignore);
-		}
-
-		// If we have relations we compare the data to the copy of the data before bind.
-		if (count($relationImportantFields))
-		{
-			$modifiedData = array_diff_assoc($this->recordData, $dataBeforeBind);
-			unset ($dataBeforeBind);
-
-			if (count($modifiedData))
-			{
-				$modifiedFields = array_keys($modifiedData);
-				unset($modifiedData);
-
-				foreach ($relationImportantFields as $relationName => $fieldName)
-				{
-					if (in_array($fieldName, $modifiedFields))
-					{
-						$relationsAffected[] = $relationName;
-					}
-				}
-			}
 		}
 
 		// Is this a new record?
@@ -1129,11 +1107,31 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
-		// Reset the relations which are affected by the save. This will force-reload the relations when you try to
-		// access them again.
-		if (count($relationsAffected))
+		// If we have relations we compare the data to the copy of the data before bind.
+		if (count($relationImportantFields))
 		{
-			$this->relationManager->resetRelationData($relationsAffected);
+			$modifiedData = array_diff_assoc($this->recordData, $dataBeforeBind);
+			unset ($dataBeforeBind);
+
+			if (count($modifiedData))
+			{
+				$relationsAffected = array();
+
+				$modifiedFields = array_keys($modifiedData);
+				unset($modifiedData);
+
+				foreach ($relationImportantFields as $relationName => $fieldName)
+				{
+					if (in_array($fieldName, $modifiedFields))
+					{
+						$relationsAffected[] = $relationName;
+					}
+				}
+
+				// Reset the relations which are affected by the save. This will force-reload the relations when you try to
+				// access them again.
+				$this->relationManager->resetRelationData($relationsAffected);
+			}
 		}
 
 		// Finally, call the onAfterSave event
