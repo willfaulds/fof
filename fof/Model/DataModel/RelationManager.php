@@ -213,12 +213,20 @@ class RelationManager
 	/**
 	 * Resets the data of all relations in this manager. This doesn't remove relations, just their data so that they
 	 * get loaded again.
+	 *
+	 * @param   array  $relationsToReset  The names of the relations to reset. Pass an empty array (default) to reset
+	 *                                    all relations.
 	 */
-	public function resetRelationData()
+	public function resetRelationData(array $relationsToReset = array())
 	{
 		/** @var Relation $relation */
 		foreach ($this->relations as $relation)
 		{
+			if (!empty($relationsToReset) && !in_array($relation, $relationsToReset))
+			{
+				continue;
+			}
+
 			$relation->reset();
 		}
 	}

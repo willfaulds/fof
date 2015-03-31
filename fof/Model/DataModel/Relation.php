@@ -264,4 +264,14 @@ abstract class Relation
 
 		return $model;
 	}
+
+	/**
+	 * Returns the name of the local key of the relation
+	 *
+	 * @return  string
+	 */
+	public function getLocalKey()
+	{
+		return $this->localKey;
+	}
 }

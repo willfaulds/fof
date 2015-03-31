@@ -967,6 +967,35 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
+	 * Returns an array mapping relation names to their local key field names.
+	 *
+	 * For example, given a relation "foobar" with local key name "example_item_id" it will return:
+	 * ["foobar" => "example_item_id"]
+	 *
+	 * @return  array  Array of [relationName => fieldName] arrays
+	 *
+	 * @throws  \FOF30\Model\DataModel\Relation\Exception\RelationNotFound
+	 */
+	public function getRelationFields()
+	{
+		$fields = array();
+
+		$relationNames = $this->relationManager->getRelationNames();
+
+		if (empty($relationNames))
+		{
+			return $fields;
+		}
+
+		foreach ($relationNames as $name)
+		{
+			$fields[$name] = $this->relationManager->getRelation($name)->getLocalKey();
+		}
+
+		return $fields;
+	}
+
+	/**
 	 * Save a record, creating it if it doesn't exist or updating it if it exists. By default it uses the currently set
 	 * data, unless you provide a $data array.
 	 *
@@ -990,10 +1019,42 @@ class DataModel extends Model implements \JTableInterface
 		// Call the onBeforeSave event
 		$this->triggerEvent('onBeforeSave', array(&$data));
 
+		// Get the relation to local field map and initialise the relationsAffected array
+		$relationImportantFields = $this->getRelationFields();
+		$relationsAffected = array();
+		$dataBeforeBind = array();
+
+		// If we have relations we keep a copy of the data before bind.
+		if (count($relationImportantFields))
+		{
+			$dataBeforeBind = array_merge($this->recordData);
+		}
+
 		// Bind any (optional) data. If no data is provided, the current record data is used
 		if (!is_null($data))
 		{
 			$this->bind($data, $ignore);
+		}
+
+		// If we have relations we compare the data to the copy of the data before bind.
+		if (count($relationImportantFields))
+		{
+			$modifiedData = array_diff_assoc($this->recordData, $dataBeforeBind);
+			unset ($dataBeforeBind);
+
+			if (count($modifiedData))
+			{
+				$modifiedFields = array_keys($modifiedData);
+				unset($modifiedData);
+
+				foreach ($relationImportantFields as $relationName => $fieldName)
+				{
+					if (in_array($fieldName, $modifiedFields))
+					{
+						$relationsAffected[] = $relationName;
+					}
+				}
+			}
 		}
 
 		// Is this a new record?
@@ -1066,6 +1127,13 @@ class DataModel extends Model implements \JTableInterface
 					}
 				}
 			}
+		}
+
+		// Reset the relations which are affected by the save. This will force-reload the relations when you try to
+		// access them again.
+		if (count($relationsAffected))
+		{
+			$this->relationManager->resetRelationData($relationsAffected);
 		}
 
 		// Finally, call the onAfterSave event
