@@ -1110,14 +1110,31 @@ class DataModel extends Model implements \JTableInterface
 		// If we have relations we compare the data to the copy of the data before bind.
 		if (count($relationImportantFields))
 		{
-			$modifiedData = array_diff_assoc($this->recordData, $dataBeforeBind);
+			// Since array_diff_assoc doesn't work recursively we have to do it the EXCRUCIATINGLY SLOW WAY. Sad panda :(
+			$keysRecord = (is_array($this->recordData) && !empty($this->recordData)) ? array_keys($this->recordData) : array();
+			$keysBefore = (is_array($dataBeforeBind) && !empty($dataBeforeBind)) ? array_keys($dataBeforeBind) : array();
+			$keysAll = array_merge($keysRecord, $keysBefore);
+			$keysAll = array_unique($keysAll);
+			$modifiedFields = array();
+
+			foreach ($keysAll as $key)
+			{
+				if (!isset($dataBeforeBind[$key]) || !isset($this->recordData[$key]))
+				{
+					$modifiedFields[] = $key;
+				}
+				elseif ($dataBeforeBind[$key] != $this->recordData[$key])
+				{
+					$modifiedFields[] = $key;
+				}
+			}
+
 			unset ($dataBeforeBind);
 
-			if (count($modifiedData))
+			if (count($modifiedFields))
 			{
 				$relationsAffected = array();
 
-				$modifiedFields = array_keys($modifiedData);
 				unset($modifiedData);
 
 				foreach ($relationImportantFields as $relationName => $fieldName)
