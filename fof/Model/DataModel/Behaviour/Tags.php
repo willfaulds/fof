@@ -25,11 +25,10 @@ class Tags extends Observer
 	 *
 	 * @param   DataModel    &$model  The model which calls this event
 	 * @param   object|array &$src    The data to bind
-	 * @param   array        $options The options of the table
 	 *
 	 * @return  boolean  True on success
 	 */
-	public function onAfterBind(&$model, &$src, $options = array())
+	public function onAfterBind(&$model, &$src)
 	{
 		// Bind tags
 		if ($model->hasTags())
@@ -59,12 +58,12 @@ class Tags extends Observer
 	/**
 	 * The event which runs before storing (saving) data to the database
 	 *
-	 * @param   DataModel &$model      The model which calls this event
-	 * @param   boolean   $updateNulls Should nulls be saved as nulls (true) or just skipped over (false)?
+	 * @param   DataModel  &$model  The model which calls this event
+	 * @param   null|array $data    [Optional] Data to bind
 	 *
 	 * @return  boolean  True to allow saving
 	 */
-	public function onBeforeSave(&$model, $updateNulls)
+	public function onBeforeSave(&$model, &$data)
 	{
 		if ($model->hasTags())
 		{
