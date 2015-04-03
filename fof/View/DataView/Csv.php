@@ -47,7 +47,7 @@ class Csv extends Html implements DataViewInterface
 	 */
 	public function __construct(Container $container, array $config = array())
 	{
-		parent::__construct($config);
+		parent::__construct($container, $config);
 
 		if (array_key_exists('csv_header', $config))
 		{
