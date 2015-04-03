@@ -145,16 +145,15 @@ class Csv extends Html implements DataViewInterface
 		else
 		{
 			// Default CSV behaviour in case the template isn't there!
-
 			if (empty($items))
 			{
 				throw new AccessForbidden;
 			}
 
-			$item    = array_pop($items);
-			$keys    = get_object_vars($item);
+			$item    = $items->last();
+			$keys    = $item->getData();
 			$keys    = array_keys($keys);
-			$items[] = $item;
+
 			reset($items);
 
 			if (!empty($this->csvFields))
@@ -192,18 +191,10 @@ class Csv extends Html implements DataViewInterface
 			foreach ($items as $item)
 			{
 				$csv  = array();
-				$item = (array) $item;
 
 				foreach ($keys as $k)
 				{
-					if (!isset($item[$k]))
-					{
-						$v = '';
-					}
-					else
-					{
-						$v = $item[$k];
-					}
+                    $v = $item->$k;
 
 					if (is_array($v))
 					{
