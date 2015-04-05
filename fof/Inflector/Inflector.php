@@ -330,47 +330,6 @@ class Inflector
 	}
 
 	/**
-	 * Converts a class name to its table name according to Koowa
-	 * naming conventions.
-	 *
-	 * Converts "Person" to "people"
-	 *
-	 * @param   string $className Class name for getting related table_name.
-	 *
-	 * @return  string  plural_table_name
-	 *
-	 * @see classify
-	 */
-	public function tableize($className)
-	{
-		$result = self::underscore($className);
-
-		if (!self::isPlural($className))
-		{
-			$result = self::pluralize($result);
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Converts a table name to its class name according to Koowa naming conventions.
-	 *
-	 * @param   string $tableName Table name for getting related ClassName.
-	 *
-	 * @return string SingularClassName
-	 *
-	 * @example  Converts "people" to "Person"
-	 * @see      tableize
-	 */
-	public function classify($tableName)
-	{
-		$result = self::camelize(self::singularize($tableName));
-
-		return $result;
-	}
-
-	/**
 	 * Returns camelBacked version of a string. Same as camelize but first char is lowercased.
 	 *
 	 * @param   string $string String to be camelBacked.

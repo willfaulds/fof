@@ -544,34 +544,6 @@ class InflectorTest extends FOFTestCase
 	}
 
 	/**
-	 * Returns test data for tableize()
-	 *
-	 * @return array
-	 */
-	public function getTestTableizeData()
-	{
-		return array(
-			array("person", 'people', 'Pluralise words'),
-			array("people", 'people', 'Retain plural forms'),
-			array("SomeGoodPerson", 'some_good_people', 'Pluralise camelcase words'),
-		);
-	}
-
-	/**
-	 * Returns test data for classify()
-	 *
-	 * @return array
-	 */
-	public function getTestClassifyData()
-	{
-		return array(
-			array("people", 'Person', 'Singularize words'),
-			array("person", 'Person', 'Retain singular forms'),
-			array("SomeGoodPeople", 'Somegoodperson', 'Singularize camelcase words'),
-		);
-	}
-
-	/**
 	 * Returns test data for variableize()
 	 *
 	 * @return array
@@ -764,42 +736,6 @@ class InflectorTest extends FOFTestCase
 	{
 		$container = new TestContainer();
 		$res = $container->inflector->humanize($word);
-		$this->assertEquals(
-			$res,
-			$expect,
-			$message
-		);
-	}
-
-	/**
-	 * Test tableize method
-	 *
-	 * @covers FOF30\Inflector\Inflector::tableize
-	 *
-	 * @dataProvider getTestTableizeData
-	 */
-	public function testTableize($word, $expect, $message)
-	{
-		$container = new TestContainer();
-		$res = $container->inflector->tableize($word);
-		$this->assertEquals(
-			$res,
-			$expect,
-			$message
-		);
-	}
-
-	/**
-	 * Test classify method
-	 *
-	 * @covers FOF30\Inflector\Inflector::classify
-	 *
-	 * @dataProvider getTestClassifyData
-	 */
-	public function testClassify($word, $expect, $message)
-	{
-		$container = new TestContainer();
-		$res = $container->inflector->classify($word);
 		$this->assertEquals(
 			$res,
 			$expect,
