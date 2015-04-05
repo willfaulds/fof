@@ -12,7 +12,6 @@ use FOF30\Controller\Exception\ItemNotFound;
 use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Controller\Exception\NotADataModel;
 use FOF30\Controller\Exception\TaskNotFound;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use FOF30\View\View;
 
@@ -92,13 +91,13 @@ class DataController extends Controller
 		// Set up a default model name if none is provided
 		if (empty($this->modelName))
 		{
-			$this->modelName = Inflector::pluralize($this->view);
+			$this->modelName = $container->inflector->pluralize($this->view);
 		}
 
 		// Set up a default view name if none is provided
 		if (empty($this->viewName))
 		{
-			$this->viewName = Inflector::pluralize($this->view);
+			$this->viewName = $container->inflector->pluralize($this->view);
 		}
 
 		if (isset($config['cacheableTasks']))
@@ -150,7 +149,7 @@ class DataController extends Controller
 	{
 		// By default, a plural view means 'browse' and a singular view means 'edit'
 		$view = $this->input->getCmd('view', null);
-		$task = Inflector::isPlural($view) ? 'browse' : 'edit';
+		$task = $this->container->inflector->isPlural($view) ? 'browse' : 'edit';
 
 		// If the task is 'edit' but there's no logged in user switch to a 'read' task
 		if (($task == 'edit') && !$this->container->platform->getUser()->id)
@@ -253,7 +252,7 @@ class DataController extends Controller
 			$ids = array($ids);
 		}
 
-		$resource = Inflector::singularize($this->view);
+		$resource = $this->container->inflector->singularize($this->view);
 		$isEditState = ($area == 'core.edit.state');
 
 		foreach ($ids as $id)
@@ -531,7 +530,7 @@ class DataController extends Controller
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName.'&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName.'&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 			$this->setRedirect($url, $e->getMessage(), 'error');
 
 			return;
@@ -590,7 +589,7 @@ class DataController extends Controller
 		}
 
 		$id = $this->input->get('id', 0, 'int');
-		$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_SAVED');
+		$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_SAVED');
 
 		if ($customURL = $this->input->getBase64('returnurl', ''))
 		{
@@ -639,7 +638,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -647,7 +646,7 @@ class DataController extends Controller
 		}
 		else
 		{
-			$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_COPIED');
+			$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_COPIED');
 			$this->setRedirect($url, \JText::_($textKey));
 		}
 	}
@@ -667,14 +666,14 @@ class DataController extends Controller
 			return;
 		}
 
-		$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_SAVED');
+		$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_SAVED');
 
 		if ($customURL = $this->input->getBase64('returnurl', ''))
 		{
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -693,14 +692,14 @@ class DataController extends Controller
 			return;
 		}
 
-		$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_SAVED');
+		$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_SAVED');
 
 		if ($customURL = $this->input->getBase64('returnurl', ''))
 		{
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::singularize($this->view) . '&task=add' . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->singularize($this->view) . '&task=add' . $this->getItemidURLSuffix();
 		$this->setRedirect($url, \JText::_($textKey));
 	}
 
@@ -736,7 +735,7 @@ class DataController extends Controller
 						$customURL = base64_decode($customURL);
 					}
 
-					$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+					$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 					$this->setRedirect($url, $e->getMessage(), 'error');
 				}
 			}
@@ -754,7 +753,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 		$this->setRedirect($url);
 	}
 
@@ -802,7 +801,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -858,7 +857,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -914,7 +913,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -970,7 +969,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1018,7 +1017,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1102,7 +1101,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url    = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url    = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		$this->setRedirect($url, $msg, $type);
 	}
@@ -1150,7 +1149,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1205,7 +1204,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1261,7 +1260,7 @@ class DataController extends Controller
 			$customURL = base64_decode($customURL);
 		}
 
-		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
 		if (!$status)
 		{
@@ -1269,7 +1268,7 @@ class DataController extends Controller
 		}
 		else
 		{
-			$textKey = strtoupper($this->container->componentName . '_LBL_' . Inflector::singularize($this->view) . '_DELETED');
+			$textKey = strtoupper($this->container->componentName . '_LBL_' . $this->container->inflector->singularize($this->view) . '_DELETED');
 			$this->setRedirect($url, \JText::_($textKey));
 		}
 	}
@@ -1305,7 +1304,7 @@ class DataController extends Controller
 					$customURL = base64_decode($customURL);
 				}
 
-				$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+				$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 				$this->setRedirect($url, $e->getMessage(), 'error');
 			}
 		}
@@ -1478,7 +1477,7 @@ class DataController extends Controller
 
         $historyId = $this->input->get('version_id', null, 'integer');
 		$alias     = $this->container->componentName . '.' . $this->view;
-        $returnUrl = 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+        $returnUrl = 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 
         if ($customURL = $this->input->getBase64('returnurl', ''))
         {

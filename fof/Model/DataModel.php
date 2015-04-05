@@ -12,7 +12,6 @@ use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Event\Dispatcher;
 use FOF30\Event\Observer;
 use FOF30\Form\Form;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel\Collection as DataCollection;
 use FOF30\Model\DataModel\Exception\BaseException;
 use FOF30\Model\DataModel\Exception\CannotLockNotLoadedRecord;
@@ -195,7 +194,7 @@ class DataModel extends Model implements \JTableInterface
 		elseif (empty($this->tableName))
 		{
 			// The table name is by default: #__appName_viewNamePlural (Ruby on Rails convention)
-			$viewPlural = Inflector::pluralize($this->getName());
+			$viewPlural = $container->inflector->pluralize($this->getName());
 			$this->tableName = '#__' . strtolower($this->container->bareComponentName) . '_' . strtolower($viewPlural);
 		}
 
@@ -207,7 +206,7 @@ class DataModel extends Model implements \JTableInterface
 		elseif (empty($this->idFieldName))
 		{
 			// The default ID field is: appName_viewNameSingular_id (Ruby on Rails convention)
-			$viewSingular = Inflector::singularize($this->getName());
+			$viewSingular = $container->inflector->singularize($this->getName());
 			$this->idFieldName = strtolower($this->container->bareComponentName) . '_' . strtolower($viewSingular) . '_id';
 		}
 
@@ -362,7 +361,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->$access_field = (int) $this->container->platform->getConfig()->get('access');
 		}
 
-		$assetKey = $this->container->componentName . '.' . strtolower(Inflector::singularize($this->getName()));
+		$assetKey = $this->container->componentName . '.' . strtolower($container->inflector->singularize($this->getName()));
 		$this->setAssetKey($assetKey);
 
 		// Set the UCM content type if applicable
@@ -897,7 +896,7 @@ class DataModel extends Model implements \JTableInterface
 	{
 		foreach ($this->recordData as $name => $value)
 		{
-			$method = Inflector::camelize('get_' . $name . '_attribute');
+			$method = $this->container->inflector->camelize('get_' . $name . '_attribute');
 
 			if (method_exists($this, $method))
 			{
@@ -922,7 +921,7 @@ class DataModel extends Model implements \JTableInterface
 
 		foreach ($copy as $name => $value)
 		{
-			$method = Inflector::camelize('set_' . $name . '_attribute');
+			$method = $this->container->inflector->camelize('set_' . $name . '_attribute');
 
 			if (method_exists($this, $method))
 			{
@@ -1330,7 +1329,7 @@ class DataModel extends Model implements \JTableInterface
 
 			if (($field->Null == 'NO') && empty($value) && !is_numeric($value) && !in_array($fieldName, $this->fieldsSkipChecks))
 			{
-				$text = $this->container->componentName . '_' . Inflector::singularize($this->getName()) . '_ERR_'
+				$text = $this->container->componentName . '_' . $this->container->inflector->singularize($this->getName()) . '_ERR_'
 					. $fieldName . '_EMPTY';
 
 				throw new \RuntimeException(\JText::_(strtoupper($text)), 500);

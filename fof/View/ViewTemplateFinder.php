@@ -8,7 +8,6 @@
 namespace FOF30\View;
 
 use FOF30\Container\Container;
-use FOF30\Inflector\Inflector;
 
 defined('_JEXEC') or die;
 
@@ -174,7 +173,7 @@ class ViewTemplateFinder
 
 		if (!$strictView)
 		{
-			$parameters['view'] = Inflector::isSingular($view) ? Inflector::pluralize($view) : Inflector::singularize($view);
+			$parameters['view'] = $this->container->inflector->isSingular($view) ? $this->container->inflector->pluralize($view) : $this->container->inflector->singularize($view);
 			$parameters['strictView'] = true;
 
 			$extraUris = $this->getViewTemplateUris($parameters);

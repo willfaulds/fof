@@ -7,7 +7,6 @@
 
 namespace FOF30\Form\Field;
 
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use \JHtml;
 use \JText;
@@ -58,7 +57,7 @@ class Relation extends GenericList
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-		$relationName = Inflector::pluralize($this->name);
+		$relationName = $this->form->getModel()->getContainer()->inflector->pluralize($this->name);
 		$relations    = $this->item->getRelations()->getData($relationName);
 
 		$rels = array();
@@ -127,7 +126,7 @@ class Relation extends GenericList
 		$value_field = $this->element['value_field'] ? (string) $this->element['value_field'] : 'title';
 
 		$view      = $this->form->getView()->getName();
-		$relation  = Inflector::pluralize((string) $this->element['name']);
+		$relation  = $this->form->getModel()->getContainer()->inflector->pluralize((string) $this->element['name']);
 
 		/** @var DataModel $model */
 		$model = $this->form->getContainer()->factory->model($relation)->setIgnoreRequest(true)->savestate(false);

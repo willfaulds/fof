@@ -20,7 +20,6 @@ use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
 use FOF30\Form\Form;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -78,7 +77,7 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst(Inflector::singularize($viewName));
+		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
 
 		return $this->createController($controllerClass, $config);
 	}
@@ -103,7 +102,7 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst(Inflector::singularize($viewName));
+		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
 
 		return $this->createModel($modelClass, $config);
 	}
@@ -129,7 +128,7 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst(Inflector::singularize($viewName)) . '\\' . ucfirst($viewType);
+		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($this->container->inflector->singularize($viewName)) . '\\' . ucfirst($viewType);
 
 		return $this->createView($viewClass, $config);
 	}
@@ -485,11 +484,11 @@ class BasicFactory implements FactoryInterface
 			$viewName = $this->container->dispatcher->getController()->getView()->getName();
 		}
 
-		$viewNameAlt = Inflector::singularize($viewName);
+		$viewNameAlt = $this->container->inflector->singularize($viewName);
 
 		if ($viewNameAlt == $viewName)
 		{
-			$viewNameAlt = Inflector::pluralize($viewName);
+			$viewNameAlt = $this->container->inflector->pluralize($viewName);
 		}
 
 		$componentPaths = $this->container->platform->getComponentBaseDirs($componentName);

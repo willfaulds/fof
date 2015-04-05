@@ -12,7 +12,6 @@ use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Form\Header\Ordering as HeaderOrdering;
 use FOF30\Form\Field\Ordering as FieldOrdering;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use FOF30\Toolbar\Toolbar;
 use FOF30\View\View;
@@ -576,7 +575,7 @@ HTML;
 		{
 			\JHtmlSidebar::setAction("index.php?option=" .
 				$this->container->componentName . "&view=" .
-				Inflector::pluralize($form->getView()->getName())
+				$this->container->inflector->pluralize($form->getView()->getName())
 			);
 		}
 
@@ -875,7 +874,7 @@ HTML;
 		$html .= "</div>\n";
 
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $this->container->componentName . '" />' . "\n";
-		$html .= "\t" . '<input type="hidden" name="view" value="' . Inflector::pluralize($form->getView()->getName()) . '" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="view" value="' . $this->container->inflector->pluralize($form->getView()->getName()) . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $form->getView()->getTask() . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="layout" value="' . $form->getView()->getLayout() . '" />' . "\n";
 

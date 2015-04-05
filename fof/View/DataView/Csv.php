@@ -8,7 +8,6 @@
 namespace FOF30\View\DataView;
 
 use FOF30\Container\Container;
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 use FOF30\View\Exception\AccessForbidden;
 
@@ -70,7 +69,7 @@ class Csv extends Html implements DataViewInterface
 		if (empty($this->csvFilename))
 		{
 			$view = $this->input->getCmd('view', 'cpanel');
-			$view = Inflector::pluralize($view);
+			$view = $this->container->inflector->pluralize($view);
 			$this->csvFilename = strtolower($view);
 		}
 

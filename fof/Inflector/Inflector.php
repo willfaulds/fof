@@ -12,14 +12,14 @@ defined('_JEXEC') or die;
 /**
  * An Inflector to pluralize and singularize English nouns.
  */
-abstract class Inflector
+class Inflector
 {
 	/**
 	 * Rules for pluralizing and singularizing of nouns.
 	 *
 	 * @var array
 	 */
-	protected static $_rules = array
+	protected $rules = array
 	(
 		// Pluralization rules. The regex on the left transforms to the regex on the right.
 		'pluralization'   => array(
@@ -129,15 +129,15 @@ abstract class Inflector
 	 *
 	 * @var array
 	 */
-	protected static $_cache = array(
+	protected $cache = array(
 		'singularized' => array(),
 		'pluralized'   => array()
 	);
 
-	public static function deleteCache()
+	public function deleteCache()
 	{
-		self::$_cache['pluralized'] = array();
-		self::$_cache['singularized'] = array();
+		$this->cache['pluralized'] = array();
+		$this->cache['singularized'] = array();
 	}
 
 	/**
@@ -148,10 +148,10 @@ abstract class Inflector
 	 *
 	 * @return  void
 	 */
-	public static function addWord($singular, $plural)
+	public function addWord($singular, $plural)
 	{
-		self::$_cache['pluralized'][$singular] = $plural;
-		self::$_cache['singularized'][$plural] = $singular;
+		$this->cache['pluralized'][$singular] = $plural;
+		$this->cache['singularized'][$plural] = $singular;
 	}
 
 	/**
@@ -161,29 +161,29 @@ abstract class Inflector
 	 *
 	 * @return  string Plural noun.
 	 */
-	public static function pluralize($word)
+	public function pluralize($word)
 	{
 		// Get the cached noun of it exists
-		if (isset(self::$_cache['pluralized'][$word]))
+		if (isset($this->cache['pluralized'][$word]))
 		{
-			return self::$_cache['pluralized'][$word];
+			return $this->cache['pluralized'][$word];
 		}
 
 		// Check if the noun is already in plural form, i.e. in the singularized cache
-		if (isset(self::$_cache['singularized'][$word]))
+		if (isset($this->cache['singularized'][$word]))
 		{
 			return $word;
 		}
 		
 		// Create the plural noun
-		if (in_array($word, self::$_rules['uncountable']))
+		if (in_array($word, $this->rules['uncountable']))
 		{
 			$_cache['pluralized'][$word] = $word;
 
 			return $word;
 		}
 
-		foreach (self::$_rules['pluralization'] as $regexp => $replacement)
+		foreach ($this->rules['pluralization'] as $regexp => $replacement)
 		{
 			$matches = null;
 			$plural = preg_replace($regexp, $replacement, $word, -1, $matches);
@@ -206,29 +206,29 @@ abstract class Inflector
 	 *
 	 * @return  string Singular noun.
 	 */
-	public static function singularize($word)
+	public function singularize($word)
 	{
 		// Get the cached noun of it exists
-		if (isset(self::$_cache['singularized'][$word]))
+		if (isset($this->cache['singularized'][$word]))
 		{
-			return self::$_cache['singularized'][$word];
+			return $this->cache['singularized'][$word];
 		}
 		
 		// Check if the noun is already in singular form, i.e. in the pluralized cache
-		if (isset(self::$_cache['pluralized'][$word]))
+		if (isset($this->cache['pluralized'][$word]))
 		{
 			return $word;
 		}
 
 		// Create the singular noun
-		if (in_array($word, self::$_rules['uncountable']))
+		if (in_array($word, $this->rules['uncountable']))
 		{
 			$_cache['singularized'][$word] = $word;
 
 			return $word;
 		}
 
-		foreach (self::$_rules['singularization'] as $regexp => $replacement)
+		foreach ($this->rules['singularization'] as $regexp => $replacement)
 		{
 			$matches = null;
 			$singular = preg_replace($regexp, $replacement, $word, -1, $matches);
@@ -255,7 +255,7 @@ abstract class Inflector
 	 *
 	 * @return  string  UpperCamelCasedWord
 	 */
-	public static function camelize($word)
+	public function camelize($word)
 	{
 		$word = preg_replace('/[^a-zA-Z0-9\s]/', ' ', $word);
 		$word = str_replace(' ', '', ucwords(strtolower(str_replace('_', ' ', $word))));
@@ -272,7 +272,7 @@ abstract class Inflector
 	 *
 	 * @return string Underscored word
 	 */
-	public static function underscore($word)
+	public function underscore($word)
 	{
 		$word = preg_replace('/(\s)+/', '_', $word);
 		$word = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $word));
@@ -290,7 +290,7 @@ abstract class Inflector
 	 *
 	 * @return  array   Array of strings
 	 */
-	public static function explode($word)
+	public function explode($word)
 	{
 		$result = explode('_', self::underscore($word));
 
@@ -304,7 +304,7 @@ abstract class Inflector
 	 *
 	 * @return  string UpperCamelCasedWord
 	 */
-	public static function implode($words)
+	public function implode($words)
 	{
 		$result = self::camelize(implode('_', $words));
 
@@ -322,7 +322,7 @@ abstract class Inflector
 	 *
 	 * @return string Human-readable word
 	 */
-	public static function humanize($word)
+	public function humanize($word)
 	{
 		$result = ucwords(strtolower(str_replace("_", " ", $word)));
 
@@ -341,7 +341,7 @@ abstract class Inflector
 	 *
 	 * @see classify
 	 */
-	public static function tableize($className)
+	public function tableize($className)
 	{
 		$result = self::underscore($className);
 
@@ -363,7 +363,7 @@ abstract class Inflector
 	 * @example  Converts "people" to "Person"
 	 * @see      tableize
 	 */
-	public static function classify($tableName)
+	public function classify($tableName)
 	{
 		$result = self::camelize(self::singularize($tableName));
 
@@ -379,7 +379,7 @@ abstract class Inflector
 	 *
 	 * @see camelize
 	 */
-	public static function variablize($string)
+	public function variablize($string)
 	{
 		$string = self::camelize(self::underscore($string));
 		$result = strtolower(substr($string, 0, 1));
@@ -395,11 +395,11 @@ abstract class Inflector
 	 *
 	 * @return boolean
 	 */
-	public static function isSingular($string)
+	public function isSingular($string)
 	{
 		// Check cache assuming the string is plural.
-		$singular = isset(self::$_cache['singularized'][$string]) ? self::$_cache['singularized'][$string] : null;
-		$plural = $singular && isset(self::$_cache['pluralized'][$singular]) ? self::$_cache['pluralized'][$singular] : null;
+		$singular = isset($this->cache['singularized'][$string]) ? $this->cache['singularized'][$string] : null;
+		$plural = $singular && isset($this->cache['pluralized'][$singular]) ? $this->cache['pluralized'][$singular] : null;
 
 		if ($singular && $plural)
 		{
@@ -417,17 +417,17 @@ abstract class Inflector
 	 *
 	 * @return boolean
 	 */
-	public static function isPlural($string)
+	public function isPlural($string)
 	{
 		// Uncountable objects are always singular (e.g. information)
-		if (in_array($string, self::$_rules['uncountable']))
+		if (in_array($string, $this->rules['uncountable']))
 		{
 			return false;
 		}
 
 		// Check cache assuming the string is singular.
-		$plural = isset(self::$_cache['pluralized'][$string]) ? self::$_cache['pluralized'][$string] : null;
-		$singular = $plural && isset(self::$_cache['singularized'][$plural]) ? self::$_cache['singularized'][$plural] : null;
+		$plural = isset($this->cache['pluralized'][$string]) ? $this->cache['pluralized'][$string] : null;
+		$singular = $plural && isset($this->cache['singularized'][$plural]) ? $this->cache['singularized'][$plural] : null;
 
 		if ($plural && $singular)
 		{
@@ -450,7 +450,7 @@ abstract class Inflector
 	 *
 	 * @return string
 	 */
-	public static function getPart($string, $index, $default = null)
+	public function getPart($string, $index, $default = null)
 	{
 		$parts = self::explode($string);
 

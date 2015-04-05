@@ -9,7 +9,6 @@ namespace FOF30\Toolbar;
 
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
-use FOF30\Inflector\Inflector;
 use FOF30\Toolbar\Exception\MissingAttribute;
 use FOF30\Toolbar\Exception\UnknownButtonType;
 use FOF30\Utils\String;
@@ -172,7 +171,7 @@ class Toolbar
 			$task = $input->getCmd('task', $autoDetectedTask);
 		}
 
-		$view = Inflector::pluralize($view);
+		$view = $this->container->inflector->pluralize($view);
 
 		// If there is a fof.xml toolbar configuration use it and return
 		$toolbarConfig = $this->container->appConfig->get('models.' . ucfirst($view) . '.toolbar.' . $task);
@@ -375,7 +374,7 @@ class Toolbar
 		$view = $this->container->input->getCmd('view', 'cpanel');
 
 		// Set toolbar title
-		$subtitle_key = strtoupper($option . '_TITLE_' . Inflector::pluralize($view)) . '_EDIT';
+		$subtitle_key = strtoupper($option . '_TITLE_' . $this->container->inflector->pluralize($view)) . '_EDIT';
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		if (!$this->isDataView())
@@ -552,7 +551,7 @@ class Toolbar
 			//Do we have a translation for this key?
 			if (strtoupper(JText::_($key)) == $key)
 			{
-				$altview = Inflector::isPlural($view) ? Inflector::singularize($view) : Inflector::pluralize($view);
+				$altview = $this->container->inflector->isPlural($view) ? $this->container->inflector->singularize($view) : $this->container->inflector->pluralize($view);
 				$key2 = strtoupper($this->container->componentName) . '_TITLE_' . strtoupper($altview);
 
 				// Maybe we have for the alternative view?
@@ -602,7 +601,7 @@ class Toolbar
 				$view = $folder;
 
 				// View already added
-				if (in_array(Inflector::pluralize($view), $t_views))
+				if (in_array($this->container->inflector->pluralize($view), $t_views))
 				{
 					continue;
 				}
@@ -621,7 +620,7 @@ class Toolbar
 				// Not found, do we have it inside the plural one?
 				if (!$meta)
 				{
-					$plural = Inflector::pluralize($view);
+					$plural = $this->container->inflector->pluralize($view);
 
 					if (in_array($plural, $allFolders))
 					{
@@ -648,7 +647,7 @@ class Toolbar
 					$order = count($to_order);
 				}
 
-				$view = Inflector::pluralize($view);
+				$view = $this->container->inflector->pluralize($view);
 
 				$t_view = new \stdClass;
 				$t_view->ordering = $order;

@@ -9,7 +9,6 @@ namespace FOF30\Form\Header;
 
 use FOF30\Form\Form;
 use FOF30\Form\HeaderInterface;
-use FOF30\Inflector\Inflector;
 use SimpleXMLElement;
 
 defined('_JEXEC') or die;
@@ -487,7 +486,7 @@ abstract class HeaderBase
 			$componentName = $viewObject->getContainer()->componentName;
 
 			$title = $componentName . '_' .
-				Inflector::pluralize($viewName) . '_FIELD_' .
+				$this->form->getModel()->getContainer()->inflector->pluralize($viewName) . '_FIELD_' .
 				(string) $this->element['name'];
 			$title = strtoupper($title);
 			$result = \JText::_($title);

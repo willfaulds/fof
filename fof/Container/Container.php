@@ -59,6 +59,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Dispatcher\Dispatcher        $dispatcher         The component's dispatcher
  * @property-read  \FOF30\Factory\FactoryInterface     $factory            The MVC object factory
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
+ * @property-read  \FOF30\Inflector\Inflector          $inflector          The English word inflector (pluralise / singularise words etc)
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
  * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
@@ -332,6 +333,15 @@ class Container extends ContainerBase
 		if (!$autoloader->hasMap($backEndNamespace))
 		{
 			$autoloader->addMap($backEndNamespace, $this->backEndPath);
+		}
+
+		// Inflector service
+		if (!isset($this['inflector']))
+		{
+			$this['inflector'] = function (Container $c)
+			{
+				return new Inflector();
+			};
 		}
 
 		// Filesystem abstraction service

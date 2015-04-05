@@ -7,7 +7,6 @@
 
 namespace FOF30\Factory\Scaffolding;
 
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 
 /**
@@ -171,7 +170,7 @@ class FormErector extends BaseErector implements ErectorInterface
 
 				$baseKey = $this->getLangKeyPrefix() . 'GROUP_PERMISSIONS';
 				$this->addString($baseKey, 'Permissions');
-				$this->addString($baseKey . '_DESC', 'Permissions for ' . Inflector::singularize($this->viewName));
+				$this->addString($baseKey . '_DESC', 'Permissions for ' . $this->model->getContainer()->inflector->singularize($this->viewName));
 
 				$rulesSet->addAttribute('name', 'rules');
 				$rulesSet->addAttribute('class', 'tab-pane');
@@ -266,11 +265,11 @@ class FormErector extends BaseErector implements ErectorInterface
 				else
 				{
 					$foreignName1 = array_shift($parts);
-					$foreignName1 = Inflector::pluralize($foreignName1);
+					$foreignName1 = $this->model->getContainer()->inflector->pluralize($foreignName1);
 					$foreignName2 = array_shift($parts);
-					$foreignName2 = Inflector::pluralize($foreignName2);
+					$foreignName2 = $this->model->getContainer()->inflector->pluralize($foreignName2);
 					$modelName = $model->getName();
-					$modelName = Inflector::pluralize($modelName);
+					$modelName = $this->model->getContainer()->inflector->pluralize($modelName);
 
 					$foreignName = ($foreignName1 == $modelName) ? $foreignName2 : $foreignName1;
 				}
@@ -285,7 +284,7 @@ class FormErector extends BaseErector implements ErectorInterface
 				}
 				catch (DataModel\Relation\Exception\RelationNotFound $e)
 				{
-					$foreignName = Inflector::pluralize($foreignName);
+					$foreignName = $this->model->getContainer()->inflector->pluralize($foreignName);
 
 					try
 					{

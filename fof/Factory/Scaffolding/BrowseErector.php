@@ -7,7 +7,6 @@
 
 namespace FOF30\Factory\Scaffolding;
 
-use FOF30\Inflector\Inflector;
 use FOF30\Model\DataModel;
 
 /**
@@ -248,11 +247,11 @@ class BrowseErector extends BaseErector implements ErectorInterface
 				else
 				{
 					$foreignName1 = array_shift($parts);
-					$foreignName1 = Inflector::pluralize($foreignName1);
+					$foreignName1 = $this->model->getContainer()->inflector->pluralize($foreignName1);
 					$foreignName2 = array_shift($parts);
-					$foreignName2 = Inflector::pluralize($foreignName2);
+					$foreignName2 = $this->model->getContainer()->inflector->pluralize($foreignName2);
 					$modelName = $model->getName();
-					$modelName = Inflector::pluralize($modelName);
+					$modelName = $this->model->getContainer()->inflector->pluralize($modelName);
 
 					$foreignName = ($foreignName1 == $modelName) ? $foreignName2 : $foreignName1;
 				}
@@ -267,7 +266,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 				}
 				catch (DataModel\Relation\Exception\RelationNotFound $e)
 				{
-					$foreignName = Inflector::pluralize($foreignName);
+					$foreignName = $this->model->getContainer()->inflector->pluralize($foreignName);
 
 					try
 					{
@@ -586,7 +585,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('type', 'Sortable');
 		$field->addAttribute('label', $langDefs['label']['key']);
 		$field->addAttribute('url', 'index.php?option=' .
-			$this->builder->getContainer()->componentName . '&view=' . Inflector::singularize($this->viewName) . '&id=[ITEM:ID]'
+			$this->builder->getContainer()->componentName . '&view=' . $this->model->getContainer()->inflector->singularize($this->viewName) . '&id=[ITEM:ID]'
 		);
 	}
 
