@@ -10,6 +10,7 @@ namespace FOF30\Tests\Inflector;
 use FOF30\Inflector\Inflector;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\TestContainer;
 
 /**
  * Test class for FOF30\Inflector\Inflector.
@@ -596,15 +597,16 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testDeleteCache()
 	{
+		$container = new TestContainer();
 		$myCache = array(
 			'singularized' => array('foobar' => 'foobars'),
 			'pluralized'   => array('foobars' => 'foobar'),
 		);
-		ReflectionHelper::setValue('\\FOF30\\Inflector\\Inflector', '_cache', $myCache);
+		ReflectionHelper::setValue($container->inflector, 'cache', $myCache);
 
-		Inflector::deleteCache();
+		$container->inflector->deleteCache();
 
-		$newCache = ReflectionHelper::getValue('\\FOF30\\Inflector\\Inflector', '_cache');
+		$newCache = ReflectionHelper::getValue($container->inflector, 'cache');
 
 		$this->assertEmpty(
 			$newCache['singularized'],
@@ -628,12 +630,14 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testAddWord()
 	{
-		Inflector::addWord('xoxosingular', 'xoxoplural');
+		$container = new TestContainer();
 
-		$res = Inflector::singularize('xoxoplural');
+		$container->inflector->addWord('xoxosingular', 'xoxoplural');
+
+		$res = $container->inflector->singularize('xoxoplural');
 		$this->assertEquals($res, 'xoxosingular', 'Custom word could not be singularized');
 
-		$res = Inflector::pluralize('xoxosingular');
+		$res = $container->inflector->pluralize('xoxosingular');
 		$this->assertEquals($res, 'xoxoplural', 'Custom word could not be pluralized');
 	}
 
@@ -647,8 +651,9 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testPluralize($word, $expect, $message)
 	{
-		Inflector::deleteCache();
-		$res = Inflector::pluralize($word);
+		$container = new TestContainer();
+		$container->inflector->deleteCache();
+		$res = $container->inflector->pluralize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -666,8 +671,9 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testSingularize($word, $expect, $message)
 	{
-		Inflector::deleteCache();
-		$res = Inflector::singularize($word);
+		$container = new TestContainer();
+		$container->inflector->deleteCache();
+		$res = $container->inflector->singularize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -684,7 +690,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testCamelize($word, $expect, $message)
 	{
-		$res = Inflector::camelize($word);
+		$container = new TestContainer();
+		$res = $container->inflector->camelize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -701,7 +708,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testUnderscore($word, $expect, $message)
 	{
-		$res = Inflector::underscore($word);
+		$container = new TestContainer();
+		$res = $container->inflector->underscore($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -718,7 +726,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testExplode($word, $expect, $message)
 	{
-		$res = Inflector::explode($word);
+		$container = new TestContainer();
+		$res = $container->inflector->explode($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -735,7 +744,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testImplode($word, $expect, $message)
 	{
-		$res = Inflector::implode($word);
+		$container = new TestContainer();
+		$res = $container->inflector->implode($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -752,7 +762,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testHumanize($word, $expect, $message)
 	{
-		$res = Inflector::humanize($word);
+		$container = new TestContainer();
+		$res = $container->inflector->humanize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -769,7 +780,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testTableize($word, $expect, $message)
 	{
-		$res = Inflector::tableize($word);
+		$container = new TestContainer();
+		$res = $container->inflector->tableize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -786,7 +798,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testClassify($word, $expect, $message)
 	{
-		$res = Inflector::classify($word);
+		$container = new TestContainer();
+		$res = $container->inflector->classify($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -803,7 +816,8 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testVariableize($word, $expect, $message)
 	{
-		$res = Inflector::variablize($word);
+		$container = new TestContainer();
+		$res = $container->inflector->variablize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -821,9 +835,10 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testIsSingular($word, $expect, $message)
 	{
-		Inflector::deleteCache();
+		$container = new TestContainer();
+		$container->inflector->deleteCache();
 
-		$res = Inflector::isSingular($word);
+		$res = $container->inflector->isSingular($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -841,9 +856,10 @@ class InflectorTest extends FOFTestCase
 	 */
 	public function testIsPlural($word, $expect, $message)
 	{
-		Inflector::deleteCache();
+		$container = new TestContainer();
+		$container->inflector->deleteCache();
 
-		$res = Inflector::isPlural($word);
+		$res = $container->inflector->isPlural($word);
 		$this->assertEquals(
 			$res,
 			$expect,
