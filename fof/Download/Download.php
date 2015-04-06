@@ -165,17 +165,23 @@ class Download
 	}
 
 	/**
-	 * Download data from a URL and return it
+	 * Download data from a URL and return it.
 	 *
-	 * @param   string  $url  The URL to download from
+	 * Important note about ranges: byte ranges start at 0. This means that the first 500 bytes of a file are from 0
+	 * to 499, NOT from 1 to 500. If you ask more bytes than there are in the file or a range which is invalid or does
+	 * not exist this method will return false.
+	 *
+	 * @param   string  $url   The URL to download from
+	 * @param   int     $from  Byte range to start downloading from. Use null (default) for start of file.
+	 * @param   int     $to    Byte range to stop downloading. Use null to download the entire file ($from will be ignored!)
 	 *
 	 * @return  bool|string  The downloaded data or false on failure
 	 */
-	public function getFromURL($url)
+	public function getFromURL($url, $from = null, $to = null)
 	{
 		try
 		{
-			return $this->adapter->downloadAndReturn($url, null, null, $this->adapterOptions);
+			return $this->adapter->downloadAndReturn($url, $from, $to, $this->adapterOptions);
 		}
 		catch (DownloadError $e)
 		{
