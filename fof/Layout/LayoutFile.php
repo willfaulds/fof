@@ -58,7 +58,8 @@ class LayoutFile extends JLayoutFile
 
 			$possiblePaths = array(
 				$prefix . '/templates/' . $this->container->platform->getTemplate() . '/html/layouts/' . $filePath,
-				$this->basePath . '/' . $filePath
+				$this->basePath . '/' . $filePath,
+				$platformDirs['root'] . '/' . $filePath
 			);
 
 			reset($files);
