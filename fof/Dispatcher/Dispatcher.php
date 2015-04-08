@@ -110,7 +110,7 @@ class Dispatcher
 	 *
 	 * @return  void
 	 *
-	 * @throws  \Exception
+	 * @throws  AccessForbidden  When the access is forbidden
 	 */
 	public function dispatch()
 	{
