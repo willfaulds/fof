@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package    FrameworkOnFramework.UnitTest
+ * @subpackage Core
+ *
+ * @copyright  Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 /**
  * We can use instances of this class in order to create "on-the-fly" methods, so we can inject our code

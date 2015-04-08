@@ -1,3 +1,37 @@
+FOF 2.4.2
+================================================================================
++ gh-425 Added F0FUtilsIp to help you get the user's IP address and check if it matches against a set of IP expressions
+# [LOW] Prevent the component menu item from disappearing on extension update
+# [LOW] Backend Akeeba Strapper / Joomla! 3 dropdowns collapsing next to message area due to Joomla! 3.4 CSS bugs coming from the floating sidebar
+
+FOF 2.4.1
+================================================================================
+# [HIGH] Models could result in invalid SQL due to lack of order and order direction validation under extreme circumstances
+
+FOF 2.4.0
+================================================================================
++ F0FUtilsUpdateCollection, F0FUtilsUpdateExtension and F0FUtilsUpdateJoomla helper classes for managing update XML files
++ F0FDownload class for simple and staggered file downloads
++ gh-400 gh-401 "range", "modulo" and "emptynonzero" filters in F0FModel
++ Installation integrity check library (F0FUtilsFilescheck)
++ F0FTimer class implements a runtime timer, useful to prevent long-running operations from timing out
++ Support for multiple fieldsets per tab in tabbed XML forms
++ Support for custom default tasks in XML edit forms
++ gh-407 Added inner fieldset on tabbed form
++ gh-410 "Filterable" header form field
++ gh-411 gh-415 "relation" form field
++ gh-418 Form fields, button: added title attribute (used for tooltip)
++ gh-418 Form fields, groupedbutton: we need to htmlentities or it will crash the XML parsing (if we add a link for example)
++ gh-418 Form fields, list & model: refactorized parseFieldTags, allow to add new tag w/o rewritting getRepeatable
++ gh-418 Form fields, ordering: added icon and class attribute, allow to use on non-bootstrap 2.3 templates
++ gh-418 Form fields, checkboxes: new fields based on Joomla checkboxes
+# [HIGH] F0FTableNested::getParent would return the wrong node (fbe927973b5ef7cbd43b7b87df4b99f93962daba)
+# [MEDIUM] gh-405 gh-406 gh-416 gh-419 Bug in F0FToolbar didn't allow toolbar configuration with fof.xml
+# [MEDIUM] gh-402 The tpl= query parameter could not be possibly made to work without copying & pasting the entire display() method
+# [LOW] Warnings in F0FTable when a table doesn't exist or has no fields
+# [LOW] Warnings in F0FTableNested when trying to move to the right/left of a node which is already the rightmost/leftmost node respectively
+# [LOW] gh-408 Notice in F0FTableNested::copy
+
 FOF 2.3.5
 ================================================================================
 + Installation script: add support for post-installation messages in Joomla! 3.2 or later

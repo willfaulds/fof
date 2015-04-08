@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package	    FrameworkOnFramework.UnitTest
+ * @subpackage  Table
+ *
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
+ * @license	    GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 class NestedDataprovider
 {
@@ -801,10 +808,32 @@ class NestedDataprovider
 
     public static function getTestGetParent()
     {
-        // Root node, we simply return ourself
+        // Root node, we simply return ourselves
         $data[] = array(
             array(
                 'loadid' => 1,
+                'cache'  => null,
+            ),
+            array(
+                'parent' => 1
+            )
+        );
+
+        // Child node, first level
+        $data[] = array(
+            array(
+                'loadid' => 1,
+                'cache'  => null,
+            ),
+            array(
+                'parent' => 1
+            )
+        );
+
+        // Child node, first level
+        $data[] = array(
+            array(
+                'loadid' => 9,
                 'cache'  => null,
             ),
             array(

@@ -2,7 +2,7 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  toolbar
- * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2015 Nicholas K. Dionysopoulos / Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
@@ -207,7 +207,15 @@ class F0FToolbar
                 if(!F0FPlatform::getInstance()->isCli())
                 {
                     // Load the core Javascript
-                    JHtml::_('behavior.framework', true);
+	                if (version_compare(JVERSION, '3.0', 'ge'))
+	                {
+		                JHtml::_('jquery.framework');
+		                JHtml::_('behavior.core');
+	                }
+	                else
+	                {
+		                JHtml::_('behavior.framework');
+	                }
                 }
 			}
 		}
@@ -271,7 +279,7 @@ class F0FToolbar
 
 		$configProvider = new F0FConfigProvider;
 		$toolbar = $configProvider->get(
-			$component . '.views.' . '.toolbar'
+			$component . '.views.' . $view . '.toolbar.' . $task
 		);
 
 		// If we have a toolbar config specified

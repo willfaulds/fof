@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @package	    FrameworkOnFramework.UnitTest
+ * @subpackage  Utils
+ *
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
+ * @license	    GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 require_once __DIR__ . '/eventInspector.php';
 require_once __DIR__ . '/eventStub.php';

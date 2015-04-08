@@ -3,7 +3,7 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -1291,6 +1291,9 @@ class F0FModelTest extends FtestCaseDatabase
         $formMock = $this->getMock('F0FForm', array('bind'), array('dummy'));
         $formMock->expects($this->any())->method('bind')
                  ->with($checks['bind']['data']);
+
+		// This line is required on PHP 5.5, otherwise you can't bind "dummy" to the form mock
+		$formMock->dummy = 0;
 
         $fofform = new ReflectionProperty('F0FForm', 'forms');
         $fofform->setAccessible(true);

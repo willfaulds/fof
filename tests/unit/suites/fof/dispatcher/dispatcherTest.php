@@ -3,7 +3,7 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Dispatcher
  *
- * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -142,7 +142,8 @@ class F0FDispatcherTest extends FtestCase
         }
 
         $config = array(
-            'input' => new F0FInput($input)
+            'input'			=> new F0FInput($input),
+			'authTimeStep'	=> 30,
         );
 
         $dispatcher = new F0FDispatcher($config);

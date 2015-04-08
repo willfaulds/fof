@@ -3,7 +3,7 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Utils
  *
- * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -1574,6 +1574,8 @@ class F0FUtilsArrayTest extends FtestCase
 	 */
 	public function testToString($input, $inner, $outer, $keepKey, $expect, $message, $defaults)
 	{
+		setlocale(LC_ALL, 'C');
+
 		if ($defaults)
 		{
 			$output = F0FUtilsArray::toString($input);

@@ -1,10 +1,10 @@
 <?php
 /**
- * @package     Joomla.UnitTest
- * @subpackage  Event
+ * @package	    FrameworkOnFramework.UnitTest
+ * @subpackage  Utils
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
+ * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 class F0FUtilsObservableEventInspector extends F0FUtilsObservableEvent

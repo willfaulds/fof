@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package	    FrameworkOnFramework.UnitTest
+ * @subpackage  Dispatcher
+ *
+ * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
+ * @license	    GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 class DispatcherDataprovider
 {
@@ -252,7 +259,7 @@ class DispatcherDataprovider
         $key     = $encrypt->encode('F0F rocks!');
         $plain   = json_encode(array('username' => 'foftest', 'password' => 'dummy'));
 
-        $totp      = new F0FEncryptTotp(6);
+        $totp      = new F0FEncryptTotp(30);
         $otp       = $totp->getCode($key);
         $cryptoKey = hash('sha256', $key.$otp);
 
@@ -279,7 +286,7 @@ class DispatcherDataprovider
         $key     = $encrypt->encode('F0F rocks!');
         $plain   = json_encode(array('username' => 'foftest', 'password' => 'dummy'));
 
-        $totp      = new F0FEncryptTotp(6);
+        $totp      = new F0FEncryptTotp(30);
         $otp       = $totp->getCode($key);
         $cryptoKey = hash('sha256', $key.$otp);
 

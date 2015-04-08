@@ -818,21 +818,22 @@ function postflight($type, $parent)
           behaviours. Model Behaviors are a handy way to alter the workflow of
           a F0FModel. It's based upon the standard Joomla Event system.</para>
 
-          <para>Before and After certain actions (<classname>onBefore*</classname>
-          / <classname>onAfter*</classname>) the model triggers an
-          "event" which is propagated to each of the registered behaviors for
-          that model. They can then, by registering to these events, alter the
-          way the action itself is performed.</para>
+          <para>Before and After certain actions
+          (<classname>onBefore*</classname> / <classname>onAfter*</classname>)
+          the model triggers an "event" which is propagated to each of the
+          registered behaviors for that model. They can then, by registering
+          to these events, alter the way the action itself is
+          performed.</para>
 
           <para>It's possible to register different behaviors per model; they
           can be added by default, or even on the fly, after the model is
           created.</para>
 
           <para>FOF already provides a list of common behaviors, that can be
-          used by any F0FModel object. The bundled behaviour classes are currently
-          located inside FOF's <filename>model/behavior</filename> directory.
-          By default, only the <filename>filters</filename> behaviour is being
-          loaded.</para>
+          used by any F0FModel object. The bundled behaviour classes are
+          currently located inside FOF's <filename>model/behavior</filename>
+          directory. By default, only the <filename>filters</filename>
+          behaviour is being loaded.</para>
         </section>
 
         <section xml:id="fofmodel-behaviours-standard">
@@ -853,12 +854,13 @@ function postflight($type, $parent)
             to.</para>
 
             <important>
-              <para>This behaviour REQUIRES the <code>filters</code> behaviour.
-              If you have not added the "filters" behaviour it will not have any
-              effect on browse views. It will, however, work on edit and read
-              views.</para>
+              <para>This behaviour REQUIRES the <code>filters</code>
+              behaviour. If you have not added the "filters" behaviour it will
+              not have any effect on browse views. It will, however, work on
+              edit and read views.</para>
 
-              <para>This behaviour requires the <code>access</code> magic field.</para>
+              <para>This behaviour requires the <code>access</code> magic
+              field.</para>
             </important>
           </section>
 
@@ -870,7 +872,8 @@ function postflight($type, $parent)
             (enabled=1).</para>
 
             <important>
-              <para>This behaviour requires the <code>enabled</code> magic field.</para>
+              <para>This behaviour requires the <code>enabled</code> magic
+              field.</para>
             </important>
           </section>
 
@@ -1002,13 +1005,73 @@ function postflight($type, $parent)
                 <term>interval</term>
 
                 <listitem>
-                  <para>Returns records whose field value is following an
-                  interval (arithmetical progression)</para>
+                  <para>Returns records whose field value is inside the space
+                  between two numbers, inclusive, based on value and interval.
+                  You have the following keys:</para>
 
                   <itemizedlist>
                     <listitem>
                       <para><option>method</option> :
                       <parameter>interval</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : The starting value of the
+                      number space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>interval</option> : The interval of the
+                      number space</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>For example value=5 interval=2 will search for any
+                  value between 3 to 7, including 3 and 7.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>range</term>
+
+                <listitem>
+                  <para>Returns records whose field value is inside the space
+                  in a range, inclusive. You have the following keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>range</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>from</option> : Left barrier of the number
+                      space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>to</option> : Right barrier of the number
+                      space</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>For example from=1 will search for any value greater
+                  than 1, including 1. And from=1 and to=10 will search for
+                  any value between 1 to 10, including 1 and 10.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>modulo</term>
+
+                <listitem>
+                  <para>Returns records whose field value is following an
+                  modulo interval (arithmetical progression)</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>modulo</parameter></para>
                     </listitem>
 
                     <listitem>
@@ -1022,8 +1085,8 @@ function postflight($type, $parent)
                     </listitem>
                   </itemizedlist>
 
-                  <para>For example value=5 interval=2 will search for values
-                  5, 7, 9, 11 and so on.</para>
+                  <para>For example value=7 interval=3 will search for values
+                  7, 10, 13, 16 and so on.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -1256,7 +1319,50 @@ function postflight($type, $parent)
                   </itemizedlist>
                 </listitem>
               </varlistentry>
+
+              <varlistentry>
+                <term>range</term>
+
+                <listitem>
+                  <para>Returns records whose field value is inside the space
+                  in a date range, inclusive. You have the following
+                  keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>range</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>from</option> : Left barrier of the date
+                      space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>to</option> : Right barrier of the date
+                      space</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
             </variablelist>
+          </section>
+
+          <section xml:id="fofmodel-behaviours-enabled">
+            <title>emptynonzero.php</title>
+
+            <para>Adding this behaviour to a model object will extent the
+            <code>filters</code> behavior and allows FOF to not empty zero
+            value. For example, if you pass &amp;foobar=0 in the URL then the
+            SQL query used to fetch the items list will be filtered by the
+            rows where the foobar column is set to 0. Without this behavior
+            the column foobar will be considered as empty.</para>
+
+            <important>
+              <para>This behaviour requires the <code>filters</code>
+              behavior.</para>
+            </important>
           </section>
 
           <section xml:id="fofmodel-behaviours-language">
@@ -1269,7 +1375,8 @@ function postflight($type, $parent)
             Joomla! language filter plugin is enabled.</para>
 
             <important>
-              <para>This behaviour requires the <code>language</code> magic field.</para>
+              <para>This behaviour requires the <code>language</code> magic
+              field.</para>
             </important>
           </section>
 
@@ -1282,7 +1389,8 @@ function postflight($type, $parent)
             created by the current user will not be displayed.</para>
 
             <important>
-              <para>This behaviour requires the <code>created_by</code> magic field.</para>
+              <para>This behaviour requires the <code>created_by</code> magic
+              field.</para>
             </important>
           </section>
         </section>
@@ -1343,7 +1451,8 @@ function postflight($type, $parent)
 
 }</programlisting>
 
-          <para>5. Adding it on the view inside <filename>fof.xml</filename></para>
+          <para>5. Adding it on the view inside
+          <filename>fof.xml</filename></para>
 
           <programlisting language="xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;fof&gt;
@@ -1364,16 +1473,18 @@ function postflight($type, $parent)
           important how you name it, because FOF will search for your
           behaviors based on their name.</para>
 
-          <para>If you want to add a <code>bar</code> behavior in a 
-          <code>foo</code> component, FOF will search for it in the following order:
-          </para>
+          <para>If you want to add a <code>bar</code> behavior in a
+          <code>foo</code> component, FOF will search for it in the following
+          order:</para>
 
           <orderedlist>
             <listitem>
-              <para>First look for <classname>ComponentnameModelViewnameBehaviorName
-              </classname> (ie: <classname>FoobarModelTodosBar</classname>)</para>
+              <para>First look for
+              <classname>ComponentnameModelViewnameBehaviorName </classname>
+              (ie: <classname>FoobarModelTodosBar</classname>)</para>
 
-              <para>Caution, the <code>Viewname</code> part MUST be plural.</para>
+              <para>Caution, the <code>Viewname</code> part MUST be
+              plural.</para>
             </listitem>
 
             <listitem>
@@ -1382,8 +1493,9 @@ function postflight($type, $parent)
             </listitem>
 
             <listitem>
-              <para>Then look for <classname>F0FModelBehaviorBehaviorName</classname>
-              (ie: <classname>F0FModelBehaviorBar</classname>)</para>
+              <para>Then look for
+              <classname>F0FModelBehaviorBehaviorName</classname> (ie:
+              <classname>F0FModelBehaviorBar</classname>)</para>
             </listitem>
           </orderedlist>
 
@@ -1396,10 +1508,10 @@ function postflight($type, $parent)
           <classname>FoobarModelBehaviorEnabled</classname>).</para>
 
           <important>
-            <para>The behaviors are not automatically loaded, so you need
-            to provide your own autoloader or simply load the classes in the
-            constructor of your Model before calling <code>parent::__construct(…)</code>
-            .</para>
+            <para>The behaviors are not automatically loaded, so you need to
+            provide your own autoloader or simply load the classes in the
+            constructor of your Model before calling
+            <code>parent::__construct(…)</code> .</para>
           </important>
         </section>
 
@@ -1772,10 +1884,10 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
           <listitem>
             <para>The title of an item. It's used for creating a slug.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>slug</parameter></para>
+              <para>required : <parameter>slug</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1789,10 +1901,10 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             generated out of the title using a very basic transliteration
             algorithm.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>title</parameter></para>
+              <para>required : <parameter>title</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1822,10 +1934,10 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The ID of the user who created the record. Handled
             automatically by FOF.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>created_on</parameter></para>
+              <para>required : <parameter>created_on</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1837,10 +1949,10 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The date when the record was created. Handled automatically
             by FOF.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>created_by</parameter></para>
+              <para>required : <parameter>created_by</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1852,10 +1964,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The ID of the user who last modified the record. Handled
             automatically by FOF.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>created_by</parameter>, <parameter>created_on</parameter>, <parameter>modified_on</parameter></para>
+              <para>required : <parameter>created_by</parameter>,
+              <parameter>created_on</parameter>,
+              <parameter>modified_on</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1867,10 +1981,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The date when the record was last modified. Handled
             automatically by FOF.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>created_by</parameter>, <parameter>created_on</parameter>, <parameter>modified_by</parameter></para>
+              <para>required : <parameter>created_by</parameter>,
+              <parameter>created_on</parameter>,
+              <parameter>modified_by</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1882,10 +1998,10 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The ID of the user who locked (checked out) the record for
             editing. Handled automatically by FOF.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>locked_on</parameter></para>
+              <para>required : <parameter>locked_on</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1897,10 +2013,10 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The date when the record was locked (checked out) for
             editing. Handled automatically by FOF.</para>
           </listitem>
+
           <itemizedlist>
             <listitem>
-              <para>required :
-              <parameter>locked_by</parameter></para>
+              <para>required : <parameter>locked_by</parameter></para>
             </listitem>
           </itemizedlist>
         </varlistentry>
@@ -1950,7 +2066,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
       <programlisting language="php">function __construct($table, $key, $db, $config)
 {
     $this-&gt;setColumnAlias('enabled', 'published');
-        
+
     parent::__construct($table, $key, $db, $config);
 }</programlisting>
 
@@ -2301,23 +2417,25 @@ class FoobarTableFoo extends F0FTable
           <title>Introduction</title>
 
           <para>Tables can implement complex, reusable functionality using
-          behaviours. Table Behaviors are an handy way to alter the workflow of a
-          F0FTable. It's based upon the standard Joomla Event system.</para>
+          behaviours. Table Behaviors are an handy way to alter the workflow
+          of a F0FTable. It's based upon the standard Joomla Event
+          system.</para>
 
-          <para>Before and After certain actions (<classname>onBefore*</classname>
-          / <classname>onAfter*</classname>) the table triggers an
-          "event" which is propagated to each of the registered behaviors for
-          that table. They can then, by registering to these events, alter the
-          way the action itself is performed.</para>
+          <para>Before and After certain actions
+          (<classname>onBefore*</classname> / <classname>onAfter*</classname>)
+          the table triggers an "event" which is propagated to each of the
+          registered behaviors for that table. They can then, by registering
+          to these events, alter the way the action itself is
+          performed.</para>
 
           <para>It's possible to register different behaviors per table; they
           can be added by default, or even on the fly, after the table is
           created.</para>
 
           <para>FOF already provides a list of common behaviors, that can be
-          used by any F0FTable object. The bundled behaviour classes are currently
-          located inside FOF's <filename>table/behavior</filename> directory.
-          By default, only the <filename>assets</filename> and
+          used by any F0FTable object. The bundled behaviour classes are
+          currently located inside FOF's <filename>table/behavior</filename>
+          directory. By default, only the <filename>assets</filename> and
           <filename>tags</filename> behaviour are being loaded</para>
         </section>
 
@@ -2341,10 +2459,11 @@ class FoobarTableFoo extends F0FTable
               <listitem>
                 <para>This behavior manages the content history related to the
                 current resource</para>
-                
+
                 <important>
-                  <para>This behavior requires a parameter <code>save_history</code>
-                  on your component parameters <filename>config.xml</filename>.</para>
+                  <para>This behavior requires a parameter
+                  <code>save_history</code> on your component parameters
+                  <filename>config.xml</filename>.</para>
                 </important>
               </listitem>
             </varlistentry>
@@ -2422,7 +2541,8 @@ class FoobarTableFoo extends F0FTable
             </listitem>
 
             <listitem>
-              <para>Adding it on the view inside <filename>fof.xml</filename>:</para>
+              <para>Adding it on the view inside
+              <filename>fof.xml</filename>:</para>
 
               <programlisting language="xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;fof&gt;
@@ -2443,25 +2563,29 @@ class FoobarTableFoo extends F0FTable
           important how you name it, because FOF will search for your
           behaviors based on their name.</para>
 
-          <para>If you want to add a <replaceable>bar</replaceable>
-          behavior, FOF will search for it in the following order:</para>
+          <para>If you want to add a <replaceable>bar</replaceable> behavior,
+          FOF will search for it in the following order:</para>
 
           <itemizedlist>
             <listitem>
-              <para>First look for <classname>ComponentnameTableViewnameBehaviorName</classname>
+              <para>First look for
+              <classname>ComponentnameTableViewnameBehaviorName</classname>
               (ie: <classname>FoobarTableTodosBar</classname>)</para>
 
-              <para>Caution, the <code>Viewname</code> part MUST be singular.</para>
+              <para>Caution, the <code>Viewname</code> part MUST be
+              singular.</para>
             </listitem>
 
             <listitem>
-              <para>Then look for <classname>ComponentnameTableBehaviorName</classname>
-              (ie: <classname>FoobarTableBar</classname>)</para>
+              <para>Then look for
+              <classname>ComponentnameTableBehaviorName</classname> (ie:
+              <classname>FoobarTableBar</classname>)</para>
             </listitem>
 
             <listitem>
-              <para>Then look for <classname>F0FTableBehaviorBehaviorName</classname>
-              (ie: <classname>F0FTableBehaviorBar</classname>)</para>
+              <para>Then look for
+              <classname>F0FTableBehaviorBehaviorName</classname> (ie:
+              <classname>F0FTableBehaviorBar</classname>)</para>
             </listitem>
           </itemizedlist>
 
@@ -2474,10 +2598,10 @@ class FoobarTableFoo extends F0FTable
           <classname>FoobarTableBehaviorTags</classname>).</para>
 
           <important>
-            <para>The behaviors are not automatically loaded, so you need
-            to provide your own autoloader or simply load the classes in the
-            constructor of your Table before calling <code>parent::__construct(…)</code>
-            .</para>
+            <para>The behaviors are not automatically loaded, so you need to
+            provide your own autoloader or simply load the classes in the
+            constructor of your Table before calling
+            <code>parent::__construct(…)</code> .</para>
           </important>
         </section>
 
@@ -2543,7 +2667,7 @@ public function onBeforeStore(&amp;$table, $updateNulls)
  * The event which runs after storing (saving) data to the database
  *
  * @param   F0FTable  &amp;$table  The table which calls this event
- * 
+ *
  * @return  boolean  True to allow saving without an error
  */
 public function onAfterStore(&amp;$table)
@@ -2559,7 +2683,7 @@ public function onAfterStore(&amp;$table)
  *
  * @return  boolean  True to allow moving
  */
-public function onBeforeMove(&amp;$table, $updateNulls) 
+public function onBeforeMove(&amp;$table, $updateNulls)
 {
     return true;
 }
@@ -2568,7 +2692,7 @@ public function onBeforeMove(&amp;$table, $updateNulls)
  * The event which runs after moving a record
  *
  * @param   F0FTable  &amp;$table  The table which calls this event
- * 
+ *
  * @return  boolean  True to allow moving without an error
  */
 public function onAfterMove(&amp;$table)
@@ -2593,7 +2717,7 @@ public function onBeforeReorder(&amp;$table, $where = '')
  * The event which runs after reordering a table
  *
  * @param   F0FTable  &amp;$table  The table which calls this event
- * 
+ *
  * @return  boolean  True to allow the reordering to complete without an error
  */
 public function onAfterReorder(&amp;$table)
@@ -2698,7 +2822,7 @@ public function onBeforePublish(&amp;$table, &amp;$cid, $publish)
  * The event which runs after the object is reset to its default values.
  *
  * @param   F0FTable &amp;$table  The table which calls this event
- * 
+ *
  * @return  boolean  True to allow the reset to complete without errors
  */
 public function onAfterReset(&amp;$table)
@@ -2710,7 +2834,7 @@ public function onAfterReset(&amp;$table)
  * The even which runs before the object is reset to its default values.
  *
  * @param   F0FTable &amp;$table  The table which calls this event
- * 
+ *
  * @return  boolean  True to allow the reset to complete
  */
 public function onBeforeReset(&amp;$table)
@@ -3649,7 +3773,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       <code>com_todo</code>. The last part MUST be
       <classname>Toolbar</classname>.</para>
 
-      <para>The controller file name MUST be <filename>toolbar.php</filename>.
+      <para>The toolbar file name MUST be <filename>toolbar.php</filename>.
       All Toolbar files are located in your component's main directory, in the
       front-end and back-end. If a file is not present in the front-end, it
       will be attempted to be loaded from the back-end. If the Toolbar class
@@ -3671,11 +3795,9 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
           <listitem>
             <para>for example <methodname>onItemsBrowse</methodname>. The name
             consists of the word on in lowercase, followed by camel cased view
-            and task names, in this order. When the task is
-            <methodname>Browse</methodname> the view name MUST be plural. For
-            any other task the view name MUST be singular. For example:
-            <methodname>onItemsBrowse</methodname> and
-            <methodname>onItemAdd</methodname></para>
+            and task names, in this order. The view name MUST be pluralised.
+            For example: <methodname>onItemsBrowse</methodname> and
+            <methodname>onItemsAdd</methodname></para>
           </listitem>
         </varlistentry>
 
@@ -3684,8 +3806,8 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 
           <listitem>
             <para>for example <methodname>onItems</methodname>. The name
-            consists of the word on in lowercase, followed by camel cased view
-            name.</para>
+            consists of the word on in lowercase, followed by camel cased
+            pluralised view name.</para>
           </listitem>
         </varlistentry>
 
@@ -4094,8 +4216,9 @@ $json = ob_end_clean();
 
       <para>FOF comes with certain classes that are designed to make your life
       as a Joomla! extensions developer much easier. They handle things like
-      installation, updates and database schema management. This code has been
-      battle tested in our own components over the years.</para>
+      installation, updates, database schema management, installation
+      integrity checks and so on. This code has been battle tested in our own
+      components over the years.</para>
 
       <section xml:id="utils-installscript">
         <title>The installation script helper</title>
@@ -5311,6 +5434,125 @@ INSERT IGNORE INTO `#__admintools_profiles`
         <para>It's a good idea to put that in your component's control panel
         controller, in the onBeforeBrowse() method.</para>
       </section>
+
+      <section xml:id="utils-filescheck">
+        <title>The files check (installation integrity) class</title>
+
+        <para><note>
+            <para>Available since FOF 2.3.5</para>
+          </note>Over the years we have noticed a signifficant number of
+        clients reporting issues which were unlikely to happen. After careful
+        investigation we were seeing that their problems were down to some
+        component files not having been copied, not replaced during an update
+        or having been removed, renamed or tampered with by overreaching
+        "anti-malware" scripts <link
+        xlink:href="https://www.akeebabackup.com/home/news/1536-new-threat-hosts-delete-files-without-asking.html">installed
+        by low quality hosts</link>. Hosts scripts and user mistakes aside,
+        the component files not being copied or replaced seem to be the
+        consequnce of an elusive Joomla! installer bug which dates as far back
+        as Joomla! 1.5.5. I have personally seen this once on my dev server
+        but I could not reproduce it to debug it. One of the most likely
+        necessary –but not sufficient– conditions to trigger it seems to be a
+        difference in top-level folder structure between the currently
+        installed version and the update being installed. A second install of
+        the latest version on top of the half-updated latest version seems to
+        fix this issue. Your guess about it is as good as mine...</para>
+
+        <para>The missing/tampered files issue called for a way to detect it.
+        If detected, the user can be given the simple instruction to install
+        the extension again using the extension package (ZIP) file, without
+        uninstalling it first. It's very simple and very effective. The
+        detection was the difficult part. This is where the
+        <classname>F0FUtilsFilescheck</classname> class comes into play. It
+        can perform a quick or thorough scan of a list of directories and
+        files, making sure they are not missing or out of date / tampered
+        with. The quick scan only checks that the directories exist and that
+        the files exist and have the correct size. The thorough (a.k.a.
+        "slow") scan also checks the SHA-1 or MD5 signatures of the files as
+        well.</para>
+
+        <para>Before using it you need to create a file called
+        <filename>fileslist.php</filename> in your component's back-end root
+        directory, e.g.
+        <filename>administrator/components/com_foobar/fileslist.php</filename>.
+        The file needs to have the following contents:</para>
+
+        <programlisting>&lt;?php defined('_JEXEC') or die;
+
+$phpFileChecker = array(
+  'version' =&gt; '1.2.3',
+  'date' =&gt; '2014-10-16',
+  'directories' =&gt; array(
+    'administrator/components/com_foobar',
+    // ... add a list of directories here ...
+  ),
+  'files' =&gt; array(
+    // Format: file_name =&gt; array(file_size_in_bytes, md5, sha1)
+    'administrator/components/com_foobar/access.xml' =&gt; array('705', '09aa0351a316bf011ecc8c1145134761', 'b95f00c7b49a07a60570dc674f2497c45c4e7152'),
+    // ... add a list of files here ...
+  )
+
+);</programlisting>
+
+        <para>The version and date are your component's version and release
+        date, exactly as shown in the XML manifest file. They will be compared
+        against the values cached in the #__extensions table. If there is a
+        difference between the values in the file and those cached in the
+        #__extensions table <methodname>isWrongFilesVersion()</methodname>
+        will return true, telling you that the fileslist.php file itself is
+        out of date, or there was a problem with the installation of the
+        component (which is why the #__extensions record would have the wrong
+        version / release date of the component cached).</para>
+
+        <para>The directory and file names are relative to the site's root.
+        Please note that you cannot currently check files outside the site's
+        root. The name of this file and the name and format of the PHP array
+        containing this information is fixed.</para>
+
+        <para>You can create a files check object using the following
+        syntax:</para>
+
+        <programlisting>$checker = new F0FUtilsFilescheck('com_foobar', '1.2.3', '2014-10-16');</programlisting>
+
+        <para>All three parameters are mandatory. If you don't care to check
+        the version and date you can pass empty strings. Be aware that in this
+        case you will NOT know if a file is really missing / has been tampered
+        with or the component's fileslist.php wasn't copied over.</para>
+
+        <para>You can get a quick integrity result by calling</para>
+
+        <programlisting>$isInstallationCorrect = $checker-&gt;fastCheck();</programlisting>
+
+        <para>If any of the directories is missing, or a file is missing / has
+        the wrong file size this will return false.</para>
+
+        <para>A slow, more thorough check can also run by using</para>
+
+        <programlisting>$result = $checker-&gt;slowCheck($index);</programlisting>
+
+        <para>Please note that a slow check may take too long on a slow host.
+        That's why it is designed to run in discrete steps. The
+        <parameter>$index</parameter> parameter is the files array index from
+        which to start scanning. If you are starting a new scan always set it
+        to 0. The scan will take at most 3 seconds. The format of the result
+        array is:</para>
+
+        <programlisting>array(
+	'done'	=&gt; false,
+	'files'	=&gt; array(),
+	'folders'	=&gt; array(),
+	'idx'	=&gt; $idx
+);</programlisting>
+
+        <para><parameter>done</parameter> will be false if there is a need for
+        more scanning steps, true if the scanning has completed. If
+        <parameter>done</parameter> is false the next scan should start from
+        the index value returned in <parameter>idx</parameter>. If missing
+        folders are found they are returned in the
+        <parameter>folders</parameter> array. If missing or out-of-date /
+        tampered files are found they are returned in the
+        <parameter>files</parameter> array.</para>
+      </section>
     </section>
   </chapter>
 
@@ -5393,7 +5635,7 @@ INSERT IGNORE INTO `#__admintools_profiles`
         &lt;table name="item"&gt;
             &lt;field name="enabled"&gt;published&lt;/field&gt;
         &lt;/table&gt;
-    &lt;/common&gt;    
+    &lt;/common&gt;
 
     &lt;!-- Component back-end options --&gt;
     &lt;backend&gt;
@@ -5699,6 +5941,38 @@ INSERT IGNORE INTO `#__admintools_profiles`
           users). If you use the special value <option>false</option> then the
           ACL privilege is always going to fail, i.e. the task will not be
           accessible by any user.</para>
+
+          <bridgehead>Toolbar</bridgehead>
+
+          <para>The toolbar settings allow you to modify the default toolbar
+          buttons for each task.</para>
+
+          <para>The toolbar is enclosed inside a single
+          <code>&lt;toolbar&gt;</code> tag. You can have exactly zero or many
+          <code>&lt;toolbar&gt;</code> tags inside each view tag.</para>
+
+          <para>Inside the <code>&lt;toolbar&gt;</code> tag you can have one
+          or more <code>&lt;button&gt;</code> tags. The type attribute defines
+          the type of the button to add. The type has to be one of those values:
+          title, divider, custom, preview, help, back, media_manager, assign
+          , new, publish, publishList, unpublish, unpublishList, archiveList
+          , unarchiveList, editList, editHtml, editCss, deleteList, trash,
+          apply, save, save2new, save2copy, checkin, cancel, preferences
+          .</para>
+
+          <para>The view name is always pluralised. For example:</para>
+
+          <programlisting>
+    &lt;view name="items"&gt;
+        &lt;toolbar title="Todos" task="*"&gt;
+            &lt;button type="preferences" component="com_todo" /&gt;
+        &lt;/toolbar&gt;
+        &lt;toolbar title="Edit todo" task="edit"&gt;
+            &lt;button type="apply" alt="Apply" /&gt;
+            &lt;button type="cancel" /&gt;
+        &lt;/toolbar&gt;
+    &lt;/view&gt;
+</programlisting>
 
           <bridgehead>Option settings</bridgehead>
 
@@ -6716,6 +6990,24 @@ INSERT IGNORE INTO `#__admintools_profiles`
                   possible, especially in front-end facing MVC triads.</para>
                 </listitem>
               </varlistentry>
+
+              <varlistentry>
+                <term>customTask</term>
+
+                <listitem>
+                  <para>Force the default task when submitting the form. By
+                  default there is an empty default task. The toolbar buttons
+                  are supposed to set it to a non-empty value. However, if you
+                  are using an XML form without a toolbar button –or if the
+                  Javascript fails to run– the submitted task is empty and FOF
+                  will try to guess if it's an edit or a save task. By setting
+                  this attribute you can override this behaviour, forcing a
+                  specific or custom default task, e.g. savenew or foobar, to
+                  be sent instead. This is mostly useful in front-end forms
+                  which use a simple HTML submit button instead of a
+                  Jvascript-powered toolbar button.</para>
+                </listitem>
+              </varlistentry>
             </variablelist>
           </section>
         </section>
@@ -6783,6 +7075,69 @@ class="tab-pane active another-class"
             which will be open by default. If you forget to set an active tab
             the tab pane will render with no tab active by default which is
             confusing for your users!</para>
+
+            <title>Using more than one &lt;fieldset&gt; in tab</title>
+
+            <para>By default if you add a non tabbed <code>fieldset</code>
+            inside a tabbed <code>form</code> the fieldset will be render at
+            the bottom of the form and will appear on all tabs.</para>
+
+            <para>If you want to assign more than one <code>fieldset</code> on
+            the same tab you have to use the following attributes on the
+            <code>fieldset</code>:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>innertab</term>
+
+                <listitem>
+                  <para>The <parameter>name</parameter> of the tabbed
+                  <code>fieldset</code> where this fieldset will be
+                  assign.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <para>The tabbed <code>fieldset</code>s which have assigned inner
+            <code>fieldset</code>s can use the following attributes:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>class</term>
+
+                <listitem>
+                  <para>One or more CSS classes to be applied to the generated
+                  <code>&lt;div&gt;</code> element of the <code>tab</code>
+                  .</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>innerclass</term>
+
+                <listitem>
+                  <para>One or more CSS classes to be applied to the generated
+                  <code>&lt;div&gt;</code> element of the
+                  <code>fieldset</code> .</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <para>For example, to create a tab with 2 <code>fieldset</code>s
+            :</para>
+
+            <programlisting language="xml">&lt;fieldset name="basic_configuration"
+label="COM_FOOBAR_ITEMS_GROUP_BASIC"
+class="tab-pane active another-class"
+innerclass="span6"
+&gt;
+
+&lt;fieldset name="other_configuration"
+label="COM_FOOBAR_ITEMS_GROUP_OTHER"
+class="span6"
+innertab="basic_configuration"
+&gt;
+</programlisting>
           </section>
 
           <section xml:id="format-forms-with-classes">
@@ -6844,7 +7199,7 @@ class="tab-pane active another-class"
 
             <programlisting language="php">&lt;?php
 $viewTemplate = $this-&gt;getRenderedForm();
-echo $viewTemplate; 
+echo $viewTemplate;
 ?&gt;</programlisting>
           </section>
         </section>
@@ -7070,10 +7425,10 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
-                <para><emphasis role="strong">source_key</emphasis> (optional)
-                If you are using an array of indexed arrays, this is the key
-                of the indexed array that contains the value (description) of
-                the drop-down option.</para>
+                <para><emphasis role="strong">source_value</emphasis>
+                (optional) If you are using an array of indexed arrays, this
+                is the key of the indexed array that contains the value
+                (description) of the drop-down option.</para>
               </listitem>
 
               <listitem>
@@ -7136,6 +7491,47 @@ echo $viewTemplate;
             </itemizedlist>
           </section>
 
+          <section xml:id="fieldfilterable">
+            <title>fieldfilterable</title>
+
+            <para>Displays a header field with a customisable filtering
+            widget.</para>
+
+            <para>The additional attributes you can set are:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">method</emphasis> (optional) The
+                filtering method (see filter model behavior). Default:
+                between</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">fromname</emphasis> The name of
+                the first input field (value or from, see filter model
+                behavior). Default: from</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">toname</emphasis> The name of
+                the second input field (to or interval, see filter model
+                behavior). Default: to</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">showmethod</emphasis> (optional)
+                Show the method input field, else it will be a hidden input.
+                Default: false</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">single</emphasis> (optional)
+                Show only a single input instead of two. Used for single value
+                filter (e.g. exact or partial). Default: false</para>
+              </listitem>
+            </itemizedlist>
+          </section>
+
           <section xml:id="fieldsearchable">
             <title>fieldsearchable</title>
 
@@ -7190,9 +7586,9 @@ echo $viewTemplate;
           <section xml:id="filterdate">
             <title>filterdate</title>
 
-            <para>This is the same as fielddate but no header is
-            rendered. Only the filtering widget is rendered. This header field
-            type only works on Joomla! 3.x and later.</para>
+            <para>This is the same as fielddate but no header is rendered.
+            Only the filtering widget is rendered. This header field type only
+            works on Joomla! 3.x and later.</para>
           </section>
 
           <section xml:id="filtersearchable">
@@ -7500,19 +7896,25 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
+                <para><emphasis role="strong">title</emphasis> Button title
+                value; this is a language string that will be fed to
+                JText::_() for translation. (default '')</para>
+              </listitem>
+
+              <listitem>
                 <para><emphasis role="strong">onclick</emphasis> "onclick"
                 attribute to add to the button (default '')</para>
               </listitem>
 
               <listitem>
-                <para><emphasis role="strong">url</emphasis> URL template
-                for each element (use [ITEM:ID] as a placeholder for the item
-                id) (default '')</para>
+                <para><emphasis role="strong">url</emphasis> URL template for
+                each element (use [ITEM:ID] as a placeholder for the item id)
+                (default '')</para>
               </listitem>
 
               <listitem>
-                <para><emphasis role="strong">htmlelement</emphasis> The
-                HTML used tag, allowed: button, a (default 'button')</para>
+                <para><emphasis role="strong">htmlelement</emphasis> The HTML
+                used tag, allowed: button, a (default 'button')</para>
               </listitem>
 
               <listitem>
@@ -7621,6 +8023,32 @@ echo $viewTemplate;
                 disabled form element?</para>
               </listitem>
             </itemizedlist>
+          </section>
+
+          <section xml:id="checkboxes">
+            <title>checkboxes</title>
+
+            <para>This will display a list of checkbox input.</para>
+
+            <para>You can set the following attributes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">class</emphasis> CSS class.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">translate</emphasis> Should the
+                checkbox's value be passed through JText::_() before being
+                displayed? Only on: Browse, Read. Default: false</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>This element has <literal>&lt;option&gt;</literal>
+            sub-elements defining the available options. Please consult
+            Joomla!'s own element of the same type for more
+            information.</para>
           </section>
 
           <section xml:id="components">
@@ -8258,6 +8686,11 @@ echo $viewTemplate;
                 class</para>
               </listitem>
 
+             <listitem>
+                <para><emphasis role="strong">icon</emphasis> Bootstrap icon
+                to use. Default: 'icon-menu'</para>
+              </listitem>
+
               <listitem>
                 <para><emphasis role="strong">readonly</emphasis> Is this a
                 read-only field?</para>
@@ -8274,9 +8707,9 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
-                <para><emphasis role="strong">ordertitle</emphasis> The field name
-                used to display the options title (if not set it will use the magic
-                <literal>title</literal> field)</para>
+                <para><emphasis role="strong">ordertitle</emphasis> The field
+                name used to display the options title (if not set it will use
+                the magic <literal>title</literal> field)</para>
               </listitem>
             </itemizedlist>
           </section>
@@ -8411,6 +8844,72 @@ echo $viewTemplate;
                 class</para>
               </listitem>
             </itemizedlist>
+          </section>
+
+          <section xml:id="relation">
+            <title>relation</title>
+
+            <para>This will display a list using relation.</para>
+
+            <para>You can set the following attributes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">class</emphasis> CSS class.
+                Default: ''</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">relationclass</emphasis> CSS
+                class for each relation. Only on: Browse, Read. Default:
+                ''</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">value_field</emphasis> The name
+                of the field in the relation's table which is used as the
+                label. Only on: Browse, Read. Default:
+                <literal>title</literal></para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">translate</emphasis> Should the
+                value relation's value be passed through JText::_() before
+                being displayed? Only on: Browse, Read. Default: false</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">url</emphasis> URL template for
+                each element (use [RELATION:ID] as a placeholder for the
+                relation id). This goes through the field tag replacement (see
+                below). Only on: Browse, Read.</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">empty_replacement</emphasis> a
+                string to show in place of the field when it's empty. Only on:
+                Browse, Read.</para>
+              </listitem>
+            </itemizedlist>
+
+            <section>
+              <title>Field tag replacement for relation fields</title>
+
+              <para>Like with text fields, with relation fields you can
+              reference values from other fields inside your url. See <link
+              linkend="field-tag-replacement-for-text-fields">field tag
+              replacement for relation fields</link>.</para>
+
+              <para>Relation field also recognises the special tag
+              <literal>[RELATION:ID]</literal>, replacing it with the value of
+              the key field of the relation table.</para>
+            </section>
+
+            <important>
+              <para>You need to setup the table settings relations in fof.xml.
+              <link linkend="fofxml-table">See relations
+              settings</link>.</para>
+            </important>
           </section>
 
           <section xml:id="rules">
@@ -9164,7 +9663,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-JHtml::_('behavior.framework');
+JHtml::_('jquery.framework');
 JHtml::_('behavior.modal');
 
 $option = 'com_COMPONENT_NAME';
