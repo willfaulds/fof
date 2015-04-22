@@ -133,10 +133,9 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 		$class   = $this->class ? $this->class : '';
 		$default = $this->element['default'] ? (string) $this->element['default'] : '';
 
-		// PHP date doesn't use percentages (%) for the format, but the calendar Javascript
-		// DOES use it (@see: calendar-uncompressed.js). Therefore we have to convert it.
-		$formatJS  = $format;
-		$formatPHP = str_replace(array('%', 'H:M:S', 'B'), array('', 'H:i:s', 'F'), $formatJS);
+		// Get some system objects.
+		$config = $this->form->getContainer()->platform->getConfig();
+		$user   = $this->form->getContainer()->platform->getUser();
 
 		// Check for empty date values
 		if (empty($this->value) || $this->value == $this->form->getContainer()->platform->getDbo()->getNullDate() || $this->value == '0000-00-00')
@@ -144,42 +143,43 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 			$this->value = $default;
 		}
 
-		// Get some system objects.
-		$config = $this->form->getContainer()->platform->getConfig();
-		$user   = $this->form->getContainer()->platform->getUser();
-
-		// Format date if exists
-		if (!empty($this->value))
+		// Handle the special case for "now".
+		if (strtoupper($this->value) == 'NOW')
 		{
-			$date   = $this->form->getContainer()->platform->getDate($this->value, 'UTC');
+			$this->value = strftime($format);
+		}
 
-			// If a known filter is given use it.
-			switch (strtoupper($this->filter))
-			{
-				case 'SERVER_UTC':
-					// Convert a date to UTC based on the server timezone.
-					if ((int) $this->value)
-					{
-						// Get a date object based on the correct timezone.
-						$date->setTimezone(new \DateTimeZone($config->get('offset')));
-					}
-					break;
+		// If a known filter is given use it.
+		switch (strtoupper($this->filter))
+		{
+			case 'SERVER_UTC':
+				// Convert a date to UTC based on the server timezone.
+				if ((int) $this->value)
+				{
+					// Get a date object based on the correct timezone.
+					$date = \JFactory::getDate($this->value, 'UTC');
+					$date->setTimezone(new \DateTimeZone($config->get('offset')));
 
-				case 'USER_UTC':
-					// Convert a date to UTC based on the user timezone.
-					if ((int) $this->value)
-					{
-						// Get a date object based on the correct timezone.
-						$date->setTimezone(new \DateTimeZone($user->getParam('timezone', $config->get('offset'))));
-					}
-					break;
+					// Transform the date string.
+					$this->value = $date->format('Y-m-d H:i:s', true, false);
+				}
 
-				default:
-					break;
-			}
+				break;
 
-			// Transform the date string.
-			$this->value = $date->format($formatPHP, true, false);
+			case 'USER_UTC':
+				// Convert a date to UTC based on the user timezone.
+				if ((int) $this->value)
+				{
+					// Get a date object based on the correct timezone.
+					$date = \JFactory::getDate($this->value, 'UTC');
+
+					$date->setTimezone(new \DateTimeZone($user->getParam('timezone', $config->get('offset'))));
+
+					// Transform the date string.
+					$this->value = $date->format('Y-m-d H:i:s', true, false);
+				}
+
+				break;
 		}
 
 		if ($display == 'static')
@@ -223,12 +223,19 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 				$attributes['aria-required'] = 'true';
 			}
 
-			return JHtml::_('calendar', $this->value, $this->name, $this->id, $formatJS, $attributes);
+			// Including fallback code for HTML5 non supported browsers.
+			JHtml::_('jquery.framework');
+			JHtml::_('script', 'system/html5fallback.js', false, true);
+
+			return JHtml::_('calendar', $this->value, $this->name, $this->id, $format, $attributes);
 		}
 		else
 		{
+			$jDate = new \JDate($this->value);
+			$value = strftime($this->format, $jDate->getTimestamp());
+
 			return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars($value, ENT_COMPAT, 'UTF-8') .
 			'</span>';
 		}
 	}

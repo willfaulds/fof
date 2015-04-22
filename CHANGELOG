@@ -1,4 +1,20 @@
-FOF 3.0.0.a1
+FOF 3.0.0.b2
+================================================================================
++ Controller: Additional special ACL tasks "guest" and "user"
++ Added PageParametersToState model behaviour
++ Toolbar: Buttons now support privileges through the `acl` attribute
++ Toolbar: More buttons can be defined through fof.xml
++ Toolbar: You can render the front-end toolbar through fof.xml
++ User field: parse field tags
++ F0FDatabaseInstaller: work around custom drivers with non-standard names (e.g. mysqlicustom or custommysqli)
+~ Allow more customisation for Chosen integration
+~ Improved Button form field rendering
+~ DataModel: Apply order and direction even when $overrideLimits is true
+~ (Re)load the relations when using DataModel::find
+# Fatal error with Text field in read tasks
+# FOF\Download\Adapter\Curl: Would not follow HTTP redirects on servers with PHP Safe Mode enabled
+
+FOF 3.0.0.b1
 ================================================================================
 ! Rewritten FOF
 

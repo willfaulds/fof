@@ -441,6 +441,9 @@ class DataModel extends Model implements \JTableInterface
 				$this->recordData[$fieldName] = $information->Default;
 			}
 		}
+
+		// Trigger the onAfterConstruct event. This allows you to set up model state etc.
+		$this->triggerEvent('onAfterConstruct');
 	}
 
 	/**
@@ -1617,27 +1620,23 @@ class DataModel extends Model implements \JTableInterface
 			}
 		}
 
-		// Apply ordering unless we are called to override limits
-		if (!$overrideLimits)
+		$order = $this->getState('filter_order', null, 'cmd');
+
+		if (!array_key_exists($order, $this->knownFields))
 		{
-			$order = $this->getState('filter_order', null, 'cmd');
-
-			if (!array_key_exists($order, $this->knownFields))
-			{
-				$order = $this->getIdFieldName();
-			}
-
-			$order = $db->qn($order);
-
-			$dir = strtoupper($this->getState('filter_order_Dir', 'ASC', 'cmd'));
-
-			if(!in_array($dir, array('ASC', 'DESC')))
-			{
-				$dir = 'ASC';
-			}
-
-			$query->order($order . ' ' . $dir);
+			$order = $this->getIdFieldName();
 		}
+
+		$order = $db->qn($order);
+
+		$dir = strtoupper($this->getState('filter_order_Dir', 'ASC', 'cmd'));
+
+		if(!in_array($dir, array('ASC', 'DESC')))
+		{
+			$dir = 'ASC';
+		}
+
+		$query->order($order . ' ' . $dir);
 
 		// Run the "before after query" hook and behaviours
 		$this->triggerEvent('onAfterBuildQuery', array(&$query, $overrideLimits));
@@ -2414,6 +2413,8 @@ class DataModel extends Model implements \JTableInterface
 		// Bind the data
 		$this->bind($row);
 
+		$this->relationManager->rebase($this);
+
 		// Execute the onAfterLoad event
 		$this->triggerEvent('onAfterLoad', array(true, &$keys));
 
@@ -2552,7 +2553,7 @@ class DataModel extends Model implements \JTableInterface
 
 		foreach ($prefixes as $prefix)
 		{
-			$className = $prefix . '\\' . ucfirst($behaviour);
+			$className = ltrim($prefix . '\\' . ucfirst($behaviour), '\\');
 
 			$observer = $this->behavioursDispatcher->getObserverByClass($className);
 

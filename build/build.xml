@@ -154,8 +154,8 @@
 				<replacetokens begintoken="##" endtoken="##">
 					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
-					<token key="RELEASEDIR" value="${phing.dir}/${dirs.release}" />
-					<token key="REPODIR" value="${phing.dir}/${dirs.root}" />
+					<token key="RELEASEDIR" value="${dirs.release}" />
+					<token key="REPODIR" value="${dirs.root}" />
 				</replacetokens>
 			</filterchain>
 		</copy>

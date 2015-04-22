@@ -1400,12 +1400,12 @@ JS;
 	 */
 	function renderForm(Form &$form, DataModel $model, $formType = null, $raw = false)
 	{
-		$useChosen = $form->getAttribute('chosen', 'true');
-		$useChosen = in_array($useChosen, array('true', 'yes', 'on', 1));
+		$useChosen = $form->getAttribute('chosen', 'select');
+		$useChosen = in_array($useChosen, array('false', 'no', 'off', '0')) ? '' : $useChosen;
 
 		if ($useChosen)
 		{
-			\JHtml::_('formbehavior.chosen', 'select');
+			\JHtml::_('formbehavior.chosen', $useChosen);
 		}
 
 		if (is_null($formType))

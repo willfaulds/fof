@@ -276,6 +276,11 @@ class FormErector extends BaseErector implements ErectorInterface
 
 				try
 				{
+					if (empty($parts))
+					{
+						throw new DataModel\Relation\Exception\RelationNotFound;
+					}
+
 					$model->getRelations()->getRelation($parts[0]);
 
 					$this->applyRelationField($model, $fieldSet, $fieldName);

@@ -383,6 +383,22 @@ class Installer
 			}
 		}
 
+		// Some custom database drivers use a non-standard $name variable. Let try a relaxed match.
+		foreach ($drivers->children() as $driverTypeTag)
+		{
+			$thisDriverType = (string)$driverTypeTag;
+
+			if (
+				// e.g. $driverType = 'mysqlistupid', $thisDriverType = 'mysqli' => driver matched
+				strpos($driverType, $thisDriverType) === 0
+				// e.g. $driverType = 'stupidmysqli', $thisDriverType = 'mysqli' => driver matched
+				|| (substr($driverType, -strlen($thisDriverType)) == $thisDriverType)
+			)
+			{
+				return $xml;
+			}
+		}
+
 		return false;
 	}
 

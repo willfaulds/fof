@@ -1047,6 +1047,16 @@ class Controller
 			return true;
 		}
 
+		if (in_array(strtolower($area), array('guest')))
+		{
+			return $this->container->platform->getUser()->guest;
+		}
+
+		if (in_array(strtolower($area), array('user')))
+		{
+			return !$this->container->platform->getUser()->guest;
+		}
+
 		if (empty($area))
 		{
 			return true;

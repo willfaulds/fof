@@ -220,9 +220,9 @@ class RelationManager
 	public function resetRelationData(array $relationsToReset = array())
 	{
 		/** @var Relation $relation */
-		foreach ($this->relations as $relation)
+		foreach ($this->relations as $name => $relation)
 		{
-			if (!empty($relationsToReset) && !in_array($relation, $relationsToReset))
+			if (!empty($relationsToReset) && !in_array($name, $relationsToReset))
 			{
 				continue;
 			}

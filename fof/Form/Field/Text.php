@@ -266,6 +266,11 @@ class Text extends \JFormFieldText implements FieldInterface
 
 		// Replace [ITEM:ID] in the URL with the item's key value (usually:
 		// the auto-incrementing numeric ID)
+		if (is_null($this->item))
+		{
+			$this->item = $this->form->getModel();
+		}
+
 		$keyfield = $this->item->getKeyName();
 		$replace  = $this->item->$keyfield;
 		$ret = str_replace('[ITEM:ID]', $replace, $ret);

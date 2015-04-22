@@ -150,7 +150,7 @@ class Media extends \JFormFieldMedia implements FieldInterface
 			$imgattr['id'] = $fieldOptions['id'];
 		}
 
-		if ($this->class || $fieldOptions['class'])
+		if ($this->class || (isset($fieldOptions['class']) && $fieldOptions['class']))
 		{
 			$imgattr['class'] = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 		}
