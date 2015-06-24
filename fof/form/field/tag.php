@@ -112,15 +112,6 @@ class F0FFormFieldTag extends JFormFieldTag implements F0FFormField
 			$this->value = $db->loadColumn();
 		}
 
-		// Ajax tag only loads assigned values
-		if (!$this->isNested())
-		{
-			// Only item assigned values
-			$values = (array) $this->value;
-            F0FUtilsArray::toInteger($values);
-			$query->where('a.id IN (' . implode(',', $values) . ')');
-		}
-
 		// Filter language
 		if (!empty($this->element['language']))
 		{
