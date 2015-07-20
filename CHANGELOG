@@ -1,3 +1,7 @@
+FOF 2.4.4
+================================================================================
+~ F0FUtilsIp: let the workarounds be disabled
+
 FOF 2.4.3
 ================================================================================
 # [MEDIUM] F0FDownloadAdapterCurl: Would not follow HTTP redirects on servers with PHP Safe Mode enabled
