@@ -2,6 +2,7 @@ FOF 2.4.4
 ================================================================================
 ~ Clear the OPcache when installing / updaing an extension as long as it uses F0FUtilsInstallscript
 ~ F0FUtilsIp: let the workarounds be disabled
+~ Restoring compatibility with Joomla! 3.2
 
 FOF 2.4.3
 ================================================================================
