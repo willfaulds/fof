@@ -1533,7 +1533,16 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
         }
 
 		$date = F0FPlatform::getInstance()->getDate();
-		$time = $date->toSql();
+
+		if (method_exists($date, 'toSql'))
+		{
+			$time = $date->toSql();
+		}
+		else
+		{
+			$time = $date->toMySQL();
+		}
+
 
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
@@ -2582,7 +2591,7 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 
 				$date = F0FPlatform::getInstance()->getDate('now', null, false);
 
-				$this->$created_on = $date->toSql();
+				$this->$created_on = method_exists($date, 'toSql') ? $date->toSql() : $date->toMySQL();
 			}
 			elseif ($hasModifiedOn && $hasModifiedBy)
 			{
@@ -2595,7 +2604,7 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 
                 $date = F0FPlatform::getInstance()->getDate('now', null, false);
 
-				$this->$modified_on = $date->toSql();
+				$this->$modified_on = method_exists($date, 'toSql') ? $date->toSql() : $date->toMySQL();
 			}
 		}
 
