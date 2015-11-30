@@ -9,6 +9,11 @@
 // Protect from unauthorized access
 defined('F0F_INCLUDED') or die;
 
+if (version_compare(JVERSION, '2.5.0', 'lt'))
+{
+	jimport('joomla.updater.updater');
+}
+
 /**
  * A helper Model to interact with Joomla!'s extensions update feature
  */
