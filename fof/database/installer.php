@@ -7,7 +7,7 @@
 
 class F0FDatabaseInstaller
 {
-	/** @var  JDatabase  The database connector object */
+	/** @var  F0FDatabase  The database connector object */
 	private $db = null;
 
 	/**

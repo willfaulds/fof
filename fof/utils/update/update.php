@@ -92,7 +92,7 @@ class F0FUtilsUpdate extends F0FModel
 		}
 
 		// Find the extension ID
-		$db = $this->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn('#__extensions'))
@@ -126,7 +126,7 @@ class F0FUtilsUpdate extends F0FModel
 	 */
 	public function getUpdates($force = false)
 	{
-		$db = $this->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// Default response (no update)
 		$updateResponse = array(
@@ -203,7 +203,7 @@ class F0FUtilsUpdate extends F0FModel
 	 */
 	public function getUpdateSiteIds()
 	{
-		$db = $this->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true)
 			->select($db->qn('update_site_id'))
 			->from($db->qn('#__update_sites_extensions'))
@@ -257,7 +257,7 @@ class F0FUtilsUpdate extends F0FModel
 		);
 
 		// Get a reference to the db driver
-		$db = $this->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// Get the #__update_sites columns
 		$columns = $db->getTableColumns('#__update_sites', true);

@@ -1604,7 +1604,7 @@ public function onBeforeReorder(&amp;$model)
  * list in a model
  *
  * @param   F0FModel        &amp;$model  The model which calls this event
- * @param   JDatabaseQuery  &amp;$query  The query being built
+ * @param   F0FDatabaseQuery  &amp;$query  The query being built
  *
  * @return  void
  */
@@ -1694,7 +1694,7 @@ public function onAfterReorder(&amp;$model)
  * list in a model
  *
  * @param   F0FModel        &amp;$model  The model which calls this event
- * @param   JDatabaseQuery  &amp;$query  The model which calls this event
+ * @param   F0FDatabaseQuery  &amp;$query  The model which calls this event
  *
  * @return  void
  */
@@ -1728,7 +1728,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
      * Let's add the filter for the publish_up and publish_down fields here, after the query is built by the model
      *
      * @param   F0FModel        &amp;$model  The model which calls this event
-     * @param   JDatabaseQuery  &amp;$query  The model which calls this event
+     * @param   F0FDatabaseQuery  &amp;$query  The model which calls this event
      *
      * @return  void
      */
@@ -9409,7 +9409,7 @@ class FoobarModelItems extends F0FModel
 
       <programlisting language="php">public function __construct($config = array()) {
     // This is a dirty trick to avoid getting warning PHP messages by the
-    // JDatabase layer
+    // F0FDatabase layer
     $config['table'] = 'shops';
     parent::__construct($config);
 }</programlisting>

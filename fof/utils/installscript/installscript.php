@@ -611,7 +611,7 @@ abstract class F0FUtilsInstallscript
 	 */
 	protected function bugfixDBFunctionReturnedNoError()
 	{
-		$db = JFactory::getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// Fix broken #__assets records
 		$query = $db->getQuery(true);
@@ -713,7 +713,7 @@ abstract class F0FUtilsInstallscript
 	 */
 	protected function bugfixCantBuildAdminMenus()
 	{
-		$db = JFactory::getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// If there are multiple #__extensions record, keep one of them
 		$query = $db->getQuery(true);
@@ -868,7 +868,7 @@ abstract class F0FUtilsInstallscript
 	{
 		$src = $parent->getParent()->getPath('source');
 
-		$db = JFactory::getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();;
 
 		$status = new JObject();
 		$status->modules = array();
@@ -1114,7 +1114,7 @@ abstract class F0FUtilsInstallscript
 	 */
 	protected function uninstallSubextensions($parent)
 	{
-		$db = JFactory::getDBO();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		$status = new stdClass();
 		$status->modules = array();
@@ -1521,7 +1521,7 @@ abstract class F0FUtilsInstallscript
 	{
 		JLoader::import('joomla.installer.installer');
 
-		$db = JFactory::getDBO();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		$status = new stdClass();
 		$status->modules = array();
@@ -1744,7 +1744,10 @@ abstract class F0FUtilsInstallscript
 		}
 		catch (InvalidArgumentException $e)
 		{
-			JLog::add($e->getMessage(), JLog::WARNING, 'jerror');
+			if (class_exists('JLog'))
+			{
+				JLog::add($e->getMessage(), JLog::WARNING, 'jerror');
+			}
 
 			return false;
 		}
@@ -2226,7 +2229,7 @@ abstract class F0FUtilsInstallscript
 		// Check if the definition exists
 		$tableName = '#__postinstall_messages';
 
-		$db = JFactory::getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn($tableName))
@@ -2294,7 +2297,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Get the extension ID for our component
-		$db = JFactory::getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
@@ -2339,7 +2342,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Get the extension ID for our component
-		$db = JFactory::getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 		$query->select('extension_id')
 			->from('#__extensions')
