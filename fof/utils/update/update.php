@@ -355,6 +355,11 @@ ENDBLOCK;
 			unset($update_site['extra_query']);
 		}
 
+		if (version_compare(JVERSION, '2.5.0', 'lt') || !array_key_exists('extra_query', $columns))
+		{
+			unset($update_site['last_check_timestamp']);
+		}
+
 		// Get the update sites for our extension
 		$updateSiteIds = $this->getUpdateSiteIds();
 
@@ -485,12 +490,15 @@ ENDBLOCK;
 			}
 
 			// Set the last_check_timestamp to 0
-			$query = $db->getQuery(true)
-						->update($db->qn('#__update_sites'))
-						->set($db->qn('last_check_timestamp') . ' = ' . $db->q('0'))
-						->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
-			$db->setQuery($query);
-			$db->execute();
+			if (version_compare(JVERSION, '2.5.0', 'ge'))
+			{
+				$query = $db->getQuery(true)
+							->update($db->qn('#__update_sites'))
+							->set($db->qn('last_check_timestamp') . ' = ' . $db->q('0'))
+							->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
+				$db->setQuery($query);
+				$db->execute();
+			}
 
 			// Remove cached component update info from #__updates
 			$query = $db->getQuery(true)
@@ -630,7 +638,7 @@ ENDBLOCK;
 					'element'        => $bestUpdate['element'],
 					'type'           => $bestUpdate['type'],
 					'folder'         => count($bestUpdate['folder']) ? $bestUpdate['folder'][0] : '',
-					'client_id'      => $bestUpdate['client'],
+					'client_id'      => isset($bestUpdate['client']) ? $bestUpdate['client'] : 0,
 					'version'        => $bestUpdate['version'],
 					'data'           => '',
 					'detailsurl'     => $this->updateSite,
