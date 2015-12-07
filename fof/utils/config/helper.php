@@ -24,7 +24,8 @@ class F0FUtilsConfigHelper
 	/**
 	 * Loads the component's configuration parameters so they can be accessed by getComponentConfigurationValue
 	 *
-	 * @param   bool  $force  Should I force-reload the configuration information?
+	 * @param   string  $component  The component for loading the parameters
+	 * @param   bool    $force      Should I force-reload the configuration information?
 	 */
 	public final static function loadComponentConfig($component, $force = false)
 	{
@@ -65,12 +66,13 @@ class F0FUtilsConfigHelper
 	/**
 	 * Retrieves the value of a component configuration parameter without going through JComponentHelper
 	 *
-	 * @param   string  $key      The key to retrieve
-	 * @param   mixed   $default  The default value to use in case the key is missing
+	 * @param   string  $component  The component for loading the parameter value
+	 * @param   string  $key        The key to retrieve
+	 * @param   mixed   $default    The default value to use in case the key is missing
 	 *
 	 * @return  mixed
 	 */
-	public final static function getComponentConfigurationValue($component, $key, $default)
+	public final static function getComponentConfigurationValue($component, $key, $default = null)
 	{
 		self::loadComponentConfig($component, false);
 
