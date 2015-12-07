@@ -4,6 +4,7 @@ FOF 2.4.4
 ~ F0FUtilsIp: let the workarounds be disabled
 ~ Restoring compatibility with Joomla! 3.2
 + F0FUtilsIniFile to parse INI files even on stupid hosts
++ F0FUtilsConfigHelper to get component configuration parameters without going through JComponentHelper
 # [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
 
 FOF 2.4.3
