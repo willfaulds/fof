@@ -40,6 +40,23 @@ class F0FUtilsUpdate extends F0FModel
 	/** @var string The extra query to append to (commercial) components' download URLs */
 	protected $extraQuery = null;
 
+	/** @var string The common parameters' key, used for storing data in the #__akeeba_common table */
+	protected $commonKey = 'akeeba';
+
+	/**
+	 * The common parameters table. It's a simple table with key(VARCHAR) and value(LONGTEXT) fields.
+	 * Here is an example MySQL CREATE TABLE command to make this kind of table:
+	 *
+	 * CREATE TABLE `#__akeeba_common` (
+	 * 	`key` varchar(255) NOT NULL,
+	 * 	`value` longtext NOT NULL,
+	 * 	PRIMARY KEY (`key`)
+	 * 	) DEFAULT COLLATE utf8_general_ci CHARSET=utf8;
+	 *
+	 * @var  string
+	 */
+	protected $commonTable = '#__akeeba_common';
+
 	/**
 	 * Public constructor. Initialises the protected members as well. Useful $config keys:
 	 * update_component		The component name, e.g. com_foobar
@@ -73,6 +90,17 @@ class F0FUtilsUpdate extends F0FModel
 			$this->version = $config['update_version'];
 		}
 
+		// Get the common key
+		if (isset($config['common_key']))
+		{
+			$this->commonKey = $config['common_key'];
+		}
+		else
+		{
+			// Convert com_foobar, pkg_foobar etc to "foobar"
+			$this->commonKey = substr($this->component, 4);
+		}
+
 		// Get the update site
 		if (isset($config['update_site']))
 		{
@@ -85,7 +113,7 @@ class F0FUtilsUpdate extends F0FModel
 			$this->extraQuery = $config['update_extraquery'];
 		}
 
-		// Get the extra query
+		// Get the update site's name
 		if (isset($config['update_sitename']))
 		{
 			$this->updateSiteName = $config['update_sitename'];
@@ -126,8 +154,6 @@ class F0FUtilsUpdate extends F0FModel
 	 */
 	public function getUpdates($force = false)
 	{
-		$db = F0FPlatform::getInstance()->getDbo();
-
 		// Default response (no update)
 		$updateResponse = array(
 			'hasUpdate' => false,
@@ -140,48 +166,7 @@ class F0FUtilsUpdate extends F0FModel
 			return $updateResponse;
 		}
 
-		// If we are forcing the reload, set the last_check_timestamp to 0
-		// and remove cached component update info in order to force a reload
-		if ($force)
-		{
-			// Find the update site IDs
-			$updateSiteIds = $this->getUpdateSiteIds();
-
-			if (empty($updateSiteIds))
-			{
-				return $updateResponse;
-			}
-
-			// Set the last_check_timestamp to 0
-			$query = $db->getQuery(true)
-				->update($db->qn('#__update_sites'))
-				->set($db->qn('last_check_timestamp') . ' = ' . $db->q('0'))
-				->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
-			$db->setQuery($query);
-			$db->execute();
-
-			// Remove cached component update info from #__updates
-			$query = $db->getQuery(true)
-				->delete($db->qn('#__updates'))
-				->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
-			$db->setQuery($query);
-			$db->execute();
-		}
-
-		// Use the update cache timeout specified in com_installer
-		$comInstallerParams = JComponentHelper::getParams('com_installer', false);
-		$timeout = 3600 * $comInstallerParams->get('cachetimeout', '6');
-
-		// Load any updates from the network into the #__updates table
-		$this->updater->findUpdates($this->extension_id, $timeout);
-
-		// Get the update record from the database
-		$query = $db->getQuery(true)
-			->select('*')
-			->from($db->qn('#__updates'))
-			->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
-		$db->setQuery($query);
-		$updateRecord = $db->loadObject();
+		$updateRecord = $this->findUpdates($force);
 
 		// If we have an update record in the database return the information found there
 		if (is_object($updateRecord))
@@ -197,6 +182,33 @@ class F0FUtilsUpdate extends F0FModel
 	}
 
 	/**
+	 * Find the available update record object. If we're at the latest version it will return null.
+	 *
+	 * Please see getUpdateMethod for information on how the $preferredMethod is handled and what it means.
+	 *
+	 * @param   bool    $force            Should I forcibly reload the updates from the server?
+	 * @param   string  $preferredMethod  Preferred update method: 'joomla' or 'classic'
+	 *
+	 * @return  \stdClass|null
+	 */
+	public function findUpdates($force, $preferredMethod = null)
+	{
+		$preferredMethod = $this->getUpdateMethod($preferredMethod);
+
+		switch ($preferredMethod)
+		{
+			case 'joomla':
+				return $this->findUpdatesJoomla($force);
+				break;
+
+			default:
+			case 'classic':
+				return $this->findUpdatesClassic($force);
+				break;
+		}
+	}
+
+	/**
 	 * Gets the update site Ids for our extension.
 	 *
 	 * @return 	mixed	An array of Ids or null if the query failed.
@@ -205,9 +217,9 @@ class F0FUtilsUpdate extends F0FModel
 	{
 		$db = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true)
-			->select($db->qn('update_site_id'))
-			->from($db->qn('#__update_sites_extensions'))
-			->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
+					->select($db->qn('update_site_id'))
+					->from($db->qn('#__update_sites_extensions'))
+					->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
 		$db->setQuery($query);
 		$updateSiteIds = $db->loadColumn(0);
 
@@ -241,6 +253,12 @@ class F0FUtilsUpdate extends F0FModel
 	 */
 	public function refreshUpdateSite()
 	{
+		// Joomla! 1.5 does not have update sites.
+		if (version_compare(JVERSION, '1.6.0', 'lt'))
+		{
+			return;
+		}
+
 		if (empty($this->extension_id))
 		{
 			return;
@@ -248,12 +266,12 @@ class F0FUtilsUpdate extends F0FModel
 
 		// Create the update site definition we want to store to the database
 		$update_site = array(
-			'name'		=> $this->updateSiteName,
-			'type'		=> 'extension',
-			'location'	=> $this->updateSite,
-			'enabled'	=> 1,
-			'last_check_timestamp'	=> 0,
-			'extra_query'	=> $this->extraQuery
+				'name'		=> $this->updateSiteName,
+				'type'		=> 'extension',
+				'location'	=> $this->updateSite,
+				'enabled'	=> 1,
+				'last_check_timestamp'	=> 0,
+				'extra_query'	=> $this->extraQuery
 		);
 
 		// Get a reference to the db driver
@@ -262,7 +280,7 @@ class F0FUtilsUpdate extends F0FModel
 		// Get the #__update_sites columns
 		$columns = $db->getTableColumns('#__update_sites', true);
 
-		if (version_compare(JVERSION, '3.0.0', 'lt') || !array_key_exists('extra_query', $columns))
+		if (version_compare(JVERSION, '3.2.0', 'lt') || !array_key_exists('extra_query', $columns))
 		{
 			unset($update_site['extra_query']);
 		}
@@ -279,8 +297,8 @@ class F0FUtilsUpdate extends F0FModel
 			$id = $db->insertid();
 
 			$updateSiteExtension = (object)array(
-				'update_site_id'	=> $id,
-				'extension_id'		=> $this->extension_id,
+					'update_site_id'	=> $id,
+					'extension_id'		=> $this->extension_id,
 			);
 			$db->insertObject('#__update_sites_extensions', $updateSiteExtension);
 		}
@@ -290,9 +308,9 @@ class F0FUtilsUpdate extends F0FModel
 			foreach ($updateSiteIds as $id)
 			{
 				$query = $db->getQuery(true)
-					->select('*')
-					->from($db->qn('#__update_sites'))
-					->where($db->qn('update_site_id') . ' = ' . $db->q($id));
+							->select('*')
+							->from($db->qn('#__update_sites'))
+							->where($db->qn('update_site_id') . ' = ' . $db->q($id));
 				$db->setQuery($query);
 				$aSite = $db->loadObject();
 
@@ -307,7 +325,8 @@ class F0FUtilsUpdate extends F0FModel
 					continue;
 				}
 
-				// Is it enabled (Joomla! seriously sucks: IT DISABLES UPDATE SITES WITHOUT THE POSSIBILITY TO RE-ENABLE THEM!)
+				// Is it enabled – Joomla! 3.3 and earlier didn't include the Update Sites Manager (another one of my
+				// personal contributions to Joomla!...)
 				if ($aSite->enabled)
 				{
 					// Does the name and location match?
@@ -333,6 +352,340 @@ class F0FUtilsUpdate extends F0FModel
 				$newSite = (object)$update_site;
 				$db->updateObject('#__update_sites', $newSite, 'update_site_id', true);
 			}
+		}
+	}
+
+	/**
+	 * Get the update method we should use, 'joomla' or 'classic'
+	 *
+	 * You can defined the preferred update method: 'joomla' uses JUpdater whereas 'classic' handles update caching and
+	 * parsing internally. If you are on Joomla! 3.1 or earlier this option is forced to 'classic' since these old
+	 * Joomla! versions couldn't handle updates of commercial components correctly (that's why I contributed the fix to
+	 * that problem, the extra_query field that's present in Joomla! 3.2 onwards).
+	 *
+	 * If 'classic' is defined then it will be used in *all* Joomla! versions. It's the most stable method for fetching
+	 * update information.
+	 *
+	 * @param   string  $preferred  Preferred update method. One of 'joomla' or 'classic'.
+	 *
+	 * @return  string
+	 */
+	protected function getUpdateMethod($preferred = null)
+	{
+		$method = $preferred;
+
+		// Make sure the update fetch method is valid, otherwise load the component's "update_method" parameter.
+		$validMethods = array('joomla', 'classic');
+
+		if (!in_array($method, $validMethods))
+		{
+			$method = F0FUtilsConfigHelper::getComponentConfigurationValue($this->component, 'update_method', 'joomla');
+		}
+
+		// We can't handle updates using Joomla!'s extensions updater in Joomla! 3.1 and earlier
+		if (($method == 'joomla') && version_compare(JVERSION, '3.2.0', 'lt'))
+		{
+			$method = 'classic';
+		}
+
+		return $method;
+	}
+
+	/**
+	 * Find the available update record object. If we're at the latest version it will return null.
+	 *
+	 * @param   bool  $force  Should I forcibly reload the updates from the server?
+	 *
+	 * @return  \stdClass|null
+	 */
+	protected function findUpdatesJoomla($force = false)
+	{
+		$db = F0FPlatform::getInstance()->getDbo();
+
+		// If we are forcing the reload, set the last_check_timestamp to 0
+		// and remove cached component update info in order to force a reload
+		if ($force)
+		{
+			// Find the update site IDs
+			$updateSiteIds = $this->getUpdateSiteIds();
+
+			if (empty($updateSiteIds))
+			{
+				return null;
+			}
+
+			// Set the last_check_timestamp to 0
+			$query = $db->getQuery(true)
+						->update($db->qn('#__update_sites'))
+						->set($db->qn('last_check_timestamp') . ' = ' . $db->q('0'))
+						->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
+			$db->setQuery($query);
+			$db->execute();
+
+			// Remove cached component update info from #__updates
+			$query = $db->getQuery(true)
+						->delete($db->qn('#__updates'))
+						->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
+			$db->setQuery($query);
+			$db->execute();
+		}
+
+		// Use the update cache timeout specified in com_installer
+		$timeout = 3600 * F0FUtilsConfigHelper::getComponentConfigurationValue('com_installer', 'cachetimeout', '6');
+
+		// Load any updates from the network into the #__updates table
+		$this->updater->findUpdates($this->extension_id, $timeout);
+
+		// Get the update record from the database
+		$query = $db->getQuery(true)
+					->select('*')
+					->from($db->qn('#__updates'))
+					->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
+		$db->setQuery($query);
+
+		try
+		{
+			return $db->loadObject();
+		}
+		catch (Exception $e)
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Find the available update record object. If we're at the latest version return null.
+	 *
+	 * @param   bool  $force  Should I forcibly reload the updates from the server?
+	 *
+	 * @return  \stdClass|null
+	 */
+	protected function findUpdatesClassic($force = false)
+	{
+		$allUpdates = $this->loadUpdatesClassic($force);
+
+		if (empty($allUpdates))
+		{
+			return null;
+		}
+
+		$bestVersion = '0.0.0';
+		$bestUpdate = null;
+
+		foreach($allUpdates as $update)
+		{
+			if (!isset($update['version']))
+			{
+				continue;
+			}
+
+			if (version_compare($bestVersion, $update['version'], 'lt'))
+			{
+				$bestVersion = $update['version'];
+				$bestUpdate = (object) $update;
+			}
+		}
+
+		return $bestUpdate;
+	}
+
+	/**
+	 * Load all available updates without going through JUpdate
+	 *
+	 * @param   bool  $force  Should I forcibly reload the updates from the server?
+	 *
+	 * @return  array
+	 */
+	protected function loadUpdatesClassic($force = false)
+	{
+		// Is the cache busted? If it is I set $force = true to make sure I download fresh updates
+		if (!$force)
+		{
+			// Get the cache timeout. On older Joomla! installations it will always default to 6 hours.
+			$timeout = 3600 * F0FUtilsConfigHelper::getComponentConfigurationValue('com_installer', 'cachetimeout', '6');
+
+			// Do I need to check for updates?
+			$lastCheck = $this->getCommonParameter('lastcheck', 0);
+			$now = time();
+
+			if (($now - $lastCheck) >= $timeout)
+			{
+				$force = true;
+			}
+		}
+
+		// Get the cached JSON-encoded updates list
+		$rawUpdates = $this->getCommonParameter('allUpdates', '');
+
+		// Am I forced to reload the XML file (explicitly or because the cache is busted)?
+		if ($force)
+		{
+			// Set the timestamp
+			$now = time();
+			$this->setCommonParameter('lastcheck', $now);
+
+			// Get all available updates
+			$updateHelper = new F0FUtilsUpdateExtension();
+			$updates = $updateHelper->getUpdatesFromExtension($this->updateSite);
+
+			// Save the raw updates list in the database
+			$rawUpdates = json_encode($updates);
+			$this->setCommonParameter('allUpdates', $rawUpdates);
+		}
+
+		// Decode the updates list
+		$updates = json_decode($rawUpdates, true);
+
+		// Walk through the updates and find the ones compatible with our Joomla! and PHP version
+		$compatibleUpdates = array();
+
+		// Get the Joomla! version family (e.g. 2.5)
+		$jVersion = JVERSION;
+		$jVersionParts = explode('.', $jVersion);
+		$jVersionShort = $jVersionParts[0] . '.' . $jVersionParts[1];
+
+		// Get the PHP version family (e.g. 5.6)
+		$phpVersion = PHP_VERSION;
+		$phpVersionParts = explode('.', $phpVersion);
+		$phpVersionShort = $phpVersionParts[0] . '.' . $phpVersionParts[1];
+
+		foreach ($updates as $update)
+		{
+			// No platform?
+			if (!isset($update['targetplatform']))
+			{
+				continue;
+			}
+
+			// Wrong platform?
+			if ($update['targetplatform']['name'] != 'joomla')
+			{
+				continue;
+			}
+
+			// Get the target Joomla! version
+			$targetJoomlaVersion = $update['targetplatform']['version'];
+			$targetVersionParts = explode('.', $targetJoomlaVersion);
+			$targetVersionShort = $targetVersionParts[0] . '.' . $targetVersionParts[1];
+
+			// The target version MUST be in the same Joomla! branch
+			if ($jVersionShort != $targetVersionShort)
+			{
+				continue;
+			}
+
+			// If the target version is major.minor.revision we must make sure our current JVERSION is AT LEAST equal to that.
+			if (version_compare($targetJoomlaVersion, JVERSION, 'gt'))
+			{
+				continue;
+			}
+
+			// Do I have target PHP versions?
+			if (isset($update['ars-phpcompat']))
+			{
+				$phpCompatible = false;
+
+				foreach ($update['ars-phpcompat'] as $entry)
+				{
+					// Get the target PHP version family
+					$targetPHPVersion = $entry['@attributes']['version'];
+					$targetPHPVersionParts = explode('.', $targetPHPVersion);
+					$targetPHPVersionShort = $targetPHPVersionParts[0] . '.' . $targetPHPVersionParts[1];
+
+					// The target PHP version MUST be in the same PHP branch
+					if ($phpVersionShort != $targetPHPVersionShort)
+					{
+						continue;
+					}
+
+					// If the target version is major.minor.revision we must make sure our current PHP_VERSION is AT LEAST equal to that.
+					if (version_compare($targetPHPVersion, PHP_VERSION, 'gt'))
+					{
+						continue;
+					}
+
+					$phpCompatible = true;
+					break;
+				}
+
+				if (!$phpCompatible)
+				{
+					continue;
+				}
+			}
+
+			// All checks pass. Add this update to the list of compatible updates.
+			$compatibleUpdates[] = $update;
+		}
+
+		return $compatibleUpdates;
+	}
+
+	/**
+	 * Get a common parameter from the #__akeeba_common table
+	 *
+	 * @param   string  $key      The key to retrieve
+	 * @param   mixed   $default  The default value in case none is set
+	 *
+	 * @return  mixed  The saved parameter value (or $default, if nothing is currently set)
+	 */
+	protected function getCommonParameter($key, $default = null)
+	{
+		$dbKey = $this->commonKey . '_autoupdate_' . $key;
+
+		$db = F0FPlatform::getInstance()->getDbo();
+
+		$query = $db->getQuery(true)
+					->select($db->qn('value'))
+					->from($db->qn($this->commonTable))
+					->where($db->qn('key') . ' = ' . $db->q($dbKey));
+
+		$result = $db->setQuery($query)->loadResult();
+
+		if (!$result)
+		{
+			return $default;
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Set a common parameter from the #__akeeba_common table
+	 *
+	 * @param   string  $key    The key to set
+	 * @param   mixed   $value  The value to set
+	 *
+	 * @return  void
+	 */
+	protected function setCommonParameter($key, $value)
+	{
+		$dbKey = $this->commonKey . '_autoupdate_' . $key;
+
+		$db = F0FPlatform::getInstance()->getDbo();
+
+		$query = $db->getQuery(true)
+					->select('COUNT(*)')
+					->from($db->qn($this->commonTable))
+					->where($db->qn('key') . ' = ' . $db->q($dbKey));
+		$count = $db->setQuery($query)->loadResult();
+
+		if ($count)
+		{
+			$query = $db->getQuery(true)
+						->update($db->qn($this->commonTable))
+						->set($db->qn('value') . ' = ' . $db->q($value))
+						->where($db->qn('key') . ' = ' . $db->q($dbKey));
+			$db->setQuery($query)->execute();
+		}
+		else
+		{
+			$data = (object)array(
+					'key'   => $dbKey,
+					'value' => $value,
+			);
+
+			$db->insertObject($this->commonTable, $data);
 		}
 	}
 }
