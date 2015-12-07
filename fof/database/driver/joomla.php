@@ -228,10 +228,14 @@ class F0FDatabaseDriverJoomla extends F0FDatabase implements F0FDatabaseInterfac
 			throw new Exception('F0F database driver is not loaded');
 		}
 
-		if (method_exists($this->dbo, $name) || in_array($name, array('q', 'nq', 'qn')))
+		if (method_exists($this->dbo, $name) || in_array($name, array('q', 'nq', 'qn', 'query')))
 		{
 			switch ($name)
 			{
+				case 'execute':
+					$name = 'query';
+					break;
+
 				case 'q':
 					$name = 'quote';
 					break;
@@ -280,6 +284,12 @@ class F0FDatabaseDriverJoomla extends F0FDatabase implements F0FDatabaseInterfac
 					// Resort to using call_user_func_array for many segments
 					$result = call_user_func_array(array($this->dbo, $name), $arguments);
 			}
+
+			if (class_exists('JDatabase') && is_object($result) && ($result instanceof JDatabase))
+			{
+				return $this;
+			}
+
 			return $result;
 		}
 		else
