@@ -10,6 +10,10 @@ defined('F0F_INCLUDED') or die;
 
 if (version_compare(JVERSION, '1.7.0', 'lt'))
 {
+	jimport('joomla.filter.input');
+	jimport('joomla.filter.filterinput');
+	jimport('joomla.base.object');
+
 	require_once __DIR__ . '/jinput/input.php';
 	require_once __DIR__ . '/jinput/cli.php';
 	require_once __DIR__ . '/jinput/cookie.php';
