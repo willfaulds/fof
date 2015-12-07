@@ -28,8 +28,11 @@ class F0FUtilsUpdate extends F0FModel
 	/** @var string The currently installed version, as reported by the #__extensions table */
 	protected $version = 'dev';
 
-	/** @var string The name of the component e.g. com_something */
+	/** @var string The machine readable name of the component e.g. com_something */
 	protected $component = 'com_foobar';
+
+	/** @var string The human readable name of the component e.g. Your Component's Name. Used for emails. */
+	protected $componentDescription = 'Foobar';
 
 	/** @var string The URL to the component's update XML stream */
 	protected $updateSite = null;
@@ -41,7 +44,7 @@ class F0FUtilsUpdate extends F0FModel
 	protected $extraQuery = null;
 
 	/** @var string The common parameters' key, used for storing data in the #__akeeba_common table */
-	protected $commonKey = 'akeeba';
+	protected $commonKey = 'foobar';
 
 	/**
 	 * The common parameters table. It's a simple table with key(VARCHAR) and value(LONGTEXT) fields.
@@ -56,6 +59,58 @@ class F0FUtilsUpdate extends F0FModel
 	 * @var  string
 	 */
 	protected $commonTable = '#__akeeba_common';
+
+	/**
+	 * Subject of the component update emails
+	 *
+	 * @var  string
+	 */
+	protected $updateEmailSubject = 'THIS EMAIL IS SENT FROM YOUR SITE "[SITENAME]" - Update available for [COMPONENT], new version [VERSION]';
+
+	/**
+	 * Body of the component update email
+	 *
+	 * @var  string
+	 */
+	protected $updateEmailBody= <<< ENDBLOCK
+This email IS NOT sent by the authors of [COMPONENT].
+It is sent automatically by your own site, [SITENAME].
+
+================================================================================
+UPDATE INFORMATION
+================================================================================
+
+Your site has determined that there is an updated version of [COMPONENT]
+available for download.
+
+New version number: [VERSION]
+
+This email is sent to you by your site to remind you of this fact. The authors
+of the software will never contact you about available updates.
+
+================================================================================
+WHY AM I RECEIVING THIS EMAIL?
+================================================================================
+
+This email has been automatically sent by a CLI script or Joomla! plugin you, or
+the person who built or manages your site, has installed and explicitly
+activated. This script or plugin looks for updated versions of the software and
+sends an email notification to all Super Users. You will receive several similar
+emails from your site, up to 6 times per day, until you either update the
+software or disable these emails.
+
+To disable these emails, please contact your site administrator.
+
+If you do not understand what this means, please do not contact the authors of
+the software. They are NOT sending you this email and they cannot help you.
+Instead, please contact the person who built or manages your site.
+
+================================================================================
+WHO SENT ME THIS EMAIL?
+================================================================================
+
+This email is sent to you by your own site, [SITENAME]
+ENDBLOCK;
 
 	/**
 	 * Public constructor. Initialises the protected members as well. Useful $config keys:
@@ -82,6 +137,18 @@ class F0FUtilsUpdate extends F0FModel
 		else
 		{
 			$this->component = $this->input->getCmd('option', '');
+		}
+
+		// Get the component description
+		if (isset($config['update_component_description']))
+		{
+			$this->component = $config['update_component_description'];
+		}
+		else
+		{
+			// Try to auto-translate (hopefully you've loaded the language files)
+			$key = strtoupper($this->component);
+			$description = JText::_($key);
 		}
 
 		// Get the component version
@@ -148,17 +215,19 @@ class F0FUtilsUpdate extends F0FModel
 	 * version		The version of the available update
 	 * infoURL		The URL to the download page of the update
 	 *
-	 * @param   bool  $force  Set to true if you want to forcibly reload the update information
+	 * @param   bool    $force            Set to true if you want to forcibly reload the update information
+	 * @param   string  $preferredMethod  Preferred update method: 'joomla' or 'classic'
 	 *
 	 * @return  array  See the method description for more information
 	 */
-	public function getUpdates($force = false)
+	public function getUpdates($force = false, $preferredMethod = null)
 	{
 		// Default response (no update)
 		$updateResponse = array(
 			'hasUpdate' => false,
 			'version'   => '',
-			'infoURL'   => ''
+			'infoURL'   => '',
+			'downloadURL' => '',
 		);
 
 		if (empty($this->extension_id))
@@ -166,7 +235,7 @@ class F0FUtilsUpdate extends F0FModel
 			return $updateResponse;
 		}
 
-		$updateRecord = $this->findUpdates($force);
+		$updateRecord = $this->findUpdates($force, $preferredMethod);
 
 		// If we have an update record in the database return the information found there
 		if (is_object($updateRecord))
@@ -175,6 +244,7 @@ class F0FUtilsUpdate extends F0FModel
 				'hasUpdate' => true,
 				'version'   => $updateRecord->version,
 				'infoURL'   => $updateRecord->infourl,
+				'downloadURL' => $updateRecord->downloadurl,
 			);
 		}
 
@@ -445,12 +515,52 @@ class F0FUtilsUpdate extends F0FModel
 
 		try
 		{
-			return $db->loadObject();
+			$updateObject = $db->loadObject();
 		}
 		catch (Exception $e)
 		{
 			return null;
 		}
+
+		if (!is_object($updateObject))
+		{
+			return null;
+		}
+
+		$updateObject->downloadurl = '';
+
+		JLoader::import('joomla.updater.update');
+
+		if (class_exists('JUpdate'))
+		{
+			$update = new JUpdate();
+			$update->loadFromXML($updateObject->detailsurl);
+
+			if (isset($update->get('downloadurl')->_data))
+			{
+				$url = trim($update->downloadurl->_data);
+
+				$extra_query = isset($updateObject->extra_query) ? $updateObject->extra_query : $this->extraQuery;
+
+				if ($extra_query)
+				{
+					if (strpos($url, '?') === false)
+					{
+						$url .= '?';
+					}
+					else
+					{
+						$url .= '&amp;';
+					}
+
+					$url .= $extra_query;
+				}
+
+				$updateObject->downloadurl = $url;
+			}
+		}
+
+		return $updateObject;
 	}
 
 	/**
@@ -471,6 +581,7 @@ class F0FUtilsUpdate extends F0FModel
 
 		$bestVersion = '0.0.0';
 		$bestUpdate = null;
+		$bestUpdateObject = null;
 
 		foreach($allUpdates as $update)
 		{
@@ -482,11 +593,54 @@ class F0FUtilsUpdate extends F0FModel
 			if (version_compare($bestVersion, $update['version'], 'lt'))
 			{
 				$bestVersion = $update['version'];
-				$bestUpdate = (object) $update;
+				$bestUpdate = $update;
 			}
 		}
 
-		return $bestUpdate;
+		if (!is_null($bestUpdate))
+		{
+			$url = '';
+
+			if (isset($bestUpdate['downloads']) && isset($bestUpdate['downloads'][0])
+			&& isset($bestUpdate['downloads'][0]['url']))
+			{
+				$url = $bestUpdate['downloads'][0]['url'];
+			}
+
+			if ($this->extraQuery)
+			{
+				if (strpos($url, '?') === false)
+				{
+					$url .= '?';
+				}
+				else
+				{
+					$url .= '&amp;';
+				}
+
+				$url .= $this->extraQuery;
+			}
+
+			$bestUpdateObject = (object)array(
+					'update_id'      => 0,
+					'update_site_id' => 0,
+					'extension_id'   => $this->extension_id,
+					'name'           => $this->updateSiteName,
+					'description'    => $bestUpdate['description'],
+					'element'        => $bestUpdate['element'],
+					'type'           => $bestUpdate['type'],
+					'folder'         => count($bestUpdate['folder']) ? $bestUpdate['folder'][0] : '',
+					'client_id'      => $bestUpdate['client'],
+					'version'        => $bestUpdate['version'],
+					'data'           => '',
+					'detailsurl'     => $this->updateSite,
+					'infourl'        => $bestUpdate['infourl']['url'],
+					'extra_query'    => $this->extraQuery,
+					'downloadurl'	 => $url,
+			);
+		}
+
+		return $bestUpdateObject;
 	}
 
 	/**
@@ -687,5 +841,182 @@ class F0FUtilsUpdate extends F0FModel
 
 			$db->insertObject($this->commonTable, $data);
 		}
+	}
+
+	/**
+	 * Automatically install the extension update under Joomla! 1.5.5 or later (web) / 3.0 or later (CLI).
+	 *
+	 * @return  string  The update message
+	 */
+	public function updateComponent()
+	{
+		$isCli          = F0FPlatform::getInstance()->isCli();
+		$minVersion     = $isCli ? '3.0.0' : '1.5.5';
+		$errorQualifier = $isCli ? ' using an unattended CLI CRON script ' : ' ';
+
+		if (version_compare('JVERSION', $minVersion, 'lt'))
+		{
+			return "Extension updates{$errorQualifier}only work with Joomla! $minVersion and later.";
+		}
+
+		try
+		{
+			$updatePackagePath = $this->downloadUpdate();
+		}
+		catch (Exception $e)
+		{
+			return $e->getMessage();
+		}
+
+		// Unpack the downloaded package file
+		$package = JInstallerHelper::unpack($updatePackagePath);
+
+		if (!$package)
+		{
+			// Clean up
+			if (JFile::exists($updatePackagePath))
+			{
+				JFile::delete($updatePackagePath);
+			}
+
+			return "An error occurred while unpacking the file. Please double check your Joomla temp-directory setting in Global Configuration.";
+		}
+
+		$installer = new JInstaller;
+		$installed = $installer->install($package['extractdir']);
+
+		// Let's cleanup the downloaded archive and the temp folder
+		if (JFolder::exists($package['extractdir']))
+		{
+			JFolder::delete($package['extractdir']);
+		}
+
+		if (JFile::exists($package['packagefile']))
+		{
+			JFile::delete($package['packagefile']);
+		}
+
+		if ($installed)
+		{
+			return "Component successfully updated";
+		}
+		else
+		{
+			return "An error occurred while trying to update the component";
+		}
+	}
+
+	/**
+	 * Downloads the latest update package to Joomla!'s temporary directory
+	 *
+	 * @return  string  The absolute path to the downloaded update package.
+	 */
+	public function downloadUpdate()
+	{
+		// Get the update URL
+		$updateInformation = $this->getUpdates();
+		$url               = $updateInformation['downloadURL'];
+
+		if (empty($url))
+		{
+			throw new RuntimeException("No download URL found inside the XML manifest");
+		}
+
+		$config   = JFactory::getConfig();
+		$tmp_dest = $config->get('tmp_path');
+
+		if (!$tmp_dest)
+		{
+			throw new RuntimeException("You must set a non-empty Joomla! temp-directory in Global Configuration before continuing.");
+		}
+
+		if (!JFolder::exists($tmp_dest))
+		{
+			throw new RuntimeException("Joomla!'s temp-directory does not exist. Please set the correct path in Global Configuration before continuing.");
+		}
+
+		// Get the target filename
+		$filename = $this->getFilenameFromURL($url);
+		$filename = empty($filename) ? $this->component . '.zip' : $filename;
+		$filename = rtrim($tmp_dest, '\\/') . '/' . $filename;
+
+		try
+		{
+			$downloader = new F0FDownload();
+			$data = $downloader->getFromURL($url);
+		}
+		catch (Exception $e)
+		{
+			$code =$e->getCode();
+			$message =$e->getMessage();
+			throw new RuntimeException("An error occurred while trying to download the update package. Double check your Download ID and your server's network settings. The error message was: #$code: $message");
+		}
+
+		if (!JFile::write($filename, $data))
+		{
+			if (!file_put_contents($filename, $data))
+			{
+				throw new RuntimeException("Joomla!'s temp-directory is not writeable. Please check its permissions or set a different, writeable path in Global Configuration before continuing.");
+			}
+		}
+
+		return $filename;
+	}
+
+	/**
+	 * Gets a file name out of a url
+	 *
+	 * @param   string  $url  URL to get name from
+	 *
+	 * @return  mixed   String filename or boolean false if failed
+	 */
+	private function getFilenameFromURL($url)
+	{
+		if (is_string($url))
+		{
+			$parts = explode('/', $url);
+
+			return $parts[count($parts) - 1];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Sends an update notification email
+	 *
+	 * @param   string  $version  The new version of Akeeba Backup
+	 * @param   string  $email    The email address to send the notification to
+	 *
+	 * @return  mixed  The result of JMail::send()
+	 */
+	protected function sendNotificationEmail($version, $email)
+	{
+		$email_subject	= $this->updateEmailSubject;
+		$email_body = $this->updateEmailBody;
+
+		$jconfig  = JFactory::getConfig();
+		$sitename = $jconfig->get('sitename');
+
+		$substitutions = array(
+				'[VERSION]'			=> $version,
+				'[SITENAME]'		=> $sitename,
+				'[COMPONENT]'		=> $this->componentDescription,
+		);
+
+		$email_subject = str_replace(array_keys($substitutions), array_values($substitutions), $email_subject);
+		$email_body    = str_replace(array_keys($substitutions), array_values($substitutions), $email_body);
+
+		$mailer = JFactory::getMailer();
+
+		$mailfrom = $jconfig->get('mailfrom');
+		$fromname = $jconfig->get('fromname');
+
+		$mailer->setSender(array( $mailfrom, $fromname ));
+		$mailer->addRecipient($email);
+		$mailer->setSubject($email_subject);
+		$mailer->setBody($email_body);
+
+		return $mailer->Send();
 	}
 }
