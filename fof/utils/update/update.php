@@ -495,7 +495,7 @@ ENDBLOCK;
 	 *
 	 * @return  string
 	 */
-	protected function getUpdateMethod($preferred = null)
+	public function getUpdateMethod($preferred = null)
 	{
 		$method = $preferred;
 
