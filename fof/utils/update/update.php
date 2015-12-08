@@ -307,6 +307,56 @@ ENDBLOCK;
 	}
 
 	/**
+	 * Returns the name of the component, e.g. com_foobar
+	 *
+	 * @return  string
+	 */
+	public function getComponentName()
+	{
+		return $this->component;
+	}
+
+	/**
+	 * Returns the human readable component name, e.g. Foobar Component
+	 *
+	 * @return  string
+	 */
+	public function getComponentDescription()
+	{
+		return $this->componentDescription;
+	}
+
+	/**
+	 * Returns the numeric extension ID for the component
+	 *
+	 * @return  int
+	 */
+	public function getExtensionId()
+	{
+		return $this->extension_id;
+	}
+
+	/**
+	 * Returns the update site URL, i.e. the URL to the XML update stream
+	 *
+	 * @return  string
+	 */
+	public function getUpdateSite()
+	{
+		return $this->updateSite;
+	}
+
+	/**
+	 * Returns the human readable description of the update site
+	 *
+	 * @return  string
+	 */
+	public function getUpdateSiteName()
+	{
+		return $this->updateSiteName;
+	}
+
+	/**
 	 * Override the currently installed version as reported by the #__extensions table
 	 *
 	 * @param  string  $version
