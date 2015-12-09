@@ -996,8 +996,7 @@ ENDBLOCK;
 		}
 
 		// Get the target filename
-		$filename = $this->getFilenameFromURL($url);
-		$filename = empty($filename) ? $this->component . '.zip' : $filename;
+		$filename = $this->component . '.zip';
 		$filename = rtrim($tmp_dest, '\\/') . '/' . $filename;
 
 		try
