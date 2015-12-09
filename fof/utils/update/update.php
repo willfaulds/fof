@@ -927,6 +927,8 @@ ENDBLOCK;
 		}
 
 		// Unpack the downloaded package file
+		jimport('joomla.installer.helper');
+		jimport('cms.installer.helper');
 		$package = JInstallerHelper::unpack($updatePackagePath);
 
 		if (!$package)
@@ -977,7 +979,7 @@ ENDBLOCK;
 
 		if (empty($url))
 		{
-			throw new RuntimeException("No download URL found inside the XML manifest");
+			throw new RuntimeException("No download URL was provided in the update information");
 		}
 
 		$config   = JFactory::getConfig();
