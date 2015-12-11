@@ -1049,7 +1049,7 @@ ENDBLOCK;
 	 *
 	 * @return  mixed  The result of JMail::send()
 	 */
-	protected function sendNotificationEmail($version, $email)
+	public function sendNotificationEmail($version, $email)
 	{
 		$email_subject	= $this->updateEmailSubject;
 		$email_body = $this->updateEmailBody;
