@@ -1,11 +1,11 @@
-FOF 2.4.4
+FOF 2.5.0
 ================================================================================
-~ Clear the OPcache when installing / updaing an extension as long as it uses F0FUtilsInstallscript
-~ F0FUtilsIp: let the workarounds be disabled
-~ Restoring compatibility with Joomla! 3.2
++ Now compatible with Joomla! 1.6, 1.7, 2.5, 3.0, 3.1, 3.2, 3.3, 3.4 and 3.5 (best used with Joomla! 3.3 or later)
 + F0FUtilsIniFile to parse INI files even on stupid hosts
 + F0FUtilsConfigHelper to get component configuration parameters without going through JComponentHelper
 + F0FUtilsUpdate improvements
+~ Clear the OPcache when installing / updaing an extension as long as it uses F0FUtilsInstallscript
+~ F0FUtilsIp: let the workarounds be disabled
 # [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
 
 FOF 2.4.3

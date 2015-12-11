@@ -442,16 +442,23 @@ abstract class F0FUtilsInstallscript
 	{
 		$src = $parent->getParent()->getPath('source');
 
+		$cliPath = JPATH_ROOT . '/cli';
+
+		if (!JFolder::exists($cliPath))
+		{
+			JFolder::create($cliPath);
+		}
+
 		foreach ($this->cliScriptFiles as $script)
 		{
-			if (JFile::exists(JPATH_ROOT . '/cli/' . $script))
+			if (JFile::exists($cliPath . '/' . $script))
 			{
-				JFile::delete(JPATH_ROOT . '/cli/' . $script);
+				JFile::delete($cliPath . '/' . $script);
 			}
 
 			if (JFile::exists($src . '/' . $this->cliSourcePath . '/' . $script))
 			{
-				JFile::copy($src . '/' . $this->cliSourcePath . '/' . $script, JPATH_ROOT . '/cli/' . $script);
+				JFile::copy($src . '/' . $this->cliSourcePath . '/' . $script, $cliPath . '/' . $script);
 			}
 		}
 	}
@@ -1607,7 +1614,8 @@ abstract class F0FUtilsInstallscript
 	 */
 	private function _createAdminMenus($parent)
 	{
-		$db = $parent->getParent()->getDbo();
+		$db = $db = F0FPlatform::getInstance()->getDbo();
+
 		/** @var JTableMenu $table */
 		$table = JTable::getInstance('menu');
 		$option = $parent->get('element');
@@ -1925,7 +1933,8 @@ abstract class F0FUtilsInstallscript
 	 */
 	private function _reallyPublishAdminMenuItems($parent)
 	{
-		$db = $parent->getParent()->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
+
 		$option = $parent->get('element');
 
 		$query = $db->getQuery(true)
@@ -1956,7 +1965,7 @@ abstract class F0FUtilsInstallscript
 	{
 		/** @var JTableMenu $table */
 		$table = JTable::getInstance('menu');
-		$db = $table->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// We need to rebuild the menu based on its root item. By default this is the menu item with ID=1. However, some
 		// crappy upgrade scripts enjoy screwing it up. Hey, ho, the workaround way I go.
