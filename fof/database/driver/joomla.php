@@ -219,6 +219,73 @@ class F0FDatabaseDriverJoomla extends F0FDatabase implements F0FDatabaseInterfac
 	}
 
 	/**
+	 * Gets the error message from the database connection.
+	 *
+	 * @param   boolean  $escaped  True to escape the message string for use in JavaScript.
+	 *
+	 * @return  string  The error message for the most recent query.
+	 *
+	 * @since   11.1
+	 */
+	public function getErrorMsg($escaped = false)
+	{
+		if (method_exists($this->dbo, 'getErrorMsg'))
+		{
+			$errorMessage = $this->dbo->getErrorMsg();
+		}
+		else
+		{
+			$errorMessage = $this->errorMsg;
+		}
+
+		if ($escaped)
+		{
+			return addslashes($errorMessage);
+		}
+
+		return $errorMessage;
+	}
+
+	/**
+	 * Gets the error number from the database connection.
+	 *
+	 * @return      integer  The error number for the most recent query.
+	 *
+	 * @since       11.1
+	 * @deprecated  13.3 (Platform) & 4.0 (CMS)
+	 */
+	public function getErrorNum()
+	{
+		if (method_exists($this->dbo, 'getErrorNum'))
+		{
+			$errorNum = $this->dbo->getErrorNum();
+		}
+		else
+		{
+			$errorNum = $this->getErrorNum;
+		}
+
+		return $errorNum;
+	}
+
+	/**
+	 * Return the most recent error message for the database connector.
+	 *
+	 * @param   boolean  $showSQL  True to display the SQL statement sent to the database as well as the error.
+	 *
+	 * @return  string  The error message for the most recent query.
+	 */
+	public function stderr($showSQL = false)
+	{
+		if (method_exists($this->dbo, 'stderr'))
+		{
+			return $this->dbo->stderr($showSQL);
+		}
+
+		return parent::stderr($showSQL);
+	}
+
+	/**
 	 * Magic method to proxy all calls to the loaded database driver object
 	 */
 	public function __call($name, array $arguments)
