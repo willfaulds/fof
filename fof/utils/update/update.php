@@ -902,11 +902,22 @@ ENDBLOCK;
 	}
 
 	/**
+	 * Proxy to updateComponent(). Required since old versions of our software had an updateComponent method declared
+	 * private. If we set the updateComponent() method public we cause a fatal error.
+	 *
+	 * @return  string
+	 */
+	public function doUpdateComponent()
+	{
+		return $this->updateComponent();
+	}
+
+	/**
 	 * Automatically install the extension update under Joomla! 1.5.5 or later (web) / 3.0 or later (CLI).
 	 *
 	 * @return  string  The update message
 	 */
-	public function updateComponent()
+	private function updateComponent()
 	{
 		$isCli          = F0FPlatform::getInstance()->isCli();
 		$minVersion     = $isCli ? '3.0.0' : '1.5.5';
@@ -1042,14 +1053,28 @@ ENDBLOCK;
 	}
 
 	/**
-	 * Sends an update notification email
+	 * Proxy to sendNotificationEmail(). Required since old versions of our software had a sendNotificationEmail method
+	 * declared private. If we set the sendNotificationEmail() method public we cause a fatal error.
 	 *
-	 * @param   string  $version  The new version of Akeeba Backup
+	 * @param   string  $version  The new version of our software
 	 * @param   string  $email    The email address to send the notification to
 	 *
 	 * @return  mixed  The result of JMail::send()
 	 */
-	public function sendNotificationEmail($version, $email)
+	public function doSendNotificationEmail($version, $email)
+	{
+		return $this->sendNotificationEmail($version, $email);
+	}
+
+	/**
+	 * Sends an update notification email
+	 *
+	 * @param   string  $version  The new version of our software
+	 * @param   string  $email    The email address to send the notification to
+	 *
+	 * @return  mixed  The result of JMail::send()
+	 */
+	private function sendNotificationEmail($version, $email)
 	{
 		$email_subject	= $this->updateEmailSubject;
 		$email_body = $this->updateEmailBody;
