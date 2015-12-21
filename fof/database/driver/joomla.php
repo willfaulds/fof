@@ -13,6 +13,16 @@
 defined('F0F_INCLUDED') or die;
 
 /**
+ * This crazy three line bit is required to convince Joomla! to load JDatabaseInterface which is on the same file as the
+ * abstract JDatabaseDriver class for reasons that beat me. It makes no sense. Furthermore, jimport on Joomla! 3.4
+ * doesn't seem to actually load the file, merely registering the association in the autoloader. Hence the class_exists
+ * in here.
+ */
+jimport('joomla.database.driver');
+jimport('joomla.database.driver.mysqli');
+class_exists('JDatabaseDriver', true);
+
+/**
  * Joomla! pass-through database driver.
  */
 class F0FDatabaseDriverJoomla extends F0FDatabase implements F0FDatabaseInterface
