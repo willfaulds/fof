@@ -1,44 +1,34 @@
-/nbproject/private/
-nbproject/
-fof/include.php
-fof/version.txt
-strapper/version.txt
-strapper/files_strapper.xml
-strapper/akeeba_strapper/version.php
-release/*.zip
-.buildpath
-.settings/
-.project
 .DS_STORE
-.idea/
-/fof/lib_fof.xml
-/fof/lib_f0f.xml
-tests/unit/config.php
-refs/heads/staging
-/build/build.properties
-/build/templates/release*.json
-/tests/config.php
+/.idea
+
+/build/bin
+/build/buildlang
+/build/phingext
+/build/tools
 
 /documentation/*.xml~
 
-build.xml
-antconfig.txt
+/fof/lib_f?f.xml
 
-/build/bin
+/release/
+
+/tests/config.php
+/tests/environments/*/cache/
+/tests/environments/*/templates/fake_test_template
 
 /vendor/*
 
-/tests/environments/3.x/cache/
-/tests/environments/3.x/templates/fake_test_template
-/tests/environments/2.5/cache/
-/tests/environments/2.5/templates/fake_test_template
-/release/
+/fof/include.php
+/fof/version.txt
 
-/build/phingext
-/build/tools
-/build/buildlang
-/build/templates/release*
+release/*.zip
 
-DESCRIPTION.html
-RELEASENOTES.html
-Tests/coverage
+/strapper/akeeba_strapper/version.php
+/strapper/files_strapper.xml
+/strapper/version.txt
+
+/tests/coverage
+/tests/unit/config.php
+
+/DESCRIPTION.html
+/RELEASENOTES.html

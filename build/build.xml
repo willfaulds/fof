@@ -1,70 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="FrameworkOnFramework" description="Framework-on-Framework for Joomla!" default="all" >
-	<property file="./build.properties" />
-	
-	<!-- Default properties, set only if not already assigned in the build.properties file -->
-	<property name="dirs.root" value=".." />
-	<property name="dirs.library" value="../fof" />
+	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
+
 	<property name="dirs.strapper" value="../strapper" />
-	<property name="dirs.plugins" value="../plugins" />
-	<property name="dirs.release" value="../release" />
-	<property name="version" value="dev" />
 
-	<property name="dirs.bin" value="bin" />
-	<property name="dirs.bin.libxml" value="${dirs.bin}/libxml" />
-	<property name="dirs.bin.fop" value="${dirs.bin}/fop" />
-	<property name="dirs.bin.dbxsl" value="${dirs.bin}/dbxsl" />
-	<property name="dirs.bin.release" value="../release" />
-	<property name="dirs.documentation" value="../documentation" />
-
-	<taskdef name="zipme" classname="phingext.ZipmeTask" />
-	<taskdef name="gitversion" classname="phingext.GitVersionTask" />
-	<taskdef name="gitdate" classname="phingext.GitDateTask" />
-		
 	<!--
 	====================================================================================================
 	Tasks - General
 	====================================================================================================
 	-->
 	
-	<target name="all" description="Makes everything"
-		depends="dev-release,documentation">
-	</target>
-	
 	<target name="git" description="Makes only the library package"
 		depends="new-release,setup-properties,library-package">
-	</target>
-	
-	<target name="dev-release" description="Makes only packages, not the documentation"
-		depends="git">
 	</target>
 	
 	<target name="documentation" description="Creates the documentation packages"
 		depends="doc-pdf">
 	</target>
 
-	<target name="new-release" description="Create the release directory afresh">
-		<!-- Recreate the release directory -->
-		<delete dir="${dirs.release}" quiet="yes" includeemptydirs="false" />
-		<mkdir dir="${dirs.release}" />
-	</target>
-	
-	<target name="setup-properties" description="Set up version and build properties">
-		<!-- Initialize the git.date timestamp -->
-		<gitdate workingcopy="${dirs.root}" format="Y-m-d H:i:s" propertyname="git.date" />
-
-		<!-- Initialize the version if it's not set -->
-		<if>
-			<equals arg1="${version}" arg2="dev" />
-			<then>
-				<gitversion workingcopy="${dirs.root}" propertyname="git.lastrevision" />
-				<gitdate workingcopy="${dirs.root}" propertyname="git.timestamp" />
-				<!--<property name="version" value="rev${git.lastrevision}" override="true" />-->
-				<property name="version" value="rev${git.lastrevision}-${git.timestamp}" override="true" />
-			</then>
-		</if>
-	</target>
-	
 	<!--
 	====================================================================================================
 	Tasks - Joomla! packages
@@ -154,53 +107,15 @@
 	-->
 	
 	<target name="doc-pdf" description="Documentation in PDF format">
-		<exec command="xsltproc --nonet --xinclude --novalid --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.fo ${dirs.bin.dbxsl}/fo/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
-		<exec command="${dirs.bin.fop}/fop -fo ${dirs.bin.release}/fof-guide.fo -pdf ${dirs.bin.release}/fof-guide.pdf" logoutput="true" />
-		<delete file="${dirs.release}/fof-guide.fo" quiet="yes" />
+		<phingcall target="docbook-pdf">
+			<property name="docs.input" value="fof-guide.xml" />
+		</phingcall>
 	</target>
 	
-	<target name="doc-html" description="Documentation in single-page HTML format">
-		<exec command="xsltproc --nonet --xinclude --novalid --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.html ${dirs.bin.dbxsl}/html/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
-	</target>
-
     <target name="doc-epub" description="Documentation in ePub format">
-        <mkdir dir="${dirs.bin.release}/tmp" />
-        <mkdir dir="${dirs.bin.release}/tmp/OEBPS" />
-        <mkdir dir="${dirs.bin.release}/tmp/OEBPS/images" />
-        <copy todir="${dirs.bin.release}/tmp/OEBPS/images">
-            <fileset dir="${dirs.documentation}/images">
-                <include name="*.png" />
-                <include name="*.jpg" />
-                <include name="*.jpeg" />
-                <include name="*.gif" />
-            </fileset>
-        </copy>
-
-        <exec command="xsltproc --nonet --xinclude --novalid --stringparam epub.stylesheet style.css --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --output ${dirs.bin.release}/tmp/fof-guide.epub ${dirs.bin.dbxsl}/epub3/chunk.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
-
-        <copy todir="${dirs.bin.release}/tmp">
-            <fileset dir="./templates/epub">
-                <include name="mimetype" />
-            </fileset>
-        </copy>
-        <copy todir="${dirs.bin.release}/tmp/META-INF">
-            <fileset dir="./templates/epub">
-                <include name="com.apple.ibooks.display-options.xml" />
-            </fileset>
-        </copy>
-        <copy todir="${dirs.bin.release}/tmp/OEBPS" overwrite="true">
-            <fileset dir="./templates/epub">
-                <include name="docbook-epub.css" />
-            </fileset>
-        </copy>
-
-        <zip destfile="${dirs.bin.release}/fof-guide.epub" basedir="${dirs.bin.release}/tmp">
-            <fileset dir="${dirs.bin.release}/tmp">
-                <include name="**" />
-            </fileset>
-        </zip>
-
-        <delete dir="${dirs.bin.release}/tmp" quiet="true" />
+		<phingcall target="docbook-epub">
+			<property name="docs.input" value="fof-guide.xml" />
+		</phingcall>
     </target>
 
 	<!--
@@ -208,64 +123,15 @@
 	Tasks - Project management
 	====================================================================================================
 	-->
-    <target name="link" description="Internal linker">
-        <exec command="php ../buildfiles/tools/link.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />
-        <!--<exec command="php ../buildfiles/tools/langlink.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />-->
-    </target>
-
 	<target name="docsdeploy" depends="docsdeploy-fofguide">
 		<echo>All FOF documentation has been uploaded</echo>
 	</target>
-	
-	<target name="docsdeploy-fofguide">
-		<echo>Uploading FOF Developer's Guide</echo>
-		<ftpdeploy
-			host="${ftp.host}"
-			port="${ftp.port}"
-			username="${ftp.username}"
-			password="${ftp.password}"
-			dir="${ftp.dir.docs}/fof"
-			mode="${ftp.mode}"
-			passive="true"
-			level="debug">
-			<fileset dir="${dirs.documentation}">
-				<include name="fof-guide.xml"/>
-			</fileset>			
-		</ftpdeploy>
-	</target>
-	
-	<target name="ftpdeploy" depends="git">
-		<echo>Uploading dev release</echo>
-		<ftpdeploy
-			host="${ftp.host}"
-			port="${ftp.port}"
-			username="${ftp.username}"
-			password="${ftp.password}"
-			dir="${ftp.dir}/libfof/${version}"
-			mode="${ftp.mode}"
-			passive="true"
-			level="debug">
-			<fileset dir="${dirs.release}">
-				<include name="lib_*.zip"/>
-			</fileset>			
-		</ftpdeploy>
-	</target>
-	
-	<target name="release" depends="setup-properties" description="Upload the release to AkeebaBackup.com">
-		<copy file="./templates/release.json" tofile="${dirs.root}/release.json" overwrite="true">
-			<filterchain id="standard-tokens">
-				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${git.date}" />
-					<token key="VERSION" value="${version}" />
-					<token key="RELEASEDIR" value="${phing.dir}/${dirs.release}" />
-					<token key="REPODIR" value="${phing.dir}/${dirs.root}" />
-				</replacetokens>
-			</filterchain>
-		</copy>
 
-		<exec command="php ${project.basedir}/../../releasemaker/releasemaker/index.php ${project.basedir}/../release.json" dir="${project.basedir}" passthru="true" />
-
-		<delete file="${dirs.root}/release.json" quiet="yes" />
+	<target name="docsdeploy-fofguide" >
+		<phingcall target="docbook-deploy">
+			<property name="docsdeploy.path.source" value="" />
+			<property name="docsdeploy.path.target" value="fof" />
+		</phingcall>
 	</target>
-	
+
 </project>

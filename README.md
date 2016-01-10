@@ -173,14 +173,7 @@ is best to only use the official library packages released by Akeeba Ltd.
    Unlike the other formats, this doesn't generate a single file. Instead, it creates a META-INF and a OEBPS folder in
    the `release` directory.
 
-1. Build the documentation in HTML format
-
-   This creates the documentation as a single-page PDF file
-
-		$ phing doc-html
-		> phing doc-html
-
-Please note that all generated files (ZIP library packages, PDF files, HTML files) are written to the
+Please note that all generated files (ZIP library packages, PDF files, ePub files) are written to the
 `release` directory inside the repository's root.
 
 ## Third Party Links
