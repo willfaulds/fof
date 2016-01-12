@@ -1,11 +1,10 @@
 <?php
 /**
- * @package	    FrameworkOnFramework.UnitTest
- * @subpackage  TableBehaviors
- *
- * @copyright   Copyright (C) 2010 - 2015 Akeeba Ltd. All rights reserved.
- * @license	    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FOF
+ * @copyright   2010-2016 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
  */
+
 namespace FOF30\Tests\DataModel;
 
 use FOF30\Model\DataModel\Behaviour\Assets;
