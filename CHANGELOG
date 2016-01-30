@@ -1,3 +1,7 @@
+FOF 3.0.5
+================================================================================
+~ No change to 3.0.4. I'm trying to get Packagist to work.
+
 FOF 3.0.4
 ================================================================================
 # [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
