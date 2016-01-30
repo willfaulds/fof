@@ -9,19 +9,23 @@
 	"homepage": "https://github.com/akeeba/fof",
 	"license": "GPL-2.0+",
 	"authors": [
-        {
-            "name": "Nicholas K. Dionysopoulos",
-            "email": "nicholas_NO_SPAM_PLEASE@akeebabackup.com",
-            "homepage": "http://www.dionysopoulos.me",
-            "role": "Lead Developer"
-        }
-    ],
-    "version": "3.0.0-dev",
-    "require-dev": {
+		{
+			"name": "Nicholas K. Dionysopoulos",
+			"email": "nicholas_NO_SPAM_PLEASE@akeebabackup.com",
+			"homepage": "http://www.dionysopoulos.me",
+			"role": "Lead Developer"
+		}
+	],
+	"require-dev": {
 		"mikey179/vfsStream": "dev-master",
 		"phpunit/phpunit": "~4.5.0",
 		"phpunit/dbunit": "~1.2",
-        "mockery/mockery": "0.9.4",
-        "fiunchinho/phpunit-randomizer": "1.0.*@dev"
+		"mockery/mockery": "0.9.4",
+		"fiunchinho/phpunit-randomizer": "1.0.*@dev"
+	},
+	"autoload" : {
+		"psr-4": {
+			"FOF30": "fof"
+		}
 	}
 }
