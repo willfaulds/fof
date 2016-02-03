@@ -468,7 +468,12 @@ class Platform extends BasePlatform
 	{
 		if (!$this->isCli())
 		{
-			return \JEventDispatcher::getInstance()->trigger($event, $data);
+			if (class_exists('JEventDispatcher'))
+			{
+				return \JEventDispatcher::getInstance()->trigger($event, $data);
+			}
+
+			return \JFactory::getApplication()->triggerEvent($event, $data);
 		}
 		else
 		{
