@@ -462,6 +462,8 @@ class Controller
 				$groups = $user->groups;
 			}
 
+			$importantParameters = array();
+
 			// Set up safe URL parameters
 			if (!is_array($urlparams))
 			{
@@ -495,13 +497,16 @@ class Controller
 				{
 					// Add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
 					$registeredurlparams->$key = $value;
+
+					// Add the URL-important parameters into the array
+					$importantParameters[$key] = $this->input->get($key, null, $value);
 				}
 
 				$app->registeredurlparams = $registeredurlparams;
 			}
 
 			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
-			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups)));
+			$cacheId = md5(serialize(array(\JCache::makeId(), $view->getName(), $this->doTask, $groups, $importantParameters)));
 
 			// Get the cached view or cache the current view
 			$cache->get($view, 'display', $cacheId);
