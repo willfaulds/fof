@@ -1,3 +1,7 @@
+FOF 2.5.2
+================================================================================
+# [HIGH] The caching ID was always wrong since JCache::makeId() is never called any more in Joomla!.
+
 FOF 2.5.1
 ================================================================================
 # [HIGH] Crazy code for JDatabaseInterface in Joomla! causes fatal errors when using the Joomla! db driver in FOF in CLI
