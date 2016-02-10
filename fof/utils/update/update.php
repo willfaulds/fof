@@ -655,6 +655,13 @@ ENDBLOCK;
 			}
 		}
 
+        // If the current version is newer or equal to the best one, unset it. Otherwise the user will be always prompted to update
+        if(version_compare($this->version, $bestVersion, 'ge'))
+        {
+            $bestUpdate = null;
+            $bestVersion = '0.0.0';
+        }
+
 		if (!is_null($bestUpdate))
 		{
 			$url = '';
