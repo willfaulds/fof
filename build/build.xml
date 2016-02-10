@@ -3,6 +3,7 @@
 	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 
 	<property name="dirs.strapper" value="../strapper" />
+	<property name="dirs.library" value="../fof" />
 
 	<!--
 	====================================================================================================
