@@ -381,12 +381,12 @@ class TreeModel extends DataModel
         // Nullify the PK, so a new record will be created
         $this->{$this->idFieldName} = null;
 
-		// Get the value of the parent node's rgt
-		$myLeft = $parentNode->lft;
+		// Get the value of the parent node's lft
+		$insertLeft = $parentNode->lft;
 
 		// Update my lft/rgt values
-		$this->lft = $myLeft + 1;
-		$this->rgt = $myLeft + 2;
+		$this->lft = $insertLeft + 1;
+		$this->rgt = $insertLeft + 2;
 
 		// Update parent node's right (we added two elements in there, remember?)
 		$parentNode->rgt += 2;
@@ -400,13 +400,13 @@ class TreeModel extends DataModel
 			$query = $db->getQuery(true)
 				->update($db->qn($this->tableName))
 				->set($fldLft . ' = ' . $fldLft . '+2')
-				->where($fldLft . ' > ' . $db->q($myLeft));
+				->where($fldLft . ' > ' . $db->q($insertLeft));
 			$db->setQuery($query)->execute();
 
 			$query = $db->getQuery(true)
 				->update($db->qn($this->tableName))
 				->set($fldRgt . ' = ' . $fldRgt . '+ 2')
-				->where($fldRgt . '>' . $db->q($myLeft));
+				->where($fldRgt . '>' . $db->q($insertLeft));
 			$db->setQuery($query)->execute();
 
 			// Insert the new node
@@ -454,12 +454,12 @@ class TreeModel extends DataModel
         // Nullify the PK, so a new record will be created
         $this->{$this->idFieldName} = null;
 
-		// Get the value of the parent node's lft
-		$myRight = $parentNode->rgt;
+		// Get the value of the parent node's rgt
+		$insertRight = $parentNode->rgt;
 
 		// Update my lft/rgt values
-		$this->lft = $myRight;
-		$this->rgt = $myRight + 1;
+		$this->lft = $insertRight;
+		$this->rgt = $insertRight + 1;
 
 		// Update parent node's right (we added two elements in there, remember?)
 		$parentNode->rgt += 2;
@@ -473,13 +473,13 @@ class TreeModel extends DataModel
 			$query = $db->getQuery(true)
 				->update($db->qn($this->tableName))
 				->set($fldRgt . ' = ' . $fldRgt . '+2')
-				->where($fldRgt . '>=' . $db->q($myRight));
+				->where($fldRgt . '>=' . $db->q($insertRight));
 			$db->setQuery($query)->execute();
 
 			$query = $db->getQuery(true)
 				->update($db->qn($this->tableName))
 				->set($fldLft . ' = ' . $fldLft . '+2')
-				->where($fldLft . '>' . $db->q($myRight));
+				->where($fldLft . '>' . $db->q($insertRight));
 			$db->setQuery($query)->execute();
 
 			// Insert the new node
@@ -540,12 +540,12 @@ class TreeModel extends DataModel
         // Nullify the PK, so a new record will be created
         $this->{$this->idFieldName} = null;
 
-		// Get the value of the parent node's rgt
-		$myLeft = $siblingNode->lft;
+		// Get the value of the sibling node's lft
+		$insertLeft = $siblingNode->lft;
 
 		// Update my lft/rgt values
-		$this->lft = $myLeft;
-		$this->rgt = $myLeft + 1;
+		$this->lft = $insertLeft;
+		$this->rgt = $insertLeft + 1;
 
 		// Update sibling's lft/rgt values
 		$siblingNode->lft += 2;
@@ -559,14 +559,14 @@ class TreeModel extends DataModel
 				$db->getQuery(true)
 					->update($db->qn($this->tableName))
 					->set($fldLft . ' = ' . $fldLft . '+2')
-					->where($fldLft . ' >= ' . $db->q($myLeft))
+					->where($fldLft . ' >= ' . $db->q($insertLeft))
 			)->execute();
 
 			$db->setQuery(
 				$db->getQuery(true)
 					->update($db->qn($this->tableName))
 					->set($fldRgt . ' = ' . $fldRgt . '+2')
-					->where($fldRgt . ' > ' . $db->q($myLeft))
+					->where($fldRgt . ' > ' . $db->q($insertLeft))
 			)->execute();
 
 			$this->save();
@@ -612,12 +612,12 @@ class TreeModel extends DataModel
         // Nullify the PK, so a new record will be created
         $this->{$this->idFieldName} = null;
 
-		// Get the value of the parent node's lft
-		$myRight = $siblingNode->rgt;
+		// Get the value of the sibling node's right
+		$insertRight = $siblingNode->rgt;
 
 		// Update my lft/rgt values
-		$this->lft = $myRight + 1;
-		$this->rgt = $myRight + 2;
+		$this->lft = $insertRight + 1;
+		$this->rgt = $insertRight + 2;
 
 		$db->transactionStart();
 
@@ -627,14 +627,14 @@ class TreeModel extends DataModel
 				$db->getQuery(true)
 					->update($db->qn($this->tableName))
 					->set($fldRgt . ' = ' . $fldRgt . '+2')
-					->where($fldRgt . ' > ' . $db->q($myRight))
+					->where($fldRgt . ' > ' . $db->q($insertRight))
 			)->execute();
 
 			$db->setQuery(
 				$db->getQuery(true)
 				->update($db->qn($this->tableName))
 				->set($fldLft . ' = ' . $fldLft . '+2')
-				->where($fldLft . ' > ' . $db->q($myRight))
+				->where($fldLft . ' > ' . $db->q($insertRight))
 			)->execute();
 
 			$this->save();
