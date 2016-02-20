@@ -1319,15 +1319,23 @@ class TreeModel extends DataModel
 				->select($db->qn('parent') . '.' . $fldLft)
 				->from($db->qn($this->tableName) . ' AS ' . $db->qn('node'))
 				->join('CROSS', $db->qn($this->tableName) . ' AS ' . $db->qn('parent'))
-				->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
-				->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+				->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)//can't be =
+				->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)//can't be =
 				->where($db->qn('node') . '.' . $fldLft . ' = ' . $db->q($this->lft))
 				->order($db->qn('parent') . '.' . $fldLft . ' DESC');
 			$targetLft = $db->setQuery($query, 1, 1)->loadResult();
 
-			$this->treeParent = $this->getClone()->reset()
-				->whereRaw($fldLft . ' = ' . $db->q($targetLft))
-				->firstOrFail();
+			if($targetLft == 1)
+			{
+				//Fix for no items found when $targetLft==1;
+				$this->treeParent = $this->getClone()->reset()->getRoot();
+			}
+			else
+			{
+				$this->treeParent = $this->getClone()->reset()
+					->whereRaw($fldLft . ' = ' . $db->q($targetLft))
+					->firstOrFail();
+			}
 		}
 
 		return $this->treeParent;
